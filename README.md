@@ -11,7 +11,7 @@ generate variation 'cvar' for variable fonts, VTTCompile can also compile the 'c
 also includes file management functions to prepare a font for production and to strip source formats for a final 
 'ship' font binary. 
 
-The interface for VTTCompile is similar to VTTShell that is included if Visual TrueType download package. 
+The interface for VTTCompile is similar to VTTShell which is included in Visual TrueType download package. 
 
 The source code in the repo is mostly a subset of the source code of Visual TrueType as needed to produce VTTCompile. 
 However not all of the source code included in the repo is necessary to produce VTTCompile but we optomized for including 
