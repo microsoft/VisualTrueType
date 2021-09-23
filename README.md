@@ -1,14 +1,21 @@
 # Project
 
-> This repo has been populated by an initial template to help get you started. Please
-> make sure to update the content to build a great experience for community-building.
+Microsoft Visual TrueType(VTT) is a professional-level tool for graphically instructing TrueType and OpenType fonts. 
+For details on the tool visit https://docs.microsoft.com/en-us/typography/tools/vtt/. 
 
-As the maintainer of this project, please make a few updates:
+Visual TrueType compiles binary from source formats included in the fonts that are instructed with Visual TrueType. 
 
-- Improving this README.MD file to provide a great experience
-- Updating SUPPORT.MD with content about this project's support experience
-- Understanding the security reporting process in SECURITY.MD
-- Remove this section from the README
+This repo contains source for VTTCompile which is a standalone tool can compile the high level VTT Talk source
+to a lower level assembler source and then can assemble that source to cooresponding binaries. Since VTT can also 
+generate variation 'cvar' for variable fonts, VTTCompile can also compile the 'cvar' from source format. VTTCompile
+also includes file management functions to prepare a font for production and to strip source formats for a final 
+'ship' font binary. 
+
+The interface for VTTCompile is similar to VTTShell that is included if Visual TrueType download package. 
+
+The source code in the repo is mostly a subset of the source code of Visual TrueType as needed to produce VTTCompile. 
+However not all of the source code included in the repo is necessary to produce VTTCompile but we optomized for including 
+as complete source files as possible to make future maintenance easier. 
 
 ## Contributing
 
