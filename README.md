@@ -17,6 +17,8 @@ The source code in the repo is mostly a subset of the source code of Visual True
 However not all of the source code included in the repo is necessary to produce VTTCompile but we optomized for including 
 as complete source files as possible to make future maintenance easier. 
 
+For documentation of the Visual TrueType source formats visit https://docs.microsoft.com/en-us/typography/tools/vtt/tsi-tables. 
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
