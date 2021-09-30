@@ -1257,7 +1257,7 @@ bool TrueTypeFont::Read(File *file, TrueTypeGlyph *glyph, short *platformID, sho
 
 bool TrueTypeFont::Write(File *file, wchar_t errMsg[]) {
 	file->WriteBytes(this->sfntSize, this->sfntHandle);
-	if (!file->Error()) file->SetPos(this->sfntSize,true); // truncate file to current size
+	//if (!file->Error()) file->SetPos(this->sfntSize,true); // truncate file to current size
 	if (file->Error()) {
 		swprintf(errMsg,L"I/O error writing this font"); return false;
 	}

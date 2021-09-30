@@ -47,48 +47,7 @@ private:
     static int32_t SaturateToInfinity(int64_t value)
     {
         return static_cast<int32_t>(std::min( std::max(value, static_cast<int64_t>(NegativeInfinity)), static_cast<int64_t>(PositiveInfinity) ));
-    }
-
-    // Dividend is assumed to be in 32.32 format
-    static int32_t Divide(int64_t dividend, int32_t divisor)
-    {
-        if (divisor == 0)
-        {
-            if (dividend < 0)
-            {
-                return NegativeInfinity;
-            }
-            return PositiveInfinity;
-        }
-
-        bool isDivisorInfinite = (divisor == PositiveInfinity) || (divisor == NegativeInfinity);
-        bool isDividendInfinite = (dividend >= (static_cast<int64_t>(PositiveInfinity) << Precision)) || (dividend <= (static_cast<int64_t>(NegativeInfinity) << Precision));
-        bool operandsHaveOppositeSigns = (dividend < 0 != divisor < 0);
-
-        if (isDivisorInfinite && !isDividendInfinite)
-        {          
-            return 0;
-        }
-        else if (isDividendInfinite)
-        {           
-            if (operandsHaveOppositeSigns)
-            {
-                return NegativeInfinity;
-            }
-            return PositiveInfinity;
-        }
-
-        if (operandsHaveOppositeSigns)
-        {
-            dividend -= divisor / 2;
-        }
-        else
-        {
-            dividend += divisor / 2;
-        }
-
-        return static_cast<int32_t>(dividend / divisor);
-    }
+    }   
 
     static inline bool ComputeInfinityShortCircuit(int32_t op1, int32_t op2, _Inout_ int32_t& result)
     {
@@ -238,12 +197,7 @@ public:
             return Fixed16_16(result);
         }
         return Fixed16_16(product);
-    }
-
-    inline Fixed16_16 operator / (Fixed16_16 divisor) const
-    {
-        return Fixed16_16(Divide(static_cast<int64_t>(value_) << Precision, divisor.value_));
-    }
+    }    
 
 private:
     int32_t value_;

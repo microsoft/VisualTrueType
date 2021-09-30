@@ -1,11 +1,14 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-#define NOMINMAX
-#include <Windows.h>
+//#define NOMINMAX
+//#include <Windows.h>
+#define _CRT_SECURE_NO_WARNINGS 
+
 #include <assert.h>
 
 #include "pch.h"
+#include <sys/stat.h>
 
 #define IsUnicode(b) ((b[0] == 0xFF) && (b[1] == 0xFE))
 #define IsUnicodeBig(b) ((b[0] == 0xFE) && (b[1] == 0xFF))
@@ -16,75 +19,71 @@ bool File::Error() {
 } // File::Error
 
 File::File(void) {
-	this->m_hfile = INVALID_HANDLE_VALUE;
+	// this->m_hfile = INVALID_HANDLE_VALUE;
+	this->m_hfile = nullptr; 
+
 } // File::File
 
 File::~File(void) {
-	if (this->m_hfile != INVALID_HANDLE_VALUE)
+	//if (this->m_hfile != INVALID_HANDLE_VALUE)
+	//	this->Close(false);
+	if (this->m_hfile != nullptr)
 		this->Close(false);
 } // File::~File
 
-void File::OpenOld(long volRefNum, const wchar_t fileName[]) {
-	//if (wcslen(fileName)<3 || (fileName[1] != L':' && fileName[1] != L'\\' && fileName[0] != L'\\'))
-	//	SetCurrentDirectoryW(GetVolumePath(volRefNum));
-	m_hfile = CreateFileW(fileName, GENERIC_READ /* | GENERIC_WRITE */, FILE_SHARE_READ, NULL,
-		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	m_error = (m_hfile == INVALID_HANDLE_VALUE);
+void File::OpenOld(const std::string& fileName) {
+	//m_hfile = CreateFileA(fileName, GENERIC_READ /* | GENERIC_WRITE */, FILE_SHARE_READ, NULL,
+	//	OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+	//m_error = (m_hfile == INVALID_HANDLE_VALUE);
+	m_fileName = fileName; 
+	m_hfile = fopen(fileName.c_str(), "rb"); 
+	m_error = (m_hfile == nullptr); 
+
 } // File::OpenOld
 
-void File::OpenNew(long volRefNum, const wchar_t fileName[]) {
-	//if (wcslen(fileName)<3 || (fileName[1] != L':' && fileName[1] != L'\\' && fileName[0] != L'\\'))
-	//	SetCurrentDirectoryW(GetVolumePath(volRefNum));
-	m_hfile = CreateFileW(fileName, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL,
-		CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-	m_error = (m_hfile == INVALID_HANDLE_VALUE);
+void File::OpenNew(const std::string& fileName) {
+	//m_hfile = CreateFileA(fileName, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL,
+	//	CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	//m_error = (m_hfile == INVALID_HANDLE_VALUE);
+	m_fileName = fileName;
+	m_hfile = fopen(fileName.c_str(), "wb");
+	m_error = (m_hfile == nullptr); 
 } // File::OpenNew
-
-void File::OpenOld(const wchar_t fileName[]) {
-	m_hfile = CreateFileW(fileName, GENERIC_READ /* | GENERIC_WRITE */, FILE_SHARE_READ, NULL,
-		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	m_error = (m_hfile == INVALID_HANDLE_VALUE);
-} // File::OpenOld
-
-void File::OpenNew(const wchar_t fileName[]) {
-	m_hfile = CreateFileW(fileName, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, NULL,
-		CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-	m_error = (m_hfile == INVALID_HANDLE_VALUE);
-} // File::OpenNew
-
-bool File::Exists(long volRefNum, const wchar_t fileName[]) {
-	//if (wcslen(fileName)<3 || (fileName[1] != L':' && fileName[1] != L'\\' && fileName[0] != L'\\'))
-	//	SetCurrentDirectoryW(GetVolumePath(volRefNum));
-	DWORD dwAttrib = GetFileAttributes(fileName);
-
-	return (dwAttrib != INVALID_FILE_ATTRIBUTES &&
-		!(dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
-}
 
 long File::Length(void) {
-	return (m_hfile != INVALID_HANDLE_VALUE) ? GetFileSize(m_hfile, NULL) : 0;
+	//return (m_hfile != INVALID_HANDLE_VALUE) ? GetFileSize(m_hfile, NULL) : 0;
+	struct stat st; 
+	stat(m_fileName.c_str(), &st); 
+	return st.st_size; 
 } // File::Length
 
 void File::SetPos(long pos, bool truncate) {
-	SetFilePointer(m_hfile, pos, NULL, FILE_BEGIN);
-	if (truncate)
-		SetEndOfFile(m_hfile);
+	//SetFilePointer(m_hfile, pos, NULL, FILE_BEGIN);
+	//if (truncate)
+	//	SetEndOfFile(m_hfile);
+	fseek((FILE*)m_hfile, SEEK_SET, pos); 
 } // File::SetPos
 
 long File::GetPos(void) {
-	return SetFilePointer(m_hfile, 0, NULL, FILE_CURRENT);
+	return ftell((FILE*)m_hfile);
 } // File::GetPos
 
 void File::ReadBytes(long numBytes, void *buffer) {
-	if (m_hfile != INVALID_HANDLE_VALUE) {
-		DWORD cb = 0;
-		m_error = !ReadFile(m_hfile, buffer, numBytes, &cb, NULL);
+	//if (m_hfile != INVALID_HANDLE_VALUE) {
+	//	DWORD cb = 0;
+	//	m_error = !ReadFile(m_hfile, buffer, numBytes, &cb, NULL);
+	//}
+	size_t size = 0; 
+	if (m_hfile != nullptr)
+	{
+		size = fread(buffer, 1, numBytes, (FILE*)m_hfile); 
 	}
 } // File::ReadBytes
 
 void File::ReadUnicode(long *len, wchar_t **text)
 {
-	if (m_hfile != INVALID_HANDLE_VALUE) {
+	assert(false); 
+	/*if (m_hfile != INVALID_HANDLE_VALUE) {
 		DWORD cb;
 		BYTE start[4];
 
@@ -145,22 +144,32 @@ void File::ReadUnicode(long *len, wchar_t **text)
 			DisposeP((void**)&b);
 		}
 	}
+	*/ 
 }
 
 void File::WriteBytes(long numBytes, void *buffer)
 {
-	if (m_hfile != INVALID_HANDLE_VALUE) {
-		DWORD cb = 0;
-		m_error = !WriteFile(m_hfile, buffer, numBytes, &cb, NULL);
+	//if (m_hfile != INVALID_HANDLE_VALUE) {
+	//	DWORD cb = 0;
+	//	m_error = !WriteFile(m_hfile, buffer, numBytes, &cb, NULL);
+	//}
+	size_t size = 0; 
+	if (m_hfile != nullptr)
+	{
+		size = fwrite(buffer, 1, numBytes, (FILE*)m_hfile); 
 	}
 } // File::WriteBytes
 
 void File::Close(bool truncate) {
-	if (!this->m_error && truncate) this->SetPos(this->GetPos(), true);
-	if (this->m_hfile != INVALID_HANDLE_VALUE)
-		this->m_error = !CloseHandle(this->m_hfile);
-	else
-		this->m_error = true;
-	this->m_hfile = INVALID_HANDLE_VALUE;
+	//if (!this->m_error && truncate) this->SetPos(this->GetPos(), true);
+	//if (this->m_hfile != INVALID_HANDLE_VALUE)
+	//	this->m_error = !CloseHandle(this->m_hfile);
+	//else
+	//	this->m_error = true;
+	if (m_hfile != nullptr)
+	{
+		fclose((FILE*)m_hfile); 
+	}
+	this->m_hfile = nullptr;
 } // File::Close
 

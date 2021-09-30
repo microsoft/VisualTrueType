@@ -301,13 +301,6 @@ namespace Variation
 		uint16_t writeOrder_ = 0; 
 	};
 
-	bool ReverseComputeNormalizedAxisCoordinates(
-		const FVarTableHeader &fvarTable, 
-		const AxisVariationHeader &avarTable,
-		std::vector<Fixed16_16>& normalizedAxisCoordinates,
-		_Out_ std::vector<Fixed16_16>& variationAxisKeyCoordinates
-	);
-
 	class CVTVariationInterpolator1 
 	{
 	public:

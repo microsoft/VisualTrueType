@@ -10,11 +10,8 @@ public:
 
 	explicit File(void);
 	virtual ~File(void);
-	virtual void OpenOld(long volRefNum, const wchar_t fileName[]);
-	virtual void OpenNew(long volRefNum, const wchar_t fileName[]);
-	virtual void OpenOld(const wchar_t fileName[]);
-	virtual void OpenNew(const wchar_t fileName[]);
-	virtual bool Exists(long volRefNum, const wchar_t fileName[]);
+	virtual void OpenOld(const std::string &fileName);
+	virtual void OpenNew(const std::string &fileName);
 	virtual long Length(void);
 	virtual void SetPos(long pos, bool truncate);
 	virtual long GetPos(void);
@@ -25,6 +22,7 @@ public:
 private:
 	bool m_error;
 	void *m_hfile;
+	std::string m_fileName; 
 };
 
 

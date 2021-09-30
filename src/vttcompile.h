@@ -9,9 +9,9 @@ public:
 	bool Create();
 	virtual ~Application(void);
 
-	bool OpenFont(std::wstring fileName);
+	bool OpenFont(std::string fileName);
 	bool SaveFont(StripCommand strip, wchar_t errMsg[]);
-	bool SaveFont(std::wstring fileName, StripCommand strip, wchar_t errMsg[]);
+	bool SaveFont(std::string fileName, StripCommand strip, wchar_t errMsg[]);
 
 	bool GotoFont(wchar_t errMsg[]);
 	bool GotoGlyph(long code, bool isGlyphIndex);
@@ -33,7 +33,7 @@ private:
 	bool fontOpen = false;
 	std::unique_ptr<TrueTypeFont> font = nullptr;
 	std::unique_ptr<TrueTypeGlyph> glyph = nullptr;
-	std::wstring fileName;
+	std::string fileName;
 	long charCode = 0, glyphIndex = 0;
 
 	

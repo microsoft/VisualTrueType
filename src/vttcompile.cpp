@@ -63,7 +63,7 @@ Application::~Application(void)
 	
 }
 
-bool Application::OpenFont(std::wstring fileName) {
+bool Application::OpenFont(std::string fileName) {
 	wchar_t errMsg[maxLineSize];
 
 	auto file = std::make_unique<File>();
@@ -88,7 +88,7 @@ bool Application::SaveFont(StripCommand strip, wchar_t errMsg[])
 	return this->SaveFont(this->fileName, strip, errMsg);
 }
 
-bool Application::SaveFont(std::wstring fileN, StripCommand strip, wchar_t errMsg[])
+bool Application::SaveFont(std::string fileN, StripCommand strip, wchar_t errMsg[])
 {
 	auto file = std::make_unique<File>();
 	errMsg[0] = 0;
@@ -522,15 +522,15 @@ int ShowUsage(wchar_t* strErr)
 	return -1;
 }
 
-int wmain(int argc, wchar_t* argv[])
+int main(int argc, char* argv[])
 {
-	wchar_t c;
+	char c;
 	bool bStripSource = false;
 	bool bStripHints = false;
 	bool bStripCache = false;
 	bool bCompileAll = false;
 	bool bQuiet = false;
-	std::wstring sg1, sg2;
+	std::string sg1, sg2;
 	unsigned long g1 = 0, g2 = 0;
 	bool haveGlyph = false;
 	bool haveRange = false;
@@ -540,60 +540,60 @@ int wmain(int argc, wchar_t* argv[])
 	wchar_t errMsg[1024];
 	errMsg[0] = 0;
 
-	std::wstring inFile;
-	std::wstring outFile;
+	std::string inFile;
+	std::string outFile;
 
 	std::wstring szOutText;
 
 	wprintf(L"Microsoft Visual TrueType Command Line Interface Version " VTTVersionString L" \n");
-	wprintf(L"Copyright (C) 2021 Microsoft Corporation. All rights reserved.\n");
+	wprintf(L"Copyright (C) Microsoft Corporation. Licensed under the MIT License.\n");
 
 	if (argc == 1) return ShowUsage(NULL);
 
-	CommandLineOptions cmd(argc, argv, L"?HhAaBbSsCcqQg:G:r:R");
+	CommandLineOptions cmd(argc, argv, "?HhAaBbSsCcqQg:G:r:R");
 
 	while ((c = cmd.GetOption()) != END)
 	{
 		switch (c)
 		{
-		case L'A':
-		case L'a':
+		case 'A':
+		case 'a':
 			bCompileAll = true;
 			break;
 
-		case L'B':
-		case L'b':
+		case 'B':
+		case 'b':
 			bStripHints = true;
 			break;
 
-		case L'S':
-		case L's':
+		case 'S':
+		case 's':
 			bStripSource = true;
 			break;
 
-		case L'c':
-		case L'C':
+		case 'c':
+		case 'C':
 			bStripCache = true;
 			break;
 
-		case L'q':
-		case L'Q':
+		case 'q':
+		case 'Q':
 			bQuiet = true;
 			break;
 
-		case L'g':
-		case L'G':
+		case 'g':
+		case 'G':
 			sg1 = cmd.GetOptionArgument();
 			break;
 
-		case L'r':
-		case L'R':
+		case 'r':
+		case 'R':
 			sg2 = cmd.GetOptionArgument();
 			break;
 
-		case L'H':
-		case L'h':
-		case L'?':
+		case 'H':
+		case 'h':
+		case '?':
 		default:
 			ShowUsage(NULL);
 			exit(EXIT_SUCCESS);

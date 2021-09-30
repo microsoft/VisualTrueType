@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 #include "opentypedefs.h" // F26Dot6 etc.
-#include "MathUtils.h"
+#include "mathutils.h"
 
 Vector RoundFV(const F26Dot6Vector v) {
 	Vector w;
@@ -273,7 +273,7 @@ bool Collinear(const Vector v, const Vector p, const Vector V, Collinearity c) {
 	
 	if (n*(V.y-v.y) != d*(p.y-v.y)) return false; // not collinear
 	switch (c) {
-		case notOutside: return Sgn(n) == Sgn(d) && 0 < N && N < D || p.x == v.x && p.y == v.y || p.x == V.x && p.y == V.y; // 0 ² t ² 1
+        case notOutside: return (Sgn(n) == Sgn(d) && 0 < N && N < D) || (p.x == v.x && p.y == v.y) || (p.x == V.x && p.y == V.y); // 0 ² t ² 1
 		case inside:	 return Sgn(n) == Sgn(d) && 0 < N && N < D; // 0 < t < 1
 		default:		 return true;
 	}
@@ -413,7 +413,7 @@ void QuadraticEqn(double a, double b, double c, long* solutions, double* t1, dou
 void CubicEqn(double a, double b, double c, double d, long* solutions, double* t1, double* t2, double* t3); // not general enough that I'd want to make it public
 void CubicEqn(double a, double b, double c, double d, long* solutions, double* t1, double* t2, double* t3) {
 	// a cubic equation always has at least one solution, Newton was unstable, therefore find solution by interval halfing
-	double f,low,mid,high;
+    double f = 0,low = 0,mid = 0,high = 0;
 	
 	if (a < 0) {
 		a = -a; b = -b; c = -c; d = -d;

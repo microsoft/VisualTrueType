@@ -8,7 +8,6 @@
 #include <assert.h> // assert
 #include <stdio.h> // swprintf
 #include <string.h> // strncpy etc.
-#include <malloc.h> // malloc, free (may want to install handlers later on)
 #include <string>
 #include <map>
 #include <algorithm>
