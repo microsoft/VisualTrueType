@@ -14,6 +14,7 @@
 #include <vector>
 #include <climits>
 #include <codecvt>
+#include <locale>
 
 #include "TextBuffer.h"
 
