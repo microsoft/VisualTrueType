@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 #pragma once
+#include <sal.h> // defines _Inout_
 
 class Fixed2_14
 {
