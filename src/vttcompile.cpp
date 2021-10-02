@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-#include <pch.h>
+#include "pch.h"
 #include "vttcompile.h"
 
 #include "getopt.h"
