@@ -8,7 +8,7 @@
 #include <time.h>
 #include <sys/timeb.h> // _timeb, _ftime
 
-#define TIME_FIX 2082844800i64 // pc time 1970 - mac time 1904
+#define TIME_FIX 2082844800ll // pc time 1970 - mac time 1904
 
 long long DateTime(void) {
 	struct _timeb  tstruct;
