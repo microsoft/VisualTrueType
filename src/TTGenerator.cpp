@@ -204,7 +204,7 @@ private:
 	double cosF6; // of neighFudge
 	double cosMT; // of diagFudgeMT
 	double tanMT; // of diagFudgeMT
-	bool italic; // an italic font with mainStrokeAngle other than 90 degree ±STRAIGHTANGLEFUDGE
+	bool italic; // an italic font with mainStrokeAngle other than 90 degree Â±STRAIGHTANGLEFUDGE
 	bool mainStrokeAngle,glyphStrokeAngle,setItalicStrokePhase,setItalicStrokeAngle;
 	bool xSmooth,ySmooth;
 	short leftAnchor,rightAnchor; // for GrabHereInX
@@ -543,7 +543,7 @@ void TTSourceGenerator::Link(bool y, bool dist, ProjFreeVector *projFreeVector, 
 	if (this->tt) this->AssertFreeProjVector(&projFreeVector->pv,&projFreeVector->fv[0]);
 		
 	scalProd = linkDirection.x*this->slope.x + linkDirection.y*this->slope.y;
-	if (parentR == childR && !lsbLink && !rsbLink && (distance == 0 || italicLink && scalProd > this->cosF1)) { // angle between link and slope < 0.5¡
+	if (parentR == childR && !lsbLink && !rsbLink && (distance == 0 || italicLink && scalProd > this->cosF1)) { // angle between link and slope < 0.5Â¡
 		if (this->tt) {
 			this->tt->AssertRefPoint(0,parent);
 		//	ALIGNRP is less optimal than (but equivalent to) an unrounded MDRP, since for chains of Dists,
@@ -762,7 +762,7 @@ void TTSourceGenerator::ResDDLink(bool y, bool dist, ProjFreeVector *projFreeVec
 	pv[0].dir = perpDiagDir; pv[0].from = parent0; pv[0].to = child1; // criss-crossed...
 	pv[1].dir = perpDiagDir; pv[1].from = parent1; pv[1].to = child0; // ...diagonal links
 	for (short i = 0; i < 2; i++) if (this->AlmostPerpendicular(&pv[i],&projFreeVector->fv[i],error)) return;
-	// pv will be dealt with in fn (that's the very raison d'être of DLink...)
+	// pv will be dealt with in fn (that's the very raison d'Ãªtre of DLink...)
 	this->tt->ResDDMIRP(parent0,child0,projFreeVector->fv[0],cvt0,parent1,child1,projFreeVector->fv[1],cvt1);
 	this->Touched(child0,projFreeVector->fv[0].dir);
 	this->Touched(child1,projFreeVector->fv[1].dir);
@@ -844,7 +844,7 @@ void TTSourceGenerator::Intersect(short intersection, short line0start, short li
 	}
 } // TTSourceGenerator::Intersect
 
-bool ClassifyAlign(Vector parent0, Vector child, Vector parent1, short ppem) { // within rectangular hull of ±0.5¡ from "parent line"?
+bool ClassifyAlign(Vector parent0, Vector child, Vector parent1, short ppem) { // within rectangular hull of Â±0.5Â¡ from "parent line"?
 	double tanAlignTolerance;
 	Vector p,q;
 	long pq,p2;
@@ -2199,7 +2199,7 @@ void TTSourceGenerator::AssertVectorsAtPotentialJunction(TTVector pv, short pare
 	
 	this->tt->AssertTTVonLine(pv,parent0,parent1,this->V[parent0],this->V[parent1],true);
 	deltaAngle = this->attrib[child].deltaAngle;
-	if (-noJunction <= deltaAngle && deltaAngle <= +noJunction) { // we make a turn within ±noJunction¡ => align "perpendicularly" to "parent line"
+	if (-noJunction <= deltaAngle && deltaAngle <= +noJunction) { // we make a turn within Â±noJunctionÂ¡ => align "perpendicularly" to "parent line"
 		// for CompilerLogic(1) this used to choose among x-axis or y-axis, whichever is closer to the parent line...
 		this->tt->AssertFVonPV();
 	} else { // assume it is a junction of some kind, align "parallel" to joining line
@@ -2235,11 +2235,11 @@ FVMTDirection TTSourceGenerator::CalcDiagonalFVMT(FVOverride fv, short parent0, 
 	
 	if (this->xSmooth && this->ySmooth) { // follow rule set #2
 		
-		if (ScalProdRV(this->slope,strokeDirection) >= this->cosMT) { // rule #1: diagonal is within ±5° of main stroke angle
+		if (ScalProdRV(this->slope,strokeDirection) >= this->cosMT) { // rule #1: diagonal is within Â±5Â° of main stroke angle
 			fvmt = fvOnX;
-		} else if (attrib->on && Abs(D.y) <= Abs(D.x)*this->tanMT) { // rule #2: neighbour within ±5° of x-axis
+		} else if (attrib->on && Abs(D.y) <= Abs(D.x)*this->tanMT) { // rule #2: neighbour within Â±5Â° of x-axis
 			fvmt = fvOnX;
-		} else if (attrib->on && Abs(D.x) <= Abs(D.y)*this->tanMT) { // rule #3: neighbour within ±5° of y-axis
+		} else if (attrib->on && Abs(D.x) <= Abs(D.y)*this->tanMT) { // rule #3: neighbour within Â±5Â° of y-axis
 			fvmt = fvOnY;
 		} else { // rule #4: kitchen sink case
 			fvmt = fvOnLine; *refPoint0 = child; *refPoint1 = neighbour;
@@ -2254,11 +2254,11 @@ FVMTDirection TTSourceGenerator::CalcDiagonalFVMT(FVOverride fv, short parent0, 
 		//	such as when doing the lower leg of an Arial K after aligning the junction points with the lower edge of the upper leg
 			fvmt = fvOnLine; *refPoint0 = alignParam->parent0; *refPoint1 = alignParam->parent1;
 	//	for all the following cases, make an educated guess
-		} else if (ScalProdRV(this->slope,strokeDirection) >= this->cosMT) { // rule #2: diagonal is within ±5° of main stroke angle
+		} else if (ScalProdRV(this->slope,strokeDirection) >= this->cosMT) { // rule #2: diagonal is within Â±5Â° of main stroke angle
 			fvmt = fvOnX;
-		} else if (attrib->on && Abs(D.y) <= Abs(D.x)*this->tanMT) { // rule #3: neighbour within ±5° of x-axis
+		} else if (attrib->on && Abs(D.y) <= Abs(D.x)*this->tanMT) { // rule #3: neighbour within Â±5Â° of x-axis
 			fvmt = fvOnX; // fv = x
-		} else if (attrib->on && Abs(D.x) <= Abs(D.y)*this->tanMT) { // rule #4: neighbour within ±5° of y-axis
+		} else if (attrib->on && Abs(D.x) <= Abs(D.y)*this->tanMT) { // rule #4: neighbour within Â±5Â° of y-axis
 			fvmt = fvOnY; // fv = y
 		} else if (!attrib->on && D.x == 0 && this->attrib[neighbour].touched[xRomanDir]) { // rule #5: preserve tangent property of x-extremum
 			fvmt = fvOnY; // dx == 0 => fv can only be y
@@ -2266,10 +2266,10 @@ FVMTDirection TTSourceGenerator::CalcDiagonalFVMT(FVOverride fv, short parent0, 
 			fvmt = fvOnX; // dy == 0 => fv can only be x
 		} else if (this->xSmooth || this->ySmooth) { // rules #7,8: all x or y are fixed, can only move in y or x respectively
 			fvmt = this->xSmooth ? fvOnY : fvOnX;
-	//	} else if (Abs(strokeDirection.x) != Abs(strokeDirection.y)) { // rules #9,10: kitchen sink case (all other rules haven't applied), diagonal is within ±45° of x or y-axis
+	//	} else if (Abs(strokeDirection.x) != Abs(strokeDirection.y)) { // rules #9,10: kitchen sink case (all other rules haven't applied), diagonal is within Â±45Â° of x or y-axis
 		} else {
 			fvmt = Abs(strokeDirection.x) > Abs(strokeDirection.y) ? fvOnY : fvOnX;
-	//	} else { // rule #11: 45°-case of kitchen sink case...
+	//	} else { // rule #11: 45Â°-case of kitchen sink case...
 	//		fvmt = fvOnPV;
 		}
 	}
@@ -2300,11 +2300,11 @@ FVMTDirection TTSourceGenerator::CalcAlignFVMT(FVOverride fv, short parent0, sho
 	}
 
 	if (this->xSmooth && this->ySmooth) { // follow rule set #2
-		if (ScalProdRV(this->slope,alignDirection) >= this->cosMT) { // rule #1: diagonal is within ±5° of main stroke angle
+		if (ScalProdRV(this->slope,alignDirection) >= this->cosMT) { // rule #1: diagonal is within Â±5Â° of main stroke angle
 			fvmt = fvOnX;
-		} else if (attrib->on && Abs(D.y) <= Abs(D.x)*this->tanMT) { // rule #2: neighbour within ±5° of x-axis
+		} else if (attrib->on && Abs(D.y) <= Abs(D.x)*this->tanMT) { // rule #2: neighbour within Â±5Â° of x-axis
 			fvmt = fvOnX;
-		} else if (attrib->on && Abs(D.x) <= Abs(D.y)*this->tanMT) { // rule #3: neighbour within ±5° of y-axis
+		} else if (attrib->on && Abs(D.x) <= Abs(D.y)*this->tanMT) { // rule #3: neighbour within Â±5Â° of y-axis
 			fvmt = fvOnY;
 		} else if (-noJunction <= deltaAngle && deltaAngle <= +noJunction) { // rule #4a: don't put fv on line to neighbor...
 			fvmt = fvOnPV;
@@ -2327,20 +2327,20 @@ FVMTDirection TTSourceGenerator::CalcAlignFVMT(FVOverride fv, short parent0, sho
 			fvmt = attrib->touched[xRomanDir] ? fvOnY : fvOnX;
 		} else if (this->xSmooth != this->ySmooth) { // rules #7,8: all x or y are fixed, can only move in y or x respectively
 			fvmt = this->xSmooth ? fvOnY : fvOnX;
-		} else if (ScalProdRV(this->slope,alignDirection) >= this->cosMT) { // rule #2: diagonal is within ±5° of main stroke angle
+		} else if (ScalProdRV(this->slope,alignDirection) >= this->cosMT) { // rule #2: diagonal is within Â±5Â° of main stroke angle
 			fvmt = fvOnX;
-		} else if (attrib->on && Abs(D.y) <= Abs(D.x)*this->tanMT) { // rule #3: neighbour within ±5° of x-axis
+		} else if (attrib->on && Abs(D.y) <= Abs(D.x)*this->tanMT) { // rule #3: neighbour within Â±5Â° of x-axis
 			fvmt = fvOnX; // fv = x
-		} else if (attrib->on && Abs(D.x) <= Abs(D.y)*this->tanMT) { // rule #4: neighbour within ±5° of y-axis
+		} else if (attrib->on && Abs(D.x) <= Abs(D.y)*this->tanMT) { // rule #4: neighbour within Â±5Â° of y-axis
 			fvmt = fvOnY; // fv = y
 //		} else if (!attrib->on && D.x == 0 && this->attrib[neighbour].touched[xRomanDir]) { // rule #5: preserve tangent property of x-extremum
 //			fvmt = fvOnY; // dx == 0 => fv can only be y
 //		} else if (!attrib->on && D.y == 0 && this->attrib[neighbour].touched[yRomanDir]) { // rule #6: preserve tangent property of y-extremum
 //			fvmt = fvOnX; // dy == 0 => fv can only be x
-//		} else if (Abs(alignDirection.x) != Abs(alignDirection.y)) { // rules #9,10: kitchen sink case (all other rules haven't applied), diagonal is within ±45° of x or y-axis
+//		} else if (Abs(alignDirection.x) != Abs(alignDirection.y)) { // rules #9,10: kitchen sink case (all other rules haven't applied), diagonal is within Â±45Â° of x or y-axis
 //		} else {
 //			fvmt = Abs(alignDirection.x) > Abs(alignDirection.y) ? fvOnY : fvOnX;
-		} else { // rule #11: 45°-case of kitchen sink case...
+		} else { // rule #11: 45Â°-case of kitchen sink case...
 			fvmt = fvOnPV;
 		}
 	}
