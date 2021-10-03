@@ -148,7 +148,7 @@ struct AxisVariationHeader
 	uint16_t minorVersion;
 	uint16_t reserved;
 	uint16_t axisCount;
-	std::vector<ShortFracSegment> axisSegmentMaps; // The segment maps array — one segment map for each axis
+	std::vector<ShortFracSegment> axisSegmentMaps; // The segment maps array - one segment map for each axis
 };
 
 typedef struct {
