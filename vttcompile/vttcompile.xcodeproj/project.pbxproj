@@ -9,16 +9,16 @@
 /* Begin PBXBuildFile section */
 		567685E82707D39F00391506 /* Platform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685C12707D39D00391506 /* Platform.cpp */; };
 		567685E92707D39F00391506 /* VariationInstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685C32707D39D00391506 /* VariationInstance.cpp */; };
-		567685EA2707D39F00391506 /* ttassembler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685C42707D39E00391506 /* ttassembler.cpp */; };
-		567685EB2707D39F00391506 /* list.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685C52707D39E00391506 /* list.cpp */; };
+		567685EA2707D39F00391506 /* TTAssembler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685C42707D39E00391506 /* TTAssembler.cpp */; };
+		567685EB2707D39F00391506 /* List.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685C52707D39E00391506 /* List.cpp */; };
 		567685EC2707D39F00391506 /* VariationModels.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685CC2707D39E00391506 /* VariationModels.cpp */; };
-		567685ED2707D39F00391506 /* mathutils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685CD2707D39E00391506 /* mathutils.cpp */; };
+		567685ED2707D39F00391506 /* MathUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685CD2707D39E00391506 /* MathUtils.cpp */; };
 		567685EE2707D39F00391506 /* TextBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685CE2707D39E00391506 /* TextBuffer.cpp */; };
 		567685EF2707D39F00391506 /* TTFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685D42707D39E00391506 /* TTFont.cpp */; };
 		567685F02707D39F00391506 /* File.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685D72707D39E00391506 /* File.cpp */; };
-		567685F12707D39F00391506 /* ttgenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685DA2707D39E00391506 /* ttgenerator.cpp */; };
+		567685F12707D39F00391506 /* TTGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685DA2707D39E00391506 /* TTGenerator.cpp */; };
 		567685F22707D39F00391506 /* Memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685DC2707D39E00391506 /* Memory.cpp */; };
-		567685F32707D39F00391506 /* cvtmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685DE2707D39F00391506 /* cvtmanager.cpp */; };
+		567685F32707D39F00391506 /* CvtManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685DE2707D39F00391506 /* CvtManager.cpp */; };
 		567685F42707D39F00391506 /* TMTParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685DF2707D39F00391506 /* TMTParser.cpp */; };
 		567685F52707D39F00391506 /* Area.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685E22707D39F00391506 /* Area.cpp */; };
 		567685F62707D39F00391506 /* TTEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685E32707D39F00391506 /* TTEngine.cpp */; };
@@ -43,40 +43,40 @@
 		567685C12707D39D00391506 /* Platform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Platform.cpp; sourceTree = "<group>"; };
 		567685C22707D39D00391506 /* vttcompile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vttcompile.h; sourceTree = "<group>"; };
 		567685C32707D39D00391506 /* VariationInstance.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VariationInstance.cpp; sourceTree = "<group>"; };
-		567685C42707D39E00391506 /* ttassembler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ttassembler.cpp; sourceTree = "<group>"; tabWidth = 4; };
-		567685C52707D39E00391506 /* list.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = list.cpp; sourceTree = "<group>"; };
+		567685C42707D39E00391506 /* TTAssembler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTAssembler.cpp; sourceTree = "<group>"; tabWidth = 4; };
+		567685C52707D39E00391506 /* List.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = List.cpp; sourceTree = "<group>"; };
 		567685C62707D39E00391506 /* pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pch.h; sourceTree = "<group>"; };
-		567685C72707D39E00391506 /* tmtparser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tmtparser.h; sourceTree = "<group>"; };
+		567685C72707D39E00391506 /* TMTParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TMTParser.h; sourceTree = "<group>"; };
 		567685C82707D39E00391506 /* Memory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Memory.h; sourceTree = "<group>"; };
-		567685C92707D39E00391506 /* ttassembler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ttassembler.h; sourceTree = "<group>"; };
-		567685CA2707D39E00391506 /* ttgenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ttgenerator.h; sourceTree = "<group>"; };
+		567685C92707D39E00391506 /* TTAssembler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTAssembler.h; sourceTree = "<group>"; };
+		567685CA2707D39E00391506 /* TTGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTGenerator.h; sourceTree = "<group>"; };
 		567685CB2707D39E00391506 /* FixedMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FixedMath.h; sourceTree = "<group>"; };
 		567685CC2707D39E00391506 /* VariationModels.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VariationModels.cpp; sourceTree = "<group>"; };
-		567685CD2707D39E00391506 /* mathutils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = mathutils.cpp; sourceTree = "<group>"; };
+		567685CD2707D39E00391506 /* MathUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MathUtils.cpp; sourceTree = "<group>"; };
 		567685CE2707D39E00391506 /* TextBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextBuffer.cpp; sourceTree = "<group>"; };
 		567685CF2707D39E00391506 /* File.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = File.h; sourceTree = "<group>"; };
-		567685D02707D39E00391506 /* list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = list.h; sourceTree = "<group>"; };
+		567685D02707D39E00391506 /* List.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = List.h; sourceTree = "<group>"; };
 		567685D12707D39E00391506 /* getopt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = getopt.h; sourceTree = "<group>"; };
 		567685D22707D39E00391506 /* TextBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextBuffer.h; sourceTree = "<group>"; };
 		567685D32707D39E00391506 /* Variation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Variation.h; sourceTree = "<group>"; };
 		567685D42707D39E00391506 /* TTFont.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTFont.cpp; sourceTree = "<group>"; };
-		567685D52707D39E00391506 /* guidecorations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = guidecorations.h; sourceTree = "<group>"; };
+		567685D52707D39E00391506 /* GUIDecorations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDecorations.h; sourceTree = "<group>"; };
 		567685D62707D39E00391506 /* VariationInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VariationInstance.h; sourceTree = "<group>"; };
 		567685D72707D39E00391506 /* File.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = File.cpp; sourceTree = "<group>"; };
 		567685D82707D39E00391506 /* Area.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Area.h; sourceTree = "<group>"; };
-		567685D92707D39E00391506 /* mathutils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mathutils.h; sourceTree = "<group>"; };
-		567685DA2707D39E00391506 /* ttgenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ttgenerator.cpp; sourceTree = "<group>"; };
-		567685DB2707D39E00391506 /* ttengine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ttengine.h; sourceTree = "<group>"; };
+		567685D92707D39E00391506 /* MathUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MathUtils.h; sourceTree = "<group>"; };
+		567685DA2707D39E00391506 /* TTGenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTGenerator.cpp; sourceTree = "<group>"; };
+		567685DB2707D39E00391506 /* TTEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTEngine.h; sourceTree = "<group>"; };
 		567685DC2707D39E00391506 /* Memory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Memory.cpp; sourceTree = "<group>"; };
-		567685DD2707D39F00391506 /* ttfont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ttfont.h; sourceTree = "<group>"; };
-		567685DE2707D39F00391506 /* cvtmanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cvtmanager.cpp; sourceTree = "<group>"; };
+		567685DD2707D39F00391506 /* TTFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTFont.h; sourceTree = "<group>"; };
+		567685DE2707D39F00391506 /* CvtManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CvtManager.cpp; sourceTree = "<group>"; };
 		567685DF2707D39F00391506 /* TMTParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TMTParser.cpp; sourceTree = "<group>"; };
-		567685E02707D39F00391506 /* cvtmanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cvtmanager.h; sourceTree = "<group>"; };
+		567685E02707D39F00391506 /* CvtManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CvtManager.h; sourceTree = "<group>"; };
 		567685E12707D39F00391506 /* VariationModels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VariationModels.h; sourceTree = "<group>"; };
 		567685E22707D39F00391506 /* Area.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Area.cpp; sourceTree = "<group>"; };
 		567685E32707D39F00391506 /* TTEngine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTEngine.cpp; sourceTree = "<group>"; };
 		567685E42707D39F00391506 /* vttcompile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vttcompile.cpp; sourceTree = "<group>"; };
-		567685E52707D39F00391506 /* platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = platform.h; sourceTree = "<group>"; };
+		567685E52707D39F00391506 /* Platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Platform.h; sourceTree = "<group>"; };
 		567685E62707D39F00391506 /* Variation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Variation.cpp; sourceTree = "<group>"; };
 		567685E72707D39F00391506 /* opentypedefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opentypedefs.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -113,35 +113,35 @@
 			children = (
 				567685E22707D39F00391506 /* Area.cpp */,
 				567685D82707D39E00391506 /* Area.h */,
-				567685DE2707D39F00391506 /* cvtmanager.cpp */,
-				567685E02707D39F00391506 /* cvtmanager.h */,
+				567685DE2707D39F00391506 /* CvtManager.cpp */,
+				567685E02707D39F00391506 /* CvtManager.h */,
 				567685D72707D39E00391506 /* File.cpp */,
 				567685CF2707D39E00391506 /* File.h */,
 				567685CB2707D39E00391506 /* FixedMath.h */,
 				567685D12707D39E00391506 /* getopt.h */,
-				567685D52707D39E00391506 /* guidecorations.h */,
-				567685C52707D39E00391506 /* list.cpp */,
-				567685D02707D39E00391506 /* list.h */,
-				567685CD2707D39E00391506 /* mathutils.cpp */,
-				567685D92707D39E00391506 /* mathutils.h */,
+				567685D52707D39E00391506 /* GUIDecorations.h */,
+				567685C52707D39E00391506 /* List.cpp */,
+				567685D02707D39E00391506 /* List.h */,
+				567685CD2707D39E00391506 /* MathUtils.cpp */,
+				567685D92707D39E00391506 /* MathUtils.h */,
 				567685DC2707D39E00391506 /* Memory.cpp */,
 				567685C82707D39E00391506 /* Memory.h */,
 				567685E72707D39F00391506 /* opentypedefs.h */,
 				567685C62707D39E00391506 /* pch.h */,
 				567685C12707D39D00391506 /* Platform.cpp */,
-				567685E52707D39F00391506 /* platform.h */,
+				567685E52707D39F00391506 /* Platform.h */,
 				567685CE2707D39E00391506 /* TextBuffer.cpp */,
 				567685D22707D39E00391506 /* TextBuffer.h */,
 				567685DF2707D39F00391506 /* TMTParser.cpp */,
-				567685C72707D39E00391506 /* tmtparser.h */,
-				567685C42707D39E00391506 /* ttassembler.cpp */,
-				567685C92707D39E00391506 /* ttassembler.h */,
+				567685C72707D39E00391506 /* TMTParser.h */,
+				567685C42707D39E00391506 /* TTAssembler.cpp */,
+				567685C92707D39E00391506 /* TTAssembler.h */,
 				567685E32707D39F00391506 /* TTEngine.cpp */,
-				567685DB2707D39E00391506 /* ttengine.h */,
+				567685DB2707D39E00391506 /* TTEngine.h */,
 				567685D42707D39E00391506 /* TTFont.cpp */,
-				567685DD2707D39F00391506 /* ttfont.h */,
-				567685DA2707D39E00391506 /* ttgenerator.cpp */,
-				567685CA2707D39E00391506 /* ttgenerator.h */,
+				567685DD2707D39F00391506 /* TTFont.h */,
+				567685DA2707D39E00391506 /* TTGenerator.cpp */,
+				567685CA2707D39E00391506 /* TTGenerator.h */,
 				567685E62707D39F00391506 /* Variation.cpp */,
 				567685D32707D39E00391506 /* Variation.h */,
 				567685C32707D39D00391506 /* VariationInstance.cpp */,
@@ -215,20 +215,20 @@
 				567685F52707D39F00391506 /* Area.cpp in Sources */,
 				567685F02707D39F00391506 /* File.cpp in Sources */,
 				567685F82707D39F00391506 /* Variation.cpp in Sources */,
-				567685F12707D39F00391506 /* ttgenerator.cpp in Sources */,
+				567685F12707D39F00391506 /* TTGenerator.cpp in Sources */,
 				567685E92707D39F00391506 /* VariationInstance.cpp in Sources */,
-				567685ED2707D39F00391506 /* mathutils.cpp in Sources */,
+				567685ED2707D39F00391506 /* MathUtils.cpp in Sources */,
 				567685EF2707D39F00391506 /* TTFont.cpp in Sources */,
 				567685F72707D39F00391506 /* vttcompile.cpp in Sources */,
-				567685EB2707D39F00391506 /* list.cpp in Sources */,
+				567685EB2707D39F00391506 /* List.cpp in Sources */,
 				567685EC2707D39F00391506 /* VariationModels.cpp in Sources */,
 				567685F62707D39F00391506 /* TTEngine.cpp in Sources */,
 				567685EE2707D39F00391506 /* TextBuffer.cpp in Sources */,
-				567685EA2707D39F00391506 /* ttassembler.cpp in Sources */,
+				567685EA2707D39F00391506 /* TTAssembler.cpp in Sources */,
 				567685F22707D39F00391506 /* Memory.cpp in Sources */,
 				567685F42707D39F00391506 /* TMTParser.cpp in Sources */,
 				567685E82707D39F00391506 /* Platform.cpp in Sources */,
-				567685F32707D39F00391506 /* cvtmanager.cpp in Sources */,
+				567685F32707D39F00391506 /* CvtManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
