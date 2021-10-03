@@ -143,41 +143,41 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\cvtmanager.cpp" />
+    <ClCompile Include="..\src\CvtManager.cpp" />
     <ClCompile Include="..\src\File.cpp" />
-    <ClCompile Include="..\src\list.cpp" />
-    <ClCompile Include="..\src\mathutils.cpp" />
+    <ClCompile Include="..\src\List.cpp" />
+    <ClCompile Include="..\src\MathUtils.cpp" />
     <ClCompile Include="..\src\Memory.cpp" />
     <ClCompile Include="..\src\Platform.cpp" />
     <ClCompile Include="..\src\TextBuffer.cpp" />
     <ClCompile Include="..\src\TMTParser.cpp" />
-    <ClCompile Include="..\src\ttassembler.cpp" />
+    <ClCompile Include="..\src\TTAssembler.cpp" />
     <ClCompile Include="..\src\TTEngine.cpp" />
     <ClCompile Include="..\src\TTFont.cpp" />
-    <ClCompile Include="..\src\ttgenerator.cpp" />
+    <ClCompile Include="..\src\TTGenerator.cpp" />
     <ClCompile Include="..\src\Variation.cpp" />
     <ClCompile Include="..\src\VariationInstance.cpp" />
     <ClCompile Include="..\src\VariationModels.cpp" />
     <ClCompile Include="..\src\vttcompile.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\cvtmanager.h" />
+    <ClInclude Include="..\src\CvtManager.h" />
     <ClInclude Include="..\src\File.h" />
     <ClInclude Include="..\src\FixedMath.h" />
     <ClInclude Include="..\src\getopt.h" />
-    <ClInclude Include="..\src\guidecorations.h" />
-    <ClInclude Include="..\src\list.h" />
-    <ClInclude Include="..\src\mathutils.h" />
+    <ClInclude Include="..\src\GUIDecorations.h" />
+    <ClInclude Include="..\src\List.h" />
+    <ClInclude Include="..\src\MathUtils.h" />
     <ClInclude Include="..\src\Memory.h" />
     <ClInclude Include="..\src\opentypedefs.h" />
     <ClInclude Include="..\src\pch.h" />
-    <ClInclude Include="..\src\platform.h" />
+    <ClInclude Include="..\src\Platform.h" />
     <ClInclude Include="..\src\TextBuffer.h" />
-    <ClInclude Include="..\src\tmtparser.h" />
-    <ClInclude Include="..\src\ttassembler.h" />
-    <ClInclude Include="..\src\ttengine.h" />
-    <ClInclude Include="..\src\ttfont.h" />
-    <ClInclude Include="..\src\ttgenerator.h" />
+    <ClInclude Include="..\src\TMTParser.h" />
+    <ClInclude Include="..\src\TTAssembler.h" />
+    <ClInclude Include="..\src\TTEngine.h" />
+    <ClInclude Include="..\src\TTFont.h" />
+    <ClInclude Include="..\src\TTGenerator.h" />
     <ClInclude Include="..\src\Variation.h" />
     <ClInclude Include="..\src\VariationInstance.h" />
     <ClInclude Include="..\src\VariationModels.h" />
