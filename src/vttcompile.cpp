@@ -509,14 +509,14 @@ int ShowUsage(wchar_t* strErr)
 	{
 		wprintf(L"ERROR: %s\n\n", strErr);
 	}
-	wprintf(L"USAGE: VTTShell [options] <in.ttf> [out.ttf] \n");
+	wprintf(L"USAGE: vttcompile [options] <in.ttf> [out.ttf] \n");
 	wprintf(L"\t-a compile everything \n");
 	wprintf(L"\t-gXXXX compile everything for glyph id (base 10) \n");
 	wprintf(L"\t-rXXXX compile everything for glyph range starting with glyph specified  \n\t       with -g up to and including glyph specified with -r \n ");
 	wprintf(L"\t-s strip source \n");
 	wprintf(L"\t-b strip source and hints \n");
 	wprintf(L"\t-c strip source, hints and cache tables \n");
-	wprintf(L"\t-q quite mode \n");
+	wprintf(L"\t-q quiet mode \n");
 	wprintf(L"\t-? this help message \n\n");
 	wprintf(L"\n");
 	return -1;
