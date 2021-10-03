@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\ttassembler.cpp">
+    <ClCompile Include="..\src\TTAssembler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\TTFont.cpp">
@@ -27,13 +27,13 @@
     <ClCompile Include="..\src\TextBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\cvtmanager.cpp">
+    <ClCompile Include="..\src\CvtManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\File.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\list.cpp">
+    <ClCompile Include="..\src\List.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\TMTParser.cpp">
@@ -42,7 +42,7 @@
     <ClCompile Include="..\src\TTEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\ttgenerator.cpp">
+    <ClCompile Include="..\src\TTGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\Area.cpp">
@@ -57,7 +57,7 @@
     <ClCompile Include="..\src\VariationModels.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\mathutils.cpp">
+    <ClCompile Include="..\src\MathUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src\vttcompile.cpp">
@@ -68,13 +68,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\ttassembler.h">
+    <ClInclude Include="..\src\TTAssembler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\ttfont.h">
+    <ClInclude Include="..\src\TTFont.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Memory.h">
@@ -86,22 +86,22 @@
     <ClInclude Include="..\src\TextBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\cvtmanager.h">
+    <ClInclude Include="..\src\CvtManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\File.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\list.h">
+    <ClInclude Include="..\src\List.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\tmtparser.h">
+    <ClInclude Include="..\src\TMTParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\ttengine.h">
+    <ClInclude Include="..\src\TTEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\ttgenerator.h">
+    <ClInclude Include="..\src\TTGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\VariationModels.h">
@@ -113,10 +113,10 @@
     <ClInclude Include="..\src\FixedMath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\guidecorations.h">
+    <ClInclude Include="..\src\GUIDecorations.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\platform.h">
+    <ClInclude Include="..\src\Platform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Area.h">
@@ -128,7 +128,7 @@
     <ClInclude Include="..\src\VariationInstance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\mathutils.h">
+    <ClInclude Include="..\src\MathUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\vttcompile.h">
