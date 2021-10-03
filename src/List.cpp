@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-#include "list.h"
+#include "List.h"
 
 ListMessage::ListMessage(void) {
 	this->type = -1; // say

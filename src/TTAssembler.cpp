@@ -21,7 +21,7 @@
 
 #include <stdio.h> /* for swprintf  */
 #include <string.h> /* for  wcslen */
-#include <Limits.h> /* for SHRT_MIN MAX */
+#include <limits.h> /* for SHRT_MIN MAX */
 #include "pch.h"
 
 #define SHORTMAX 32767
