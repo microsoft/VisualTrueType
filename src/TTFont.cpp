@@ -523,7 +523,7 @@ void CalculateXExtremum(long V0X, long V0Y, bool V0On, long V1X, long V1Y, long 
 #define QDiv(a,b) ((a) < 0 ? (-(((-(a)) + ((b)/2))/(b))) : (((a) + ((b)/2))/(b))) // divide and round
 
 quad QDiv2(quad a, quad b);
-quad QDiv2(quad a, quad b) { // special version that replaces ±epsilons by ±1, which is actually ±1/65536 since we're actually returning F48Dot16
+quad QDiv2(quad a, quad b) { // special version that replaces Â±epsilons by Â±1, which is actually Â±1/65536 since we're actually returning F48Dot16
 	quad q;
 
 	if (a < 0 != b < 0) {
@@ -591,7 +591,7 @@ void FQuadraticEqn(quad a, quad b, quad c, long* solutions, F48Dot16* t1, F48Dot
 long CurveTransitions(Vector V0, Vector V1, Vector W0, Vector W1, Vector W2);
 long CurveTransitions(Vector V0, Vector V1, Vector W0, Vector W1, Vector W2) {
 
-//	here we're intersecting a quadratic Bézier curve (W0, W1, W2) with a straight line (V0, V1).
+//	here we're intersecting a quadratic BÃ©zier curve (W0, W1, W2) with a straight line (V0, V1).
 //	for the two to intersect, and writing both intersectees in standard polynomial form, there must be parameters u and v such that
 //
 //		A.x*u^2 + B.x*u + C.x = D.x*v + E.x
@@ -611,14 +611,14 @@ long CurveTransitions(Vector V0, Vector V1, Vector W0, Vector W1, Vector W2) {
 //		(A.y*D.x - D.y*A.x)*u^2 + (B.y*D.x - D.y*B.x)*u + C.y*D.x - D.y*C.x - E.y*D.x + D.y*E.x = 0
 //
 //	which is a single quadratic eqn. in u with 0 thru 2 solutions obtained "the usual way".
-//	solutions must be in the interval ]0,1] to make sure we only accept intersections of the actual Bézier segment
-//	and we don't count start/end points twice by including them in adjacent Bézier segments as well (cf. also ColorTransitions above)
+//	solutions must be in the interval ]0,1] to make sure we only accept intersections of the actual BÃ©zier segment
+//	and we don't count start/end points twice by including them in adjacent BÃ©zier segments as well (cf. also ColorTransitions above)
 
 	Vector A,B,C,D,E;
 	long i,solutions,transitions;
 	quad u[2],vd;
 
-//	re-write Bézier curve in polynomial form
+//	re-write BÃ©zier curve in polynomial form
 //	W0*(1-u)^2 + 2*W1*(1-u)*u + W2*u^2 = W0*(1 - 2*u + u^2) + 2*W1*(u - u^2) + W2*u^2 = 
 //	(W0 - 2*W1 + W2)*u^2 + 2*(W1 - W0)*u + W0
 	A = AddV(SubV(W0,ShlV(W1,1)),W2);
@@ -626,7 +626,7 @@ long CurveTransitions(Vector V0, Vector V1, Vector W0, Vector W1, Vector W2) {
 	C = W0;
 
 //	re-write Line in polynomial form
-//	(V1 - V0)*v + V0, which follows immediately from the "first degree" Bézier "curve" V0*(1-u) + V1*u
+//	(V1 - V0)*v + V0, which follows immediately from the "first degree" BÃ©zier "curve" V0*(1-u) + V1*u
 	D = SubV(V1,V0);
 	E = V0;
 
@@ -652,7 +652,7 @@ long CurveTransitions(Vector V0, Vector V1, Vector W0, Vector W1, Vector W2) {
 long CurveTransitions(Vector V0, Vector V1, Vector W0, Vector W1, Vector W2);
 long CurveTransitions(Vector V0, Vector V1, Vector W0, Vector W1, Vector W2) {
 
-//	here we're intersecting a quadratic Bézier curve (W0, W1, W2) with a straight line (V0, V1).
+//	here we're intersecting a quadratic BÃ©zier curve (W0, W1, W2) with a straight line (V0, V1).
 //	for the two to intersect, and writing both intersectees in standard polynomial form, there must be parameters u and v such that
 //
 //		A.x*u^2 + B.x*u + C.x = D.x*v + E.x
@@ -672,14 +672,14 @@ long CurveTransitions(Vector V0, Vector V1, Vector W0, Vector W1, Vector W2) {
 //		(A.y*D.x - D.y*A.x)*u^2 + (B.y*D.x - D.y*B.x)*u + C.y*D.x - D.y*C.x - E.y*D.x + D.y*E.x = 0
 //
 //	which is a single quadratic eqn. in u with 0 thru 2 solutions obtained "the usual way".
-//	solutions must be in the interval ]0,1] to make sure we only accept intersections of the actual Bézier segment
-//	and we don't count start/end points twice by including them in adjacent Bézier segments as well (cf. also ColorTransitions above)
+//	solutions must be in the interval ]0,1] to make sure we only accept intersections of the actual BÃ©zier segment
+//	and we don't count start/end points twice by including them in adjacent BÃ©zier segments as well (cf. also ColorTransitions above)
 
 	Vector A,B,C,D,E;
 	long i,solutions,transitions;
 	double u[2],vd;
 
-//	re-write Bézier curve in polynomial form
+//	re-write BÃ©zier curve in polynomial form
 //	W0*(1-u)^2 + 2*W1*(1-u)*u + W2*u^2 = W0*(1 - 2*u + u^2) + 2*W1*(u - u^2) + W2*u^2 = 
 //	(W0 - 2*W1 + W2)*u^2 + 2*(W1 - W0)*u + W0
 	A = AddV(SubV(W0,ShlV(W1,1)),W2);
@@ -687,7 +687,7 @@ long CurveTransitions(Vector V0, Vector V1, Vector W0, Vector W1, Vector W2) {
 	C = W0;
 
 //	re-write Line in polynomial form
-//	(V1 - V0)*v + V0, which follows immediately from the "first degree" Bézier "curve" V0*(1-u) + V1*u
+//	(V1 - V0)*v + V0, which follows immediately from the "first degree" BÃ©zier "curve" V0*(1-u) + V1*u
 	D = SubV(V1,V0);
 	E = V0;
 
@@ -842,7 +842,7 @@ bool TrueTypeGlyph::Misoriented(short contour) {
 				on[2] = this->onCurve[knot];
 				switch ((long)on[1] << 1 | (long)on[2]) {
 					case 3: // on---on => start and end a line => intersect with line
-						if (NotSameKnot(W[1],W[2])) parity += CurveTransitions(C[0],C[1],W[1],W[1],W[2]); // repeating first vertex makes Bézier curve a line...
+						if (NotSameKnot(W[1],W[2])) parity += CurveTransitions(C[0],C[1],W[1],W[1],W[2]); // repeating first vertex makes BÃ©zier curve a line...
 						break;
 					case 2: // on---off => start a curve => intersect with nothing
 						W[0] = W[1];
