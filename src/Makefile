@@ -8,8 +8,12 @@ CXXFLAGS = -fpermissive -finput-charset=cp1251
 
 .cpp.o :
 
+.PHONY : clean
+
 default: vttcompile
 
 vttcompile: $(OBJS)
 	$(CXX) -o $@ $^
 
+clean :
+	$(RM) $(OBJS) vttcompile vttcompile.exe
