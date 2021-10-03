@@ -5,8 +5,12 @@ VariationInstance.o VariationModels.o vttcompile.o
 
 .cpp.o :
 
+.PHONY : clean
+
 default: vttcompile
 
 vttcompile: $(OBJS)
 	$(CXX) -o $@ $^
 
+clean :
+	$(RM) $(OBJS) vttcompile vttcompile.exe
