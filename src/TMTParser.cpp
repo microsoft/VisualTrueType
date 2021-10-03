@@ -1269,11 +1269,11 @@ void TMTSourceParser::XFormToNewSyntax(void) {
 			if (old[s] == L'/') { // italic angle
 				neu[d++] = old[s]; 
 				old[s++] = L' ';
-			} else if (old[s] == L'¯') { // adjusted italic angle
+			} else if (old[s] == 0xAF) { // adjusted italic angle
 				neu[d++] = L'/';
 				neu[d++] = L'/';
 				old[s++] = L' ';
-			} else if (old[s] == L'¨') { // post round
+			} else if (old[s] == 0xA8) { // post round
 				neu[d++] = L'$';
 				old[s++] = L' ';
 			} else {
@@ -1301,7 +1301,7 @@ void TMTSourceParser::XFormToNewSyntax(void) {
 		}
 		s = 0;
 		while (s < l) {
-			if (old[s] == L'<' || old[s] == L'³') { // "<" or "â‰¥12" or "â‰¥(12,@2,24)"
+			if (old[s] == L'<' || old[s] == 0xB3) { // "<" or "â‰¥12" or "â‰¥(12,@2,24)"
 				neu[d++] = L',';
 				if (old[s] == L'<')
 					neu[d++] = old[s];
@@ -2046,7 +2046,7 @@ void TMTSourceParser::GetSym(void) {
 			case L')':	this->sym = rightParen;	this->GetCh(); break;
 			case L']':	this->sym = rightParen; this->GetCh(); this->ReplAtCurrPos(1,L")"); break;
 
-			case L'³':	this->sym = atLeast;	this->GetCh(); this->ReplAtCurrPos(1,L">="); break; // replace Mac special char
+			case 0xB3:	this->sym = atLeast;	this->GetCh(); this->ReplAtCurrPos(1,L">="); break; // replace Mac special char
 			case L'+':	this->sym = plus;		this->GetCh(); break;
 			case L'-':	this->sym = minus;		this->GetCh(); break;
 			case L'*':	this->sym = timeS;		this->GetCh(); break;
@@ -2103,9 +2103,9 @@ void TMTSourceParser::GetSym(void) {
 					this->sym = illegal;
 				}
 				break;
-			case L'¯':	this->sym = adjItalAngle; this->GetCh(); this->ReplAtCurrPos(1,L"//"); break; // replace Mac special char
+			case 0xAF:	this->sym = adjItalAngle; this->GetCh(); this->ReplAtCurrPos(1,L"//"); break; // replace Mac special char
 			case L'$':	this->sym = postRound;	  this->GetCh(); break;
-			case L'¨':	this->sym = postRound;	  this->GetCh(); this->ReplAtCurrPos(1,L"$"); break; // replace Mac special char
+			case 0xA8:	this->sym = postRound;	  this->GetCh(); this->ReplAtCurrPos(1,L"$"); break; // replace Mac special char
 			case L'"':	this->GetLiteral();	break;
 			case L'.':
 				this->GetCh();
