@@ -17,6 +17,9 @@
 #include <locale>
 
 #include "TextBuffer.h"
+#ifndef _WIN32
+#define swprintf(wcs, ...) swprintf(wcs, 1024, __VA_ARGS__)
+#endif
 
 #ifndef	Min
 	#define Min(a,b)	((a) < (b) ? (a) : (b))
