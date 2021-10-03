@@ -1301,7 +1301,7 @@ void TMTSourceParser::XFormToNewSyntax(void) {
 		}
 		s = 0;
 		while (s < l) {
-			if (old[s] == L'<' || old[s] == L'³') { // "<" or "³12" or "³(12,@2,24)"
+			if (old[s] == L'<' || old[s] == L'³') { // "<" or "â‰¥12" or "â‰¥(12,@2,24)"
 				neu[d++] = L',';
 				if (old[s] == L'<')
 					neu[d++] = old[s];
@@ -1310,14 +1310,14 @@ void TMTSourceParser::XFormToNewSyntax(void) {
 					neu[d++] = L'=';
 				}
 				old[s++] = L' ';
-				if (s < l && old[s] == L'(') { // "³(12,@2,24)"
+				if (s < l && old[s] == L'(') { // "â‰¥(12,@2,24)"
 					neu[d++] = old[s]; old[s++] = L' '; // '('
 					while (s < l-1 && old[s] != L',') { neu[d++] = old[s]; old[s++] = L' '; }
 					neu[d++] = old[s]; old[s++] = L' '; // ','
 					neu[d++] = L'@';
 					while (s < l-1 && old[s] != L')') { neu[d++] = old[s]; old[s++] = L' '; }
 					neu[d++] = old[s]; old[s++] = L' '; // ')'
-				} else { // "³12"
+				} else { // "â‰¥12"
 					while (s < l && (L'0' <= old[s] && old[s] <= L'9' || old[s] == L'.')) { neu[d++] = old[s]; old[s++] = L' '; }
 				}
 			} else {

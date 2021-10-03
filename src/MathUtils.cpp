@@ -273,7 +273,7 @@ bool Collinear(const Vector v, const Vector p, const Vector V, Collinearity c) {
 	
 	if (n*(V.y-v.y) != d*(p.y-v.y)) return false; // not collinear
 	switch (c) {
-        case notOutside: return (Sgn(n) == Sgn(d) && 0 < N && N < D) || (p.x == v.x && p.y == v.y) || (p.x == V.x && p.y == V.y); // 0 ² t ² 1
+        case notOutside: return (Sgn(n) == Sgn(d) && 0 < N && N < D) || (p.x == v.x && p.y == v.y) || (p.x == V.x && p.y == V.y); // 0 â‰¤ t â‰¤ 1
 		case inside:	 return Sgn(n) == Sgn(d) && 0 < N && N < D; // 0 < t < 1
 		default:		 return true;
 	}
