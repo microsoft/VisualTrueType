@@ -6,7 +6,7 @@
 
 #include <stdio.h> // swprintf
 #include <stdlib.h>
-#include "memory.h"
+#include "Memory.h"
 
 void *NewP(size_t bytes) {	
 	void *ptr = malloc(bytes);	
