@@ -21,7 +21,6 @@
 #include <codecvt>
 #include <span>
 
-#include "Area.h"
 #include "opentypedefs.h"
 #include "Platform.h"
 #include "FixedMath.h"
