@@ -19,7 +19,6 @@
 #include <deque>
 #include <climits>
 #include <codecvt>
-#include <span>
 #include <cmath>
 
 #include "Area.h"
