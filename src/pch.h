@@ -20,6 +20,7 @@
 #include <climits>
 #include <codecvt>
 #include <span>
+#include <cmath>
 
 #include "opentypedefs.h"
 #include "Platform.h"
