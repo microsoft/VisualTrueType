@@ -3,9 +3,6 @@ Area.o CvtManager.o File.o List.o MathUtils.o Memory.o Platform.o TextBuffer.o \
 TMTParser.o TTAssembler.o TTEngine.o TTFont.o TTGenerator.o Variation.o \
 VariationInstance.o VariationModels.o vttcompile.o
 
-# TTFont.cpp needs -fpermissive
-CXXFLAGS = -fpermissive
-
 .cpp.o :
 
 .PHONY : clean
