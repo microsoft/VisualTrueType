@@ -2278,7 +2278,7 @@ bool  TrueTypeFont::MergePrivateCvarWithInstanceManager(const TSICHeader &header
 						highestCvt = std::max(cvt, highestCvt);
 
 					instance.editedCvtValues.clear(); 
-					instance.editedCvtValues.resize(highestCvt + 1, Variation::EditedCvtValue::EditedCvtValue());
+					instance.editedCvtValues.resize(highestCvt + 1, Variation::EditedCvtValue());
 
 					for (uint16_t recordArrayIndex = 0; recordArrayIndex < record.cvts.size(); recordArrayIndex++)
 					{
@@ -2316,7 +2316,7 @@ bool  TrueTypeFont::MergePrivateCvarWithInstanceManager(const TSICHeader &header
 				for (const auto & cvt : record.cvts)
 					highestCvt = std::max(cvt, highestCvt);
 
-				instance.editedCvtValues.resize(highestCvt + 1, Variation::EditedCvtValue::EditedCvtValue());
+				instance.editedCvtValues.resize(highestCvt + 1, Variation::EditedCvtValue());
 
 				for (uint16_t recordArrayIndex = 0; recordArrayIndex < record.cvts.size(); recordArrayIndex++)
 				{
