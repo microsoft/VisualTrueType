@@ -512,8 +512,8 @@ void TTSourceEngine::AssertMinDist(short minDists, short jumpPpemSize[], F26Dot6
 				this->Emit( L"#BEGIN");											// but current minDist is pixelSize[1]
 				swprintf(buf,L"SMD[], %li",pixelSize[0]); this->Emit(buf);		// hence use pixelSize[0] instead
 			} else if (this->minDist == pixelSize[0]) {
-				swprintf(buf,L"LTEQ[], %hi, *",jumpPpemSize[1]); this->Emit(buf);	// [TOS](= jumpPpemSize[1]) ² [TOS-1](= MPPEM[]) ?
-				this->Emit( L"IF[], *");											// MPPEM[] ³ jumpPpemSize[1]
+				swprintf(buf,L"LTEQ[], %hi, *",jumpPpemSize[1]); this->Emit(buf);	// [TOS](= jumpPpemSize[1]) ≤ [TOS-1](= MPPEM[]) ?
+				this->Emit( L"IF[], *");											// MPPEM[] ≥ jumpPpemSize[1]
 				this->Emit( L"#BEGIN");											// but current minDist is pixelSize[0]
 				swprintf(buf,L"SMD[], %li",pixelSize[1]); this->Emit(buf);		// use pixelSize[1] instead
 			} else {

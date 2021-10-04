@@ -543,7 +543,7 @@ void TTSourceGenerator::Link(bool y, bool dist, ProjFreeVector *projFreeVector, 
 	if (this->tt) this->AssertFreeProjVector(&projFreeVector->pv,&projFreeVector->fv[0]);
 		
 	scalProd = linkDirection.x*this->slope.x + linkDirection.y*this->slope.y;
-	if (parentR == childR && !lsbLink && !rsbLink && (distance == 0 || italicLink && scalProd > this->cosF1)) { // angle between link and slope < 0.5¡
+	if (parentR == childR && !lsbLink && !rsbLink && (distance == 0 || italicLink && scalProd > this->cosF1)) { // angle between link and slope < 0.5°
 		if (this->tt) {
 			this->tt->AssertRefPoint(0,parent);
 		//	ALIGNRP is less optimal than (but equivalent to) an unrounded MDRP, since for chains of Dists,
@@ -844,7 +844,7 @@ void TTSourceGenerator::Intersect(short intersection, short line0start, short li
 	}
 } // TTSourceGenerator::Intersect
 
-bool ClassifyAlign(Vector parent0, Vector child, Vector parent1, short ppem) { // within rectangular hull of ±0.5¡ from "parent line"?
+bool ClassifyAlign(Vector parent0, Vector child, Vector parent1, short ppem) { // within rectangular hull of ±0.5° from "parent line"?
 	double tanAlignTolerance;
 	Vector p,q;
 	long pq,p2;
@@ -2199,7 +2199,7 @@ void TTSourceGenerator::AssertVectorsAtPotentialJunction(TTVector pv, short pare
 	
 	this->tt->AssertTTVonLine(pv,parent0,parent1,this->V[parent0],this->V[parent1],true);
 	deltaAngle = this->attrib[child].deltaAngle;
-	if (-noJunction <= deltaAngle && deltaAngle <= +noJunction) { // we make a turn within ±noJunction¡ => align "perpendicularly" to "parent line"
+	if (-noJunction <= deltaAngle && deltaAngle <= +noJunction) { // we make a turn within ±noJunction° => align "perpendicularly" to "parent line"
 		// for CompilerLogic(1) this used to choose among x-axis or y-axis, whichever is closer to the parent line...
 		this->tt->AssertFVonPV();
 	} else { // assume it is a junction of some kind, align "parallel" to joining line
