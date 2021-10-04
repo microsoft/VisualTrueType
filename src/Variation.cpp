@@ -178,7 +178,7 @@ bool CVTVariationInterpolator1::ReverseInterpolate(const std::vector<int16_t> &d
 			if (deltas[j] != 0)
 			{
 				tuples[tupleIndex]->cvt.push_back(j);
-				tuples[tupleIndex]->delta.push_back(static_cast<int16_t>(std::lround(deltas[j])));
+				tuples[tupleIndex]->delta.push_back(static_cast<int16_t>(std::roundf(deltas[j])));
 			}
 		}
 	}
