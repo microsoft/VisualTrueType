@@ -1,0 +1,40 @@
+body {
+	/* font-family: "Century Schoolbook"; */
+	font-size: 9pt;
+	padding: 2cm 1cm 1.5cm 2cm;
+	line-height: 1.45em;
+}
+
+p {
+	margin: 0 0 1.45em 0;
+}
+
+table {
+	font-size: 7.5pt;
+	border-top: 1px solid #000;
+	border-bottom: 1px solid #000;
+}
+
+td, th {
+	text-align: left;
+	vertical-align: top;
+	padding: 0.15em 1.5em 0.15em 0;
+}
+
+th {
+	border-bottom: 1px solid #000;
+}
+
+td p, th p {
+	margin: 0;
+	line-height: 1.35em;
+}
+
+a:link, a:visited {
+	text-decoration: none;
+	color: #000;
+}
+
+.hint-caps {
+	letter-spacing: 0.05em;
+}
