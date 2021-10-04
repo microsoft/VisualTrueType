@@ -1,0 +1,2159 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>VTT Language Reference</title>
+		<link rel="stylesheet" href="doc.css" type="text/css" media="all, print" charset="utf-8">
+		<link rel="stylesheet" href="doc-print.css" type="text/css" media="print" charset="utf-8">
+		<meta charset="UTF-8">
+	</head>
+	<body>
+		<h1>VTT Language Reference</h1>
+		<h2>Contents</h2>
+		<ul>
+			<li><a href="#intro">Introduction</a></li>
+			<li><a href="#summary"><span class="hint-caps">VTT</span> Talk Command Summary</a></li>
+			<li><a href="#reference">Command Reference</a>
+				<ul>
+					<li><a href="#flags">General Flags and Parameters</a></li>
+					<li><a href="#conventions">Syntactical Conventions</a></li>
+					<li><a href="#comments">Comments in <span class="hint-caps">VTT</span></a></li>
+				</ul>
+			</li>
+			<li><a href="#cmds"><span class="hint-caps">VTT</span> Talk Commands</a></li>
+			<li><a href="#appendix_a">Appendix A: <span class="hint-caps">VTT</span> Talk Compiler Error Messages</a></li>
+			<li><a href="#appendix_b">Appendix B: The TrueType Compiler</a>
+				<ul>
+					<li><a href="#tt_inst_syntax">TrueType Instruction Syntax</a></li>
+					<li><a href="#push">The Push Command</a>
+						<ul>
+							<li><a href="#auto_push">Automatic Pre-Push</a></li>
+							<li><a href="#push_op">Push Optimization</a></li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+
+		<section>
+			<h1 id="intro">Introduction</h1>
+
+			<p>Visual TrueType Talk (<span class="hint-caps">VTT</span> Talk) is a high-level programming language that can be used to hint TrueType outlines. <span class="hint-caps">VTT</span> Talk commands are compiled by Visual TrueType into lower level code that is inserted into the hinted font.</p>
+
+			<p>This Language Reference assumes you have previous hinting experience and are familiar with Visual TrueType. Form more information about using Visual TrueType to enter and compile <span class="hint-caps">VTT</span> Talk, see the <em>Visual TrueType User Guide.</em></p>
+
+			<p>Visual TrueType can also be used to create and edit low-level TrueType instructions. This User’s Guide contains an appendix covering syntactical requirements for low-level commands as entered in <span class="hint-caps">VTT</span>. The commands themselves are discussed in depth in the <em>OpenType Font File Specification.</em></p>
+		</section>
+
+		<section>
+			<h1 id="summary"><span class="hint-caps">VTT</span> Talk Command Summary</h1>
+
+			<table>
+				<tr>
+					<th><p>Command</p></th>
+					<th><p>Abbrev</p></th>
+					<th><p>Type</p></th>
+					<th><p>Description</p></th>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_ALIGN">ALIGN</a></p></td>
+					<td><p class="hint-caps">AL</p></td>
+					<td><p>Action</p></td>
+					<td><p>Realign child points with hinted parent points</p></td>
+				</tr>
+				<tr>
+					<td><p><a href="#cmd_ASM">ASM</a></p></td>
+					<td><p>AS</p></td>
+					<td><p>Action</p></td>
+					<td><p>Low-level (TrueType) instructions embedded within <span class="hint-caps">VTT</span> Talk</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_DSTROKE">DSTROKE</a></p></td>
+					<td><p class="hint-caps">DS</p></td>
+					<td><p>Action</p></td>
+					<td><p>Control width of diagonal stroke</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_FIXDSTROKES">FIXDSTROKES</a></p></td>
+					<td><p class="hint-caps">F</p></td>
+					<td><p>Action</p></td>
+					<td><p>Touches untouched points on a diagonal feature</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_GRABHEREINX">GRABHEREINX</a></p></td>
+					<td><p class="hint-caps">G</p></td>
+					<td><p>Informative</p></td>
+					<td><p>Control sidebearing space at small sizes</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_HEIGHT">HEIGHT</a></p></td>
+					<td><p class="hint-caps">H</p></td>
+					<td><p>Informative</p></td>
+					<td><p>Set height of point to specified <span class="hint-caps">CVT</span> value</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_INTERSECT">INTERSECT</a></p></td>
+					<td><p class="hint-caps">IN</p></td>
+					<td><p>Action</p></td>
+					<td><p>Ensure a point goes exactly at intersection</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_ISTROKE">ISTROKE</a></p></td>
+					<td><p class="hint-caps">IS</p></td>
+					<td><p>Action</p></td>
+					<td><p>Control width of italic stroke with serifs</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_MAINSTROKEANGLE">MAINSTROKEANGLE</a></p></td>
+					<td><p class="hint-caps">M</p></td>
+					<td><p>Informative</p></td>
+					<td><p>Identify angle of the main stroke</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_QUIT">QUIT</a></p></td>
+					<td><p class="hint-caps">Q</p></td>
+					<td><p></p></td>
+					<td><p>Protect alterations made in the low-level language</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_SCOOP">SCOOP</a></p></td>
+					<td><p class="hint-caps">SC</p></td>
+					<td><p>Action</p></td>
+					<td><p>Control the shape of a shallow curve</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_SERIF">SERIF</a></p></td>
+					<td><p class="hint-caps">SE</p></td>
+					<td><p>Action</p></td>
+					<td><p>Controls a serif shape</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_SETITALICSTROKEANGLE">SETITALICSTROKEANGLE</a></p></td>
+					<td><p class="hint-caps">SETITALICSTROKEA</p></td>
+					<td><p>Informative</p></td>
+					<td><p>Specifies the italic stroke angle</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_SETITALICSTROKEPHASE">SETITALICSTROKEPHASE</a></p></td>
+					<td><p class="hint-caps">SETITALICSTROKEP</p></td>
+					<td><p>Informative</p></td>
+					<td><p>Specifies the italic stroke phase</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_SMOOTH">SMOOTH</a></p></td>
+					<td><p class="hint-caps">SM</p></td>
+					<td><p>Action</p></td>
+					<td><p>Smooth the curve</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_STROKE">STROKE</a></p></td>
+					<td><p class="hint-caps">ST</p></td>
+					<td><p>Informative or Action</p></td>
+					<td><p>Identify feature as stroke if horizontal or vertical. Control stroke if diagonal</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_VACUFORMROUND">VACUFORMROUND</a></p></td>
+					<td><p class="hint-caps">VACUFORMR</p></td>
+					<td><p>Action</p></td>
+					<td><p>Ensures that single pixel curves remain single pixel</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_VACUFORMLIMIT">VACUFORMLIMIT</a></p></td>
+					<td><p class="hint-caps">VACUFORML</p></td>
+					<td><p>Informative</p></td>
+					<td><p>Restricts size at which <span class="hint-caps">VACUFORMROUND</span> will be used</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_XANCHOR">XANCHOR</a></p></td>
+					<td><p class="hint-caps">XA</p></td>
+					<td><p>Action</p></td>
+					<td><p>Round and position point in x direction</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_XDELTA">XDELTA</a></p></td>
+					<td><p class="hint-caps">XDE</p></td>
+					<td><p>Action</p></td>
+					<td><p>At a specified ppem, move point in x direction</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_XDIST">XDIST</a></p></td>
+					<td><p class="hint-caps">XDI</p></td>
+					<td><p>Action</p></td>
+					<td><p>Controls horizontal distance between two specified points</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_XDOUBLEGRID">XDOUBLEGRID</a></p></td>
+					<td><p class="hint-caps">XDOU</p></td>
+					<td><p>Informative</p></td>
+					<td><p>Causes subsequent <span class="hint-caps">LINK</span> or <span class="hint-caps">ANCHOR</span> command to move outline to either the vertical pixel boundary or halfway between vertical pixel boundaries</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_XDOWNTOGRID">XDOWNTOGRID</a></p></td>
+					<td><p class="hint-caps">XDOW</p></td>
+					<td><p>Informative</p></td>
+					<td><p>Causes subsequent <span class="hint-caps">LINK</span> or <span class="hint-caps">ANCHOR</span> command to move outline left to nearest grid line</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_XHALFGRID">XHALFGRID</a></p></td>
+					<td><p class="hint-caps">XH</p></td>
+					<td><p>Informative</p></td>
+					<td><p>Causes subsequent <span class="hint-caps">LINK</span> or <span class="hint-caps">ANCHOR</span> command to move outline midway between vertical pixel boundaries</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_XINTERPOLATE">XINTERPOLATE</a></p></td>
+					<td><p class="hint-caps">XIN</p></td>
+					<td><p>Action</p></td>
+					<td><p>Interpolate points in the x direction</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_XIPANCHOR">XIPANCHOR</a></p></td>
+					<td><p class="hint-caps">XIP</p></td>
+					<td><p>Action</p></td>
+					<td><p>Interpolate point position then round to grid in x</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_XLINK">XLINK</a></p></td>
+					<td><p class="hint-caps">XL</p></td>
+					<td><p>Action</p></td>
+					<td><p>Regularize horizontal distance between two points</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_XMOVE">XMOVE</a></p></td>
+					<td><p class="hint-caps">XM</p></td>
+					<td><p>Action</p></td>
+					<td><p>Move points horizontally a specified number of pixels</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_XROUND">XROUND</a></p></td>
+					<td><p class="hint-caps">XR</p></td>
+					<td><p>Informative</p></td>
+					<td><p>Identify a round x feature</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_XSHIFT">XSHIFT</a></p></td>
+					<td><p class="hint-caps">XSH</p></td>
+					<td><p>Action</p></td>
+					<td><p>Horizontally shift specified points the same distance as a parent point</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_XSTROKE">XSTROKE</a></p></td>
+					<td><p class="hint-caps">XST</p></td>
+					<td><p>Informative</p></td>
+					<td><p>Identify feature as a vertical stroke</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_XUPTOGRID">XUPTOGRID</a></p></td>
+					<td><p class="hint-caps">XU</p></td>
+					<td><p>Informative</p></td>
+					<td><p>Causes subsequent <span class="hint-caps">LINK</span> or <span class="hint-caps">ANCHOR</span> command to move outline right to nearest vertical gridline</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_YANCHOR">YANCHOR</a></p></td>
+					<td><p class="hint-caps">YA</p></td>
+					<td><p>Action</p></td>
+					<td><p>Round and position point in y direction</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_YDELTA">YDELTA</a></p></td>
+					<td><p class="hint-caps">YD</p></td>
+					<td><p>Action</p></td>
+					<td><p>At a specified ppem, move point in y direction</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_YDIST">YDIST</a></p></td>
+					<td><p class="hint-caps">YDI</p></td>
+					<td><p>Action</p></td>
+					<td><p>Controls vertical distance between two specified points</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_YDOUBLEGRID">YDOUBLEGRID</a></p></td>
+					<td><p class="hint-caps">YDOU</p></td>
+					<td><p>Informative</p></td>
+					<td><p>Causes subsequent <span class="hint-caps">LINK</span> or <span class="hint-caps">ANCHOR</span> command to move outline to either the horizontal pixel boundary or halfway between horizontal pixel boundaries</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_YDOWNTOGRID">YDOWNTOGRID</a></p></td>
+					<td><p class="hint-caps">YDOW</p></td>
+					<td><p>Informative</p></td>
+					<td><p>Causes subsequent <span class="hint-caps">LINK</span> or <span class="hint-caps">ANCHOR</span> command to move outline down to nearest horizontal grid line</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_YHALFGRID">YHALFGRID</a></p></td>
+					<td><p class="hint-caps">YH</p></td>
+					<td><p>Informative</p></td>
+					<td><p>Causes subsequent <span class="hint-caps">LINK</span> or <span class="hint-caps">ANCHOR</span> command to move outline midway between horizontal pixel boundaries</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_YINTERPOLATE">YINTERPOLATE</a></p></td>
+					<td><p class="hint-caps">YI</p></td>
+					<td><p>Action</p></td>
+					<td><p>Interpolate points in the y direction</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_YIPANCHOR">YIPANCHOR</a></p></td>
+					<td><p class="hint-caps">YIP</p></td>
+					<td><p>Action</p></td>
+					<td><p>Interpolate point position then round to grid in y</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_YLINK">YLINK</a></p></td>
+					<td><p class="hint-caps">YL</p></td>
+					<td><p>Action</p></td>
+					<td><p>Regularize vertical distance between two points</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_YMOVE">YMOVE</a></p></td>
+					<td><p class="hint-caps">YM</p></td>
+					<td><p>Action</p></td>
+					<td><p>Move points vertically the specified number of pixels</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_YROUND">YROUND</a></p></td>
+					<td><p class="hint-caps">YR</p></td>
+					<td><p>Informative</p></td>
+					<td><p>Identify a round y feature</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_YSHIFT">YSHIFT</a></p></td>
+					<td><p class="hint-caps">YSH</p></td>
+					<td><p>Action</p></td>
+					<td><p>Vertically shift specified points the same distance as a parent point</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_YSTROKE">YSTROKE</a></p></td>
+					<td><p class="hint-caps">YST</p></td>
+					<td><p>Informative</p></td>
+					<td><p>Identify feature as a horizontal stroke</p></td>
+				</tr>
+				<tr>
+					<td><p class="hint-caps"><a href="#cmd_YUPTOGRID">YUPTOGRID</a></p></td>
+					<td><p class="hint-caps">YU</p></td>
+					<td><p>Informative</p></td>
+					<td><p>Causes subsequent <span class="hint-caps">LINK</span> or <span class="hint-caps">ANCHOR</span> command to move outline up to nearest horizontal gridline</p></td>
+				</tr>
+			</table>
+		</section>
+
+
+		<section>
+			<h1 id="reference">Command Reference</h1>
+
+
+			<h2 id="flags">General Flags and Parameters</h2>
+
+			<p>A number of flags and parameters are common to many <span class="hint-caps">VTT</span> Talk commands. The following flags appearing in the Language Reference section are defined here:</p>
+
+
+			<h3>AngleFlags</h3>
+			
+			<p>AngleFlags specify whether the italic angle or adjusted italic angle should be used:</p>
+
+			<table>
+				<tr>
+					<td><p>/</p></td>
+					<td><p>(forward slash) specifies the <strong>italic angle,</strong> which is computed from the <strong>italic_run</strong> control value.</p></td>
+				</tr>
+				<tr>
+					<td><p>Ø</p></td>
+					<td><p>(Shift-Option-O) specifies the <strong>adjusted italic angle,</strong> which is the italic angle adjusted so that the endpoints of the stroke fall on the grid. This causes the rise and run values of the slope to be integral.</p></td>
+				</tr>
+			</table>					
+
+
+			<h3>ControlFlags</h3>
+
+			<p>Control Flags (&gt; and &lt;)specify which points defining a feature should be stationary, and which points are allowed to float. The point on the open side of the bracket is stationary. For example:</p>
+
+			<p>COMMAND_NAME >> (point1, point2, point3, point4)</p>
+
+			<p>The first bracket affects point pair point1-point2, the second bracket affects point pair point3-point4. The example above can be thought of as “point1 > point2, point3 > point4”. Point1 and point3 are stationary, point2 and point4 are allowed to float.</p>
+
+
+			<h3>MinimumDistance</h3>
+
+			<p>The MinimumDistance flag specifies the minimum distance of a feature in pixels. This flag can be used with or without parameters, depending on the distance you are specifying. The distance can be in fractional pixels.</p>
+
+			<table>
+				<tr>
+					<td><p>&lt;</p></td>
+					<td><p>no minimum distance required</p></td>
+				</tr>
+				<tr>
+					<td><p>>=</p></td>
+					<td><p>maintain a minimum distance of one pixel</p></td>
+				</tr>
+				<tr>
+					<td><p>>=n</p></td>
+					<td><p>maintain a minimum distance of n pixels</p></td>
+				</tr>
+				<tr>
+					<td><p>>=(n, ppem, n2)</p></td>
+					<td><p>maintain a minimum distance of <em>n</em> pixels until size <em>ppem,</em> then use a minimum distance of <em>n2</em> pixels for size <em>ppem</em> and greater. <em>n</em> and <em>n2</em> can be fractional values.</p></td>
+				</tr>
+			</table>
+
+
+			<h2 id="conventions">Syntactical Conventions</h2>
+
+			<p>This command reference uses the following conventions for expressing syntax:</p>
+
+			<p>COMMAND_NAME (<strong>value</strong> [,value] [,value]...)</p>
+
+			<table>
+				<tr>
+					<td><p><strong>value</strong></p></td>
+					<td><p>required argument</p></td>
+				</tr>
+				<tr>
+					<td><p>[,value]</p></td>
+					<td><p>optional argument</p></td>
+				</tr>
+				<tr>
+					<td><p>[,value]...</p></td>
+					<td><p>optional repeated argument</p></td>
+				</tr>
+			</table>
+
+			<p>Values may be point numbers, control value numbers, or other identifiers, as well as actual values. When the behavior of points is dependant on the behavior of other points listed, the points are sometimes referred to as parent and child.</p>
+
+			<p>Command abbreviations listed are expanded when you compile the <span class="hint-caps">VTT</span> Talk for the glyph.</p>
+
+			<p>To make your <span class="hint-caps">VTT</span> Talk more readable, you may wish to use underscores within a command name. However, the compiler will accept commands with or without underscores. For example, Y_DOWN_TO_GRID is interpreted the same as <span class="hint-caps">YDOWNTOGRID</span>.</p>
+
+
+			<h2 id="comments">Comments in <span class="hint-caps">VTT</span></h2>
+
+			<p>You can place comments within the <span class="hint-caps">VTT</span> window, the low-level window, the preprogram window, the <span class="hint-caps">CVT</span> window, and the font program window. Any text that begins with /* and ends with */ will be ignored by the compiler. For example:</p>
+
+			<p>/* This comment will be ignored */</p>
+
+			<p>You can enclose a comment within another comment. And you may find it useful to comment out optional parameters of a command. But avoid putting any other portion of a command within a comment.</p>
+		</section>
+
+		<section>
+			<h1 id="cmds">VTT Talk Commands</h1>
+
+			<div>
+				<h3 id="cmd_ALIGN"><span class="hint-caps">ALIGN</span></h3>
+				
+				<p><span class="hint-caps">ALIGN</span>(<strong>parentA, child1</strong> [,childn]…, <strong>parentB</strong>)</p>
+				
+				<p>Abbreviation: <span class="hint-caps">AL</span></p>
+
+				<table>
+					<tr>
+						<td><strong>parentA</strong></th>
+						<td>endpoint of line</td>
+					</tr>
+					<tr>
+						<td><strong>child1</strong></td>
+						<td>point to be aligned</td>
+					</tr>
+					<tr>
+						<td>childn</td>
+						<td>additional points to be aligned</td>
+					</tr>
+					<tr>
+						<td><strong>parentB</strong></td>
+						<td>endpoint of line</td>
+					</tr>
+				</table>
+
+				<p><span class="hint-caps">ALIGN</span> unconditionally forces all points listed between pointA and pointB to align with the line defined by endpoints pointA and pointB. In the example below, the command would be <span class="hint-caps">ALIGN</span>(A,1,2,3,B). This would force points 1, 2 and 3 to align with line AB.</p>
+
+				<p><img src="vttdoc-images/vttlang-1.png" width="467" height="177" alt=""></p>
+
+				<p>A midpoint to be aligned is moved perpendicular to the line, except if the midpoint is at the corner of a junction, such as in an “F.” In this case, the point is moved along the axis of  the intersecting line.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_ASM"><span class="hint-caps">ASM</span></h3>
+				
+				<p><span class="hint-caps">ASM</span>("TrueType instructions")</p>
+				
+				<p>Abbreviation: AS</p>
+
+				<p>This command allows you to embed low-level TrueType instructions within VTT Talk. This had previously been required to handle deltas and rounding states. These effects can now be controlled using the new VTT Talk commands XDelta, YDelta, XHalfGrid, YHalfGrid, XDownToGrid, YDownToGrid, XUpToGrid, YUpToGrid, XDoubleGrid, and YDoubleGrid.</p>
+
+				<p>Try to avoid using the ASM command since the VTT Talk compiler will not check low-level instructions contained within an ASM command. Thus, you may inappropriately change the graphic state, such as the freedom or projection vectors, without the compiler being aware of the change.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_DSTROKE"><span class="hint-caps">DSTROKE</span></h3>
+				
+				<p><span class="hint-caps">DSTROKE</span> <strong>controlflags</strong> (<strong>point1, point2, point3, point4</strong> [,cvt])</p>
+				
+				<p>Abbreviation: <span class="hint-caps">DS</span></p>
+
+				<table>
+					<tr>
+						<td><strong>controlflags</strong></td>
+						<td>specify which points in the pairs are stationary and which are floating</td>
+					</tr>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>bottom left control point of stroke</td>
+					</tr>
+					<tr>
+						<td><strong>point2</strong></td>
+						<td>bottom right control point of stroke</td>
+					</tr>
+					<tr>
+						<td><strong>point3</strong></td>
+						<td>top left control point of stroke</td>
+					</tr>
+					<tr>
+						<td><strong>point4</strong></td>
+						<td>top right control point of stroke</td>
+					</tr>
+					<tr>
+						<td>cvt</td>
+						<td>width of stroke along the X axis (not perpendicular to the side of the stroke)</td>
+					</tr>
+				</table>
+
+				<p>The <span class="hint-caps">DSTROKE</span> command is used to control diagonal strokes, such as the arm or tail of a “K.” The <span class="hint-caps">DSTROKE</span> command ensures that the left and right edges of the diagonal stroke are parallel, and that the “stair-step” pattern (phase) of the stroke is identical on both sides of the stroke at low ppem sizes. The <span class="hint-caps">ISTROKE</span> command (not <span class="hint-caps">DSTROKE</span>) is used to control italic stems.</p>
+
+				<p>Anchor the top right point of the stroke in y before using the <span class="hint-caps">DSTROKE</span> command.</p>
+
+				<p>The <span class="hint-caps">CVT</span> number specified indicates the width (along the x or y axis, depending on the angle) of the diagonal stroke. If a <span class="hint-caps">CVT</span> number is not specified, the compiler will search for a <span class="hint-caps">CVT</span> number with the following characteristics:</p>
+
+				<ol>
+					<li>the <span class="hint-caps">CVT</span> number is in the same character group as the glyph (uppercase, lowercase, etc.), and</li>
+					<li>the <span class="hint-caps">CVT</span> comment indicates “New Diagonal” in “X” or “Any Direction.” If such a <span class="hint-caps">CVT</span> value does not exist, the compiler will report an error and you will need to specify a <span class="hint-caps">CVT</span> number, or create a commented <span class="hint-caps">CVT</span> value that has the above characteristics.</li>
+				</ol>
+
+				<p>The <span class="hint-caps">DSTROKE</span> command first extrapolates the lines containing the control points and moves the pairs of control points so that they align on the same horizontal or vertical line, as below:</p>
+				
+				<p><img src="vttdoc-images/vttlang-2.png" width="130" height="152" alt=""></p>
+
+				<p>Move point4 and point2 to the heights of point 3 and point1, respectively</p>
+
+				<p>The command then controls the distance horizontally or vertically from the stationary control point to the floating control point:</p>
+				
+				<p><img src="vttdoc-images/vttlang-3.png" width="130" height="152" alt=""></p>
+	
+				<p>Control the diag. width (full amount of pixels)</p>
+
+				<p>Then the floating points are repositioned at their original height, but with the new width.</p>
+				
+				<p><img src="vttdoc-images/vttlang-4.png" width="130" height="152" alt=""></p>
+
+	
+				<p>Move point4 and point2 back to their previous heights</p>
+
+				<p>Resulting in:</p>
+				
+				<p><img src="vttdoc-images/vttlang-5.png" width="130" height="152" alt=""></p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_FIXDSTROKES"><span class="hint-caps">FIX_DSTROKES</span></h3>
+				<p><span class="hint-caps">FIXDSTROKES</span>( )</p>
+				<p>Abbreviation: F</p>
+				<p>Command Type: Action</p>
+
+				<p>This command touches any points in a diagonal stroke that may have been left untouched. This ensures that the <span class="hint-caps">SMOOTH</span> command will not change the stroke weight. If all pertinent points have been touched, this command is dropped during compilation.</p>
+
+				<p>This command is only necessary when using the <span class="hint-caps">STROKE</span> command (not the <span class="hint-caps">DSTROKE</span> or <span class="hint-caps">ISTROKE</span> commands). When using the <span class="hint-caps">STROKE</span> command the top floating point is typically left untouched.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_GRABHEREINX"><span class="hint-caps">GRAB_HERE_IN_X</span></h3>
+				<p><span class="hint-caps">GRABHEREINX</span> (<strong>point1, point2</strong>)</p>
+				<p>Abbreviation: G</p>
+				<p>Command Type: Informative</p>
+
+				<table>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>point farthest left on the visual black body area of the glyph</td>
+					</tr>
+					<tr>
+						<td><strong>point2</strong></td>
+						<td>point farthest right on the visual black body area of the glyph</td>
+					</tr>
+				</table>
+
+				<p>The <span class="hint-caps">GRABHEREINX</span> command is created by the autohinter to calculate and control the left and right sidebearing of a glyph at small sizes. The command affects the control values associated with subsequent <span class="hint-caps">LINK</span> commands, causing all sidebearing space to be combined on the right side of a glyph at low ppem sizes. </p>
+
+				<p><span class="hint-caps">GRABHEREINX</span> must be followed by <span class="hint-caps">LINK</span> commands linking the left sidebearing to point1, and the right sidebearing to point2.</p>
+
+				<p>For example, the command <span class="hint-caps">GRABHEREINX</span>(1,2) would have the following effect on a glyph when the sum of the sidebearing values are a pixel or less.</p>
+				
+				<p><img src="vttdoc-images/vttlang-GRAB_HERE_IN_X.png" width="105" height="68" alt=""></p>
+	
+				<p>This command is more likely to have an effect on sans serif fonts, because serif fonts are typically designed with extra space to ensure that serifs do not run together.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_HEIGHT"><span class="hint-caps">HEIGHT</span></h3>
+				
+				<p><span class="hint-caps">HEIGHT</span>(point1, cvt1)</p>
+				
+				<p>Abbreviation: H</p>
+				
+				<p>Command Type: Informative</p>
+
+				<table>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>point whose height is being set</td>
+					</tr>
+					<tr>
+						<td><strong>cvt1</strong></td>
+						<td><span class="hint-caps">CVT</span> number with height value</td>
+					</tr>
+				</table>
+
+				<p>The <span class="hint-caps">HEIGHT</span> command allows you to specify the height a point by associating it with a control value. <span class="hint-caps">HEIGHT</span> will have no effect until an <span class="hint-caps">ANCHOR</span> command is encountered.</p>
+
+				<p>You can also set the height of a point using only the <span class="hint-caps">YANCHOR</span> command, which contains both point and height arguments.</p>
+
+				<table>
+					<tr>
+						<td>Square cap height characters</td>
+						<td>Round cap height characters</td>
+					</tr>
+					<tr>
+						<td><p class="hint-caps">BDEF</p></td>
+						<td><p class="hint-caps">CGOS</p></td>
+					</tr>
+				</table>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_INTERSECT"><span class="hint-caps">INTERSECT</span></h3>
+				
+				<p><span class="hint-caps">INTERSECT</span>(<strong>point1, point2, point3, point4, point5</strong>)</p>
+				
+				<p>Abbreviation: <span class="hint-caps">IN</span></p>
+				
+				<p>Command Type: Action</p>
+
+				<table>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>point to be placed at intersection of two lines</td>
+					</tr>
+					<tr>
+						<td><strong>point2</strong></td>
+						<td>endpoint of first line</td>
+					</tr>
+					<tr>
+						<td><strong>point3</strong></td>
+						<td>endpoint of first line</td>
+					</tr>
+					<tr>
+						<td><strong>point4</strong></td>
+						<td>endpoint of second line</td>
+					</tr>
+					<tr>
+						<td><strong>point5</strong></td>
+						<td>endpoint of second line</td>
+					</tr>
+				</table>
+
+				<p>This command ensures that pointl will be placed at the intersection of the two lines described by the line from point2 to point3 and point4 to point5. Only use this command if point1 is actually located at the intersection in the original outline, otherwise the outlines will never be rendered truthfully to the original shapes.</p></div>
+
+
+
+			<div>
+				<h3 id="cmd_ISTROKE"><span class="hint-caps">ISTROKE</span></h3>
+				<p><span class="hint-caps">ISTROKE</span> controlflags (<strong>point1, point2, point3, point4, cvt1, cvt2, phaseFlag</strong> [,cvt3])</p>
+				<p>Abbreviation: <span class="hint-caps">IS</span></p>
+				<p>Command Type: Action</p>
+
+				<table>
+					<tr>
+						<td><strong>controlflags</strong></td>
+						<td>specify which points in the pairs are stationary and which are floating</td>
+					</tr>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>bottom left control point of stroke</td>
+					</tr>
+					<tr>
+						<td><strong>point2</strong></td>
+						<td>bottom right control point of stroke</td>
+					</tr>
+					<tr>
+						<td><strong>point3</strong></td>
+						<td>top left control point of stroke</td>
+					</tr>
+					<tr>
+						<td><strong>point4</strong></td>
+						<td>top right control point of stroke</td>
+					</tr>
+					<tr>
+						<td><strong>cvt1</strong></td>
+						<td>bottom serif height (or baseline if sans serif)</td>
+					</tr>
+					<tr>
+						<td><strong>cvt2</strong></td>
+						<td>top serif height (or cap height if sans serif)</td>
+					</tr>
+					<tr>
+						<td><strong>phaseFlag</strong></td>
+						<td>0,1,2, or 3 (see below)</td>
+					</tr>
+					<tr>
+						<td>cvt3</td>
+						<td>width of stroke along the X axis (not perpendicular to the side of the stroke)</td>
+					</tr>
+				</table>
+
+				<p>Use <span class="hint-caps">ISTROKE</span> to control the width and phase (stair-step pattern) of an italic stroke. <span class="hint-caps">ISTROKE</span> works specifically for italic strokes that are closer to vertical than horizontal. Anchor the top right point of the stroke in y before using the <span class="hint-caps">ISTROKE</span> command.</p>
+
+				<p><span class="hint-caps">ISTROKE</span>>>(2,9,3,8,32,29,3,61)</p>
+
+				<p><img src="vttdoc-images/vttlang-ISTROKE-1.png" width="114" height="137" alt=""></p>
+
+				<p><span class="hint-caps">ISTROKE</span> first extrapolates the upper control points to the bottom of the top serif, and extrapolates the lower control points to the top of the bottom serif. Then the floating side of the stroke is moved to be the width in X (along the X axis) as specified by cvt3.</p>
+
+				<p>The compiler uses the <strong>italic_run cvt</strong> to control the italic run of the glyph.</p>
+
+				<p>Cvt3 indicates the width (along the x axis) of the diagonal stroke. If a <span class="hint-caps">CVT</span> number is not specified, the compiler will search for a <span class="hint-caps">CVT</span> number with the following characteristics:</p>
+
+				<ul>
+					<li>the <span class="hint-caps">CVT</span> number is in the same character group as the glyph (uppercase, lowercase, etc.), and</li>
+					<li>the <span class="hint-caps">CVT</span> comment indicates “New Diagonal” in “X” or “Any Direction.” If such a <span class="hint-caps">CVT</span> value does not exist, the compiler will report an error and you will need to specify a <span class="hint-caps">CVT</span> number, or create a commented <span class="hint-caps">CVT</span> value that has the above characteristics.</li>
+				</ul>
+
+				<p>For glyphs with a junction in the middle of the italic stem, such as a <em>“B,”</em> the points at the top and bottom of the middle bar need to be interpolated after the <span class="hint-caps">ISTROKE</span> command so that they stay properly aligned with the side of the stem.</p>
+	
+				<h4 id="phase_flag">The Phase Flag</h4>
+
+				<p>The Phase Flag is used in the <span class="hint-caps">ISTROKE</span> command to control the “stair-stepping” pattern of the italic or diagonal stroke. The <span class="hint-caps">VTT</span> compiler accomplishes this by shifting the italic stroke in quarters of a pixel in the X direction, depending on the Phase Flag value, as follows:</p>
+
+				<table>
+					<tr>
+						<th class="v">Phase Flag</th>
+						<td class="num">0</td>
+						<td class="num">1</td>
+						<td class="num">2</td>
+						<td class="num">3</td>
+					</tr>
+					<tr>
+						<th class="v">X pixel shift</th>
+						<td class="num">0</td>
+						<td class="num">¼</td>
+						<td class="num">½</td>
+						<td class="num">¾</td>
+					</tr>
+				</table>
+
+				<p>For the italic stroke below, shifting the stroke these fractional pixel values creates the following results:</p>
+
+				<p><img src="vttdoc-images/vttlang-ISTROKE-2.png" width="301" height="186" alt=""></p>
+
+				<p>In general, phase 3 creates the most attractive result.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_MAINSTROKEANGLE"><span class="hint-caps">MAIN_STROKE_ANGLE</span></h3>
+				<p><span class="hint-caps">MAINSTROKEANGLE</span>(<strong>angleValue*100</strong>)</p>
+				<p>Abbreviation: M</p>
+				<p>Command Type: Informative</p>
+
+				<p>The <span class="hint-caps">MAINSTROKEANGLE</span> command is an informative command identifying the angle of the glyphs in a font. For example, the main stroke angle of Times New Roman is 90 degrees; thus,</p>
+
+				<p><span class="hint-caps">MAINSTROKEANGLE</span>(9000)</p>
+
+				<p>This command is used when controlling an italic stroke with the <span class="hint-caps">STROKE</span> command. The new <span class="hint-caps">ISTROKE</span> command uses the italic_run value in the <span class="hint-caps">CVT</span> instead of the main stroke angle.</p>
+
+				<p>If used, the main stroke angle must correspond with the <strong>italic_run</strong> control value in the <span class="hint-caps">CVT</span>.</p>
+
+				<p>Use the measuring tool to calculate the main stroke angle for the font, as well as the italic run control value, by measuring the stem on a character such as “I.”</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_QUIT"><span class="hint-caps">QUIT</span></h3>
+				<p><span class="hint-caps">QUIT</span>( )</p>
+				<p>Abbreviation: Q</p>
+
+				<p>After compiling the <span class="hint-caps">VTT</span> Talk code for a glyph, you may choose to edit the low-level TrueType instructions. Such edits will be overwritten the next time the <span class="hint-caps">VTT</span> Talk is compiled for the glyph. To preserve your changes you will need to use the <span class="hint-caps">QUIT</span> command.</p>
+
+				<p>Place the <span class="hint-caps">QUIT</span> command as the first line of code in the <span class="hint-caps">VTT</span> Talk window after making any changes to the compiled TrueType instructions. This will prevent the compiler from recompiling the <span class="hint-caps">VTT</span> Talk for the glyph. However, note that any further changes to the glyph’s <span class="hint-caps">VTT</span> Talk will not be incorporated into the TrueType instructions, unless you choose to remove the <span class="hint-caps">QUIT</span> command and recompile the glyph.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_SCOOP"><span class="hint-caps">SCOOP</span></h3>
+				
+				<p><span class="hint-caps">SCOOP</span>(<strong>point1, point2, point3</strong>)</p>
+				<p>Abbreviation: <span class="hint-caps">SC</span></p>
+				<p>Command Type: Action</p>
+
+				<table>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>endpoint of feature</td>
+					</tr>
+					<tr>
+						<td><strong>point2</strong></td>
+						<td>deepest point of scoop</td>
+					</tr>
+					<tr>
+						<td><strong>point3</strong></td>
+						<td>endpoint of feature</td>
+					</tr>
+				</table>
+
+				<p>The <span class="hint-caps">SCOOP</span> command controls the shape of a shallow curve. <span class="hint-caps">SCOOP</span> is similar to the <span class="hint-caps">ALIGN</span> command, controlling the placement of midpoints on a line. Before using the <span class="hint-caps">SCOOP</span> command, you must have touched the endpoints of the feature (point1 and point3). <span class="hint-caps">SCOOP</span> controls the distance to point2 in x or y.</p>
+
+				<p>The <span class="hint-caps">SCOOP</span> command is not commonly used, except by the autohinter.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_SERIF"><span class="hint-caps">SERIF</span></h3>
+				
+				<p><span class="hint-caps">SERIF</span> <strong>orderflag</strong> (<strong>serifType, point1, point2</strong> [,additional points depending on the type of serif])</p>
+				
+				<p>Abbreviation: <span class="hint-caps">SE</span></p>
+				
+				<p>Summary: Identifies a serif shape</p>
+
+				<table>
+					<tr>
+						<td><strong>orderflag</strong></td>
+						<td>> or &lt;, depending on the order of the points</td>
+					</tr>
+					<tr>
+						<td><strong>serifType</strong></td>
+						<td>0, 1, 2, 3, 4 as described below</td>
+					</tr>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>point number</td>
+					</tr>
+					<tr>
+						<td><strong>point2</strong></td>
+						<td>point number</td>
+					</tr>
+					<tr>
+						<td>[,additional points]</td>
+						<td>additional points are listed depending on the type of serif</td>
+					</tr>
+				</table>
+
+				<p>The <span class="hint-caps">SERIF</span> command indicates the type of serif being used. The <span class="hint-caps">SERIF</span> command is a high-level method of specifying a collection of links which control various serif designs. The <span class="hint-caps">SERIF</span> command is not commonly used, except by the autohinter.</p>
+
+				<p>The <span class="hint-caps">SERIF</span> instruction requires that certain points on the outline have already been set. For instance, at the base of an “I” the 2 points on the baseline must have their height fixed since this value is used in controlling the thickness of the serif. Similarly, the width of the stem must have been controlled before the serif instruction, since the stem width is used to set the serif length. The small arrows in the serifType illustration which follows indicate which points have to be touched and in which axis the points are positioned before the serif command is used.</p>
+
+				<p>The <strong>orderflag</strong> which directly follows the <span class="hint-caps">SERIF</span> command indicates whether the point numbers which follow are in ascending or descending order. If the point numbers are ordered as 10, 11, 12, 13, 14, the > symbol is used. If the point numbers are ordered as 14, 13, 12, 11, 10, the &lt; symbol would be used.</p>
+
+				<p>To date, there are 5 serifType flags that you may use, as illustrated below and described on the next page.</p>
+
+				<p><img src="vttdoc-images/vttlang-SERIF.png" width="400" height="325" alt=""></p>
+
+				<p>SerifType 0 is found in fonts like Times and is present in the characters “CSG.”  For this serif, seven point numbers must follow the serifType, i.e. <span class="hint-caps">SERIF</span>>(0,0,1,2,3,4,5,6).</p>
+
+				<p>SerifType 1 is also a Times serif found on the lower case characters “bdhijl.” This serif type has four points, i.e. <span class="hint-caps">SERIF</span>>(1,0,1,2,4).</p>
+
+				<p>SerifType 2 is the main vertical stem serif which occurs in characters “IHJLT.” This serif type needs to be stated in two halves, also allowing you to use the same command for the serifs on the B and D characters, where only half of the serif illustrated above is required. To describe the left half of the serif use <span class="hint-caps">SERIF</span>&lt;(2,3,2,1,0), and for the right half use <span class="hint-caps">SERIF</span>>(2,2,3,4,5).</p>
+
+				<p>SerifType 3 is a diagonal Times serif, present in the characters “AKVWXY.” This serif type is similar to type 2 as it is also described in two halves. The left half would be described as <span class="hint-caps">SERIF</span>>(3,2,3,4,5), and the right half as <span class="hint-caps">SERIF</span>&lt;(3,3,2,1,0).</p>
+
+				<p>SerifType 4 is the Courier serif, which also is described in two halves. The left half is described as <span class="hint-caps">SERIF</span>>(4,4,5,6,7,8,9), and the right half as <span class="hint-caps">SERIF</span>&lt;(4,5,4,3,2,1,0). When hinting Courier, this serif type is also used for diagonal stems adjoined to serifs, such as in the characters “XVAYW.”</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_SETITALICSTROKEANGLE"><span class="hint-caps">SET_ITALIC_STROKE_ANGLE</span> ( )</h3>
+				<h3 id="cmd_SETITALICSTROKEPHASE"><span class="hint-caps">SET_ITALIC_STROKE_PHASE</span> ( )</h3>
+
+				<p>These commands influence the way the <span class="hint-caps">STROKE</span> command controls diagonal strokes. In previous versions of <span class="hint-caps">VTT</span> Talk, the <span class="hint-caps">STROKE</span> command was the best way of controlling diagonal strokes. However, diagonal strokes and italic stems can now be controlled with the <span class="hint-caps">DSTROKE</span> and <span class="hint-caps">ISTROKE</span> commands, respectively.</p>
+
+				<p>By using the <span class="hint-caps">SET_ITALIC_STROKE_ANGLE</span> command, you are telling the compiler to regularize the angle of italic strokes in the font. The angle value used is known as the “adjusted italic angle,” which is the italic angle adjusted so that the endpoints of the stroke fall on the grid. This causes the rise and run values of the slope to be integral.</p>
+
+				<p>Using the <span class="hint-caps">SET_ITALIC_STROKE_PHASE</span> command tells the compiler to regularize the phase of italic strokes in the font. The phase setting used is phase 0. You can obtain alternate stair-step effects using the <span class="hint-caps">ISTROKE</span> command with its phase parameter, instead of the <span class="hint-caps">STROKE</span> command.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_SMOOTH"><span class="hint-caps">SMOOTH</span></h3>
+				<p><span class="hint-caps">SMOOTH</span>( )</p>
+				<p>Abbreviation: <span class="hint-caps">SM</span></p>
+
+				<p>This instruction does a smoothing operation to all the untouched points in the x and y direction.  The instruction should not be used in glyphs where every point has been hinted in x and y, since it would only make things bigger and slower.</p>
+
+				<p><span class="hint-caps">SMOOTH</span> is commonly used as the last <span class="hint-caps">VTT</span> Talk command for a glyph.</p>
+			</div>
+
+
+
+			<div>
+					<h3 id="cmd_STROKE"><span class="hint-caps">STROKE</span></h3>
+				<p><span class="hint-caps">STROKE</span> controlflags (<strong>point1, point2, point3, point4</strong> [,cvt1])</p>
+				<p>Abbreviation: <span class="hint-caps">ST</span></p>
+
+				<table>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>bottom left control point of stroke</td>
+					</tr>
+					<tr>
+						<td><strong>point2</strong></td>
+						<td>bottom right control point of stroke</td>
+					</tr>
+					<tr>
+						<td><strong>point3</strong></td>
+						<td>top left control point of stroke</td>
+					</tr>
+					<tr>
+						<td><strong>point4</strong></td>
+						<td>top right control point of stroke</td>
+					</tr>
+					<tr>
+						<td>cvt1</td>
+						<td></td>
+					</tr>
+				</table>
+
+				<p>In previous versions of <span class="hint-caps">VTT</span> Talk, the <span class="hint-caps">STROKE</span> command was the best way of controlling diagonal strokes. However, diagonal strokes can now also be controlled with the <span class="hint-caps">DSTROKE</span> and <span class="hint-caps">ISTROKE</span> commands.</p>
+
+				<p>The <span class="hint-caps">STROKE</span> command also was useful as an informative command when identifying horizontal or vertical strokes. However, we now advise that you use the <span class="hint-caps">YSTROKE</span> and <span class="hint-caps">XSTROKE</span> commands to unambiguously identify horizontal and vertical strokes. This will allow the compiler to properly interpret <span class="hint-caps">XLINK</span> and <span class="hint-caps">YLINK</span> commands for the stroke.</p>
+
+				<p>When used with the commands <span class="hint-caps">SET_ITALIC_STROKE_ANGLE</span> and <span class="hint-caps">SET_ITALIC_STROKE_PHASE</span>, <span class="hint-caps">STROKE</span> hints a feature by extrapolating the bottom pair of control points to the baseline. This may not give the best results when hinting a diagonal feature with a serif. For serif italic features, use the <span class="hint-caps">ISTROKE</span> command, which hints the feature by extrapolating the control points to the bottom of the top serif, or the top of the bottom serif, not all the way to the baseline or cap height.</p>
+
+				<p>When working with diagonal strokes, the two stationary points (as specified by the <strong>controlflags</strong>) should be fixed both horizontally and vertically before the <span class="hint-caps">STROKE</span> command is used.</p>
+				
+				<p><img src="vttdoc-images/vttlang-STROKE.png" width="252" height="201" alt=""></p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_VACUFORMLIMIT"><span class="hint-caps">VACUFORMLIMIT</span></h3>
+				
+				<h3 id="cmd_VACUFORMROUND"><span class="hint-caps">VACUFORMROUND</span></h3>
+				
+				<p><span class="hint-caps">VACUFORMLIMIT</span>(<strong>ppem</strong>)</p>
+
+				<p><span class="hint-caps">VACUFORMROUND</span> flags (<strong>cvt1, cvt2, point1, point2, point3, point4</strong>)</p>
+				
+				<p>Abbreviation: <span class="hint-caps">VACUFORMR</span></p>
+				
+				<p>Command Type: Action</p>
+
+				<p>The <span class="hint-caps">VACUFORMROUND</span> command forces circular curves into an octagonal shape. This is very easy to grid fit with a consistent line width as it contains only horizontal , vertical, and 45 degree lines. Because of the simplicity of the shapes, this command can ensure that curves of a single pixel remain exactly a single pixel in width.</p>
+
+				<p>You will probably never author a <span class="hint-caps">VACUFORMROUND</span> command yourself, as the required parameters are complex. However, you will use <span class="hint-caps">VACUFORMROUND</span> commands that the autohinter generates. For a single O shape, four <span class="hint-caps">VACUFORMROUND</span> commands will be generated, each controlling the “curve” from one side of the octagon to the next.</p>
+
+				<p>This command will only be executed if the line width is the same as the minimum width. This will usually be set to one pixel. If the line width is larger than the minimum width, this command is ignored.</p>
+
+				<p><img src="vttdoc-images/vttlang-VACUFORMLIMIT.png" width="323" height="166" alt=""></p>
+				
+				<p>Parameters describing the curve and radius values are difficult to compute, so the <span class="hint-caps">VACUFORMROUND</span> command requires special control values in the <span class="hint-caps">CVT</span>, as well as specific storage numbers in the preprogram. It is difficult to manually create all values needed for this command to work properly, so we suggest using this command only when it is generated by the autohinter.</p>
+
+				<p>The <span class="hint-caps">VACUFORMLIMIT</span> command as an informative command that may preceed the <span class="hint-caps">VACUFORMROUND</span> command. <span class="hint-caps">VACUFORMLIMIT</span> turns off <span class="hint-caps">VACUFORMROUND</span> starting at the ppem size specified.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_XANCHOR"><span class="hint-caps">XANCHOR</span></h3>
+				
+				<p><span class="hint-caps">XANCHOR</span> [angleFlag] (<strong>point1</strong>)</p>
+				
+				<p>Abbreviation: <span class="hint-caps">XA</span></p>
+				
+				<p>Command Type: Action</p>
+
+				<table>
+					<tr>
+						<td>angleFlag</td>
+						<td>italic or adjusted italic angle</td>
+					</tr>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>point to anchor</td>
+					</tr>
+				</table>
+
+				<p>The <span class="hint-caps">XANCHOR</span> command rounds the specified point to the grid according to the rounding state, effectively anchoring the point. This command is usually used prior to a series of <span class="hint-caps">LINK</span> commands, anchoring the “grandfather” point. If you create a series of links that begins from a sidebearing point, you do not need to use the <span class="hint-caps">XANCHOR</span> command.</p>
+
+				<p>The <span class="hint-caps">YANCHOR</span> command works somewhat differently, allowing you to specify an optional <span class="hint-caps">CVT</span> number (height) at which to anchor the point.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_XDELTA"><span class="hint-caps">XDELTA</span></h3>
+				
+				<p><span class="hint-caps">XDELTA</span>(<strong>point1, dist@ppemRange</strong> [,dist@ppemRange]...)</p>
+				
+				<p>Abbreviation: <span class="hint-caps">XDE</span></p>
+
+				<table>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>point number to move</td>
+					</tr>
+					<tr>
+						<td><strong>dist@ppemRange</strong></td>
+						<td>fractional number of pixels to shift point1 within ppem size range</td>
+					</tr>
+					<tr>
+						<td>dist@ppemRange</td>
+						<td>additional pixel shift values and ppem size ranges</td>
+					</tr>
+				</table>
+
+
+
+				<p>The <span class="hint-caps">XDELTA</span> command is used to shift points a specified number of pixels along the x axis at a specific ppem size or range of sizes.</p>
+
+				<p>Distances to be shifted can be expressed as fractions or decimal values (1/8 or .125). Ranges are expressed as <strong>begin..end;additional</strong>.</p>
+
+				<p>For example, to move point number 9 the distance of 1/8 pixel for ppem sizes 6, 7, 8, and 11:</p>
+
+				<p><span class="hint-caps">XDELTA</span>(9, 1/8@6..8;11)</p>
+
+				<p>Points are usually shifted in eighths of a pixel (i.e., 1/8, -1/8, 5/8), although the rasterizer can shift a point in increments of 1/64 of a pixel.</p>
+
+				<p>Use <span class="hint-caps">DELTA</span> commands carefully, as they can potentially generate a lot of low-level code upon compilation.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_XDIST"><span class="hint-caps">XDIST</span></h3>
+				
+				<p><span class="hint-caps">XDIST</span>(<strong>point1, point2,</strong> [minimumDistance])</p>
+				
+				<p>Abbreviation: <span class="hint-caps">XDI</span></p>
+				
+				<p>Command Type: Action</p>
+
+				<table>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>point number</td>
+					</tr>
+					<tr>
+						<td><strong>point2</strong></td>
+						<td>point number</td>
+					</tr>
+					<tr>
+						<td>minimumDistance</td>
+						<td>minimum distance flag and optional parameters (see “General Flags and Parameters”)</td>
+					</tr>
+				</table>
+
+				<p>The <span class="hint-caps">XDIST</span> command controls the horizontal distance between <strong>point1</strong> and <strong>point2</strong>. If you omit the minimumDistance flag and parameters, the compiler will use the default minimum distances: 1/2 or 1 pixel for black features (depending on rounding state); and 0 pixels for gray and white features.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_XDOUBLEGRID"><span class="hint-caps">X_DOUBLE_GRID</span></h3>
+				
+				<p><span class="hint-caps">XDOUBLEGRID</span>(<strong>point1</strong> [,pointn]...)</p>
+				
+				<p>Abbreviation: <span class="hint-caps">XDOU</span></p>
+				
+				<p>Command Type: Informative</p>
+
+				<table>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>point to round</td>
+					</tr>
+					<tr>
+						<td>pointn</td>
+						<td>additional points to round</td>
+					</tr>
+				</table>
+
+				<p>The <span class="hint-caps">XDOUBLEGRID</span> command controls the rounding state for a specified point or series of points. Subsequent <span class="hint-caps">LINK</span> or <span class="hint-caps">ANCHOR</span> commands will move the points along the x axis to the nearest grid line or half grid line, whichever is closest to the point.</p>
+				
+				<p><img src="vttdoc-images/vttlang-X_DOUBLE_GRID.png" width="206" height="366" alt=""></p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_XDOWNTOGRID"><span class="hint-caps">X_DOWN_TO_GRID</span></h3>
+				
+				<p><span class="hint-caps">XDOWNTOGRID</span>(<strong>point1</strong> [,pointn]...)</p>
+				
+				<p>Abbreviation: <span class="hint-caps">XDOW</span></p>
+				
+				<p>Command Type: Informative</p>
+
+				<table>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>point to round</td>
+					</tr>
+					<tr>
+						<td>pointn</td>
+						<td>additional points to round</td>
+					</tr>
+				</table>
+
+				<p>The <span class="hint-caps">XDOWNTOGRID</span> command controls the rounding state for a specified point or series of points. Subsequent <span class="hint-caps">LINK</span> or <span class="hint-caps">ANCHOR</span> commands will move the points down along the x axis (left) to the nearest grid line.</p>
+				
+				<p><img src="vttdoc-images/vttlang-X_DOWN_TO_GRID.png" width="225" height="155" alt=""></p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_XHALFGRID"><span class="hint-caps">X_HALF_GRID</span></h3>
+				<p><span class="hint-caps">XHALFGRID</span>(<strong>point1</strong> [,pointn]...)</p>
+				<p>Abbreviation: <span class="hint-caps">XH</span></p>
+				<p>Command Type: Informative</p>
+
+				<table>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>point to round</td>
+					</tr>
+					<tr>
+						<td>pointn</td>
+						<td>additional points to round</td>
+					</tr>
+				</table>
+
+				<p>The <span class="hint-caps">XHALFGRID</span> command controls the rounding state for a specified point or series of points. Subsequent <span class="hint-caps">LINK</span> or <span class="hint-caps">ANCHOR</span> commands will move the points midway between the vertical pixel boundaries.</p>
+				
+				<p><img src="vttdoc-images/vttlang-X_HALF_GRID.png" width="225" height="156" alt=""></p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_XINTERPOLATE"><span class="hint-caps">XINTERPOLATE</span></h3>
+				
+				<p><span class="hint-caps">XINTERPOLATE</span> [angleFlag] (<strong>parentA, child1</strong> [,childn]..., <strong>parentB</strong>)</p>
+				
+				<p>Abbreviation: <span class="hint-caps">XIN</span></p>
+				
+				<p>Command Type: Action</p>
+
+				<table>
+					<tr>
+						<td><strong>parentA</strong></td>
+						<td>endpoint of line</td>
+					</tr>
+					<tr>
+						<td><strong>child1</strong></td>
+						<td>point to be interpolated</td>
+					</tr>
+					<tr>
+						<td>childn</td>
+						<td>additional points to be interpolated</td>
+					</tr>
+					<tr>
+						<td><strong>parentB</strong></td>
+						<td>endpoint of line</td>
+					</tr>
+				</table>
+
+				<p>The <span class="hint-caps">XINTERPOLATE</span> command moves the specified child points so that they maintain the same relationship (proportional distance) in x with the hinted parent point.</p>
+
+				<p>The child points must fall within the x interval defined by the parent points.</p>
+
+				<p>If the angleFlag is absent, <span class="hint-caps">XINTERPOLATE</span> works purely in the x direction.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_XIPANCHOR"><span class="hint-caps">XIPANCHOR</span></h3>
+				
+				<p><span class="hint-caps">XIPANCHOR</span> [angleFlag] (<strong>parentA, child1</strong> [,childn]..., <strong>parentB</strong>)</p>
+				
+				<p>Abbreviation: <span class="hint-caps">XIP</span></p>
+				
+				<p>Command Type: Action</p>
+
+				<table>
+					<tr>
+						<td><strong>parentA</strong></td>
+						<td>endpoint of line</td>
+					</tr>
+					<tr>
+						<td><strong>child1</strong></td>
+						<td>point to be interpolated</td>
+					</tr>
+					<tr>
+						<td>childn</td>
+						<td>additional points to be interpolated</td>
+					</tr>
+					<tr>
+						<td><strong>parentB</strong></td>
+						<td>endpoint of line</td>
+					</tr>
+				</table>
+
+				<p><span class="hint-caps">XIPANCHOR</span> combines the <span class="hint-caps">INTERPOLATE</span> and <span class="hint-caps">ANCHOR</span> commands. The command first interpolates the child points and then rounds them to the grid according to the rounding state, effectively anchoring the child points.</p>
+
+				<p>As with the <span class="hint-caps">XINTERPOLATE</span> command, the child points must fall within the x interval defined by the parent points.</p>
+
+				<p>If the angleFlag is absent, <span class="hint-caps">XIPANCHOR</span> works purely in the x direction.</p>
+			</div>
+
+	
+			<div>
+				<h3 id="cmd_XLINK"><span class="hint-caps">XLINK</span></h3>
+				
+				<p><span class="hint-caps">XLINK</span> [angleFlag] (<strong>point1, point2</strong> [,cvt1] [,minimumDistance])</p>
+				
+				<p>Abbreviation: <span class="hint-caps">XL</span></p>
+				
+				<p>Command Type: Action</p>
+
+				<table>
+					<tr>
+						<td>angleFlag</td>
+						<td>italic or adjusted italic angle</td>
+					</tr>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>point number</td>
+					</tr>
+					<tr>
+						<td><strong>point2</strong></td>
+						<td>point number</td>
+					</tr>
+					<tr>
+						<td>cvt1</td>
+						<td><span class="hint-caps">CVT</span> number specifying distance value</td>
+					</tr>
+					<tr>
+						<td>minimumDistance</td>
+						<td>minimum distance in pixels</td>
+					</tr>
+				</table>
+
+				<p><span class="hint-caps">XLINK</span> controls the horizontal distance between two points. You can either specify a <span class="hint-caps">CVT</span> number for the distance, or allow the <span class="hint-caps">XLINK</span> command to find and use the closest <span class="hint-caps">CVT</span> value based on the character group and feature type (as specified in the <span class="hint-caps">CVT</span> comments). A previously used <span class="hint-caps">XROUND</span> or <span class="hint-caps">XSTROKE</span> command will influence the control value chosen upon compilation. You must label glyph features with such informative commands for the compiler to choose correct control values.</p>
+
+				<p>The minimumDistance parameter forces the feature identified by the <span class="hint-caps">XLINK</span> command to have a minimum width. By default, black features have a minimum distance of 1 pixel, and white (and gray) features have a minimum distance of 0 pixels.</p>
+
+				<p>The default values for minimum distance depend on the rounding method in use. A MinimumDistance of ½ pixel may be used to comply with previously used rounding methods.</p>
+
+				<p>If you want to force the distance between two points (as specified by the outline) to be preserved, use the <span class="hint-caps">XDIST</span> and <span class="hint-caps">YDIST</span> commands, not the <span class="hint-caps">LINK</span> commands.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_XMOVE"><span class="hint-caps">XMOVE</span></h3>
+				
+				<p><span class="hint-caps">XMOVE</span>(<strong>value, point1</strong> [,pointn]...)</p>
+				
+				<p>Abbreviation: <span class="hint-caps">XM</span></p>
+				
+				<p>Command Type: Action</p>
+
+				<table>
+					<tr>
+						<td><strong>value</strong></td>
+						<td>number of pixels (may be fractional)</td>
+					</tr>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>point number to move</td>
+					</tr>
+					<tr>
+						<td>pointn</td>
+						<td>additional point numbers to move</td>
+					</tr>
+				</table>
+
+				<p>Moves one or more points along the x axis by a specific pixel amount, e.g., 1, 0.5, 1.25</p>
+
+				<p>For example, to move point 19 by ¼ of a pixel in the x direction, use:</p>
+
+				<p><span class="hint-caps">XMOVE</span>(0.25,19)</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_XROUND"><span class="hint-caps">XROUND</span></h3>
+				
+				<p><span class="hint-caps">XROUND</span>(<strong>point1, point2</strong>)</p>
+				
+				<p>Abbreviation: <span class="hint-caps">XR</span></p>
+				
+				<p>Command Type: Informative</p>
+
+				<p>The <span class="hint-caps">XROUND</span> command is an informative command used to identify curves. Identifying the curves helps the compiler choose a control value from the <span class="hint-caps">CVT</span> that a subsequent <span class="hint-caps">LINK</span> command will use.</p>
+
+				<p>For example:</p>
+
+				<p><span class="hint-caps">XROUND</span>(1,2)</p>
+				
+				<p><img src="vttdoc-images/vttlang-XROUND.png" width="263" height="228" alt=""></p>
+			</div>
+
+
+
+				<div>
+					<h3 id="cmd_XSHIFT"><span class="hint-caps">XSHIFT</span></h3>
+					
+					<p><span class="hint-caps">XSHIFT</span>(<strong>parent1, child1</strong> [,childn]...)</p>
+					
+					<p>Abbreviation: <span class="hint-caps">XSH</span></p>
+					
+					<p>Command Type: Action</p>
+
+					<table>
+						<tr>
+							<td><strong>parent1</strong></td>
+							<td>parent point</td>
+						</tr>
+						<tr>
+							<td><strong>child1</strong></td>
+							<td>child point to shift</td>
+						</tr>
+						<tr>
+							<td>childn</td>
+							<td>additional child points</td>
+						</tr>
+					</table>
+
+					<p>The <span class="hint-caps">XSHIFT</span> command shifts the specified child points in the x direction by the same amount as the parent has been moved during previous hinting.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_XSTROKE"><span class="hint-caps">XSTROKE</span></h3>
+				
+				<p><span class="hint-caps">XSTROKE</span>(<strong>point1, point2, point3, point4</strong> [,cvt1])</p>
+				
+				<p>Abbreviation: <span class="hint-caps">XST</span></p>
+				
+				<p>Command Type: Informative</p>
+
+				<table>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>bottom left point</td>
+					</tr>
+					<tr>
+						<td><strong>point2</strong></td>
+						<td>bottom right point</td>
+					</tr>
+					<tr>
+						<td><strong>point3</strong></td>
+						<td>top left point</td>
+					</tr>
+					<tr>
+						<td><strong>point4</strong></td>
+						<td>top right point</td>
+					</tr>
+					<tr>
+						<td>cvt1</td>
+						<td>width of stroke</td>
+					</tr>
+				</table>
+
+				<p>This command identifies a feature as a vertical stroke. This enables a subsequent <span class="hint-caps">LINK</span> command to choose the appropriate control value.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_XUPTOGRID"><span class="hint-caps">X_UP_TO_GRID</span></h3>
+				
+				<p><span class="hint-caps">XUPTOGRID</span>(<strong>point1</strong> [,pointn]...)</p>
+				
+				<p>Abbreviation: <span class="hint-caps">XU</span></p>
+				
+				<p>Command Type: Informative</p>
+
+				<table>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>point to round</td>
+					</tr>
+					<tr>
+						<td>pointn</td>
+						<td>additional points to round</td>
+					</tr>
+				</table>
+
+				<p>The <span class="hint-caps">XUPTOGRID</span> command controls the rounding state for a specified point or series of points. Subsequent <span class="hint-caps">LINK</span> or <span class="hint-caps">ANCHOR</span> commands will move the points up along the x axis (right) to the nearest grid line.</p>
+				
+				<p><img src="vttdoc-images/vttlang-X_UP_TO_GRID.png" width="225" height="155" alt=""></p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_YANCHOR"><span class="hint-caps">YANCHOR</span></h3>
+				
+				<p><span class="hint-caps">YANCHOR</span> [angleFlag] (<strong>point1</strong> [,cvt1])</p>
+				
+				<p>Abbreviation: <span class="hint-caps">YA</span></p>
+				
+				<p>Command Type: Action</p>
+
+				<table>
+					<tr>
+						<td>angleFlag</td>
+						<td>italic or adjusted italic angle</td>
+					</tr>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>point to anchor</td>
+					</tr>
+					<tr>
+						<td>cvt1</td>
+						<td>control value number (a height value)</td>
+					</tr>
+				</table>
+
+				<p>The <span class="hint-caps">YANCHOR</span> command rounds the specified point to the grid according to the rounding state, effectively anchoring the point. This command is usually used prior to a series of <span class="hint-caps">LINK</span> commands, anchoring the “grandfather” point.</p>
+
+				<p>The <span class="hint-caps">YANCHOR</span> command allows you to specify an optional <span class="hint-caps">CVT</span> number (a height value) at which to anchor the point. For example, you may anchor a point to the cap height control value. If you do not specify a <span class="hint-caps">CVT</span> number, the compiler determines the height at which to anchor the point by evaluating the unhinted outline.</p>
+
+				<p>Using the <span class="hint-caps">YANCHOR</span> command with the cvt parameter is the equivalent of using a combination of the <span class="hint-caps">HEIGHT</span> command and the <span class="hint-caps">YANCHOR</span> command. For example, <span class="hint-caps">YANCHOR</span> (7,8) is the equivalent of:</p>
+
+				<p><span class="hint-caps">HEIGHT</span> (7,8)</p>
+				<p><span class="hint-caps">YANCHOR</span> (7)</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_YDELTA"><span class="hint-caps">YDELTA</span></h3>
+				
+				<p><span class="hint-caps">YDELTA</span>(<strong>point1, dist@ppemRange</strong> [,dist@ppemRange]...)</p>
+				
+				<p>Abbreviation: <span class="hint-caps">XDE</span></p>
+
+				<table>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>point number to move</td>
+					</tr>
+					<tr>
+						<td><strong>dist@ppemRange</strong></td>
+						<td>fractional number of pixels to shift point1 within ppem size range</td>
+					</tr>
+					<tr>
+						<td>dist@ppemRange</td>
+						<td>additional pixel shift values and ppem size ranges</td>
+					</tr>
+				</table>
+
+				<p>The <span class="hint-caps">YDELTA</span> command is used to shift points a specified number of pixels along the y axis at a specific ppem size or range of sizes.</p>
+
+				<p>Distances to be shifted can be expressed as fractions or decimal values (1/8 or .125). Ranges are expressed as <strong>beginValue..endValue;additionalValues</strong>.</p>
+
+				<p>For example, to move point number 9 the distance of 1/8 pixel for ppem sizes 6, 7, 8, and 11, write:</p>
+
+				<p><span class="hint-caps">YDELTA</span>(9, 1/8@6..8;11)</p>
+
+				<p>Points are usually shifted in eighths of a pixel (i.e., 1/8, -1/8, 5/8), although the rasterizer can shift a point in increments of 1/64 of a pixel.</p>
+
+				<p>Use <span class="hint-caps">DELTA</span> commands carefully, as they can potentially generate a lot of low-level code upon compilation.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_YDIST"><span class="hint-caps">YDIST</span></h3>
+				
+				<p><span class="hint-caps">YDIST</span>(<strong>point1, point2,</strong> [minimumDistance])</p>
+				
+				<p>Abbreviation: <span class="hint-caps">YDI</span></p>
+				
+				<p>Command Type: Action</p>
+
+				<table>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>point number</td>
+					</tr>
+					<tr>
+						<td><strong>point2</strong></td>
+						<td>point number</td>
+					</tr>
+					<tr>
+						<td>[minimumDistance]</td>
+						<td>minimum distance flag and optional parameters (see “General Flags and Parameters”)</td>
+					</tr>
+				</table>
+
+				<p>The <span class="hint-caps">YDIST</span> command controls the vertical distance between <strong>point1</strong> and <strong>point2</strong>. If you omit the minimumDistance flag and parameters, the compiler will use the default minimum distances: 1/2 or 1 pixel for black features (depending on rounding state); and 0 pixels for gray and white features.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_YDOUBLEGRID"><span class="hint-caps">Y_DOUBLE_GRID</span></h3>
+				
+				<p><span class="hint-caps">YDOUBLEGRID</span>(<strong>point1</strong> [,pointn]...)</p>
+				
+				<p>Abbreviation: <span class="hint-caps">YDOU</span></p>
+				
+				<p>Command Type: Informative</p>
+
+				<table>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>point to round</td>
+					</tr>
+					<tr>
+						<td>pointn</td>
+						<td>additional points to round</td>
+					</tr>
+				</table>
+
+				<p>The <span class="hint-caps">YDOUBLEGRID</span> command controls the rounding state for a specified point or series of points. Subsequent <span class="hint-caps">LINK</span> or <span class="hint-caps">ANCHOR</span> commands will move the points along the y axis to the nearest grid line or half grid line, whichever is closest to the point.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_YDOWNTOGRID"><span class="hint-caps">Y_DOWN_TO_GRID</span></h3>
+				
+				<p><span class="hint-caps">YDOWNTOGRID</span>(<strong>point1</strong> [,pointn]...)</p>
+				
+				<p>Abbreviation: <span class="hint-caps">YDOW</span></p>
+				
+				<p>Command Type: Informative</p>
+
+				<table>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>point to round</td>
+					</tr>
+					<tr>
+						<td>pointn</td>
+						<td>additional points to round</td>
+					</tr>
+				</table>
+
+				<p>The <span class="hint-caps">YDOWNTOGRID</span> command controls the rounding state for a specified point or series of points. Subsequent <span class="hint-caps">LINK</span> or <span class="hint-caps">ANCHOR</span> commands will move the points down along the y axis to the nearest grid line.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_YHALFGRID"><span class="hint-caps">Y_HALF_GRID</span></h3>
+				
+				<p><span class="hint-caps">YHALFGRID</span>(<strong>point1</strong> [,pointn]...)</p>
+				
+				<p>Abbreviation: <span class="hint-caps">YH</span></p>
+				
+				<p>Command Type: Informative</p>
+
+				<table>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>point to round</td>
+					</tr>
+					<tr>
+						<td>pointn</td>
+						<td>additional points to round</td>
+					</tr>
+				</table>
+
+				<p>The <span class="hint-caps">YHALFGRID</span> command controls the rounding state for a specified point or series of points. Subsequent <span class="hint-caps">LINK</span> or <span class="hint-caps">ANCHOR</span> commands will move the points midway between the horizontal pixel boundaries.</p>
+				
+				<p><img src="vttdoc-images/vttlang-X_HALF_GRID.png" width="225" height="156" alt=""></p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_YINTERPOLATE"><span class="hint-caps">YINTERPOLATE</span></h3>
+				
+				<p><span class="hint-caps">YINTERPOLATE</span> [angleFlag] (<strong>parentA, child1</strong> [,childn]..., parentB)</p>
+				
+				<p>Abbreviation: <span class="hint-caps">YIN</span></p>
+				
+				<p>Command Type: Action</p>
+
+				<table>
+					<tr>
+						<td><strong>parentA</strong></td>
+						<td>endpoint of line</td>
+					</tr>
+					<tr>
+						<td><strong>child1</strong></td>
+						<td>point to be interpolated</td>
+					</tr>
+					<tr>
+						<td>childn</td>
+						<td>additional points to be interpolated</td>
+					</tr>
+					<tr>
+						<td><strong>parentB</strong></td>
+						<td>endpoint of line</td>
+					</tr>
+				</table>
+
+				<p>The <span class="hint-caps">YINTERPOLATE</span> command moves the specified child points so that they maintain the same relationship (proportional distance) in y with the hinted parent point.</p>
+
+				<p>The child points must fall within the y interval defined by the parent points.</p>
+
+				<p>If the angleFlag is absent, <span class="hint-caps">YINTERPOLATE</span> works purely in the y direction.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_YIPANCHOR"><span class="hint-caps">YIPANCHOR</span></h3>
+				
+				<p><span class="hint-caps">YIPANCHOR</span> [angleFlag] (<strong>parentA, child1</strong> [,childn]..., <strong>parentB</strong>)</p>
+				
+				<p>Abbreviation: <span class="hint-caps">YIP</span></p>
+				
+				<p>Command Type: Action</p>
+
+				<table>
+					<tr>
+						<td><strong>parentA</strong></td>
+						<td>endpoint of line</td>
+					</tr>
+					<tr>
+						<td><strong>child1</strong></td>
+						<td>point to be interpolated</td>
+					</tr>
+					<tr>
+						<td>childn</td>
+						<td>additional points to be interpolated</td>
+					</tr>
+					<tr>
+						<td><strong>parentB</strong></td>
+						<td>endpoint of line</td>
+					</tr>
+				</table>
+
+				<p><span class="hint-caps">YIPANCHOR</span> combines the <span class="hint-caps">INTERPOLATE</span> and <span class="hint-caps">ANCHOR</span> commands. The command first interpolates the child points and then rounds them to the grid according to the rounding state, effectively anchoring the child points.</p>
+
+				<p>As with the <span class="hint-caps">YINTERPOLATE</span> command, the child points must fall within the x interval defined by the parent points.</p>
+
+				<p>If the angleFlag is absent, <span class="hint-caps">YIPANCHOR</span> works purely in the y direction.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_YLINK"><span class="hint-caps">YLINK</span></h3>
+				
+				<p><span class="hint-caps">YLINK</span> [angleFlag] (<strong>point1, point2</strong> [,cvt1] [,minimumDistance])</p>
+				
+				<p>Abbreviation: <span class="hint-caps">YL</span></p>
+				
+				<p>Command Type: Action</p>
+
+				<table>
+					<tr>
+						<td>angleFlag</td>
+						<td>italic or adjusted italic angle</td>
+					</tr>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>point number</td>
+					</tr>
+					<tr>
+						<td><strong>point2</strong></td>
+						<td>point number</td>
+					</tr>
+					<tr>
+						<td>cvt1</td>
+						<td><span class="hint-caps">CVT</span> number specifying distance value</td>
+					</tr>
+					<tr>
+						<td>minimumDistance</td>
+						<td>minimum distance in pixels</td>
+					</tr>
+				</table>
+
+				<p><span class="hint-caps">YLINK</span> controls the horizontal distance between two points. You can either specify a <span class="hint-caps">CVT</span> number for the distance, or allow the <span class="hint-caps">YLINK</span> command to find and use the closest <span class="hint-caps">CVT</span> value based on the character group and feature type (as specified in the <span class="hint-caps">CVT</span> comments). A previously used <span class="hint-caps">YROUND</span> or <span class="hint-caps">YSTROKE</span> command may influence the control value chosen upon compilation. You must label glyph features with such informative commands for the compiler to choose correct control values.</p>
+
+				<p>The minimumDistance parameter forces the feature identified by the <span class="hint-caps">YLINK</span> command to have a minimum width. By default, black features have a minimum distance of 1 pixel, and white (and gray) features have a minimum distance of 0 pixels.</p>
+
+				<p>The default values for minimum distance depend on the rounding method in use. A MinimumDistance of 1/2 pixel may be used to comply with previously used rounding methods. </p>
+
+				<p>If you want to force the distance between two points (as specified by the outline) to be preserved, use the <span class="hint-caps">XDIST</span> and <span class="hint-caps">YDIST</span> commands, not the <span class="hint-caps">LINK</span> commands.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_YMOVE"><span class="hint-caps">YMOVE</span></h3>
+				<p><span class="hint-caps">YMOVE</span>(<strong>value, point1</strong> [,pointn]...)</p>
+				<p>Abbreviation: <span class="hint-caps">YM</span></p>
+				<p>Command Type: Action</p>
+
+				<table>
+					<tr>
+						<td><strong>value</strong></td>
+						<td>number of pixels (may be fractional)</td>
+					</tr>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>point number to move</td>
+					</tr>
+					<tr>
+						<td>pointn</td>
+						<td>additional point numbers to move</td>
+					</tr>
+				</table>
+
+				<p>Moves one or more points along the y axis by a specific pixel amount, e.g., 1, 0.5, 1.25</p>
+
+				<p>For example, to move point 19 by 1/4 of a pixel in the y direction, use:</p>
+
+				<p><span class="hint-caps">YMOVE</span>(0.25,19)</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_YROUND"><span class="hint-caps">YROUND</span></h3>
+				
+				<p><span class="hint-caps">YROUND</span>(<strong>point1, point2</strong>)</p>
+				
+				<p>Abbreviation: <span class="hint-caps">YR</span></p>
+				
+				<p>Command Type: Informative</p>
+
+				<p>The <span class="hint-caps">YROUND</span> command is an informative command used to identify curves. This assists the compiler in choosing control values associated with curves. These compiler will use these values in a subsequent <span class="hint-caps">LINK</span> command</p>
+
+				<p>For example:</p>
+
+				<p><span class="hint-caps">YROUND</span>(3,4)</p>
+				
+				<p><img src="vttdoc-images/vttlang-YROUND.png" width="263" height="228" alt=""></p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_YSHIFT"><span class="hint-caps">YSHIFT</span></h3>
+				
+				<p><span class="hint-caps">YSHIFT</span>(<strong>parent1, child1</strong> [,childn]...)</p>
+				
+				<p>Abbreviation: <span class="hint-caps">YSH</span></p>
+				
+				<p>Command Type: Action</p>
+
+				<table>
+					<tr>
+						<td><strong>parent1</strong></td>
+						<td>parent point</td>
+					</tr>
+					<tr>
+						<td><strong>child1</strong></td>
+						<td>child point to shift</td>
+					</tr>
+					<tr>
+						<td>childn</td>
+						<td>additional child points</td>
+					</tr>
+				</table>
+
+				<p>The <span class="hint-caps">YSHIFT</span> command shifts the specified child points in the y direction by the same amount as the parent has been moved during previous hinting.</p>
+			</div>
+
+
+
+			<div>
+				<h3 id="cmd_YSTROKE"><span class="hint-caps">YSTROKE</span></h3>
+				
+				<p><span class="hint-caps">YSTROKE</span>(<strong>point1, point2, point3, point4</strong> [,cvt1])</p>
+				
+				<p>Abbreviation: <span class="hint-caps">YST</span></p>
+				
+				<p>Command Type: Informative</p>
+
+				<table>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>top left point</td>
+					</tr>
+					<tr>
+						<td><strong>point2</strong></td>
+						<td>bottom left point</td>
+					</tr>
+					<tr>
+						<td><strong>point3</strong></td>
+						<td>top right point</td>
+					</tr>
+					<tr>
+						<td><strong>point4</strong></td>
+						<td>bottom right point</td>
+					</tr>
+					<tr>
+						<td>cvt1</td>
+						<td>width of stroke</td>
+					</tr>
+				</table>
+
+				<p>This command identifies a feature as a horizontal stroke. This enables a subsequent <span class="hint-caps">LINK</span> command to choose the appropriate control value.</p></div>
+
+
+
+			<div>
+				<h3 id="cmd_YUPTOGRID"><span class="hint-caps">Y_UP_TO_GRID</span></h3>
+				
+				<p><span class="hint-caps">YUPTOGRID</span>(<strong>point1</strong> [,point2]...)</p>
+				
+				<p>Abbreviation: <span class="hint-caps">YU</span></p>
+
+				<table>
+					<tr>
+						<td><strong>point1</strong></td>
+						<td>point to round</td>
+					</tr>
+					<tr>
+						<td>pointn</td>
+						<td>additional points to round</td>
+					</tr>
+				</table>
+
+				<p>The <span class="hint-caps">YUPTOGRID</span> command controls the rounding state for a specified point or series of points. Subsequent <span class="hint-caps">LINK</span> or <span class="hint-caps">ANCHOR</span> commands will move the points up along the y axis to the nearest grid line.</p>
+			</div>
+		</section>
+
+		<section>
+			<h1 id="appendix_a">Appendix A: <span class="hint-caps">VTT</span> Talk Compiler Error Messages</h1>
+
+			<p>The <span class="hint-caps">VTT</span> Talk Compiler will report syntactical errors when it encounters commands it doesn’t “understand.” This chapter contains a list of these errors, as well as various troubleshooting tips.</p>
+
+			<p>Sometimes the compiler will give an error message that may be confusing depending on the context. For example, if you mistakenly use a decimal for a comma in the <span class="hint-caps">XLINK</span> command,</p>
+
+			<p><span class="hint-caps">XLINK</span>(0.12)</p>
+
+			<p>the compiler reports:</p>
+
+			<p>“integer number expected (example: 1)”</p>
+
+			<p>The compiler doesn’t “second-guess” your decision (or mistake) in using the decimal, but reports the problem as an unexpected data type.</p>
+
+			<p>Some other errors the compiler will notify you of are:</p>
+
+			<ul>
+				<li>Not using an end parenthesis</li>
+				<li>Not closing a comment</li>
+				<li>Illegal characters within a number</li>
+			</ul>
+
+			<p>The compiler also reports errors regarding misused or missing <span class="hint-caps">CVT</span> numbers. For example, the compiler will report an error if a <span class="hint-caps">CVT</span> number is referenced that does not exist in the Control Value Table.</p>
+
+			<p>The compiler will not accept the <span class="hint-caps">STROKE</span>, <span class="hint-caps">DSTROKE</span>, or <span class="hint-caps">ISTROKE</span> commands if it can’t find control values in the <span class="hint-caps">CVT</span> due to incorrect control value commenting. The compiler will also report an error if a feature specified in an <span class="hint-caps">XSTROKE</span> or <span class="hint-caps">YSTROKE</span> command is too far from horizontal or vertical.</p>
+		</section>
+
+		<section>
+			<h1 id="appendix_b">Appendix B: The TrueType Compiler</h1>
+
+			<h2 id="tt_inst_syntax">TrueType Instruction Syntax</h2>
+
+			<p>Within <span class="hint-caps">VTT</span> you can enter and edit low-level TrueType instructions. The syntax and descriptions of TrueType instructions are presented in the <em>TrueType Font File Specification.</em> However, in <span class="hint-caps">VTT</span> the boolean values used as parameters are different than those listed in the font specification</p>
+
+			<p>In the font specification, boolean values used as parameters are usually bit settings or flags, having values of 1 or 0. When entering TrueType instructions while in <span class="hint-caps">VTT</span>, you will use “friendlier” mnemonic values rather than bit settings or flags. For example:</p>
+
+	<table>
+		<tr>
+			<td><span class="hint-caps">MIRP</span>[00000]</td>
+			<td>Command and boolean values as listed in the TrueType specification</td>
+		</tr>
+		<tr>
+			<td><span class="hint-caps">MIRP</span>[m&lt;rGr]</td>
+			<td>Command and mnemonic flags as entered in <span class="hint-caps">VTT</span> for the same effect</td>
+		</tr>
+	</table>
+
+			<p>The mnemonic values as used in <span class="hint-caps">VTT</span> are listed below, along with the low-level values with which they correspond.</p>
+
+			<table>
+				<tr>
+					<th>Category</th>
+					<th>Mnemonic</th>
+					<th>Description</th>
+					<th>Spec Value (binary)</th>
+				</tr>
+				<tr>
+					<td>Direction</td>
+					<td>X</td>
+					<td>X axis</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>Y</td>
+					<td>Y axis</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>Outline</td>
+					<td>O</td>
+					<td>Use original outline</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>N</td>
+					<td>Use gridfitted outline</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>Rounding or Line Relation</td>
+					<td>R</td>
+					<td>Round distance; or perpendicular to line</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>r</td>
+					<td>Do not round distance; or parallel to line</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>Reference Point Autoset</td>
+					<td>M</td>
+					<td>Set rp0 to point number on the stack</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>m</td>
+					<td>Do not set rp0</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>Reference Point Usage</td>
+					<td>1</td>
+					<td>Use rp1</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>2</td>
+					<td>Use rp2</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>Minimum Distance flag</td>
+					<td>&gt;</td>
+					<td>Obey minimum distance</td>
+					<td>1</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>&lt;</td>
+					<td>Do not obey minimum distance</td>
+					<td>0</td>
+				</tr>
+				<tr>
+					<td>Color (Distance type)</td>
+					<td>Gr</td>
+					<td>Gray</td>
+					<td>00</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>Bl</td>
+					<td>Black</td>
+					<td>01</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>Wh</td>
+					<td>White</td>
+					<td>10</td>
+				</tr>
+			</table>
+
+			<p>The TrueType instructions which use these values are listed below:</p>
+
+			<table>
+				<tr>
+					<th>Instruction</th>
+					<th>Description</th>
+					<th>Categories of Flags Used</th>
+				</tr>
+				<tr>
+					<td><span class="hint-caps">SVTCA</span></td>
+					<td>Set Vectors To Coordinate Axis</td>
+					<td>Direction</td>
+				</tr>
+				<tr>
+					<td><span class="hint-caps">SPVTCA</span></td>
+					<td>Set Projection Vector To Coordinate Axis</td>
+					<td>Direction</td>
+				</tr>
+				<tr>
+					<td><span class="hint-caps">SFVTCA</span></td>
+					<td>Set Freedom Vector To To Cordinate Axis</td>
+					<td>Direction</td>
+				</tr>
+				<tr>
+					<td><span class="hint-caps">SPVTL</span></td>
+					<td>Set Projection Vector To Line</td>
+					<td>Line Relation</td>
+				</tr>
+				<tr>
+					<td><span class="hint-caps">SFVTL</span></td>
+					<td>Set Freedom Vector To Line</td>
+					<td>Line Relation</td>
+				</tr>
+				<tr>
+					<td><span class="hint-caps">MDAP</span></td>
+					<td>Move Direct Absolute Point</td>
+					<td>Rounding</td>
+				</tr>
+				<tr>
+					<td><span class="hint-caps">IUP</span></td>
+					<td>Interpolate Untouched Points</td>
+					<td>Direction</td>
+				</tr>
+				<tr>
+					<td><span class="hint-caps">SHP</span></td>
+					<td>SHift Point</td>
+					<td>Reference Point Usage</td>
+				</tr>
+				<tr>
+					<td><span class="hint-caps">SHC</span></td>
+					<td>SHift Contour</td>
+					<td>Reference Point Usage</td>
+				</tr>
+				<tr>
+					<td><span class="hint-caps">SHZ</span></td>
+					<td>SHift Zone</td>
+					<td>Reference Point Usage</td>
+				</tr>
+				<tr>
+					<td><span class="hint-caps">MSIRP</span></td>
+					<td>Move Stack Indirect Relative Point</td>
+					<td>Reference Point Autoset</td>
+				</tr>
+				<tr>
+					<td><span class="hint-caps">MIAP</span></td>
+					<td>Move Indirect Absolute Point</td>
+					<td>Rounding</td>
+				</tr>
+				<tr>
+					<td><span class="hint-caps">GC</span></td>
+					<td>Get Coordinate value</td>
+					<td>Outline</td>
+				</tr>
+				<tr>
+					<td><span class="hint-caps">MD</span></td>
+					<td>Measure Distance</td>
+					<td>Outline</td>
+				</tr>
+				<tr>
+					<td><span class="hint-caps">ROUND</span></td>
+					<td><span class="hint-caps">ROUND</span></td>
+					<td>Color</td>
+				</tr>
+				<tr>
+					<td><span class="hint-caps">NROUND</span></td>
+					<td>No <span class="hint-caps">ROUND</span></td>
+					<td>Color</td>
+				</tr>
+				<tr>
+					<td><span class="hint-caps">SDPVTL</span></td>
+					<td>Set Dual Projection Vector To Line</td>
+					<td>Line Relation</td>
+				</tr>
+				<tr>
+					<td><span class="hint-caps">MDRP</span></td>
+					<td>Move Direct Relative Point</td>
+					<td>Must be in this order: Reference Point Autoset, Minimum Distance Flag, Rounding, Color</td>
+				</tr>
+				<tr>
+					<td><span class="hint-caps">MIRP</span></td>
+					<td>Move Indirect Relative Point</td>
+					<td>Must be in this order: Reference Point Autoset, Minimum Distance Flag, Rounding, Color</td>
+				</tr>
+			</table>
+
+
+
+			<h2 id="push">The Push Command</h2>
+			
+			<p><span class="hint-caps">VTT</span> optimizes TrueType instructions when it compiles the low-level text source. </p>
+
+			<h3 id="auto_push">Automatic Pre-Push</h3>
+
+			<p>The compiler streamlines stack operations by creating binary code that inserts all required values on the stack before a series of commands. This operation is called a pre-push, and although you can use the command yourself, it is convenient to let the compiler create the equivalent binary code on compilation.</p>
+
+			<p>For example, in the compilation below note how the arguments for the <span class="hint-caps">SRP</span>, <span class="hint-caps">MDRP</span> and <span class="hint-caps">MDAP</span> commands are combined in a single pre-push command.</p>
+
+			<table>
+				<tr>
+					<th>When you type:</th>
+					<th>the compiler creates the binary equivalent of this:</th>
+				</tr>
+				<tr>
+					<td><p><span class="hint-caps">SRP0</span>[], 4<br>
+						<span class="hint-caps">MDRP</span>[m&lt;RWh], 0<br>
+						<span class="hint-caps">SRP0</span>[], 5<br>
+						<span class="hint-caps">MDRP</span>[m&lt;RWh], 3<br>
+						<span class="hint-caps">SVTCA</span>[Y]<br>
+						<span class="hint-caps">MDAP</span>[R], 0<br>
+						<span class="hint-caps">MDRP</span>[m&gt;RBl], 1<br>
+						<span class="hint-caps">IUP</span>[X]<br>
+						<span class="hint-caps">IUP</span>[Y]</p></td>
+					<td><p><span class="hint-caps">#PUSHOFF</span><br>
+						<span class="hint-caps">PUSHB</span>[6],1,0,3,5,0,4<br>
+						<span class="hint-caps">SRP0</span>[]<br>
+						<span class="hint-caps">MDRP</span>[m&lt;RWh]<br>
+						<span class="hint-caps">SRP0</span>[]<br>
+						<span class="hint-caps">MDRP</span>[m&lt;RWh]<br>
+						<span class="hint-caps">SVTCA</span>[Y]<br>
+						<span class="hint-caps">MDAP</span>[R]<br>
+						<span class="hint-caps">MDRP</span>[m&gt;RBl]<br>
+						<span class="hint-caps">IUP</span>[X]<br>
+						<span class="hint-caps">IUP</span>[Y]<br>
+						<span class="hint-caps">#PUSHON</span></p><td>
+				</tr>
+			</table>
+
+			<p>By default, the compiler will automatically use the pre-push optimization. However, you may at times desire more control over the stack and will want to disable the use of pre-push in the compilation. Use the <span class="hint-caps">#PUSHON</span> command to set the compiler to automatic pre-push mode. Use the <span class="hint-caps">#PUSHOFF</span> command to turn off pre-push compilation.</p>
+
+			<h3 id="push_op">Push Optimization</h3>
+
+			<p>By using the <span class="hint-caps">#PUSH</span> command in your TrueType code, you can force the compiler to optimize storage of the values in your push command by storing them as either bytes (with <span class="hint-caps">PUSHB</span>) or words (with <span class="hint-caps">PUSHW</span>).</p>
+
+			<table>
+				<tr>
+					<th>When you type:</th>
+					<th>the compiler creates the binary equivalent of this:</th>
+				</tr>
+				<tr>
+					<td><p><span class="hint-caps">#PUSH</span>, 12,15,-20,257,345,1,2,3,4</p></td>
+					<td><p><span class="hint-caps">PUSHB</span>[2],12,15<br>
+						<span class="hint-caps">PUSHW</span>[3],-20,257,345<br>
+						<span class="hint-caps">PUSHB</span>[4],1,2,3,4</p></td>
+				</tr>
+			</table>
+		</section>
+	</body>
+</html>
