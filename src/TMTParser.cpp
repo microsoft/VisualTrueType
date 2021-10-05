@@ -930,6 +930,7 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 				case yUpToGrid:	  r = rutg; break;
 				case xNoRound:
 				case yNoRound:	  r = roff; break;
+				default: break;
 			}
 			for (i = 0; i < this->generators; i++) this->gen[i]->SetRounding(cmd == yHalfGrid || cmd == yDoubleGrid || cmd == yDownToGrid || cmd == yUpToGrid || cmd == yNoRound,r,params,knot);
 			break;
@@ -1378,6 +1379,8 @@ void TMTSourceParser::Flag(ActParam *actParam) {
 		case postRound:
 			actParam->type = postRoundFlag;
 			this->GetSym();
+			break;
+		default:
 			break;
 	}
 	this->prevPrevPos = paramStart;
