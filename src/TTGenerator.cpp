@@ -390,7 +390,7 @@ void TTSourceGenerator::Anchor(bool y, ProjFreeVector *projFreeVector, short kno
 	bool negativeDist;
 
 	knotR = this->attrib[knot].round[y];
-	if (knot < this->knots - PHANTOMPOINTS || !y && (knotR == rdtg || knotR == rutg)) {
+	if (knot < this->knots - PHANTOMPOINTS || (!y && (knotR == rdtg || knotR == rutg))) {
 		if (!this->ItalicAngleAllowed(projFreeVector,error)) return;
 		if (this->AlmostPerpendicular(&projFreeVector->pv,&projFreeVector->fv[0],error)) return;
 		if (this->tt) {
@@ -508,12 +508,12 @@ void TTSourceGenerator::Link(bool y, bool dist, ProjFreeVector *projFreeVector, 
 			distance = (short)Abs(link.y);
 		}
 	} else { // check for links related to GrabHereInX, using predefined colors and cvt numbers
-		if (parent == this->leftAnchor && child == this->knots - 2 || parent == this->knots - 2 && child == this->leftAnchor) {
+		if ((parent == this->leftAnchor && child == this->knots - 2) || (parent == this->knots - 2 && child == this->leftAnchor)) {
 			lsbLink = true; negativeMirp = parent == this->leftAnchor;
 			if (dist) swprintf(error,L"cannot use an XDIST command when a GRABHEREINX command has defined a cvt number");
 			if (cvt >= 0) swprintf(error,L"cannot override a cvt number defined via a GRABHEREINX command");
 			color = linkGrey; cvt = LSBTMP;
-		} else if (parent == this->rightAnchor && child == this->knots - 1 || parent == this->knots - 1 && child == this->rightAnchor) {
+		} else if ((parent == this->rightAnchor && child == this->knots - 1) || (parent == this->knots - 1 && child == this->rightAnchor)) {
 			rsbLink = true; negativeMirp = parent == this->rightAnchor;
 			if (dist) swprintf(error,L"cannot use an XDIST command when a GRABHEREINX command has defined a cvt number");
 			if (cvt >= 0) swprintf(error,L"cannot override a cvt number defined via a GRABHEREINX command");
@@ -543,7 +543,7 @@ void TTSourceGenerator::Link(bool y, bool dist, ProjFreeVector *projFreeVector, 
 	if (this->tt) this->AssertFreeProjVector(&projFreeVector->pv,&projFreeVector->fv[0]);
 		
 	scalProd = linkDirection.x*this->slope.x + linkDirection.y*this->slope.y;
-	if (parentR == childR && !lsbLink && !rsbLink && (distance == 0 || italicLink && scalProd > this->cosF1)) { // angle between link and slope < 0.5°
+	if (parentR == childR && !lsbLink && !rsbLink && (distance == 0 || (italicLink && scalProd > this->cosF1))) { // angle between link and slope < 0.5°
 		if (this->tt) {
 			this->tt->AssertRefPoint(0,parent);
 		//	ALIGNRP is less optimal than (but equivalent to) an unrounded MDRP, since for chains of Dists,
@@ -573,7 +573,7 @@ void TTSourceGenerator::Link(bool y, bool dist, ProjFreeVector *projFreeVector, 
 				if (color == linkBlack) {
 					for (parentC = 0; (parentC < this->glyph->numContoursInGlyph && this->glyph->endPoint[parentC] < parent); parentC++);
 					for (childC  = 0; (childC  < this->glyph->numContoursInGlyph && this->glyph->endPoint[childC]  < child);  childC++);
-					if (distance >= this->emHeight/100 && parentC == childC || distance >= this->emHeight/50 && parentC != childC) {
+					if ((distance >= this->emHeight/100 && parentC == childC) || (distance >= this->emHeight/50 && parentC != childC)) {
 					//	this uses just the same assumptions as did the old compiler to guess whether or not it makes sense to assert a minimum distance
 						jumpPpemSize[0] = 1;
 						if (!this->legacyCompile)
@@ -734,7 +734,7 @@ void TTSourceGenerator::ResLink(bool y, bool dist, ProjFreeVector *projFreeVecto
 	if (!this->ItalicAngleAllowed(projFreeVector,error)) return;
 	if (this->AlmostPerpendicular(&projFreeVector->pv,&projFreeVector->fv[0],error)) return;
 	
-	useMinDist = minDists > 0 || minDists < 0 && this->glyph->TheColor(parent,child) == linkBlack;
+	useMinDist = minDists > 0 || (minDists < 0 && this->glyph->TheColor(parent,child) == linkBlack);
 	
 	this->AssertFreeProjVector(&projFreeVector->pv,&projFreeVector->fv[0]);
 	this->tt->ResMIRP(parent,child,cvt,useMinDist);
@@ -1304,7 +1304,7 @@ void TTSourceGenerator::Stroke(FVOverride fvOverride, bool leftStationary[], sho
 			//	this->Touched(knot[A1],this->tt->FVDir());
 				fvmt = CalcDiagonalFVMT(fvOverride,knot[A1],knot[(A1+2)%4],knot[A2],strokeDirection,&refPoint0,&refPoint1);
 			/*****/
-				if (fvmt == fvOnY && !this->attrib[knot[A2]].touched[xRomanDir] && !this->xSmooth || fvmt == fvOnX && !this->attrib[knot[A2]].touched[yRomanDir] && !this->ySmooth) {
+				if ((fvmt == fvOnY && !this->attrib[knot[A2]].touched[xRomanDir] && !this->xSmooth) || (fvmt == fvOnX && !this->attrib[knot[A2]].touched[yRomanDir] && !this->ySmooth)) {
 					this->tt->AssertRefPoint(0,knot[A1]);
 					this->tt->AssertFreeProjVector(fvmt == fvOnY ? xRomanDir : yRomanDir);
 					this->tt->MDRP(false,false,linkBlack,knot[A2]);
@@ -1324,7 +1324,7 @@ void TTSourceGenerator::Stroke(FVOverride fvOverride, bool leftStationary[], sho
 			//	this->AssertFVMT(knot[(B1+2)%4],knot[B1],knot[B2],strokeDirection);
 				fvmt = CalcDiagonalFVMT(fvOverride,knot[(B1+2)%4],knot[B1],knot[B2],strokeDirection,&refPoint0,&refPoint1);
 			/*****/
-				if (fvmt == fvOnY && !this->attrib[knot[B2]].touched[xRomanDir] && !this->xSmooth || fvmt == fvOnX && !this->attrib[knot[B2]].touched[yRomanDir] && !this->ySmooth) {
+				if ((fvmt == fvOnY && !this->attrib[knot[B2]].touched[xRomanDir] && !this->xSmooth) || (fvmt == fvOnX && !this->attrib[knot[B2]].touched[yRomanDir] && !this->ySmooth)) {
 					this->tt->AssertRefPoint(0,knot[B1]);
 					this->tt->AssertFreeProjVector(fvmt == fvOnY ? xRomanDir : yRomanDir);
 					this->tt->MDRP(false,false,linkBlack,knot[B2]);
@@ -2419,7 +2419,7 @@ void TTSourceGenerator::DoVacuFormRound(void) {
 				y1 = vacu->knot[2]; this->attrib[y1].vacu = true; // for points to be flipped to on-curve
 				y2 = vacu->knot[3]; this->attrib[y2].vacu = true; // upon completing passes 2 and 3...
 				
-				if (pass == 0 && i == first || pass == 3) {
+				if ((pass == 0 && i == first) || pass == 3) {
 					if (pass == 3) { // type == 2
 						this->tt->AssertFreeProjVector(yRomanDir);
 						if (this->glyph->y[y2] > this->glyph->y[y1]) swprintf(buf,L"MD[N], %hi, %hi",y2,y1);
@@ -2525,7 +2525,7 @@ void TTSourceGenerator::DoVacuFormRound(void) {
 					}
 				}
 					
-				if (pass == 2 && i == last || pass == 3) {
+				if ((pass == 2 && i == last) || pass == 3) {
 					lo = 0;
 					while (lo < this->knots) { // determine a range of (off-curve) points that have been moved "diagonally" (vacu flag == true)
 						while (lo < this->knots && !(this->attrib[lo].vacu || this->glyph->onCurve[lo])) lo++;
