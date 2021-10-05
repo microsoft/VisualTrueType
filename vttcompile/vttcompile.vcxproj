@@ -143,7 +143,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\Area.cpp" />
     <ClCompile Include="..\src\cvtmanager.cpp" />
     <ClCompile Include="..\src\File.cpp" />
     <ClCompile Include="..\src\list.cpp" />
@@ -162,7 +161,6 @@
     <ClCompile Include="..\src\vttcompile.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\Area.h" />
     <ClInclude Include="..\src\cvtmanager.h" />
     <ClInclude Include="..\src\File.h" />
     <ClInclude Include="..\src\FixedMath.h" />
