@@ -933,6 +933,8 @@ void TTSourceGenerator::Align(FVOverride fvOverride, short parent0, short childr
 		//		this->Touched(ch,this->tt->FVDir());
 		//	}
 		//	break;
+		default:
+			break;
 		}
 		
 		//	***** an experimental variant *****
