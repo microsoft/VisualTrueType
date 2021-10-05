@@ -512,7 +512,7 @@ PrivateControlValueTable::~PrivateControlValueTable(void) {
 #define InitComment(scanner) (scanner->ch == L'/' && scanner->ch2 == L'*')
 #define TermComment(scanner) (scanner->ch == L'*' && scanner->ch2 == L'/')
 #define	Numeric(ch) (L'0' <= (ch) && (ch) <= L'9')
-#define Alpha(ch) (L'A' <= (ch) && (ch) <= L'Z' || L'a' <= (ch) && (ch) <= L'z')
+#define Alpha(ch) ((L'A' <= (ch) && (ch) <= L'Z') || (L'a' <= (ch) && (ch) <= L'z'))
 #define shortMax  32767L
 #define hShortMax 65535L
 #define shortMin -32768L
@@ -588,7 +588,7 @@ bool Scanner::GetNum(void) {
 	this->value = 0;
 	if (this->ch == L'0' && Cap(this->ch2) == L'X') {
 		this->GetCh(); this->GetCh(); this->ch = Cap(this->ch);
-		while (Numeric(this->ch) || L'A' <= this->ch && this->ch <= L'F') {
+		while (Numeric(this->ch) || (L'A' <= this->ch && this->ch <= L'F')) {
 			digit = this->ch <= L'9' ? (long)this->ch - (long)'0' : (long)this->ch - (long)'A' + 10;
 			if (this->value*16 + digit > hShortMax) { swprintf(this->errMsg,L"Hexadecimal number too large"); return false; }
 			this->value = this->value*16 + digit;
@@ -777,7 +777,7 @@ bool PrivateControlValueTable::SettingsDeclaration(void) {
 			if (!this->Parameter(&dropOffParam)) return false;
 			if (dropOffParam.type != ppemN) { swprintf(this->errMsg,L"Drop-out control turn-off ppem size expected (must be an integer in range @%li through @%li)" BRK L"Drop-out control turn-off ppem size specifies the ppem size at and above which drop-out control is no longer turned on.",1,dropOffParam.highPpemSize); this->scanner.ErrUnGetSym(); return false; }
 			this->tempSettings.dropOutCtrlOffPpemSize = (short)dropOffParam.value;
-			this->tempSettings.scanCtrlFlags = this->tempSettings.scanCtrlFlags & 0xff00 | this->tempSettings.dropOutCtrlOffPpemSize;
+			this->tempSettings.scanCtrlFlags = (this->tempSettings.scanCtrlFlags & 0xff00) | this->tempSettings.dropOutCtrlOffPpemSize;
 			this->tt->SCANCTRL(this->tempSettings.scanCtrlFlags);
 			this->tt->SCANTYPE(this->tempSettings.scanTypeFlags);
 			this->tempSettings.defined[sym - firstSetting] = true;
@@ -1044,7 +1044,7 @@ bool PrivateControlValueTable::InlineSttmt(void) {
 } // PrivateControlValueTable::InlineSttmt
 
 bool PrivateControlValueTable::Parameter(ActParam *actParam) {
-	if (natural <= this->scanner.sym && this->scanner.sym <= rational || leftParen <= this->scanner.sym && this->scanner.sym <= minus) {
+	if ((natural <= this->scanner.sym && this->scanner.sym <= rational) || (leftParen <= this->scanner.sym && this->scanner.sym <= minus)) {
 		if (!this->Expression(actParam)) return false;
 	} else if (this->scanner.sym == at) {
 		if (!this->scanner.GetSym()) return false;

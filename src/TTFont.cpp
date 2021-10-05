@@ -48,7 +48,7 @@ static const unsigned short glitPadIndex[GLIT_PAD] = {PRIVATE_STAMP_INDEX, PRE_P
 #define WRITEALIGNEDWORD( p, x ) ( *((short *)p) = (x), p += 2 )
 #define WRITENONALIGNEDWORD( p, x ) ( *p++ = (unsigned char) ((x) >> 8), *p++ = (unsigned char) (x) )
 
-#define DWordPad(x) (x + 3 & ~3)
+#define DWordPad(x) ((x + 3) & ~3)
 
 #define OnReserve(x,maxX)	((x)*5 >= (maxX)*4) // reached 80% = 4/5 capacity
 #define AddReserve(x)		((x) + (x)/4)
@@ -138,8 +138,8 @@ long ColorTransition(Vector V[], Vector W[]) { // cf. also Intersect in "MathUti
 	t1 = a22*b1 - a12*b2;
 	t2 = a11*b2 - a21*b1;
 	return (Sgn(t1) == Sgn(det) && 0 < Abs(t1) && Abs(t1) < Abs(det) && // intersection point is inside line V
-			(Sgn(t2) == Sgn(det) && 0 < Abs(t2) && Abs(t2) < Abs(det) || // intersection point is inside line W
-			t2 == det && Sgn(VectProdP(V[0],W[1],V[0],W[2]))*Sgn(VectProdP(V[0],W[3],V[0],W[2])) < 0)) ? 1 : 0; // or at the end of W and W arrives/departs on different sides of V
+			((Sgn(t2) == Sgn(det) && 0 < Abs(t2) && Abs(t2) < Abs(det)) || // intersection point is inside line W
+			(t2 == det && Sgn(VectProdP(V[0],W[1],V[0],W[2]))*Sgn(VectProdP(V[0],W[3],V[0],W[2])) < 0))) ? 1 : 0; // or at the end of W and W arrives/departs on different sides of V
 } // ColorTransition
 
 LinkColor TrueTypeGlyph::TheColor(short from, short to) {
@@ -4453,7 +4453,7 @@ unsigned long TrueTypeFont::GetPackedGlyphSize(long glyphIndex, TrueTypeGlyph *g
 	
 	size = 0;
 	
-	if (glyph->numContoursInGlyph == 0 || glyph->numContoursInGlyph == 1 && glyph->startPoint[0] == 0 && glyph->endPoint[0] == 0 && glyph->x[0] == 0 && glyph->y[0] == 0 && !glyph->onCurve[0] && glyfBinSize == 0) {
+	if (glyph->numContoursInGlyph == 0 || (glyph->numContoursInGlyph == 1 && glyph->startPoint[0] == 0 && glyph->endPoint[0] == 0 && glyph->x[0] == 0 && glyph->y[0] == 0 && !glyph->onCurve[0] && glyfBinSize == 0)) {
 		return size; // assume this is a dummy point that is neither instructed nor serves as an anchor, hence turn into an empty glyph by leaving with size == 0...
 	}
 	
@@ -4583,7 +4583,7 @@ unsigned long TrueTypeFont::PackGlyph(unsigned char *dst, long glyphIndex, TrueT
 //		glyph->numContoursInGlyph++;
 //	}
 
-	if (glyph->numContoursInGlyph == 0 || glyph->numContoursInGlyph == 1 && glyph->startPoint[0] == 0 && glyph->endPoint[0] == 0 && glyph->x[0] == 0 && glyph->y[0] == 0 && !glyph->onCurve[0] && glyfBinSize == 0) {
+	if (glyph->numContoursInGlyph == 0 || (glyph->numContoursInGlyph == 1 && glyph->startPoint[0] == 0 && glyph->endPoint[0] == 0 && glyph->x[0] == 0 && glyph->y[0] == 0 && !glyph->onCurve[0] && glyfBinSize == 0)) {
 		hmtx->leftSideBearing = 0;
 		hmtx->advanceWidth = glyph->x[glyph->numContoursInGlyph + 1] - glyph->x[glyph->numContoursInGlyph];
 		return 0; // assume this is a dummy point that is neither instructed nor serves as an anchor, hence turn into an empty glyph by leaving with size == 0...
