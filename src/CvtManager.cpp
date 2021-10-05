@@ -824,6 +824,8 @@ bool PrivateControlValueTable::SettingsDeclaration(void) {
 			this->tt->SCVTCI(this->tempSettings.numCvtCutIns,this->tempSettings.cvtCutInPpemSize,this->tempSettings.cvtCutInValue);
 			this->tempSettings.defined[sym - firstSetting] = true;
 			break;		
+		default:
+			break;
 	}
 
 	if (!this->legacyCompile)
@@ -856,6 +858,8 @@ bool PrivateControlValueTable::SettingsDeclaration(void) {
 			this->tempSettings.fpgmBiasNum = (short) fpgmBiasParam.value;
 			this->tt->SetFunctionNumberBias(this->tempSettings.fpgmBiasNum);
 			this->tempSettings.defined[sym - firstSetting] = true;
+			break;
+		default:
 			break;
 		}
 	}
@@ -894,6 +898,7 @@ bool PrivateControlValueTable::AttributeAssociation(unsigned long *attribute) {
 			case color:		currColor = (LinkColor)value; break;
 			case direction: currDirection = (LinkDirection)value; break;
 			case category:	currCategory = (CvtCategory)value; break;
+			default: break;
 		}
 		if (!this->scanner.GetSym()) return false;
 		if (!this->InlineSttmt()) return false;
@@ -1085,6 +1090,8 @@ bool ValidBinaryOperation(ActParam *a, ActParam *b, Symbol op, wchar_t errMsg[])
 		} else {
 			swprintf(errMsg,L"result of division too large (cannot be %li or larger in magnitude)",shortMax+1); return false;
 		}
+		break;
+	default:
 		break;
 	}
 	return true; // by now
