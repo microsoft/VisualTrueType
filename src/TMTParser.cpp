@@ -37,7 +37,7 @@
 #define InitComment(self) (self->ch == L'/' && self->ch2 == L'*')
 #define TermComment(self) (self->ch == L'*' && self->ch2 == L'/')
 #define	Numeric(ch) (L'0' <= (ch) && (ch) <= L'9')
-#define Alpha(ch) (L'A' <= (ch) && (ch) <= L'Z' || L'a' <= (ch) && (ch) <= L'z')
+#define Alpha(ch) ((L'A' <= (ch) && (ch) <= L'Z') || (L'a' <= (ch) && (ch) <= L'z'))
 #define Command(self) (align <= (self)->sym && (self)->sym <= illegal)
 #define InitFlag(self) (leftDir <= (self)->sym && (self)->sym <= postRound)
 #define InitParam(self) (illegal <= (self)->sym && (self)->sym <= leftDir) // leftDir included because it doubles up as lessThan in the minDistGeneral parameter
@@ -532,7 +532,7 @@ Partner *TMTSourceParser::ThePartner(bool y, short from, short to) {
 	
 	partner = NULL;
 	if (this->partners)
-		for (partner = (Partner*)this->partners->first; partner && !(partner->of == from && partner->with == to || partner->of == to && partner->with == from); partner = (Partner*)partner->next);
+		for (partner = (Partner*)this->partners->first; partner && !((partner->of == from && partner->with == to) || (partner->of == to && partner->with == from)); partner = (Partner*)partner->next);
 	return partner;
 } // TMTSourceParser::ThePartner
 
@@ -1292,7 +1292,7 @@ void TMTSourceParser::XFormToNewSyntax(void) {
 			if ((old[s] == L'c' || old[s] == L'C') && (old[s+1] == L'v' || old[s+1] == L'V') && (old[s+2] == L't' || old[s+2] == L'T')) { // "cvt123"
 				neu[d++] = L',';
 				old[s++] = L' '; old[s++] = L' '; old[s++] = L' ';
-				while (s < l && (L'0' <= old[s] && old[s] <= L'9' || old[s] == L'.' || old[s] == L' ')) {
+				while (s < l && ((L'0' <= old[s] && old[s] <= L'9') || old[s] == L'.' || old[s] == L' ')) {
 					if (old[s] != L' ') neu[d++] = old[s];
 					old[s++] = L' ';
 				}
@@ -1319,7 +1319,7 @@ void TMTSourceParser::XFormToNewSyntax(void) {
 					while (s < l-1 && old[s] != L')') { neu[d++] = old[s]; old[s++] = L' '; }
 					neu[d++] = old[s]; old[s++] = L' '; // ')'
 				} else { // "≥12"
-					while (s < l && (L'0' <= old[s] && old[s] <= L'9' || old[s] == L'.')) { neu[d++] = old[s]; old[s++] = L' '; }
+					while (s < l && ((L'0' <= old[s] && old[s] <= L'9') || old[s] == L'.')) { neu[d++] = old[s]; old[s++] = L' '; }
 				}
 			} else {
 				s++;
@@ -1572,12 +1572,12 @@ void TMTSourceParser::Parameter(ActParam *actParam) {
 bool Match(ParamType formParamType, ParamType actParamType);
 bool Match(ParamType formParamType, ParamType actParamType) {
 	return (actParamType == formParamType ||
-			actParamType == anyN && anyN <= formParamType && formParamType <= posRationalN ||
+			(actParamType == anyN && anyN <= formParamType && formParamType <= posRationalN) ||
 		//	actParamType == knotNttvOpt && knotNttvOpt <= formParamType && formParamType <= k
-			knotNttvOpt <= actParamType && actParamType <= knotNttvOptXY && knotNttvOpt <= formParamType && formParamType <= knotNttvOptXY ||
-			actParamType == rangeOfPpemN && formParamType == rangeOfPpemNcolorOpt ||
-			actParamType == posRationalN && rationalN <= formParamType && formParamType <= posRationalN || 
-			actParamType == minDistFlagOnly && formParamType == minDistGeneral);
+			(knotNttvOpt <= actParamType && actParamType <= knotNttvOptXY && knotNttvOpt <= formParamType && formParamType <= knotNttvOptXY) ||
+			(actParamType == rangeOfPpemN && formParamType == rangeOfPpemNcolorOpt) ||
+			(actParamType == posRationalN && rationalN <= formParamType && formParamType <= posRationalN) ||
+			(actParamType == minDistFlagOnly && formParamType == minDistGeneral));
 } /* Match */
 
 void TMTSourceParser::MatchParameter(FormParam *formParams, short *formParamNum, ParamType *actParamType) {
@@ -1695,7 +1695,7 @@ void TMTSourceParser::ValidateParameter(ActParam *actParam) {
 			break;
 		case rationalN:
 		case posRationalN:
-			if (actParam->type == posRationalN && actParam->numValue < 0 || actParam->numValue < -maxPixelValue || actParam->numValue > maxPixelValue) {
+			if ((actParam->type == posRationalN && actParam->numValue < 0) || actParam->numValue < -maxPixelValue || actParam->numValue > maxPixelValue) {
 				swprintf(errMsg,L"illegal pixel size (can be in range %li through %li only)",actParam->type == posRationalN ? 0 : -maxPixelValue/one6,maxPixelValue/one6); this->ErrorMsg(contextual,errMsg);
 				actParam->numValue = one6;
 			}
@@ -1923,7 +1923,7 @@ void TMTSourceParser::SkipComment(void) {
 } /* TMTSourceParser::SkipComment */
 
 void TMTSourceParser::SkipWhiteSpace(bool includingComments) {
-	while (WhiteSpace(this) || includingComments && InitComment(this)) {
+	while (WhiteSpace(this) || (includingComments && InitComment(this))) {
 		if (WhiteSpace(this)) this->GetCh();
 		if (includingComments && InitComment(this)) this->SkipComment();
 	}
