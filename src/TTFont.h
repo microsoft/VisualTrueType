@@ -311,12 +311,8 @@ public:
 	bool GetGlyph(long glyphIndex, TrueTypeGlyph *glyph, wchar_t errMsg[]);
 	long GlyfBinSize(void);
 	unsigned char* GlyfBin(void); 
-	Areas::Area GetBoundingBox(void);
-	void GetHeights(long *emHeight, long *descender, long *baseHeight, long *meanHeight, long *capHeight, long *ascender);
 	bool GetHMTXEntry(long glyphIndex, long *leftSideBearing, long *advanceWidth);
-	bool GetVDMXEntry(long xResolution, long yResolution, long ppemSize, F26Dot6 *descender, F26Dot6 *ascender); // returns false if not avail for this font/resolution ratio/ppem size
 	long NumberOfGlyphs(void);
-	long NumberOfChars(void);
 	long GlyphIndexOf(unsigned long charCode);
 	bool GlyphIndecesOf(wchar_t textString[], long maxNumGlyphIndeces, long glyphIndeces[], long *numGlyphIndeces, wchar_t errMsg[]);
 	unsigned long CharCodeOf(long glyphIndex);
@@ -335,7 +331,6 @@ public:
 	long EstimateCvar(); 
 	long UpdateCvar(long *size, unsigned char data[]);	
 	void UpdateAdvanceWidthFlag(bool linear);
-	bool FontIsOptimizedForClearType(); 
 	bool UpdateBinData(ASMType asmType, long binSize, unsigned char *binData);
 	bool BuildNewSfnt(StripCommand strip, CharGroup group, long glyphIndex, TrueTypeGlyph *glyph,
 					  TextBuffer *glyfText, TextBuffer *prepText, TextBuffer *cvtText,  TextBuffer *talkText, TextBuffer *fpgmText,
@@ -355,21 +350,13 @@ public:
 	void UpdateCompositeProfile(TrueTypeGlyph *glyph, TTCompositeProfile *compositeProfile, short context, short RoundingCode, short InstructionIndex, short *args, short argc, sfnt_glyphbbox *Newbbox, short *error);
 	bool GetNumberOfPointsAndContours(long glyphIndex, short *contours, short *points, short *ComponentDepth, sfnt_glyphbbox *bbox);
 	long GetUnitsPerEm(void);							// FUnits Per EM (2048 is typical)
-	float GetItalicAngleFromPostTable(void);  // for autohinting, get the italic angle from the post table
 	void UpdateAutohinterProfile(short maxElements, short maxTwilightPoints, short maxStorage);
 	bool HasSource(); 
-	bool GetPostScriptHeader(sfnt_PostScriptInfo *postHeader); 
-	char* GetPostScriptName(char* psName, long code);	
 	bool IsMakeTupleName(const std::wstring &name) const; 
 
 	unsigned char* GetSfntPtr(long offset)
 	{
 		return (sfntHandle + offset);
-	}
-
-	unsigned long GetSfntSize()
-	{
-		return sfntSize;
 	}
 		
 	std::shared_ptr<Variation::InstanceManager> GetInstanceManager()

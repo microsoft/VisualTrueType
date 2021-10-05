@@ -49,17 +49,4 @@ public:
 	virtual void Remove(ListElem *that);
 };
 
-class CircularListStruct : public ListStruct {
-public:
-	CircularListStruct(void);
-	virtual void Clone(ListStruct **into); // sort of a copy constructor
-	virtual ~CircularListStruct(void);
-	virtual void InsertAtStart(ListElem *that);
-	virtual void InsertBefore(ListElem *that, ListElem *before);
-	virtual void InsertAfter (ListElem *that, ListElem *after);
-	virtual void InsertAtEnd(ListElem *that);
-	virtual void Remove(ListElem *that);
-	virtual void Reverse(void);
-};
-
 #endif // List_dot_h
