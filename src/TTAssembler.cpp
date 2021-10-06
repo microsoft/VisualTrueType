@@ -3963,14 +3963,14 @@ bool DisassemComponent(TrueTypeGlyph *glyph, TextBuffer *src, wchar_t errMsg[]) 
 			short word = glyph->componentData[i++];
 			xscale	= yscale = SWAPW(word);			
 			scale01	= scale10 = 0;
-			flags	= flags & ~WE_HAVE_A_SCALE | WE_HAVE_A_TWO_BY_TWO;
+			flags	= (flags & ~WE_HAVE_A_SCALE) | WE_HAVE_A_TWO_BY_TWO;
 		} else if (flags & WE_HAVE_AN_X_AND_Y_SCALE) {
 			xscale	= glyph->componentData[i++];
 			xscale  = (signed short)SWAPW(xscale);
 			yscale	= glyph->componentData[i++];
 			yscale  = (signed short)SWAPW(yscale);
 			scale01	= scale10 = 0;
-			flags	= flags & ~WE_HAVE_AN_X_AND_Y_SCALE | WE_HAVE_A_TWO_BY_TWO;
+			flags	= (flags & ~WE_HAVE_AN_X_AND_Y_SCALE) | WE_HAVE_A_TWO_BY_TWO;
  		} 
 		
 		if (i > glyph->componentSize) {

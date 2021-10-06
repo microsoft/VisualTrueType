@@ -1,0 +1,381 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		567685E82707D39F00391506 /* Platform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685C12707D39D00391506 /* Platform.cpp */; };
+		567685E92707D39F00391506 /* VariationInstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685C32707D39D00391506 /* VariationInstance.cpp */; };
+		567685EA2707D39F00391506 /* TTAssembler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685C42707D39E00391506 /* TTAssembler.cpp */; };
+		567685EB2707D39F00391506 /* List.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685C52707D39E00391506 /* List.cpp */; };
+		567685EC2707D39F00391506 /* VariationModels.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685CC2707D39E00391506 /* VariationModels.cpp */; };
+		567685ED2707D39F00391506 /* MathUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685CD2707D39E00391506 /* MathUtils.cpp */; };
+		567685EE2707D39F00391506 /* TextBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685CE2707D39E00391506 /* TextBuffer.cpp */; };
+		567685EF2707D39F00391506 /* TTFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685D42707D39E00391506 /* TTFont.cpp */; };
+		567685F02707D39F00391506 /* File.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685D72707D39E00391506 /* File.cpp */; };
+		567685F12707D39F00391506 /* TTGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685DA2707D39E00391506 /* TTGenerator.cpp */; };
+		567685F22707D39F00391506 /* Memory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685DC2707D39E00391506 /* Memory.cpp */; };
+		567685F32707D39F00391506 /* CvtManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685DE2707D39F00391506 /* CvtManager.cpp */; };
+		567685F42707D39F00391506 /* TMTParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685DF2707D39F00391506 /* TMTParser.cpp */; };
+		567685F62707D39F00391506 /* TTEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685E32707D39F00391506 /* TTEngine.cpp */; };
+		567685F72707D39F00391506 /* vttcompile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685E42707D39F00391506 /* vttcompile.cpp */; };
+		567685F82707D39F00391506 /* Variation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685E62707D39F00391506 /* Variation.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		567685B52707D35100391506 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		567685B72707D35100391506 /* vttcompile */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = vttcompile; sourceTree = BUILT_PRODUCTS_DIR; };
+		567685C12707D39D00391506 /* Platform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Platform.cpp; sourceTree = "<group>"; };
+		567685C22707D39D00391506 /* vttcompile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vttcompile.h; sourceTree = "<group>"; };
+		567685C32707D39D00391506 /* VariationInstance.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VariationInstance.cpp; sourceTree = "<group>"; };
+		567685C42707D39E00391506 /* TTAssembler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTAssembler.cpp; sourceTree = "<group>"; tabWidth = 4; };
+		567685C52707D39E00391506 /* List.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = List.cpp; sourceTree = "<group>"; };
+		567685C62707D39E00391506 /* pch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pch.h; sourceTree = "<group>"; };
+		567685C72707D39E00391506 /* TMTParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TMTParser.h; sourceTree = "<group>"; };
+		567685C82707D39E00391506 /* Memory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Memory.h; sourceTree = "<group>"; };
+		567685C92707D39E00391506 /* TTAssembler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTAssembler.h; sourceTree = "<group>"; };
+		567685CA2707D39E00391506 /* TTGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTGenerator.h; sourceTree = "<group>"; };
+		567685CB2707D39E00391506 /* FixedMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FixedMath.h; sourceTree = "<group>"; };
+		567685CC2707D39E00391506 /* VariationModels.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = VariationModels.cpp; sourceTree = "<group>"; };
+		567685CD2707D39E00391506 /* MathUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MathUtils.cpp; sourceTree = "<group>"; };
+		567685CE2707D39E00391506 /* TextBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextBuffer.cpp; sourceTree = "<group>"; };
+		567685CF2707D39E00391506 /* File.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = File.h; sourceTree = "<group>"; };
+		567685D02707D39E00391506 /* List.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = List.h; sourceTree = "<group>"; };
+		567685D12707D39E00391506 /* getopt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = getopt.h; sourceTree = "<group>"; };
+		567685D22707D39E00391506 /* TextBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextBuffer.h; sourceTree = "<group>"; };
+		567685D32707D39E00391506 /* Variation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Variation.h; sourceTree = "<group>"; };
+		567685D42707D39E00391506 /* TTFont.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTFont.cpp; sourceTree = "<group>"; };
+		567685D52707D39E00391506 /* GUIDecorations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDecorations.h; sourceTree = "<group>"; };
+		567685D62707D39E00391506 /* VariationInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VariationInstance.h; sourceTree = "<group>"; };
+		567685D72707D39E00391506 /* File.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = File.cpp; sourceTree = "<group>"; };
+		567685D92707D39E00391506 /* MathUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MathUtils.h; sourceTree = "<group>"; };
+		567685DA2707D39E00391506 /* TTGenerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTGenerator.cpp; sourceTree = "<group>"; };
+		567685DB2707D39E00391506 /* TTEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTEngine.h; sourceTree = "<group>"; };
+		567685DC2707D39E00391506 /* Memory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Memory.cpp; sourceTree = "<group>"; };
+		567685DD2707D39F00391506 /* TTFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTFont.h; sourceTree = "<group>"; };
+		567685DE2707D39F00391506 /* CvtManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CvtManager.cpp; sourceTree = "<group>"; };
+		567685DF2707D39F00391506 /* TMTParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TMTParser.cpp; sourceTree = "<group>"; };
+		567685E02707D39F00391506 /* CvtManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CvtManager.h; sourceTree = "<group>"; };
+		567685E12707D39F00391506 /* VariationModels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VariationModels.h; sourceTree = "<group>"; };
+		567685E32707D39F00391506 /* TTEngine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TTEngine.cpp; sourceTree = "<group>"; };
+		567685E42707D39F00391506 /* vttcompile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vttcompile.cpp; sourceTree = "<group>"; };
+		567685E52707D39F00391506 /* Platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Platform.h; sourceTree = "<group>"; };
+		567685E62707D39F00391506 /* Variation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Variation.cpp; sourceTree = "<group>"; };
+		567685E72707D39F00391506 /* opentypedefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opentypedefs.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		567685B42707D35100391506 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		567685AE2707D35100391506 = {
+			isa = PBXGroup;
+			children = (
+				567685B92707D35100391506 /* vttcompile */,
+				567685B82707D35100391506 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		567685B82707D35100391506 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				567685B72707D35100391506 /* vttcompile */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		567685B92707D35100391506 /* vttcompile */ = {
+			isa = PBXGroup;
+			children = (
+				567685DE2707D39F00391506 /* CvtManager.cpp */,
+				567685E02707D39F00391506 /* CvtManager.h */,
+				567685D72707D39E00391506 /* File.cpp */,
+				567685CF2707D39E00391506 /* File.h */,
+				567685CB2707D39E00391506 /* FixedMath.h */,
+				567685D12707D39E00391506 /* getopt.h */,
+				567685D52707D39E00391506 /* GUIDecorations.h */,
+				567685C52707D39E00391506 /* List.cpp */,
+				567685D02707D39E00391506 /* List.h */,
+				567685CD2707D39E00391506 /* MathUtils.cpp */,
+				567685D92707D39E00391506 /* MathUtils.h */,
+				567685DC2707D39E00391506 /* Memory.cpp */,
+				567685C82707D39E00391506 /* Memory.h */,
+				567685E72707D39F00391506 /* opentypedefs.h */,
+				567685C62707D39E00391506 /* pch.h */,
+				567685C12707D39D00391506 /* Platform.cpp */,
+				567685E52707D39F00391506 /* Platform.h */,
+				567685CE2707D39E00391506 /* TextBuffer.cpp */,
+				567685D22707D39E00391506 /* TextBuffer.h */,
+				567685DF2707D39F00391506 /* TMTParser.cpp */,
+				567685C72707D39E00391506 /* TMTParser.h */,
+				567685C42707D39E00391506 /* TTAssembler.cpp */,
+				567685C92707D39E00391506 /* TTAssembler.h */,
+				567685E32707D39F00391506 /* TTEngine.cpp */,
+				567685DB2707D39E00391506 /* TTEngine.h */,
+				567685D42707D39E00391506 /* TTFont.cpp */,
+				567685DD2707D39F00391506 /* TTFont.h */,
+				567685DA2707D39E00391506 /* TTGenerator.cpp */,
+				567685CA2707D39E00391506 /* TTGenerator.h */,
+				567685E62707D39F00391506 /* Variation.cpp */,
+				567685D32707D39E00391506 /* Variation.h */,
+				567685C32707D39D00391506 /* VariationInstance.cpp */,
+				567685D62707D39E00391506 /* VariationInstance.h */,
+				567685CC2707D39E00391506 /* VariationModels.cpp */,
+				567685E12707D39F00391506 /* VariationModels.h */,
+				567685E42707D39F00391506 /* vttcompile.cpp */,
+				567685C22707D39D00391506 /* vttcompile.h */,
+			);
+			name = vttcompile;
+			path = ../src;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		567685B62707D35100391506 /* vttcompile */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 567685BE2707D35100391506 /* Build configuration list for PBXNativeTarget "vttcompile" */;
+			buildPhases = (
+				567685B32707D35100391506 /* Sources */,
+				567685B42707D35100391506 /* Frameworks */,
+				567685B52707D35100391506 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = vttcompile;
+			productName = vttcompile;
+			productReference = 567685B72707D35100391506 /* vttcompile */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		567685AF2707D35100391506 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1130;
+				ORGANIZATIONNAME = Microsoft;
+				TargetAttributes = {
+					567685B62707D35100391506 = {
+						CreatedOnToolsVersion = 11.3.1;
+					};
+				};
+			};
+			buildConfigurationList = 567685B22707D35100391506 /* Build configuration list for PBXProject "vttcompile" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 567685AE2707D35100391506;
+			productRefGroup = 567685B82707D35100391506 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				567685B62707D35100391506 /* vttcompile */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		567685B32707D35100391506 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				567685F02707D39F00391506 /* File.cpp in Sources */,
+				567685F82707D39F00391506 /* Variation.cpp in Sources */,
+				567685F12707D39F00391506 /* TTGenerator.cpp in Sources */,
+				567685E92707D39F00391506 /* VariationInstance.cpp in Sources */,
+				567685ED2707D39F00391506 /* MathUtils.cpp in Sources */,
+				567685EF2707D39F00391506 /* TTFont.cpp in Sources */,
+				567685F72707D39F00391506 /* vttcompile.cpp in Sources */,
+				567685EB2707D39F00391506 /* List.cpp in Sources */,
+				567685EC2707D39F00391506 /* VariationModels.cpp in Sources */,
+				567685F62707D39F00391506 /* TTEngine.cpp in Sources */,
+				567685EE2707D39F00391506 /* TextBuffer.cpp in Sources */,
+				567685EA2707D39F00391506 /* TTAssembler.cpp in Sources */,
+				567685F22707D39F00391506 /* Memory.cpp in Sources */,
+				567685F42707D39F00391506 /* TMTParser.cpp in Sources */,
+				567685E82707D39F00391506 /* Platform.cpp in Sources */,
+				567685F32707D39F00391506 /* CvtManager.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		567685BC2707D35100391506 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		567685BD2707D35100391506 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		567685BF2707D35100391506 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		567685C02707D35100391506 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		567685B22707D35100391506 /* Build configuration list for PBXProject "vttcompile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				567685BC2707D35100391506 /* Debug */,
+				567685BD2707D35100391506 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		567685BE2707D35100391506 /* Build configuration list for PBXNativeTarget "vttcompile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				567685BF2707D35100391506 /* Debug */,
+				567685C02707D35100391506 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 567685AF2707D35100391506 /* Project object */;
+}

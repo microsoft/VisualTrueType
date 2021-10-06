@@ -2,6 +2,11 @@
 // Licensed under the MIT License.
 
 #pragma once
+#ifndef _WIN32
+#define _Inout_
+#else
+#include <sal.h> // defines _Inout_
+#endif
 
 class Fixed2_14
 {

@@ -19,6 +19,20 @@ as complete source files as possible to make future maintenance easier.
 
 For documentation of the Visual TrueType source formats visit https://docs.microsoft.com/en-us/typography/tools/vtt/tsi-tables. 
 
+## Building
+
+In the "vttcompile" folder, there is a Visual Studio Solution for Microsoft Visual Studio users,
+and an Xcode Project For Apple Xcode users.
+
+For unix users (including Linux and Apple command-line), `cd src && make` should work. You
+can also cross-compile for 32-bit windows with `cd src && make CXX=i686-w64-mingw32-c++`,
+for 64-bit windows with `cd src && make CXX=x86_64-w64-mingw32-c++`; and use clang,
+enabling all the recommended warnings with `cd src && make CXX=clang++ CXXFLAGS=-Wall`.
+You may need to do `cd src && make CXXFLAGS="-std=c++14"` to explicitly request
+support for the 2014 ISO C++ standard.
+
+The minimum compiler requirement is support for the 2014 ISO C++ standard plus amendments.
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a

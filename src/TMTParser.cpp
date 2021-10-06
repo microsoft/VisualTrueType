@@ -37,7 +37,7 @@
 #define InitComment(self) (self->ch == L'/' && self->ch2 == L'*')
 #define TermComment(self) (self->ch == L'*' && self->ch2 == L'/')
 #define	Numeric(ch) (L'0' <= (ch) && (ch) <= L'9')
-#define Alpha(ch) (L'A' <= (ch) && (ch) <= L'Z' || L'a' <= (ch) && (ch) <= L'z')
+#define Alpha(ch) ((L'A' <= (ch) && (ch) <= L'Z') || (L'a' <= (ch) && (ch) <= L'z'))
 #define Command(self) (align <= (self)->sym && (self)->sym <= illegal)
 #define InitFlag(self) (leftDir <= (self)->sym && (self)->sym <= postRound)
 #define InitParam(self) (illegal <= (self)->sym && (self)->sym <= leftDir) // leftDir included because it doubles up as lessThan in the minDistGeneral parameter
@@ -532,7 +532,7 @@ Partner *TMTSourceParser::ThePartner(bool y, short from, short to) {
 	
 	partner = NULL;
 	if (this->partners)
-		for (partner = (Partner*)this->partners->first; partner && !(partner->of == from && partner->with == to || partner->of == to && partner->with == from); partner = (Partner*)partner->next);
+		for (partner = (Partner*)this->partners->first; partner && !((partner->of == from && partner->with == to) || (partner->of == to && partner->with == from)); partner = (Partner*)partner->next);
 	return partner;
 } // TMTSourceParser::ThePartner
 
@@ -930,6 +930,7 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 				case yUpToGrid:	  r = rutg; break;
 				case xNoRound:
 				case yNoRound:	  r = roff; break;
+				default: break;
 			}
 			for (i = 0; i < this->generators; i++) this->gen[i]->SetRounding(cmd == yHalfGrid || cmd == yDoubleGrid || cmd == yDownToGrid || cmd == yUpToGrid || cmd == yNoRound,r,params,knot);
 			break;
@@ -1269,11 +1270,11 @@ void TMTSourceParser::XFormToNewSyntax(void) {
 			if (old[s] == L'/') { // italic angle
 				neu[d++] = old[s]; 
 				old[s++] = L' ';
-			} else if (old[s] == L'¯') { // adjusted italic angle
+			} else if (old[s] == 0xAF) { // adjusted italic angle
 				neu[d++] = L'/';
 				neu[d++] = L'/';
 				old[s++] = L' ';
-			} else if (old[s] == L'¨') { // post round
+			} else if (old[s] == 0xA8) { // post round
 				neu[d++] = L'$';
 				old[s++] = L' ';
 			} else {
@@ -1291,7 +1292,7 @@ void TMTSourceParser::XFormToNewSyntax(void) {
 			if ((old[s] == L'c' || old[s] == L'C') && (old[s+1] == L'v' || old[s+1] == L'V') && (old[s+2] == L't' || old[s+2] == L'T')) { // "cvt123"
 				neu[d++] = L',';
 				old[s++] = L' '; old[s++] = L' '; old[s++] = L' ';
-				while (s < l && (L'0' <= old[s] && old[s] <= L'9' || old[s] == L'.' || old[s] == L' ')) {
+				while (s < l && ((L'0' <= old[s] && old[s] <= L'9') || old[s] == L'.' || old[s] == L' ')) {
 					if (old[s] != L' ') neu[d++] = old[s];
 					old[s++] = L' ';
 				}
@@ -1301,7 +1302,7 @@ void TMTSourceParser::XFormToNewSyntax(void) {
 		}
 		s = 0;
 		while (s < l) {
-			if (old[s] == L'<' || old[s] == L'³') { // "<" or "³12" or "³(12,@2,24)"
+			if (old[s] == L'<' || old[s] == 0xB3) { // "<" or "â‰¥12" or "â‰¥(12,@2,24)"
 				neu[d++] = L',';
 				if (old[s] == L'<')
 					neu[d++] = old[s];
@@ -1310,15 +1311,15 @@ void TMTSourceParser::XFormToNewSyntax(void) {
 					neu[d++] = L'=';
 				}
 				old[s++] = L' ';
-				if (s < l && old[s] == L'(') { // "³(12,@2,24)"
+				if (s < l && old[s] == L'(') { // "â‰¥(12,@2,24)"
 					neu[d++] = old[s]; old[s++] = L' '; // '('
 					while (s < l-1 && old[s] != L',') { neu[d++] = old[s]; old[s++] = L' '; }
 					neu[d++] = old[s]; old[s++] = L' '; // ','
 					neu[d++] = L'@';
 					while (s < l-1 && old[s] != L')') { neu[d++] = old[s]; old[s++] = L' '; }
 					neu[d++] = old[s]; old[s++] = L' '; // ')'
-				} else { // "³12"
-					while (s < l && (L'0' <= old[s] && old[s] <= L'9' || old[s] == L'.')) { neu[d++] = old[s]; old[s++] = L' '; }
+				} else { // "â‰¥12"
+					while (s < l && ((L'0' <= old[s] && old[s] <= L'9') || old[s] == L'.')) { neu[d++] = old[s]; old[s++] = L' '; }
 				}
 			} else {
 				s++;
@@ -1378,6 +1379,8 @@ void TMTSourceParser::Flag(ActParam *actParam) {
 		case postRound:
 			actParam->type = postRoundFlag;
 			this->GetSym();
+			break;
+		default:
 			break;
 	}
 	this->prevPrevPos = paramStart;
@@ -1569,12 +1572,12 @@ void TMTSourceParser::Parameter(ActParam *actParam) {
 bool Match(ParamType formParamType, ParamType actParamType);
 bool Match(ParamType formParamType, ParamType actParamType) {
 	return (actParamType == formParamType ||
-			actParamType == anyN && anyN <= formParamType && formParamType <= posRationalN ||
+			(actParamType == anyN && anyN <= formParamType && formParamType <= posRationalN) ||
 		//	actParamType == knotNttvOpt && knotNttvOpt <= formParamType && formParamType <= k
-			knotNttvOpt <= actParamType && actParamType <= knotNttvOptXY && knotNttvOpt <= formParamType && formParamType <= knotNttvOptXY ||
-			actParamType == rangeOfPpemN && formParamType == rangeOfPpemNcolorOpt ||
-			actParamType == posRationalN && rationalN <= formParamType && formParamType <= posRationalN || 
-			actParamType == minDistFlagOnly && formParamType == minDistGeneral);
+			(knotNttvOpt <= actParamType && actParamType <= knotNttvOptXY && knotNttvOpt <= formParamType && formParamType <= knotNttvOptXY) ||
+			(actParamType == rangeOfPpemN && formParamType == rangeOfPpemNcolorOpt) ||
+			(actParamType == posRationalN && rationalN <= formParamType && formParamType <= posRationalN) ||
+			(actParamType == minDistFlagOnly && formParamType == minDistGeneral));
 } /* Match */
 
 void TMTSourceParser::MatchParameter(FormParam *formParams, short *formParamNum, ParamType *actParamType) {
@@ -1692,7 +1695,7 @@ void TMTSourceParser::ValidateParameter(ActParam *actParam) {
 			break;
 		case rationalN:
 		case posRationalN:
-			if (actParam->type == posRationalN && actParam->numValue < 0 || actParam->numValue < -maxPixelValue || actParam->numValue > maxPixelValue) {
+			if ((actParam->type == posRationalN && actParam->numValue < 0) || actParam->numValue < -maxPixelValue || actParam->numValue > maxPixelValue) {
 				swprintf(errMsg,L"illegal pixel size (can be in range %li through %li only)",actParam->type == posRationalN ? 0 : -maxPixelValue/one6,maxPixelValue/one6); this->ErrorMsg(contextual,errMsg);
 				actParam->numValue = one6;
 			}
@@ -1920,7 +1923,7 @@ void TMTSourceParser::SkipComment(void) {
 } /* TMTSourceParser::SkipComment */
 
 void TMTSourceParser::SkipWhiteSpace(bool includingComments) {
-	while (WhiteSpace(this) || includingComments && InitComment(this)) {
+	while (WhiteSpace(this) || (includingComments && InitComment(this))) {
 		if (WhiteSpace(this)) this->GetCh();
 		if (includingComments && InitComment(this)) this->SkipComment();
 	}
@@ -2046,7 +2049,7 @@ void TMTSourceParser::GetSym(void) {
 			case L')':	this->sym = rightParen;	this->GetCh(); break;
 			case L']':	this->sym = rightParen; this->GetCh(); this->ReplAtCurrPos(1,L")"); break;
 
-			case L'³':	this->sym = atLeast;	this->GetCh(); this->ReplAtCurrPos(1,L">="); break; // replace Mac special char
+			case 0xB3:	this->sym = atLeast;	this->GetCh(); this->ReplAtCurrPos(1,L">="); break; // replace Mac special char
 			case L'+':	this->sym = plus;		this->GetCh(); break;
 			case L'-':	this->sym = minus;		this->GetCh(); break;
 			case L'*':	this->sym = timeS;		this->GetCh(); break;
@@ -2103,9 +2106,9 @@ void TMTSourceParser::GetSym(void) {
 					this->sym = illegal;
 				}
 				break;
-			case L'¯':	this->sym = adjItalAngle; this->GetCh(); this->ReplAtCurrPos(1,L"//"); break; // replace Mac special char
+			case 0xAF:	this->sym = adjItalAngle; this->GetCh(); this->ReplAtCurrPos(1,L"//"); break; // replace Mac special char
 			case L'$':	this->sym = postRound;	  this->GetCh(); break;
-			case L'¨':	this->sym = postRound;	  this->GetCh(); this->ReplAtCurrPos(1,L"$"); break; // replace Mac special char
+			case 0xA8:	this->sym = postRound;	  this->GetCh(); this->ReplAtCurrPos(1,L"$"); break; // replace Mac special char
 			case L'"':	this->GetLiteral();	break;
 			case L'.':
 				this->GetCh();

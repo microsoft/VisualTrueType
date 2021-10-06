@@ -416,10 +416,10 @@ void TTSourceEngine::AssertTTVonLine(TTVector ttv, short parent0, short parent1,
 			if (ttv > fv) this->usedpv = ttv == dpv;
 		}
 	} else {
-		if (!((v->from == parent0 && v->to == parent1 || v->from == parent1 && v->to == parent0) && dir == v->dir && (ttv != dpv || this->usedpv))) {
+		if (!(((v->from == parent0 && v->to == parent1) || (v->from == parent1 && v->to == parent0)) && dir == v->dir && (ttv != dpv || this->usedpv))) {
 			
 			proj = &this->ttv[pv];
-			if (ttv == fv && (proj->from == parent0 && proj->to == parent1 || proj->from == parent1 && proj->to == parent0) && proj->dir == dir) {
+			if (ttv == fv && ((proj->from == parent0 && proj->to == parent1) || (proj->from == parent1 && proj->to == parent0)) && proj->dir == dir) {
 				swprintf(buf,L"SFVTPV[]");
 			} else {
 				swprintf(buf,L"S%sVTL[%c], %hi, %hi",ttv == fv ? L"F" : (ttv == pv ? L"P" : L"DP"),dir == perpDiagDir ? L'R' : L'r',parent0,parent1);
@@ -512,8 +512,8 @@ void TTSourceEngine::AssertMinDist(short minDists, short jumpPpemSize[], F26Dot6
 				this->Emit( L"#BEGIN");											// but current minDist is pixelSize[1]
 				swprintf(buf,L"SMD[], %li",pixelSize[0]); this->Emit(buf);		// hence use pixelSize[0] instead
 			} else if (this->minDist == pixelSize[0]) {
-				swprintf(buf,L"LTEQ[], %hi, *",jumpPpemSize[1]); this->Emit(buf);	// [TOS](= jumpPpemSize[1]) ² [TOS-1](= MPPEM[]) ?
-				this->Emit( L"IF[], *");											// MPPEM[] ³ jumpPpemSize[1]
+				swprintf(buf,L"LTEQ[], %hi, *",jumpPpemSize[1]); this->Emit(buf);	// [TOS](= jumpPpemSize[1]) â‰¤ [TOS-1](= MPPEM[]) ?
+				this->Emit( L"IF[], *");											// MPPEM[] â‰¥ jumpPpemSize[1]
 				this->Emit( L"#BEGIN");											// but current minDist is pixelSize[0]
 				swprintf(buf,L"SMD[], %li",pixelSize[1]); this->Emit(buf);		// use pixelSize[1] instead
 			} else {
