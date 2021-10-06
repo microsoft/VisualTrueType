@@ -1,17 +1,19 @@
 /// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-#define _CRT_SECURE_NO_DEPRECATE 
+#define _CRT_SECURE_NO_DEPRECATE
 #define _CRT_NON_CONFORMING_SWPRINTFS
 
-#include <assert.h> // assert
-#include <string.h>
-#include <stdio.h>
+#include <cassert> // assert
+#include <cstdio>
+#include <cstring>
+
 #include "opentypedefs.h" // for SWAP etc.
 #include "pch.h"
+
+#include "TTFont.h"
 #include "CvtManager.h"
 #include "TTAssembler.h"
-#include "TTFont.h"
 
 #define	PRIVATE_GLIT1	'TSI0' /* editor 0 */
 #define	PRIVATE_PGM1	'TSI1' /* editor 1 */

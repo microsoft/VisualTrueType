@@ -5,10 +5,10 @@
 
 #include "pch.h"
 
-#include <time.h>
-#include <sys/timeb.h> // _timeb, _ftime
 #include <cstdlib> // mbstowcs
 #include <cstring> // strlen
+#include <ctime>
+#include <sys/timeb.h> // _timeb, _ftime
 
 #define TIME_FIX 2082844800ll // pc time 1970 - mac time 1904
 

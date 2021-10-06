@@ -3,11 +3,13 @@
 #define _CRT_SECURE_NO_DEPRECATE 
 #define _CRT_NON_CONFORMING_SWPRINTFS
 
-#include <stdio.h> // swprintf
-#include <string.h> // wcscpy, memcpy
+#include <cstdio>  // swprintf
+#include <cstring> // wcscpy, memcpy
+
 #include "pch.h"
-#include "List.h"
+
 #include "CvtManager.h"
+#include "List.h"
 #include "TTEngine.h" // maxPpemSize & al.
 
 //	#define DEBUGCVT

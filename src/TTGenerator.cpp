@@ -6,11 +6,12 @@
     Licensed under the MIT License.
 
 *****/
-#define _CRT_SECURE_NO_DEPRECATE 
+#define _CRT_SECURE_NO_DEPRECATE
 #define _CRT_NON_CONFORMING_SWPRINTFS
 
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
+
 #include "pch.h"
 
 //#define maxBitsKnot 12 /* depends on MAXPOINTS, which is (currently) 2048... */

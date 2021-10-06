@@ -8,7 +8,7 @@
 //											 FVectors						FV
 //											 RVectors						RV
 
-#include <math.h> // floor
+#include <cmath> // floor
 //#include "Platform.h" // F26Dot6 etc.
 
 #define Round(x) ((long)floor(x + 1.0/2.0))

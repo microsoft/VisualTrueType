@@ -3,12 +3,12 @@
 
 //#define NOMINMAX
 //#include <Windows.h>
-#define _CRT_SECURE_NO_WARNINGS 
+#define _CRT_SECURE_NO_WARNINGS
 
-#include <assert.h>
+#include <cassert>
+#include <sys/stat.h>
 
 #include "pch.h"
-#include <sys/stat.h>
 
 #define IsUnicode(b) ((b[0] == 0xFF) && (b[1] == 0xFE))
 #define IsUnicodeBig(b) ((b[0] == 0xFE) && (b[1] == 0xFF))

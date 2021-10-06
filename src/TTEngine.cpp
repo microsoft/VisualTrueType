@@ -6,14 +6,16 @@
     Licensed under the MIT License.
  
 *****/
-#define _CRT_SECURE_NO_DEPRECATE 
+#define _CRT_SECURE_NO_DEPRECATE
 #define _CRT_NON_CONFORMING_SWPRINTFS
 
-#include <string.h> // wcslen
-#include <stdio.h> // printf
+#include <cstdio>  // printf
+#include <cstring> // wcslen
+
 #include "pch.h"
-#include "CvtManager.h" // LinkColor
+
 #include "TTEngine.h"
+#include "CvtManager.h" // LinkColor
 
 #define MAX_HEIGHTS	37
 

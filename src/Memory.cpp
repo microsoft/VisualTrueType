@@ -1,11 +1,12 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-#define _CRT_SECURE_NO_DEPRECATE 
+#define _CRT_SECURE_NO_DEPRECATE
 #define _CRT_NON_CONFORMING_SWPRINTFS
 
-#include <stdio.h> // swprintf
-#include <stdlib.h>
+#include <cstdio> // swprintf
+#include <cstdlib>
+
 #include "Memory.h"
 
 void *NewP(size_t bytes) {	
