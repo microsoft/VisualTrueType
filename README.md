@@ -29,6 +29,8 @@ can also cross-compile for 32-bit windows with `cd src && make CXX=i686-w64-ming
 for 64-bit windows with `cd src && make CXX=x86_64-w64-mingw32-c++`; and use clang,
 enabling all the recommended warnings with `cd src && make CXX=clang++ CXXFLAGS=-Wall`.
 
+The minimum compiler requirement is support for the 2014 ISO C++ standard plus amendments.
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
