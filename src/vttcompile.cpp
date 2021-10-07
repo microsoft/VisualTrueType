@@ -650,7 +650,7 @@ int main(int argc, char* argv[])
 
 	if (!application->OpenFont(inFile))
 	{
-		fwprintf(stderr, L"Can not open font file! \n");
+		fwprintf(stderr, L"Can not open font file %s!\n", inFile.c_str());
 		exit(EXIT_FAILURE);
 	}
 
