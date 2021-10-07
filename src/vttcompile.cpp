@@ -63,9 +63,7 @@ Application::~Application(void)
 	
 }
 
-bool Application::OpenFont(std::string fileName) {
-	wchar_t errMsg[maxLineSize];
-
+bool Application::OpenFont(std::string fileName, wchar_t errMsg[]) {
 	auto file = std::make_unique<File>();
 
 	this->charCode = this->glyphIndex = ILLEGAL_GLYPH_INDEX;
@@ -648,8 +646,10 @@ int main(int argc, char* argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	if (!application->OpenFont(inFile))
+	if (!application->OpenFont(inFile, errMsg))
 	{
+		fwprintf(stderr, errMsg);
+		fwprintf(stderr, L"\n");
 		fwprintf(stderr, L"Can not open font file %s!\n", inFile.c_str());
 		exit(EXIT_FAILURE);
 	}
