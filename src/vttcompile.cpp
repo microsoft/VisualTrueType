@@ -75,8 +75,11 @@ bool Application::OpenFont(std::string fileName) {
 	if (file->Error())
 		return false;
 
-	if (!this->font->Read(file.get(), this->glyph.get(), &this->platformID, &this->encodingID, errMsg))
+	if (!this->font->Read(file.get(), this->glyph.get(), &this->platformID, &this->encodingID, errMsg)) {
+		fwprintf(stderr, errMsg);
+		fwprintf(stderr, L"\n");
 		return false;
+	}
 
 	file->Close(false);
 
