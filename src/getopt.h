@@ -8,8 +8,8 @@
 class CommandLineOptions
 {
 public:
-	CommandLineOptions(int argc, char **argv, const char *opts) : m_argc(argc), m_argv(argv), m_opts(opts), m_sp(1),
-		m_optarg(nullptr), m_optind(1) {};
+	CommandLineOptions(int argc, char **argv, const char *opts) : m_argc(argc), m_sp(1), m_optind(1), m_argv(argv), m_opts(opts),
+		m_optarg(nullptr) {};
 	~CommandLineOptions() {};
 
 	char GetOption()
