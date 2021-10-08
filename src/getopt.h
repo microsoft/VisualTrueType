@@ -17,13 +17,14 @@ public:
 		char c;
 		const char *cp;
 
-		if (m_sp == 1)
+		if (m_sp == 1) {
 			if (m_optind >= m_argc || m_argv[m_optind][0] != '-' || m_argv[m_optind][1] == '\0')
 				return(END);
 			else if (strcmp(m_argv[m_optind], "--") == 0) {
 				m_optind++;
 				return(END);
 			}
+		}
 			m_optopt = c = m_argv[m_optind][m_sp];
 			if (c == ':' || (cp = strchr(m_opts, c)) == nullptr) {
 				if (m_argv[m_optind][++m_sp] == '\0') {
