@@ -3081,7 +3081,7 @@ wchar_t *TT_InnerCompile(
 
 		if (*tt_error == tt_NoError) 
 			*BinaryLength = TT_WriteOutBlock( BinaryOut, (unsigned char *)BinaryOutEndPtr, BinaryOffset, AddOffset, argStore, insStore, numberofArgs, numberofInstructions, tt_error);
-			*StackNeed = *StackNeed + numberofArgs;
+		*StackNeed = *StackNeed + numberofArgs;
 	}	
 	
 	DisposeP((void**)&argStore);
