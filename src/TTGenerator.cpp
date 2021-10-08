@@ -2505,10 +2505,11 @@ void TTSourceGenerator::DoVacuFormRound(void) {
 						}
 						if (knots > 1)
 							this->tt->CALL6(knots,knot,nextX1);
-						else if (knots == 1)
+						else if (knots == 1) {
 							if		(nextX1 == knot[0] + 1) this->tt->CALL378(37,knot[0]); // special case of function 6 for nextX1 = knot[0] + 1...
 							else if (nextX1 == knot[0] - 1) this->tt->CALL378(38,knot[0]); // special case of function 6 for nextX1 = knot[0] - 1...
 							else							this->tt->CALL6(knots,knot,nextX1);
+						}
 						for (j = 0; j < knots; j++) this->attrib[knot[j]].vacu = true;
 					}
 					if (nextX2 != nextY2 && nextX2 != y2 && nextY2 != x2) { // outer contour (or inner)
@@ -2519,10 +2520,11 @@ void TTSourceGenerator::DoVacuFormRound(void) {
 						}
 						if (knots > 1)
 							this->tt->CALL6(knots,knot,nextX2);
-						else if (knots == 1)
+						else if (knots == 1) {
 							if		(nextX2 == knot[0] + 1) this->tt->CALL378(37,knot[0]); // special case of function 6 for nextX2 = knot[0] + 1...
 							else if (nextX2 == knot[0] - 1) this->tt->CALL378(38,knot[0]); // special case of function 6 for nextX2 = knot[0] - 1...
 							else							this->tt->CALL6(knots,knot,nextX2);
+						}
 						for (j = 0; j < knots; j++) this->attrib[knot[j]].vacu = true;
 					}
 				}
