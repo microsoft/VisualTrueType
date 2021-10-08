@@ -9,7 +9,7 @@ public:
 	bool Create();
 	virtual ~Application(void);
 
-	bool OpenFont(std::string fileName);
+	bool OpenFont(std::string fileName, wchar_t errMsg[]);
 	bool SaveFont(StripCommand strip, wchar_t errMsg[]);
 	bool SaveFont(std::string fileName, StripCommand strip, wchar_t errMsg[]);
 
