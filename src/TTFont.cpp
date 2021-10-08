@@ -5411,11 +5411,12 @@ unsigned long TrueTypeFont::PackGlyphs(StripCommand strip, TrueTypeGlyph *glyph,
 			length = this->PackGlyph(&dst[size],glyphIndex,glyph,this->binSize[asmGLYF],this->binData[asmGLYF],&this->horMetric[glyphIndex]);
 		} else {
  		  	length = oldIndexToLoc[i+1] - oldIndexToLoc[i];
- 		  	if (length)
+			if (length) {
 			if (strip < stripHints)
  		  			memcpy(&dst[size],&src[oldIndexToLoc[i]],length);
  		  		else
  		  			length = this->StripGlyphBinary(&dst[size],&src[oldIndexToLoc[i]],length);
+			}
 		}
 		
 		size += length;
