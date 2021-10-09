@@ -109,7 +109,7 @@ void TTGenerator::VacuFormRound(short type, short radius, bool forward[], short 
 void TTGenerator::Call(short actParams, short anyNum[], short functNum) { /* abstract */ }
 void TTGenerator::Asm(bool inLine, wchar_t text[], wchar_t error[]) { /* abstract */ }
 void TTGenerator::Quit(void) { /* abstract */ }
-void TTGenerator::InitTTGenerator(TrueTypeFont *font, TrueTypeGlyph *glyph, long glyphIndex, TTEngine *tt, bool legacyCompile, bool *memError) { /* abstract */ }
+void TTGenerator::InitTTGenerator(TrueTypeFont *font, TrueTypeGlyph *glyph, int glyphIndex, TTEngine *tt, bool legacyCompile, bool *memError) { /* abstract */ }
 void TTGenerator::TermTTGenerator(void) { /* abstract */ }
 TTGenerator::TTGenerator(void) { /* abstract */ }
 TTGenerator::~TTGenerator(void) { /* abstract */ }
@@ -184,7 +184,7 @@ public:
 	virtual void Call(short actParams, short anyNum[], short functNum);
 	virtual void Asm(bool inLine, wchar_t text[], wchar_t error[]);
 	virtual void Quit(void);
-	virtual void InitTTGenerator(TrueTypeFont *font, TrueTypeGlyph *glyph, long glyphIndex, TTEngine *tt, bool legacyCompile, bool *memError);
+	virtual void InitTTGenerator(TrueTypeFont *font, TrueTypeGlyph *glyph, int glyphIndex, TTEngine *tt, bool legacyCompile, bool *memError);
 	virtual void InitCodePathState(void);
 	virtual void TermCodePathState(void);
 	virtual void TermTTGenerator(void);
@@ -210,7 +210,7 @@ private:
 	short leftAnchor,rightAnchor; // for GrabHereInX
 	TrueTypeFont *font;
 	TrueTypeGlyph *glyph;
-	long glyphIndex,charCode,emHeight;
+	int glyphIndex,charCode,emHeight;
 	CharGroup charGroup; // mapped from current glyph
 	short knots;
 	AttributePtr attrib; // allocate just as many as we need
@@ -246,8 +246,8 @@ short Next(short knot, short base, short n, short delta) {
 	return (knot - base + delta)%n + base;
 } // Next
 
-bool SameVectorsForAllChildren(ProjFreeVector *projFreeVector, long children) {
-	long i;
+bool SameVectorsForAllChildren(ProjFreeVector *projFreeVector, int children) {
+	int i;
 	TTVectorDesc fv;
 
 	if (children <= 1) return true;
@@ -442,7 +442,7 @@ void TTSourceGenerator::GrabHereInX(short left, short right, wchar_t error[]) {
 } /* TTSourceGenerator::GrabHereInX */
 
 short TTSourceGenerator::ProjectedDistance(bool signedDistance, short parent, short child, ProjFreeVector *projFreeVector) {
-	long distance;
+	int distance;
 	Vector link;
 	RVector pv;
 	double temp;
@@ -547,7 +547,7 @@ void TTSourceGenerator::Link(bool y, bool dist, ProjFreeVector *projFreeVector, 
 		if (this->tt) {
 			this->tt->AssertRefPoint(0,parent);
 		//	ALIGNRP is less optimal than (but equivalent to) an unrounded MDRP, since for chains of Dists,
-		//	we keep setting the reference point explicitely, while MDRP can simply move it along
+		//	we keep setting the reference point explicitely, while MDRP can simply move it aint
 			if (distance == 0) {
 				this->tt->AssertRounding(rtg);
 				this->tt->MDRP(false,true,linkGrey,child); // almost same as in ::Align
@@ -609,10 +609,10 @@ void TTSourceGenerator::Link(bool y, bool dist, ProjFreeVector *projFreeVector, 
 		if (this->tt && !postRoundFlag && deltaR == roff && childR != roff) { // can't do otherwise
 		//	I think the original idea here was to ensure that the rounding method is an attribute of the knot,
 		//	i.e. if I wanted the knot "down-to-grid" then it will end up "down-to-grid", and not the distance
-		//	inbetween. As long as our fv and pv are X or Y, this is achieved by either adjusting the rounding
+		//	inbetween. As int as our fv and pv are X or Y, this is achieved by either adjusting the rounding
 		//	method of the distance accordingly (deltaRounding table), or else don't round the distance and do
 		//	round the knot afterwards. As soon as we're using a pv other than X or Y, and especially when we're
-		//	using the dpv, the whole idea makes little sense, since the respective knots are no longer parallel
+		//	using the dpv, the whole idea makes little sense, since the respective knots are no inter parallel
 		//	to any grid. Furthermore, when using the dpv, rounding afterwards would be pretty useless anyway,
 		//	because MDAP never uses the dpv in the first place. Therefore, and currently #ifdef'd for VTT_PRO_SP_YAA_AUTO_COM
 		//	only, the distance is rounded as per the rounding method of the child point.
@@ -636,7 +636,7 @@ void TTSourceGenerator::Link(bool y, bool dist, ProjFreeVector *projFreeVector, 
 - but now unrounded interpolee is at same y-coordinate as its (temporary) parent
 bool ValidateInterpolee(bool y, short parent0, short child, short parent1, Vector V[], wchar_t error[]);
 bool ValidateInterpolee(bool y, short parent0, short child, short parent1, Vector V[], wchar_t error[]) {
-	long low,mid,high;
+	int low,mid,high;
 	short parent;
 	wchar_t dir;
 
@@ -847,7 +847,7 @@ void TTSourceGenerator::Intersect(short intersection, short line0start, short li
 bool ClassifyAlign(Vector parent0, Vector child, Vector parent1, short ppem) { // within rectangular hull of ±0.5° from "parent line"?
 	double tanAlignTolerance;
 	Vector p,q;
-	long pq,p2;
+	int pq,p2;
 	
 	if (ppem > 0) return true; // ppem limit specified, hence we'll gladly align anything
 	
@@ -861,7 +861,7 @@ bool ClassifyAlign(Vector parent0, Vector child, Vector parent1, short ppem) { /
 
 void TTSourceGenerator::Align(FVOverride fvOverride, short parent0, short children, short child[], short parent1, short ppem, wchar_t error[]) {
 	short i,ch,iChildren[2],iChild[2][maxParams],refPoint[maxParams][2];
-	long minX,minY,x,y,maxX,maxY;
+	int minX,minY,x,y,maxX,maxY;
 	AlignParam *align;
 	wchar_t buf[8*maxParams];
 	RVector alignDirection = RDirectionV(this->V[parent0],this->V[parent1]);
@@ -1080,7 +1080,7 @@ short RectilinearDistanceOfDiagonal(bool x, const Vector V0, const Vector V1, co
 
 bool ClassifyStroke(Vector A1, Vector A2, Vector B1, Vector B2, short ppem, bool *crissCross, RVector *strokeDirection, bool *xLinks, short distance[], wchar_t error[]) {
 	double cosF0;
-	long sgn0,sgn1;
+	int sgn0,sgn1;
 	Vector aux;
 	RVector leftDirection,rightDirection;
 	
@@ -1142,7 +1142,7 @@ void TTSourceGenerator::AssertStrokePhaseAngle(FVOverride fv, bool leftStationar
 			this->tt->AssertRefPoint(0,lsb);
 			if (fv == fvOldMethod || !this->attrib[knot[A1]].touched[yRomanDir]) {
 				this->tt->MDRP(false,false,linkGrey,knot[A1]);
-			} else {								// push it back up where it once belonged
+			} else {								// push it back up where it once beinted
 				this->tt->Emit(L"#END");				// end block started above
 				this->tt->AssertPVonCA(yRomanDir);
 				swprintf(code,L"SCFS[], %hi, *",knot[A1]); this->tt->Emit(code);
@@ -1361,7 +1361,7 @@ void TTSourceGenerator::Stroke(bool leftStationary[], short knot[], short cvt, s
 	RVector leftDirection,rightDirection,strokeDirection;
 	bool iStroke;
 	double dist;
-	long infoBits;
+	int infoBits;
 	wchar_t buf[64];
 	
 	leftDirection  = RDirectionV(this->V[knot[2]],this->V[knot[0]]);
@@ -1750,7 +1750,7 @@ void TTSourceGenerator::Serif(bool forward, short type, short knots, short knot[
 							else						   fun = 36;
 							this->tt->CALL3456(fun,knot[3],cvt[2],knot[2],cvt[1],knot[1],cvt[0]);
 							/* this doesn't update the knots as being touched, but since this is only relevant for STROKEs that are
-							   neither horizontal nor vertical, and the present serif belongs to a vertical stroke, we couldn't care less... */
+							   neither horizontal nor vertical, and the present serif beints to a vertical stroke, we couldn't care less... */
 						}
 						
 						
@@ -1951,7 +1951,7 @@ void InitFreeProjVector(TTVDirection pv, ProjFreeVector *projFreeVector) {
 	}
 } // InitFreeProjVector
 
-void TTSourceGenerator::InitTTGenerator(TrueTypeFont *font, TrueTypeGlyph *glyph, long glyphIndex, TTEngine *tt, bool legacyCompile, bool *memError) {
+void TTSourceGenerator::InitTTGenerator(TrueTypeFont *font, TrueTypeGlyph *glyph, int glyphIndex, TTEngine *tt, bool legacyCompile, bool *memError) {
 	short i,j,n,cont;
 	double vectProd,deg;
 	Attribute *attrib;
@@ -2134,10 +2134,10 @@ short TTSourceGenerator::Neighbour(short parent0, short parent1, short child, bo
 	
 	/*****
 	
-	along contour, pick child's neighbours (one of the parents or the neighbour we're looking for)
+	aint contour, pick child's neighbours (one of the parents or the neighbour we're looking for)
 	and select the one with larger angle to "parent line". Notice that the neighbour may actually
 	be the neighbour's neighbour, if it is too close, and will be taken from neighbour's neighbour
-	along the contour as long as it is not too far away and its angle is within neighFudge degrees...
+	aint the contour as int as it is not too far away and its angle is within neighFudge degrees...
 	The problem here seems to be that we would like to set the FV onto the line [neighbour]-[child],
 	but these two may not be where they used to be due to previous instructions, so we attempt to
 	find a neighbour which is far enough on a roughly straight line in order to define the freedom
@@ -2582,7 +2582,7 @@ TTGenerator *NewTTSourceGenerator(void) {
 
 	Question: Does SetItalicStrokePhase/Angle really do what we want it to? Wouldn't we rather want to
 	move the points down to the base line, then xlink/xinterpolate them (at which point they get rounded),
-	and finally move them back up, along the (meanwhile) adjusted angle? Notice that this is what SetItalc-
+	and finally move them back up, aint the (meanwhile) adjusted angle? Notice that this is what SetItalc-
 	StrokePhase/Angle never did, but chances are, what it was intended to.
 	
 	In the future might rewrite also c1_BestClusterIndex and see, whether all of this makes sense the way
@@ -2591,7 +2591,7 @@ TTGenerator *NewTTSourceGenerator(void) {
 	Plus, should assert that the hinter parameters are up-to-date (compiled or so) prior to code generation.
 	
 	Should also assert that eg. VacuFormRound doesn't attempt to 'do' the side-bearing points. This becomes
-	the longer the more an issue which maybe should be more centralised, such as in the parser.  The problem
+	the inter the more an issue which maybe should be more centralised, such as in the parser.  The problem
 	is that there are things about which only the code generator knows, which means the particular code
 	generator at issue, such as implementation restrictions (how many links from a point etc.), so the parser
 	would have to know more about that particular code generator than I like. On the other hand there are

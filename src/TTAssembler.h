@@ -19,6 +19,6 @@
 bool DisassemComponent(TrueTypeGlyph *glyph, TextBuffer *src, wchar_t errMsg[]);
 
 bool TTAssemble(ASMType asmType, TextBuffer* src, TrueTypeFont* font, TrueTypeGlyph* glyph,
-	long maxBinLen, unsigned char* bin, long* actBinLen, bool variationCompositeGuard, long* errPos, long* errLen, wchar_t errMsg[]);
+	int maxBinLen, unsigned char* bin, int* actBinLen, bool variationCompositeGuard, int* errPos, int* errLen, wchar_t errMsg[]);
 
 #endif // GlyphStruct_dot_h

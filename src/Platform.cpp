@@ -19,7 +19,7 @@ long long DateTime(void) {
 	ftime(&tstruct);
 
 	//	it seems that we don't have to worry about the time zone, _ftime does that for us	
-	return (long long)tstruct.time + TIME_FIX /* 60*(long)(tstruct.timezone) */;
+	return (long long)tstruct.time + TIME_FIX /* 60*(int)(tstruct.timezone) */;
 } // DateTime
 
 void DateTimeStrg(wchar_t strg[]) {

@@ -13,7 +13,7 @@
 namespace Areas
 {
 	
-	Area SetArea(long left, long top, long right, long bottom) {
+	Area SetArea(int left, int top, int right, int bottom) {
 		Area a;
 
 		a.left = left;
@@ -23,7 +23,7 @@ namespace Areas
 		return a;
 	} // SetArea
 
-	Area SetMarquee(long left, long top, long right, long bottom) {
+	Area SetMarquee(int left, int top, int right, int bottom) {
 		Area a;
 
 		a.left = Min(left, right);
@@ -33,17 +33,17 @@ namespace Areas
 		return a;
 	} // SetMarquee
 
-	void OffsetArea(Area *a, long dx, long dy) {
+	void OffsetArea(Area *a, int dx, int dy) {
 		a->left += dx; a->right += dx;
 		a->top += dy; a->bottom += dy;
 	} // OffsetArea
 
-	void ScaleArea(Area *a, long scale) {
+	void ScaleArea(Area *a, int scale) {
 		a->left *= scale; a->right *= scale;
 		a->top *= scale; a->bottom *= scale;
 	} // ScaleArea
 
-	Area InsetArea(const Area *area, long dx, long dy) {
+	Area InsetArea(const Area *area, int dx, int dy) {
 		Area inset;
 
 		inset.left = area->left + dx; inset.right = Max(inset.left, area->right - dx);
@@ -76,8 +76,8 @@ namespace Areas
 		return c;
 	} // IntersectArea
 
-	long SubtractArea(const Area *a, const Area *b, Area part[]) { // returns #parts (0..4)
-		long left, top, right, bottom, parts;
+	int SubtractArea(const Area *a, const Area *b, Area part[]) { // returns #parts (0..4)
+		int left, top, right, bottom, parts;
 
 		left = a->left;  top = a->top;
 		right = a->right; bottom = a->bottom;
@@ -123,7 +123,7 @@ namespace Areas
 		return a->left == b->left && a->top == b->top && a->right == b->right && a->bottom == b->bottom;
 	} // SameArea
 
-	bool AreaIncludesPoint(const Area *a, long x, long y) {
+	bool AreaIncludesPoint(const Area *a, int x, int y) {
 		return a->left <= x && x <= a->right && a->top <= y && y <= a->bottom;
 	} // AreaIncludesPoint
 

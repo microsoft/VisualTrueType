@@ -191,8 +191,8 @@ typedef struct {
 } tt_CompilationStatus;
 
 
-void TT_memSwap( char *a,char *b,char *tmp,long len );
-void TT_memSwap( char *a,char *b,char *tmp,long len )
+void TT_memSwap( char *a,char *b,char *tmp,int len );
+void TT_memSwap( char *a,char *b,char *tmp,int len )
 {
 	memcpy( tmp, a, len );
 	memcpy( a, b, len );
@@ -594,10 +594,10 @@ typedef struct {
 }tt_JrBWtype;
 
 
-long TT_GetLineLength( wchar_t *p, wchar_t *endP);
-long TT_GetLineLength( wchar_t *p, wchar_t *endP)
+int TT_GetLineLength( wchar_t *p, wchar_t *endP);
+int TT_GetLineLength( wchar_t *p, wchar_t *endP)
 {
-	long LineLength;
+	int LineLength;
 
 	LineLength = 0;
 	while ( !(*p == L'\x0D') && !(*p == L'\x0A') && (p < endP)) // Allow both '\r' and '\n' to terminate lines.
@@ -607,10 +607,10 @@ long TT_GetLineLength( wchar_t *p, wchar_t *endP)
 	return LineLength;
 }
 
-long TT_GetStringLength( wchar_t *p, wchar_t *endP);
-long TT_GetStringLength( wchar_t *p, wchar_t *endP)
+int TT_GetStringLength( wchar_t *p, wchar_t *endP);
+int TT_GetStringLength( wchar_t *p, wchar_t *endP)
 {
-	long StringLength;
+	int StringLength;
 
 	StringLength = 0;
 	while ( ( (*p >= L'A' && *p <= L'Z') || (*p >= L'a' && *p <= L'z') || (*p >= L'0' && *p <= L'9') ) && (p < endP))
@@ -620,14 +620,14 @@ long TT_GetStringLength( wchar_t *p, wchar_t *endP)
 	return StringLength;
 }
 
-void TT_SavePushLabel(wchar_t * CurrentPtr, short numberofLocalArgs,long stringLenth,wchar_t *p,tt_PStype *PS, short * tt_error);
-void TT_SavePushLabel(wchar_t * CurrentPtr, short numberofLocalArgs,long stringLenth,wchar_t *p,tt_PStype *PS, short * tt_error)
+void TT_SavePushLabel(wchar_t * CurrentPtr, short numberofLocalArgs,int stringLenth,wchar_t *p,tt_PStype *PS, short * tt_error);
+void TT_SavePushLabel(wchar_t * CurrentPtr, short numberofLocalArgs,int stringLenth,wchar_t *p,tt_PStype *PS, short * tt_error)
 {
 	short i, k;
 	
 	for ( k = PS->num-1; k >=0; k--) 
 	{
-		if (wcsncmp( PS->ps[k]->label, p, stringLenth) == 0 && (long)STRLENW(PS->ps[k]->label) == stringLenth )
+		if (wcsncmp( PS->ps[k]->label, p, stringLenth) == 0 && (int)STRLENW(PS->ps[k]->label) == stringLenth )
 		{
 			*tt_error = tt_DuplicateLabel;
 			return;
@@ -662,11 +662,11 @@ void TT_SavePushLabel(wchar_t * CurrentPtr, short numberofLocalArgs,long stringL
 }
 
 
-wchar_t *TT_ParseNumber( wchar_t *p, wchar_t *endP,short *Number, long * SelectionLength, short * error );
-wchar_t *TT_ParseNumber( wchar_t *p, wchar_t *endP,short *Number, long * SelectionLength, short * error )
+wchar_t *TT_ParseNumber( wchar_t *p, wchar_t *endP,short *Number, int * SelectionLength, short * error );
+wchar_t *TT_ParseNumber( wchar_t *p, wchar_t *endP,short *Number, int * SelectionLength, short * error )
 {
 	short i, negatif;
-	long tempNumber,maxNum;
+	int tempNumber,maxNum;
 	wchar_t *pNumStart;
 	
 	/* skip white space */
@@ -702,18 +702,18 @@ wchar_t *TT_ParseNumber( wchar_t *p, wchar_t *endP,short *Number, long * Selecti
 
 			if ( *p >= L'0' && *p <= L'9' ) 
 			{
-				tempNumber = tempNumber * 16 + (long) *p - (long) L'0';
+				tempNumber = tempNumber * 16 + (int) *p - (int) L'0';
 			} else if ( *p >= L'A' && *p <= L'F')
 			{
-				tempNumber = tempNumber * 16 + (long) *p - (long) L'A' + 10;
+				tempNumber = tempNumber * 16 + (int) *p - (int) L'A' + 10;
 			} else if ( *p >= L'a' && *p <= L'f')
 			{
-				tempNumber = tempNumber * 16 + (long) *p - (long) L'a' + 10;
+				tempNumber = tempNumber * 16 + (int) *p - (int) L'a' + 10;
 			}
 			if (tempNumber > maxNum)
 			{
 				*error = tt_ParseOverflow;				
-				*SelectionLength = (long)((ptrdiff_t)(p - pNumStart) + 1);
+				*SelectionLength = (int)((ptrdiff_t)(p - pNumStart) + 1);
 				return pNumStart;
 			}
 			p++;
@@ -726,7 +726,7 @@ wchar_t *TT_ParseNumber( wchar_t *p, wchar_t *endP,short *Number, long * Selecti
 			if (tempNumber > maxNum)
 			{
 				*error = tt_ParseOverflow;				
-				*SelectionLength = (long)((ptrdiff_t)(p - pNumStart) + 1);
+				*SelectionLength = (int)((ptrdiff_t)(p - pNumStart) + 1);
 				return pNumStart;
 			}
 			p++;
@@ -754,8 +754,8 @@ wchar_t *TT_ParseNumber( wchar_t *p, wchar_t *endP,short *Number, long * Selecti
  *   all the information is put  into *ps
  *   if  lableFlag = false;  memory *ps is freed
  */
-wchar_t *TT_ParsePUSHandSave(tt_PStype *ps,wchar_t *CurrentPtr,wchar_t * EOLPtr,short *argStore,short *argIdex, long * SelectionLength, short * tt_error );
-wchar_t *TT_ParsePUSHandSave(tt_PStype *ps,wchar_t *CurrentPtr,wchar_t * EOLPtr,short *argStore,short *argIdex, long * SelectionLength, short * tt_error )
+wchar_t *TT_ParsePUSHandSave(tt_PStype *ps,wchar_t *CurrentPtr,wchar_t * EOLPtr,short *argStore,short *argIdex, int * SelectionLength, short * tt_error );
+wchar_t *TT_ParsePUSHandSave(tt_PStype *ps,wchar_t *CurrentPtr,wchar_t * EOLPtr,short *argStore,short *argIdex, int * SelectionLength, short * tt_error )
 {
 	  
 
@@ -785,7 +785,7 @@ wchar_t *TT_ParsePUSHandSave(tt_PStype *ps,wchar_t *CurrentPtr,wchar_t * EOLPtr,
 
 			if ( *CurrentPtr == L'B' || *CurrentPtr == L'W' )
 			{
-				long StringLength;
+				int StringLength;
 				if ( *CurrentPtr == L'B')      argStore[(*argIdex)] = 55;  /* reserve the space for the jump, one byte or one word */
 				else if (*CurrentPtr == L'W' ) argStore[(*argIdex)] = 5555;
 
@@ -910,8 +910,8 @@ void TT_JRpushOFF_ReplaceLabel(tt_JrBWtype  *JrBW,tt_PStype    *PS,tt_LabelType 
 }
 
 
-wchar_t * TT_FindLabelError(tt_PStype    *PS, tt_JrBWtype  *JrBW, tt_JRtype  *JR, tt_LabelType *Label, wchar_t * CurrentPtr, long * SelectionLength, short * tt_error) ;
-wchar_t * TT_FindLabelError(tt_PStype    *PS, tt_JrBWtype  *JrBW, tt_JRtype  *JR, tt_LabelType *Label, wchar_t * CurrentPtr, long * SelectionLength, short * tt_error) 
+wchar_t * TT_FindLabelError(tt_PStype    *PS, tt_JrBWtype  *JrBW, tt_JRtype  *JR, tt_LabelType *Label, wchar_t * CurrentPtr, int * SelectionLength, short * tt_error) ;
+wchar_t * TT_FindLabelError(tt_PStype    *PS, tt_JrBWtype  *JrBW, tt_JRtype  *JR, tt_LabelType *Label, wchar_t * CurrentPtr, int * SelectionLength, short * tt_error) 
 {				
 	short i, k;
 	
@@ -924,7 +924,7 @@ wchar_t * TT_FindLabelError(tt_PStype    *PS, tt_JrBWtype  *JrBW, tt_JRtype  *JR
 			}
 			if ( i >= Label->num ) {
 				*tt_error = tt_LabelNotFound;
-				*SelectionLength = (long)STRLENW(JR->jr[k]->label);
+				*SelectionLength = (int)STRLENW(JR->jr[k]->label);
 				return JR->jr[k]->linePtr;
 			}
 		}
@@ -939,7 +939,7 @@ wchar_t * TT_FindLabelError(tt_PStype    *PS, tt_JrBWtype  *JrBW, tt_JRtype  *JR
 			}
 			if ( i >= Label->num ) {
 				*tt_error = tt_LabelNotFound;
-				*SelectionLength = (long)STRLENW(JrBW->bw[k]->label);
+				*SelectionLength = (int)STRLENW(JrBW->bw[k]->label);
 				return JrBW->bw[k]->linePtr;
 			}
 
@@ -949,7 +949,7 @@ wchar_t * TT_FindLabelError(tt_PStype    *PS, tt_JrBWtype  *JrBW, tt_JRtype  *JR
 			}
 			if ( i >= PS->num ) {
 				*tt_error = tt_LabelNotFound;
-				*SelectionLength = (long)STRLENW(JrBW->bw[k]->BWLabel);
+				*SelectionLength = (int)STRLENW(JrBW->bw[k]->BWLabel);
 				return JrBW->bw[k]->linePtr;
 			}
 		}
@@ -963,7 +963,7 @@ wchar_t * TT_FindLabelError(tt_PStype    *PS, tt_JrBWtype  *JrBW, tt_JRtype  *JR
 			}
 			if ( i >= JrBW->num ) {
 				*tt_error = tt_LabelNotFound;
-				*SelectionLength = (long)STRLENW(PS->ps[k]->label);
+				*SelectionLength = (int)STRLENW(PS->ps[k]->label);
 				return PS->ps[k]->linePtr;
 			}
 		}
@@ -983,14 +983,14 @@ wchar_t * TT_FindLabelError(tt_PStype    *PS, tt_JrBWtype  *JrBW, tt_JRtype  *JR
  */
 
 				
-void TT_SaveLabel(short numberofArgs,short numberofInstructions,long stringLenth,wchar_t *p,tt_LabelType *Label, short * tt_error);
-void TT_SaveLabel(short numberofArgs,short numberofInstructions,long stringLenth,wchar_t *p,tt_LabelType *Label, short * tt_error)
+void TT_SaveLabel(short numberofArgs,short numberofInstructions,int stringLenth,wchar_t *p,tt_LabelType *Label, short * tt_error);
+void TT_SaveLabel(short numberofArgs,short numberofInstructions,int stringLenth,wchar_t *p,tt_LabelType *Label, short * tt_error)
 {
 	short i, k;
 	
 	for ( k = Label->num-1; k >=0; k--) 
 	{
-		if (wcsncmp( Label->lab[k]->label, p, stringLenth) == 0  && (long)STRLENW(Label->lab[k]->label) == stringLenth )
+		if (wcsncmp( Label->lab[k]->label, p, stringLenth) == 0  && (int)STRLENW(Label->lab[k]->label) == stringLenth )
 		{
 			*tt_error = tt_DuplicateLabel;
 			return;
@@ -1022,16 +1022,16 @@ void TT_SaveLabel(short numberofArgs,short numberofInstructions,long stringLenth
 
 //void TT_SavePSLabel(short numberofArgs,short numberofInstructions,short stringLenth,char *p,tt_LabelType *Label, short * tt_error);
 
-wchar_t * TT_SaveJR(short numberofArgs,short numberofInstructions,wchar_t * CurrentPtr, wchar_t *LabelPtr,long stringLenth, 
-			wchar_t *BWLabelPtr,short BWstringLenth,tt_JRtype *JRList,tt_JrBWtype  *JrBW, short *aPtr,long * SelectionLength, short * tt_error);
-wchar_t * TT_SaveJR(short numberofArgs,short numberofInstructions,wchar_t * CurrentPtr, wchar_t *LabelPtr,long stringLenth, 
-			wchar_t *BWLabelPtr,short BWstringLenth,tt_JRtype *JRList,tt_JrBWtype  *JrBW, short *aPtr,long * SelectionLength, short * tt_error)
+wchar_t * TT_SaveJR(short numberofArgs,short numberofInstructions,wchar_t * CurrentPtr, wchar_t *LabelPtr,int stringLenth, 
+			wchar_t *BWLabelPtr,short BWstringLenth,tt_JRtype *JRList,tt_JrBWtype  *JrBW, short *aPtr,int * SelectionLength, short * tt_error);
+wchar_t * TT_SaveJR(short numberofArgs,short numberofInstructions,wchar_t * CurrentPtr, wchar_t *LabelPtr,int stringLenth, 
+			wchar_t *BWLabelPtr,short BWstringLenth,tt_JRtype *JRList,tt_JrBWtype  *JrBW, short *aPtr,int * SelectionLength, short * tt_error)
 {
 	short i, k;
 	
 	for ( k = JRList->num-1; k >=0; k--) 
 	{
-		if (wcsncmp( JRList->jr[k]->label, LabelPtr, stringLenth) == 0  && (long)STRLENW(JRList->jr[k]->label) == stringLenth  )
+		if (wcsncmp( JRList->jr[k]->label, LabelPtr, stringLenth) == 0  && (int)STRLENW(JRList->jr[k]->label) == stringLenth  )
 		{
 			*tt_error = tt_DuplicateLabel;
 			*SelectionLength = stringLenth;
@@ -1044,7 +1044,7 @@ wchar_t * TT_SaveJR(short numberofArgs,short numberofInstructions,wchar_t * Curr
 
 		for ( k = JrBW->num-1; k >=0; k--) 
 		{
-			if (wcsncmp( JrBW->bw[k]->BWLabel, BWLabelPtr, BWstringLenth) == 0  && (long)STRLENW(JrBW->bw[k]->BWLabel) == stringLenth )
+			if (wcsncmp( JrBW->bw[k]->BWLabel, BWLabelPtr, BWstringLenth) == 0  && (int)STRLENW(JrBW->bw[k]->BWLabel) == stringLenth )
 			{
 				*tt_error = tt_DuplicateLabel;
 				*SelectionLength = BWstringLenth;
@@ -1199,8 +1199,8 @@ void TT_SetRangeCheck(short LastContNb, short LastPointNb, short LastElementNb, 
 }
 
 
-wchar_t * TT_ReadInstructionBooleans (wchar_t * CurrentPtr, wchar_t * EOLPtr, short InstructionIndex, unsigned short *InstructionCode, long * Selectionlength, short * tt_error);
-wchar_t * TT_ReadInstructionBooleans (wchar_t * CurrentPtr, wchar_t * EOLPtr, short InstructionIndex, unsigned short *InstructionCode, long * Selectionlength, short * tt_error)
+wchar_t * TT_ReadInstructionBooleans (wchar_t * CurrentPtr, wchar_t * EOLPtr, short InstructionIndex, unsigned short *InstructionCode, int * Selectionlength, short * tt_error);
+wchar_t * TT_ReadInstructionBooleans (wchar_t * CurrentPtr, wchar_t * EOLPtr, short InstructionIndex, unsigned short *InstructionCode, int * Selectionlength, short * tt_error)
 {
 /* the instruction code may be changed according to the boolean flags */
 	short booleanCount, booleanShift, NBOfBooleans, found,  k;
@@ -1438,8 +1438,8 @@ short TT_IsIDEF_FDEFInstruction( unsigned short opCode )
 	return ( opCode == 0x2C || opCode == 0x89 );
 }
 
-wchar_t * TT_DecodeDeltaP (wchar_t * CurrentPtr, wchar_t * EOLPtr, wchar_t * EndPtr, short InstructionIndex, unsigned short InstructionCode, short *deltaCount, tt_deltaPType  dArr[], long * Selectionlength, short * tt_error);
-wchar_t * TT_DecodeDeltaP (wchar_t * CurrentPtr, wchar_t * EOLPtr, wchar_t * EndPtr, short InstructionIndex, unsigned short InstructionCode, short *deltaCount, tt_deltaPType  dArr[], long * SelectionLength, short * tt_error)
+wchar_t * TT_DecodeDeltaP (wchar_t * CurrentPtr, wchar_t * EOLPtr, wchar_t * EndPtr, short InstructionIndex, unsigned short InstructionCode, short *deltaCount, tt_deltaPType  dArr[], int * Selectionlength, short * tt_error);
+wchar_t * TT_DecodeDeltaP (wchar_t * CurrentPtr, wchar_t * EOLPtr, wchar_t * EndPtr, short InstructionIndex, unsigned short InstructionCode, short *deltaCount, tt_deltaPType  dArr[], int * SelectionLength, short * tt_error)
 {
 	short tempNum;
 	wchar_t * tempP;
@@ -1496,14 +1496,14 @@ wchar_t * TT_DecodeDeltaP (wchar_t * CurrentPtr, wchar_t * EOLPtr, wchar_t * End
 			if (tempNum < asm_ppDescription1[6].lowestValidValue || tempNum > asm_ppDescription1[6].highestValidValue) 
 			{
 				*tt_error = tt_CVTIndexOutOfRange;
-				*SelectionLength = (long) (CurrentPtr - tempP);
+				*SelectionLength = (int) (CurrentPtr - tempP);
 				return tempP;
 			}
 		} else {
 			if (tempNum < asm_ppDescription1[0].lowestValidValue || tempNum > asm_ppDescription1[0].highestValidValue) 
 			{
 				*tt_error = tt_PointNbOutOfRange;
-				*SelectionLength = (long) (CurrentPtr - tempP);
+				*SelectionLength = (int) (CurrentPtr - tempP);
 				return tempP;
 			}
 		}
@@ -1536,7 +1536,7 @@ wchar_t * TT_DecodeDeltaP (wchar_t * CurrentPtr, wchar_t * EOLPtr, wchar_t * End
 		
 		if ( argCode < 0 || argCode > 15 ) {
 			*tt_error = tt_PointSizeOutOfRange;
-			*SelectionLength = (long) (CurrentPtr - tempP);
+			*SelectionLength = (int) (CurrentPtr - tempP);
 			return tempP;
 		}
 			
@@ -1575,7 +1575,7 @@ wchar_t * TT_DecodeDeltaP (wchar_t * CurrentPtr, wchar_t * EOLPtr, wchar_t * End
 			if (tempNum != 8) /* ######## claudebe nobody should use a different denominator (DELTA command with fixed shift) */
 			{
 				*tt_error = tt_DeltaWrongDenominator;
-				*SelectionLength = (long) (CurrentPtr - tempP);
+				*SelectionLength = (int) (CurrentPtr - tempP);
 				return tempP;
 			};
 	
@@ -1630,7 +1630,7 @@ wchar_t * TT_DecodeDeltaP (wchar_t * CurrentPtr, wchar_t * EOLPtr, wchar_t * End
 
 wchar_t * TT_ReadInstructionParameters (wchar_t * CurrentPtr, wchar_t * EOLPtr, short InstructionIndex, unsigned char InstructionCode, 
 				asm_PushAndPopDescriptionType asm_ppDescription[], short pushOn, wchar_t * ArgTypeBuffer, short  *argc,short *args,short  *argc2,wchar_t *args2,
-				wchar_t ** LabelHandle, short * LabelLength, wchar_t ** BWLabelHandle, short * BWLabelLength, long * SelectionLength, short * MaxFunctionDefs, 
+				wchar_t ** LabelHandle, short * LabelLength, wchar_t ** BWLabelHandle, short * BWLabelLength, int * SelectionLength, short * MaxFunctionDefs, 
 				/* offset in the instruction stream to the instruction corresponding to the cursor position, used for trace mode */
 				short * BinaryOffset, 
 				/* for the DovMan partial compilation feature that flash points referenced by the current command */
@@ -1638,7 +1638,7 @@ wchar_t * TT_ReadInstructionParameters (wchar_t * CurrentPtr, wchar_t * EOLPtr, 
 				short * tt_error);
 wchar_t * TT_ReadInstructionParameters (wchar_t * CurrentPtr, wchar_t * EOLPtr, short InstructionIndex, unsigned char InstructionCode, 
 				asm_PushAndPopDescriptionType asm_ppDescription[], short pushOn, wchar_t * ArgTypeBuffer, short  *argc,short *args,short  *argc2,wchar_t *args2,
-				wchar_t ** LabelHandle, short * LabelLength, wchar_t ** BWLabelHandle, short * BWLabelLength, long * SelectionLength, short * MaxFunctionDefs, 
+				wchar_t ** LabelHandle, short * LabelLength, wchar_t ** BWLabelHandle, short * BWLabelLength, int * SelectionLength, short * MaxFunctionDefs, 
 				/* offset in the instruction stream to the instruction corresponding to the cursor position, used for trace mode */
 				short * BinaryOffset, 
 				/* for the DovMan partial compilation feature that flash points referenced by the current command */
@@ -1733,7 +1733,7 @@ wchar_t * TT_ReadInstructionParameters (wchar_t * CurrentPtr, wchar_t * EOLPtr, 
 				CurrentPtr++;
 			} else if ( (argNb != 255) && ( ArgTypeBuffer[argindex] == L'L' ) && (*CurrentPtr == L'#')) 
 			{
-				long StringLength;
+				int StringLength;
 				CurrentPtr++;
 				/* we are looking for a label in a JR instruction */
 				StringLength = TT_GetStringLength (CurrentPtr, EOLPtr);
@@ -1781,7 +1781,7 @@ wchar_t * TT_ReadInstructionParameters (wchar_t * CurrentPtr, wchar_t * EOLPtr, 
 						if (ArgTypeBuffer[argindex] == asm_ppDescription[PPindex].type) {
 							foundPP=1;   /* Exit loop for speed's sake */
 							if ((args[argindex] < asm_ppDescription[PPindex].lowestValidValue) || (args[argindex] > asm_ppDescription[PPindex].highestValidValue)) {
-								*SelectionLength = (long) (CurrentPtr - tempP);
+								*SelectionLength = (int) (CurrentPtr - tempP);
 								CurrentPtr = tempP;
 								if ( ArgTypeBuffer[argindex] == L'P' ) 
 								{
@@ -1856,7 +1856,7 @@ wchar_t * TT_ReadInstructionParameters (wchar_t * CurrentPtr, wchar_t * EOLPtr, 
 						foundPP=1;   /* Exit loop for speed's sake */
 						if ((args[argindex-1] < asm_ppDescription[PPindex].lowestValidValue) || (args[argindex-1] > asm_ppDescription[PPindex].highestValidValue)) {
 							*tt_error = tt_FunctionNbOutOfRange;
-							*SelectionLength = (long) (CurrentPtr - tempP);
+							*SelectionLength = (int) (CurrentPtr - tempP);
 							CurrentPtr = tempP;
 						} /* if */
 					} /* if */
@@ -1877,7 +1877,7 @@ wchar_t * TT_ReadInstructionParameters (wchar_t * CurrentPtr, wchar_t * EOLPtr, 
 
 		if (TT_IsJR(InstructionCode)) 
 		{
-			long StringLength;
+			int StringLength;
 			/* in this case only jump command has parameters */
 
 			while ( *CurrentPtr == L' ' && CurrentPtr <= EOLPtr)
@@ -2420,11 +2420,11 @@ wchar_t *TT_InnerCompile(
 	/* source text, pointer to the begining, the end and the cursor position (to be able to trace until that line) */
 		wchar_t *StartPtr, wchar_t * EndPtr, wchar_t * SelStartPtr, 
 	/* pointer to the output buffer, it's maximal length and return the Binary length */
-		unsigned char * BinaryOut, char * BinaryOutEndPtr, long * BinaryLength, 
+		unsigned char * BinaryOut, char * BinaryOutEndPtr, int * BinaryLength, 
 	/* offset in the instruction stream to the instruction corresponding to the cursor position, used for trace mode */
 		short * BinaryOffset, 
 	/* length of the text to be selected in case of error */
-		long * SelectionLength, 
+		int * SelectionLength, 
 	/* line number where the first error occur */
 		short * ErrorLineNb,
 	/* return : approximate stack need, higher function number */
@@ -2442,11 +2442,11 @@ wchar_t *TT_InnerCompile(
 	/* source text, pointer to the begining, the end and the cursor position (to be able to trace until that line) */
 		wchar_t *StartPtr, wchar_t * EndPtr, wchar_t * SelStartPtr, 
 	/* pointer to the output buffer, it's maximal length and return the Binary length */
-		unsigned char * BinaryOut, char * BinaryOutEndPtr, long * BinaryLength, 
+		unsigned char * BinaryOut, char * BinaryOutEndPtr, int * BinaryLength, 
 	/* offset in the instruction stream to the instruction corresponding to the cursor position, used for trace mode */
 		short * BinaryOffset, 
 	/* length of the text to be selected in case of error */
-		long * SelectionLength, 
+		int * SelectionLength, 
 	/* line number where the first error occur */
 		short * ErrorLineNb,
 	/* return : approximate stack need, higher function number */
@@ -2461,7 +2461,7 @@ wchar_t *TT_InnerCompile(
 		short * tt_error)
 {
 	short	LineNb, LastLineCompiled;
-	long	LineLength, SLoopLineLength;
+	int	LineLength, SLoopLineLength;
 	wchar_t 	*CurrentPtr, *SLoopPtr;
 	short numberofArgs, numberofInstructions;
 	short				*argStore, *aPtr;
@@ -2597,7 +2597,7 @@ wchar_t *TT_InnerCompile(
 		if (*CurrentPtr == L'#') 
 		/* label or compiler switch */
 		{
-			long StringLength;
+			int StringLength;
 			
 			StringLength = TT_GetStringLength (CurrentPtr +1, EndPtr);
 			if ((*(CurrentPtr + StringLength + 1) == L':') && (CurrentPtr + StringLength + 1 != EndPtr))
@@ -2724,7 +2724,7 @@ wchar_t *TT_InnerCompile(
 						{
 							CurrentPtr = CurrentPtr + LineLength;
 						} else {
-							long count;
+							int count;
 							short subStackNeed, tempInsOffset;
 							tt_CompilationStatus	SavedCompilationStatus;
 
@@ -2845,7 +2845,7 @@ wchar_t *TT_InnerCompile(
 				/* regular instruction */
 				short InstructionIndex, found;
 				unsigned short InstructionCode; /* unsigned short because of the fake code used to detect composite commands */
-				long StringLength;
+				int StringLength;
 			
 				StringLength = TT_GetStringLength (CurrentPtr, EndPtr);
 			
@@ -3095,11 +3095,11 @@ wchar_t *TT_Compile(
 	/* source text, pointer to the begining, the end and the cursor position (to be able to trace until that line) */
 		wchar_t *StartPtr, wchar_t * EndPtr, wchar_t * SelStartPtr, 
 	/* pointer to the output buffer, it's maximal length and return the length of the resulting binary */
-		unsigned char * BinaryOut, short MaxBinaryLength, long * BinaryLength, 
+		unsigned char * BinaryOut, short MaxBinaryLength, int * BinaryLength, 
 	/* offset in the instruction stream to the instruction corresponding to the cursor position, used for trace mode */
 		short * BinaryOffset, 
 	/* length of the text to be selected in case of error */
-		long * SelectionLength,
+		int * SelectionLength,
 	/* line number where the first error occur */
 		short * ErrorLineNb,
 	/* return : approximate stack need, higher function number */
@@ -3112,8 +3112,8 @@ wchar_t *TT_Compile(
 	/* error code, return tt_NoError if no error */
 		short * tt_error);
 		
-wchar_t *TT_Compile(wchar_t *StartPtr, wchar_t * EndPtr, wchar_t * SelStartPtr, unsigned char * BinaryOut, long MaxBinaryLength, 
-		long * BinaryLength, short * BinaryOffset, long * SelectionLength, short * ErrorLineNb, 
+wchar_t *TT_Compile(wchar_t *StartPtr, wchar_t * EndPtr, wchar_t * SelStartPtr, unsigned char * BinaryOut, int MaxBinaryLength, 
+		int * BinaryLength, short * BinaryOffset, int * SelectionLength, short * ErrorLineNb, 
 		short * StackNeed, short * MaxFunctionDefs,
 		/* for the DovMan partial compilation feature that flash points referenced by the current command */
 		tt_flashingPoints * flashingPoints,
@@ -3272,7 +3272,7 @@ void TT_GetErrorString (short ErrorNb, wchar_t * ErrorString)
 			swprintf( ErrorString, L"Too many labels in the same block");
 			break;
 		case tt_LabelTooLong:
-			swprintf( ErrorString, L"Label too long, limited to %hd character",(short) (MAXLABELLENGTH-1));
+			swprintf( ErrorString, L"Label too int, limited to %hd character",(short) (MAXLABELLENGTH-1));
 			break;
 		case tt_DuplicateLabel:
 			swprintf( ErrorString, L"Same label used twice");
@@ -3478,7 +3478,7 @@ wchar_t *CO_Parse2_14Number( wchar_t *p, wchar_t *endP,short *Number, short * er
 wchar_t *CO_Parse2_14Number( wchar_t *p, wchar_t *endP,short *Number, short * error )
 {
 	short i, negatif;
-	long tempNumber;
+	int tempNumber;
 	
 	/* skip white space */
 	while ( *p == L' ' && p < endP)
@@ -3567,10 +3567,10 @@ wchar_t *CO_Parse2_14Number( wchar_t *p, wchar_t *endP,short *Number, short * er
 
 wchar_t * CO_ReadInstructionParameters (wchar_t * CurrentPtr, wchar_t * EOLPtr, short InstructionIndex, 
 				co_ParameterDescriptionType co_ppDescription[], short  *argc,short *args,
-				long * SelectionLength,  short * co_error);
+				int * SelectionLength,  short * co_error);
 wchar_t * CO_ReadInstructionParameters (wchar_t * CurrentPtr, wchar_t * EOLPtr, short InstructionIndex, 
 				co_ParameterDescriptionType co_ppDescription[], short  *argc,short *args,
-				long * SelectionLength,  short * co_error)
+				int * SelectionLength,  short * co_error)
 {
 	short	argindex, argNb;
 	wchar_t * tempP;
@@ -3627,7 +3627,7 @@ wchar_t * CO_ReadInstructionParameters (wchar_t * CurrentPtr, wchar_t * EOLPtr, 
 						inRange = co_ppDescription[PPindex].lowestValidValue <= args[argindex] && args[argindex] <= co_ppDescription[PPindex].highestValidValue;
 					
 					if (!inRange) {
-						*SelectionLength = (long) (CurrentPtr - tempP);
+						*SelectionLength = (int) (CurrentPtr - tempP);
 						CurrentPtr = tempP;
 						if ( co_instruction[InstructionIndex].pops[argindex] == L'P' ) {
 							*co_error = co_PointNbOutOfRange;
@@ -3659,8 +3659,8 @@ wchar_t * CO_ReadInstructionParameters (wchar_t * CurrentPtr, wchar_t * EOLPtr, 
 } // CO_ReadInstructionParameters
 
 
-wchar_t * CO_ReadInstructionBooleans (wchar_t * CurrentPtr, wchar_t * EOLPtr, short InstructionIndex, short * RoundingCode, long * Selectionlength, short * co_error);
-wchar_t * CO_ReadInstructionBooleans (wchar_t * CurrentPtr, wchar_t * EOLPtr, short InstructionIndex, short * RoundingCode, long * Selectionlength, short * co_error)
+wchar_t * CO_ReadInstructionBooleans (wchar_t * CurrentPtr, wchar_t * EOLPtr, short InstructionIndex, short * RoundingCode, int * Selectionlength, short * co_error);
+wchar_t * CO_ReadInstructionBooleans (wchar_t * CurrentPtr, wchar_t * EOLPtr, short InstructionIndex, short * RoundingCode, int * Selectionlength, short * co_error)
 {
 	short booleanCount, booleanShift, NBOfBooleans, found,  k;
 	wchar_t * tempP;
@@ -3727,16 +3727,16 @@ wchar_t * CO_ReadInstructionBooleans (wchar_t * CurrentPtr, wchar_t * EOLPtr, sh
  * returns true on error compile the composite information
  */
 
-wchar_t *CO_Compile(TrueTypeFont * font, TrueTypeGlyph * glyph, wchar_t *StartPtr, wchar_t * EndPtr, short *numCompositeContours, short *numCompositePoints, long * SelectionLength, short * co_error);
-wchar_t *CO_Compile(TrueTypeFont * font, TrueTypeGlyph * glyph, wchar_t *StartPtr, wchar_t * EndPtr, short *numCompositeContours, short *numCompositePoints, long * SelectionLength, short * co_error) {
+wchar_t *CO_Compile(TrueTypeFont * font, TrueTypeGlyph * glyph, wchar_t *StartPtr, wchar_t * EndPtr, short *numCompositeContours, short *numCompositePoints, int * SelectionLength, short * co_error);
+wchar_t *CO_Compile(TrueTypeFont * font, TrueTypeGlyph * glyph, wchar_t *StartPtr, wchar_t * EndPtr, short *numCompositeContours, short *numCompositePoints, int * SelectionLength, short * co_error) {
 //	B.St.'s DISCLAIMER: So far, I've barely done a minimum to make this hideous piece of code somewhat understandable.
 //	The way this appears to work is by looking at a pair of composite instructions (prevInstrIndex and currInstrIndex)
-//	in a window that is being slided along the code. This appears to be used to determine, whether such instructions
+//	in a window that is being slided aint the code. This appears to be used to determine, whether such instructions
 //	as USEMYMETRICS or OVERLAP and NONOVERLAP (the latter two being obsolete, as far as I understand the TT manual),
 //	are properly followed by further composite instructions...
 	short	LineNb,LastLineCompiled,RoundingCode,currInstrIndex,prevInstrIndex,args[256],argc;
 	bool currInstrIsCompInstr,prevInstrIsCompInstr;
-	long	LineLength,StringLength;
+	int	LineLength,StringLength;
 	wchar_t 	*CurrentPtr,*EOLPtr;
 	TTCompositeProfile compositeProfile;
 	sfnt_glyphbbox Newbbox; // for composite glyph
@@ -3781,7 +3781,7 @@ wchar_t *CO_Compile(TrueTypeFont * font, TrueTypeGlyph * glyph, wchar_t *StartPt
 		// regular instruction
 		StringLength = TT_GetStringLength (CurrentPtr, EndPtr);
 		currInstrIndex = 0;
-		while (currInstrIndex < CONUMBEROFINSTRUCTIONS && !(StringLength == (long)STRLENW(co_instruction[currInstrIndex].name) && wcsncmp(CurrentPtr, co_instruction[currInstrIndex].name, StringLength) == 0)) currInstrIndex++;
+		while (currInstrIndex < CONUMBEROFINSTRUCTIONS && !(StringLength == (int)STRLENW(co_instruction[currInstrIndex].name) && wcsncmp(CurrentPtr, co_instruction[currInstrIndex].name, StringLength) == 0)) currInstrIndex++;
 		currInstrIsCompInstr = currInstrIndex < CONUMBEROFINSTRUCTIONS;
 		
 		if (prevInstrIsCompInstr) {
@@ -4001,11 +4001,11 @@ bool DisassemComponent(TrueTypeGlyph *glyph, TextBuffer *src, wchar_t errMsg[]) 
 } // DisassemComponent
 
 bool TTAssemble(ASMType asmType, TextBuffer* src, TrueTypeFont* font, TrueTypeGlyph* glyph,
-	long maxBinLen, unsigned char* bin, long* actBinLen, bool variationCompositeGuard, long* errPos, long* errLen, wchar_t errMsg[]) {
+	int maxBinLen, unsigned char* bin, int* actBinLen, bool variationCompositeGuard, int* errPos, int* errLen, wchar_t errMsg[]) {
 
 	wchar_t* startPtr, * endPtr, * SelStartPtr, * tempPtr;
 	short BinaryOffset, CompileError = co_NoError, StackNeed, MaxFunctionDefs, ErrorLineNb, componentSize, numCompositeContours, numCompositePoints, maxContourNumber, maxPointNumber;
-	long srcLen, highestCvtNum;
+	int srcLen, highestCvtNum;
 	sfnt_maxProfileTable profile;
 	short componentData[MAXCOMPONENTSIZE];
 
@@ -4075,7 +4075,7 @@ bool TTAssemble(ASMType asmType, TextBuffer* src, TrueTypeFont* font, TrueTypeGl
 			TT_SetRangeCheck(maxContourNumber, maxPointNumber, profile.maxElements - 1, profile.maxFunctionDefs - 1, (short)highestCvtNum, profile.maxStorage - 1);
 		}
 		else {
-			*errPos = (long)(tempPtr - startPtr);
+			*errPos = (int)(tempPtr - startPtr);
 			if (*errLen < 1) *errLen = 1; // it is easy to find a selection than a cursor <--- and difficult to get it right in the first place???
 			CO_GetErrorString(CompileError, errMsg);
 		}
@@ -4094,7 +4094,7 @@ bool TTAssemble(ASMType asmType, TextBuffer* src, TrueTypeFont* font, TrueTypeGl
 			font->UpdateAssemblerProfile(asmType, MaxFunctionDefs + 1, StackNeed, (short)(*actBinLen));
 		}
 		else {
-			*errPos = (long)(tempPtr - startPtr);
+			*errPos = (int)(tempPtr - startPtr);
 			if (*errLen < 1) *errLen = 1; // it is easy to find a selection than a cursor <--- and difficult to get it right in the first place???
 			TT_GetErrorString(CompileError, errMsg);
 
