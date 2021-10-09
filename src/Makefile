@@ -10,7 +10,7 @@ VariationInstance.o VariationModels.o vttcompile.o
 default: vttcompile
 
 vttcompile: $(OBJS)
-	$(CXX) -o $@ $^
+	$(CXX) $(CXXFLAGS) -o $@ $^
 
 clean :
 	$(RM) $(OBJS) vttcompile vttcompile.exe
