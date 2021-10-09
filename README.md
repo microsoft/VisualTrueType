@@ -28,6 +28,7 @@ For unix users (including Linux and Apple command-line), `cd src && make` should
 can also cross-compile for 32-bit windows with `cd src && make CXX=i686-w64-mingw32-c++`,
 for 64-bit windows with `cd src && make CXX=x86_64-w64-mingw32-c++`; and use clang,
 enabling all the recommended warnings with `cd src && make CXX=clang++ CXXFLAGS=-Wall`.
+Build as 32-bit on 64-bit systems with `cd src && make CXXFLAGS=-m32`.
 You may need to do `cd src && make CXXFLAGS="-std=c++14"` to explicitly request
 support for the 2014 ISO C++ standard.
 
