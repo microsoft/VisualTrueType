@@ -41,7 +41,7 @@ ListStruct::ListStruct(void) {
 
 void ListStruct::Clone(ListStruct **into) {
 	ListElem *orig,*copy;
-	long elem;
+	int elem;
 	
 	if (!*into) *into = new ListStruct;
 //	super-class->Clone(into);
@@ -90,7 +90,7 @@ void ListStruct::Remove(ListElem *that) {
 
 void ListStruct::Broadcast(ListMessage *message, bool forward) {
 	ListElem *orig;
-	long elem;
+	int elem;
 	
 	if (forward)
 		for (orig = this->first, elem = 0; elem < this->elems; orig = orig->next, elem++) orig->Receive(message,forward);

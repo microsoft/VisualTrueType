@@ -8,7 +8,7 @@ class ListMessage {
 public:
 	ListMessage(void);
 	virtual ~ListMessage(void);
-	long type; // application specific poor people's type tag...
+	int type; // application specific poor people's type tag...
 private:
 };
 
@@ -33,7 +33,7 @@ public:
 	virtual void Remove(ListElem *that); // abstract
 	virtual void Broadcast(ListMessage *message, bool forward);
 	static void Delete(ListStruct **list);
-	long elems;			   // to be considered read-only for clients
+	int elems;			   // to be considered read-only for clients
 	ListElem *first,*last; // to be considered read-only for clients
 };
 

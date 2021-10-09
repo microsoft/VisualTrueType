@@ -44,7 +44,7 @@ F26Dot6Vector SubFV(const F26Dot6Vector a, const F26Dot6Vector b) {
 	return c;
 } // SubFV
 
-F26Dot6Vector ScaleFV(const F26Dot6Vector v, long scale) {
+F26Dot6Vector ScaleFV(const F26Dot6Vector v, int scale) {
 	F26Dot6Vector w;
 	
 	w.x = scale*v.x;
@@ -60,7 +60,7 @@ F26Dot6Vector ScaleFVF(const F26Dot6Vector v, F26Dot6 scale) {
 	return w;
 } // ScaleFVF
 
-Vector ShlV(const Vector a, long by) {
+Vector ShlV(const Vector a, int by) {
 	Vector b;
 	
 	b.x = a.x << by;
@@ -68,7 +68,7 @@ Vector ShlV(const Vector a, long by) {
 	return b;
 } // ShlV
 
-Vector ShrV(const Vector a, long by) {
+Vector ShrV(const Vector a, int by) {
 	Vector b;
 	
 	b.x = a.x >> by;
@@ -77,7 +77,7 @@ Vector ShrV(const Vector a, long by) {
 } // ShrV
 
 
-F26Dot6Vector ShlFV(const F26Dot6Vector a, long by) {
+F26Dot6Vector ShlFV(const F26Dot6Vector a, int by) {
 	F26Dot6Vector b;
 	
 	b.x = a.x << by;
@@ -85,7 +85,7 @@ F26Dot6Vector ShlFV(const F26Dot6Vector a, long by) {
 	return b;
 } // ShlFV
 
-F26Dot6Vector ShrFV(const F26Dot6Vector a, long by) {
+F26Dot6Vector ShrFV(const F26Dot6Vector a, int by) {
 	F26Dot6Vector b;
 	
 	b.x = a.x >> by;
@@ -94,7 +94,7 @@ F26Dot6Vector ShrFV(const F26Dot6Vector a, long by) {
 } // ShrFV
 
 
-long DistV(const Vector a, const Vector b) {
+int DistV(const Vector a, const Vector b) {
 	double dx,dy; // to avoid overflow...
 	
 	dx = a.x - b.x;
@@ -122,8 +122,8 @@ double LengthR(const RVector a) {
 	return sqrt(a.x*a.x + a.y*a.y);
 } // LengthR
 
-long SqrDistV(const Vector a, const Vector b) {
-	long dx,dy;
+int SqrDistV(const Vector a, const Vector b) {
+	int dx,dy;
 	
 	dx = a.x - b.x;
 	dy = a.y - b.y;
@@ -217,19 +217,19 @@ F26Dot6Vector DirectionFV(const F26Dot6Vector a, const F26Dot6Vector b) {
 	return dir;
 } // DirectionFV
 
-long ScalProdV(const Vector a, const Vector b) {
+int ScalProdV(const Vector a, const Vector b) {
 	return a.x*b.x + a.y*b.y;
 } // ScalProdV
 
-long ScalProdP(const Vector a, const Vector A, const Vector b, const Vector B) { // 4-point form
+int ScalProdP(const Vector a, const Vector A, const Vector b, const Vector B) { // 4-point form
 	return (A.x-a.x)*(B.x-b.x) + (A.y-a.y)*(B.y-b.y);
 } // ScalProdP
 
-long VectProdV(const Vector a, const Vector b) { // z-component, 2-vector form
+int VectProdV(const Vector a, const Vector b) { // z-component, 2-vector form
 	return a.x*b.y - b.x*a.y;
 } // VectProdV
 
-long VectProdP(const Vector a, const Vector A, const Vector b, const Vector B) { // z-component, 4-point form
+int VectProdP(const Vector a, const Vector A, const Vector b, const Vector B) { // z-component, 4-point form
 	return (A.x-a.x)*(B.y-b.y) - (B.x-b.x)*(A.y-a.y);
 } // VectProdP
 
@@ -269,7 +269,7 @@ double VectProdRP(const RVector a, const RVector A, const RVector b, const RVect
 
 bool Collinear(const Vector v, const Vector p, const Vector V, Collinearity c) { // p on line through v and V?
 	/***** see wether there is a t such that p = v + t*(V-v) *****/
-	long n = p.x-v.x, N = Abs(n), d = V.x-v.x, D = Abs(d); // t = n/d
+	int n = p.x-v.x, N = Abs(n), d = V.x-v.x, D = Abs(d); // t = n/d
 	
 	if (n*(V.y-v.y) != d*(p.y-v.y)) return false; // not collinear
 	switch (c) {

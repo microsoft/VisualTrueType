@@ -123,8 +123,8 @@ public:
 };
 
 
-void GenTalkIf(TextBuffer *talk, AltCodePath path, long fpgmBias);
-void GenTalkElse(TextBuffer *talk, long fpgmBias);
+void GenTalkIf(TextBuffer *talk, AltCodePath path, int fpgmBias);
+void GenTalkElse(TextBuffer *talk, int fpgmBias);
 void GenTalkEndIf(TextBuffer *talk);
 void GenPrepIf(TextBuffer *prep, AltCodePath path);
 void GenPrepElse(TextBuffer *prep);

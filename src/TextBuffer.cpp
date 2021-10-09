@@ -39,7 +39,7 @@ TextBuffer::~TextBuffer(void) {
 	if (this->text != NULL) free(this->text);
 } // TextBuffer::~TextBuffer
 
-void TextBuffer::Indent(long indent) {
+void TextBuffer::Indent(int indent) {
 	this->indent = Max(0,this->indent + indent);
 } // TextBuffer::Indent
 
@@ -55,40 +55,40 @@ size_t TextBuffer::Length(void) {
 	return this->used;
 } // TextBuffer::Length
 
-long  TextBuffer::TheLength()
+int  TextBuffer::TheLength()
 {
-	return (long)this->Length();
+	return (int)this->Length();
 }
 
-long TextBuffer::TheLengthInUTF8(void)
+int TextBuffer::TheLengthInUTF8(void)
 {
 	std::string text8;
 
 	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 	text8 = converter.to_bytes(this->text);
 
-	return static_cast<long>(text8.length()); 
+	return static_cast<int>(text8.length()); 
 }
 
-long TextBuffer::LineNumOf(long pos) {
+int TextBuffer::LineNumOf(int pos) {
 	wchar_t *text,*textEnd;
-	long lineNum;
+	int lineNum;
 
-	for (text = this->text, textEnd = text + Max(0,Min(pos,(long)this->used)), lineNum = 0; text < textEnd; text++)
+	for (text = this->text, textEnd = text + Max(0,Min(pos,(int)this->used)), lineNum = 0; text < textEnd; text++)
 		if (*text == textBufferLineBreak)
 			lineNum++;
 	
 	return lineNum;
 } // TextBuffer::LineNumOf
 
-long TextBuffer::PosOf(long lineNum) {
+int TextBuffer::PosOf(int lineNum) {
 	wchar_t *text,*textEnd;
 
 	for (text = this->text, textEnd = text + this->used; lineNum > 0 && text < textEnd; text++)
 		if (*text == textBufferLineBreak)
 			lineNum--;
 
-	return (long)(ptrdiff_t)(text - this->text);
+	return (int)(ptrdiff_t)(text - this->text);
 } // TextBuffer::PosOf
 
 
@@ -99,7 +99,7 @@ void TextBuffer::GetText(size_t *textLen, char text[])
 	std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 	text8 = converter.to_bytes(this->text);
 
-	*textLen = static_cast<long>(text8.size());
+	*textLen = static_cast<int>(text8.size());
 	if (*textLen > 0)
 	{
 		std::copy(text8.begin(), text8.end(), text);
@@ -118,7 +118,7 @@ void TextBuffer::GetText(std::wstring &text)
 	text.assign(this->text); 	 
 }
 
-void TextBuffer::SetText(long textLen, const char text[])
+void TextBuffer::SetText(int textLen, const char text[])
 {
 	if (textLen == 0)
 	{
@@ -144,19 +144,19 @@ void TextBuffer::SetText(size_t textLen, const wchar_t text[]) {
 	this->modified = false; // !!!
 } // TextBuffer::SetText
 
-wchar_t TextBuffer::GetCh(long atPos) {
-	return 0 <= atPos && atPos < (long)this->used ? this->text[atPos] : L'\0';
+wchar_t TextBuffer::GetCh(int atPos) {
+	return 0 <= atPos && atPos < (int)this->used ? this->text[atPos] : L'\0';
 } // TextBuffer::GetCh
 
-void TextBuffer::GetLine(long atPos, long *lineLen, wchar_t line[], long *lineSepLen) {
-	long startPos,endPos,usedLineLen;
+void TextBuffer::GetLine(int atPos, int *lineLen, wchar_t line[], int *lineSepLen) {
+	int startPos,endPos,usedLineLen;
 
 	*lineLen = *lineSepLen = 0;
-	if (atPos < 0 || (long)this->used <= atPos) return;
+	if (atPos < 0 || (int)this->used <= atPos) return;
 	startPos = atPos;
 	while (startPos > 0 && this->text[startPos-1] != textBufferLineBreak) startPos--;
 	endPos = atPos;
-	while (endPos < (long)this->used && this->text[endPos] != textBufferLineBreak) endPos++;
+	while (endPos < (int)this->used && this->text[endPos] != textBufferLineBreak) endPos++;
 	*lineLen = endPos - startPos;
 	*lineSepLen = 1;
 	usedLineLen = Min(*lineLen,0xff);
@@ -164,11 +164,11 @@ void TextBuffer::GetLine(long atPos, long *lineLen, wchar_t line[], long *lineSe
 	line[usedLineLen] = L'\0';
 } // TextBuffer::GetLine
 
-void TextBuffer::GetRange(long fromPos, long toPos, wchar_t text[]) {
-	long chars;
+void TextBuffer::GetRange(int fromPos, int toPos, wchar_t text[]) {
+	int chars;
 
-	fromPos = (long)Max(0,Min(fromPos,(long)this->used));
-	toPos   = (long)Max(fromPos,Min(toPos,(long)this->used));
+	fromPos = (int)Max(0,Min(fromPos,(int)this->used));
+	toPos   = (int)Max(fromPos,Min(toPos,(int)this->used));
 	chars   = toPos - fromPos;
 	if (chars < 0) return;
 
@@ -176,7 +176,7 @@ void TextBuffer::GetRange(long fromPos, long toPos, wchar_t text[]) {
 	text[chars] = L'\0';
 } // TextBuffer::GetRange
 
-long TextBuffer::Search(long fromPos, bool wrapAround, wchar_t target[], bool caseSensitive) {
+int TextBuffer::Search(int fromPos, bool wrapAround, wchar_t target[], bool caseSensitive) {
 #ifdef _DEBUG
 	assert(false);
 #endif
@@ -198,14 +198,14 @@ void TextBuffer::Append(const wchar_t strg[]) {
 	this->modified = true;
 } // TextBuffer::Append
 
-void TextBuffer::AppendRange(const wchar_t strg[], long fromPos, long toPos) {
+void TextBuffer::AppendRange(const wchar_t strg[], int fromPos, int toPos) {
 	size_t chars;
 	
 	chars = wcslen(strg);
 	if (chars <= 0) return;
 	
-	fromPos = (long)Max(0,Min(fromPos,(long)chars));
-	toPos = (long)Max(fromPos,Min(toPos,(long)chars));
+	fromPos = (int)Max(0,Min(fromPos,(int)chars));
+	toPos = (int)Max(fromPos,Min(toPos,(int)chars));
 	chars = toPos - fromPos;
 	if (chars <= 0) return;
 		
@@ -227,7 +227,7 @@ void TextBuffer::AppendCh(wchar_t ch) {
 
 void TextBuffer::AppendLine(const wchar_t strg[]) {
 	size_t chars, charsEol;
-    long indent;
+    int indent;
 	wchar_t eol[4];
 	
 	chars = wcslen(strg);
@@ -253,27 +253,27 @@ void TextBuffer::AppendLine(const wchar_t strg[]) {
 } // TextBuffer::AppendLine
 
 void TextBuffer::AppendText(const TextBuffer *text) {
-	if (text->used > 0) this->AppendRange(text->text,0,(long)text->used);
+	if (text->used > 0) this->AppendRange(text->text,0,(int)text->used);
 } // TextBuffer::AppendText
 
-void TextBuffer::AppendTextRange(const TextBuffer *text, long fromPos, long toPos) {
-	fromPos = (long)Max(0,Min(fromPos,(long)text->used));
-	toPos = (long)Max(fromPos,Min(toPos,(long)text->used));
+void TextBuffer::AppendTextRange(const TextBuffer *text, int fromPos, int toPos) {
+	fromPos = (int)Max(0,Min(fromPos,(int)text->used));
+	toPos = (int)Max(fromPos,Min(toPos,(int)text->used));
 	if (fromPos < toPos) this->AppendRange(text->text,fromPos,toPos);
 } // TextBuffer::AppendTextRange
 
-void TextBuffer::Insert(long atPos, const wchar_t strg[]) {
+void TextBuffer::Insert(int atPos, const wchar_t strg[]) {
 	size_t chars;
-    long remainder;
+    int remainder;
 	
 	chars = wcslen(strg);
 	if (chars <= 0) return;
 	
 	if (!this->AssertTextSize(chars + 1)) return;
 	
-	atPos =(long) Max(0,Min(atPos,(long)this->used));
+	atPos =(int) Max(0,Min(atPos,(int)this->used));
 	
-	remainder = (long)this->used - atPos;
+	remainder = (int)this->used - atPos;
 	if (remainder > 0) 
 		memmove(&this->text[atPos + chars],&this->text[atPos],remainder * sizeof(wchar_t));
 	
@@ -283,22 +283,22 @@ void TextBuffer::Insert(long atPos, const wchar_t strg[]) {
 	this->modified = true;
 } // TextBuffer::Insert
 
-void TextBuffer::InsertRange(long atPos, const wchar_t strg[], long fromPos, long toPos) {
-	long remainder;
+void TextBuffer::InsertRange(int atPos, const wchar_t strg[], int fromPos, int toPos) {
+	int remainder;
 	
 	size_t chars = wcslen(strg);
 	if (chars <= 0) return;
 	
-	fromPos = (long)Max(0,Min(fromPos,(long)chars));
-	toPos = (long)Max(fromPos,Min(toPos,(long)chars));
+	fromPos = (int)Max(0,Min(fromPos,(int)chars));
+	toPos = (int)Max(fromPos,Min(toPos,(int)chars));
 	chars = toPos - fromPos;
 	if (chars <= 0) return;
 		
 	if (!this->AssertTextSize(chars + 1)) return;
 	
-	atPos = (long)Max(0,Min(atPos,(long)this->used));
+	atPos = (int)Max(0,Min(atPos,(int)this->used));
 	
-	remainder = (long)this->used - atPos;
+	remainder = (int)this->used - atPos;
 	if (remainder > 0) 
 		memmove(&this->text[atPos + chars],&this->text[atPos],remainder * sizeof(wchar_t));
 	
@@ -308,14 +308,14 @@ void TextBuffer::InsertRange(long atPos, const wchar_t strg[], long fromPos, lon
 	this->modified = true;
 } // TextBuffer::InsertRange
 
-void TextBuffer::InsertCh(long atPos, wchar_t ch) {
-	long remainder;
+void TextBuffer::InsertCh(int atPos, wchar_t ch) {
+	int remainder;
 	
 	if (!this->AssertTextSize(1 + 1)) return;
 	
-	atPos = (long)Max(0,Min(atPos,(long)this->used));
+	atPos = (int)Max(0,Min(atPos,(int)this->used));
 	
-	remainder = (long)this->used - atPos;
+	remainder = (int)this->used - atPos;
 	if (remainder > 0) 
 		memmove(&this->text[atPos + 1],&this->text[atPos],remainder * sizeof(wchar_t));
 	
@@ -325,15 +325,15 @@ void TextBuffer::InsertCh(long atPos, wchar_t ch) {
 	this->modified = true;
 } // TextBuffer::InsertCh
 
-void TextBuffer::Delete(long fromPos, long toPos) {
-	long chars,remainder;
+void TextBuffer::Delete(int fromPos, int toPos) {
+	int chars,remainder;
 
-	fromPos = (long)Max(0,Min(fromPos,(long)this->used));
-	toPos = (long)Max(fromPos,Min(toPos,(long)this->used));
+	fromPos = (int)Max(0,Min(fromPos,(int)this->used));
+	toPos = (int)Max(fromPos,Min(toPos,(int)this->used));
 	chars = toPos - fromPos;
 	if (chars <= 0) return;
 	
-	remainder = (long)this->used - toPos;
+	remainder = (int)this->used - toPos;
 	if (remainder > 0) 
 		memmove(&this->text[fromPos],&this->text[toPos],remainder * sizeof(wchar_t));
 	
