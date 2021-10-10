@@ -3768,7 +3768,7 @@ bool TrueTypeFont::BuildNewSfnt(StripCommand strip, CharGroup group, int glyphIn
 		sfntPos += this->tmpOffsetTable->table[i].length;
 		
 		pad = DWordPad(sfntPos) - sfntPos;
-		memcpy((char*)&tmpSfnt[sfntPos],(char*)&zero,pad); // zero pad for int word alignment
+		memcpy((char*)&tmpSfnt[sfntPos],(char*)&zero,pad); // zero pad for long word alignment
 		sfntPos += pad;
 	}
 #ifdef _DEBUG
@@ -4261,7 +4261,7 @@ bool TrueTypeFont::IncrBuildNewSfnt( wchar_t errMsg[]) {
 		sfntPos += this->tmpOffsetTable->table[i].length;
 		
 		pad = DWordPad(sfntPos) - sfntPos;
-		memcpy((char*)&tmpSfnt[sfntPos],(char*)&zero,pad); // zero pad for int word alignment
+		memcpy((char*)&tmpSfnt[sfntPos],(char*)&zero,pad); // zero pad for long word alignment
 		sfntPos += pad;
 	}
 #ifdef _DEBUG
