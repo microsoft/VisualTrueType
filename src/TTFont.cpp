@@ -777,7 +777,7 @@ bool TrueTypeGlyph::Misoriented(short contour) {
 	
 	
 	// find out the current orientation of the contour
-	// to do so walk aint the contour until we make a turn at all
+	// to do so walk along the contour until we make a turn at all
 	knot = minXknot - start;
 	V[1].x = this->x[start + knot];
 	V[1].y = this->y[start + knot];

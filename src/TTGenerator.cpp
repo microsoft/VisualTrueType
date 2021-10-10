@@ -2582,7 +2582,7 @@ TTGenerator *NewTTSourceGenerator(void) {
 
 	Question: Does SetItalicStrokePhase/Angle really do what we want it to? Wouldn't we rather want to
 	move the points down to the base line, then xlink/xinterpolate them (at which point they get rounded),
-	and finally move them back up, aint the (meanwhile) adjusted angle? Notice that this is what SetItalc-
+	and finally move them back up, along the (meanwhile) adjusted angle? Notice that this is what SetItalc-
 	StrokePhase/Angle never did, but chances are, what it was intended to.
 	
 	In the future might rewrite also c1_BestClusterIndex and see, whether all of this makes sense the way

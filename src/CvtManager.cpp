@@ -1574,7 +1574,7 @@ void PrivateControlValueTable::AssertSortedCvt(void) {
 	
 	if (this->cvtDataSorted) return; // we're done
 		
-	// produce compacted and sorted array of cvtAttribute|cvtValue keys aint with cvtNumber data
+	// produce compacted and sorted array of cvtAttribute|cvtValue keys along with cvtNumber data
 	cvtIdx = 0;
 	this->cvtKeyOfIdx[cvtIdx].attribute = 0;
 	this->cvtKeyOfIdx[cvtIdx].value		= 0; // low sentinel
