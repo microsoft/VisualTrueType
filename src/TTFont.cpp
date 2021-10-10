@@ -777,13 +777,13 @@ bool TrueTypeGlyph::Misoriented(short contour) {
 	
 	
 	// find out the current orientation of the contour
-	// to do so walk aint32_t the contour until we make a turn at all
+	// to do so walk along the contour until we make a turn at all
 	knot = minXknot - start;
 	V[1].x = this->x[start + knot];
 	V[1].y = this->y[start + knot];
 	V[0].x = this->x[start + (knot+n-1)%n];
 	V[0].y = this->y[start + (knot+n-1)%n];
-	// go backwards as int32_t as there is no vector with which to calculate a change in direction
+	// go backwards as long as there is no vector with which to calculate a change in direction
 	iter = 0;
 	while (SameKnot(V[0],V[1]) && iter < n) {
 		knot = (knot+n-1)%n;
@@ -793,7 +793,7 @@ bool TrueTypeGlyph::Misoriented(short contour) {
 	}
 	D[0] = SubV(V[1],V[0]);
 	knot = minXknot - start;
-	// go forwards as int32_t as there is no change in direction, skipping vectors with which we cannot calculate a change in direction
+	// go forwards as long as there is no change in direction, skipping vectors with which we cannot calculate a change in direction
 	sgn = 0;
 	iter = 0;
 	while (sgn == 0 && iter < n) {
@@ -1296,7 +1296,7 @@ bool TrueTypeFont::GetPrep(TextBuffer *prepText, wchar_t errMsg[]) {
 	data = this->GetTablePointer(tag_PreProgram);
 	size = this->GetTableLength(tag_PreProgram);
 	if (size > MAXBINSIZE) {
-		swprintf(errMsg,L"GetPrep: pre-program is %li bytes int32_t (cannot be int32_ter than %li bytes)",size,MAXBINSIZE);
+		swprintf(errMsg,L"GetPrep: pre-program is %li bytes long (cannot be longer than %li bytes)",size,MAXBINSIZE);
 		return false;
 	}	
 	return this->UpdateBinData(asmPREP,size,data) && this->GetSource(true,PRE_PGM_GLYPH_INDEX,prepText,errMsg); // get source after binary, in case binary exists but source doesn't...
@@ -1314,7 +1314,7 @@ bool TrueTypeFont::GetFpgm(TextBuffer *fpgmText, wchar_t errMsg[]) {
 	data = this->GetTablePointer(tag_FontProgram);
 	size = this->GetTableLength(tag_FontProgram);
 	if (size > MAXBINSIZE) {
-		swprintf(errMsg,L"GetFpgm: font program is %li bytes int32_t (cannot be int32_ter than %li bytes)",size,MAXBINSIZE);
+		swprintf(errMsg,L"GetFpgm: font program is %li bytes long (cannot be longer than %li bytes)",size,MAXBINSIZE);
 		return false;
 	}
 	return this->UpdateBinData(asmFPGM,size,data) && this->GetSource(true,FONT_PGM_GLYPH_INDEX,fpgmText,errMsg); // get source after binary, in case binary exists but source doesn't...
@@ -2869,7 +2869,7 @@ bool TrueTypeFont::UnpackGlitsLoca(wchar_t errMsg[]) {
 			// unless cast to unsigned short, compiler will sign extend the result of SWAPW to 32 bit signed,
 			// turning 0x8000 into 0ffff8000 and subsequently compare it to 0x00008000 !!!
 				this->glit1[j].length = SWAPW(fileGlit[j].length);
-			} else { // length is (regular case) int32_t
+			} else { // length is (regular case) long
 				this->glit1[j].length = SWAPL(fileGlit[j+1].offset) - SWAPL(fileGlit[j].offset);
 			}
 			this->glit1[j].offset = SWAPL(fileGlit[j].offset);
@@ -3402,7 +3402,7 @@ bool TrueTypeFont::BuildNewSfnt(StripCommand strip, CharGroup group, int32_t gly
 				sizeOfTable = this->GetPackedGlyphsSizeEstimate(glyph,glyphIndex,this->IndexToLoc);
 				break;
 			case tag_IndexToLoc:
-				// for size estimate, always assume int32_t format 'loca' table; correct this->outShortIndexToLocTable determined in PackGlyph only
+				// for size estimate, always assume long format 'loca' table; correct this->outShortIndexToLocTable determined in PackGlyph only
 				sizeOfTable = (numberOfGlyphs + 1)*sizeof(int32_t);
 				break;
 			case PRIVATE_GROUP:
@@ -3563,7 +3563,7 @@ bool TrueTypeFont::BuildNewSfnt(StripCommand strip, CharGroup group, int32_t gly
 			case tag_IndexToLoc:
 				//	here 'head' is (still) valid and pointing to the header of the sfnt being built
 				
-				// for size estimate, always assume int32_t format 'loca' table; correct this->outShortIndexToLocTable determined in PackGlyph only
+				// for size estimate, always assume long format 'loca' table; correct this->outShortIndexToLocTable determined in PackGlyph only
 #ifdef _DEBUG
 				sizeOfTable = (numberOfGlyphs + 1)*sizeof(int32_t);
 #endif	
@@ -3646,7 +3646,7 @@ bool TrueTypeFont::BuildNewSfnt(StripCommand strip, CharGroup group, int32_t gly
 			case PRIVATE_PGM1:
 			case PRIVATE_PGM2: {
 			//	this assumes that we do the PRIVATE_GLIT1 and 2 prior to the respective PRIVATE_PGM1 and 2,
-			//	which is a valid assumption as int32_t as VTT is the only instance to add and remove either of them,
+			//	which is a valid assumption as long as VTT is the only instance to add and remove either of them,
 			//	otherwise the fileGlit and memGlit below are not pointing to the correct locations in the sfnt being built
 #ifdef _DEBUG
 				sizeOfTable = GetPackedGlyphSourcesSize(glyfText,prepText,cvtText,talkText,fpgmText,
@@ -3768,7 +3768,7 @@ bool TrueTypeFont::BuildNewSfnt(StripCommand strip, CharGroup group, int32_t gly
 		sfntPos += this->tmpOffsetTable->table[i].length;
 		
 		pad = DWordPad(sfntPos) - sfntPos;
-		memcpy((char*)&tmpSfnt[sfntPos],(char*)&zero,pad); // zero pad for int32_t word alignment
+		memcpy((char*)&tmpSfnt[sfntPos],(char*)&zero,pad); // zero pad for long word alignment
 		sfntPos += pad;
 	}
 #ifdef _DEBUG
@@ -4003,7 +4003,7 @@ bool TrueTypeFont::IncrBuildNewSfnt( wchar_t errMsg[]) {
 				sizeOfTable = iSfnt->binary.used;
 				break;
 			case tag_IndexToLoc:
-				// for size estimate, always assume int32_t format 'loca' table; correct this->outShortIndexToLocTable determined in PackGlyph only
+				// for size estimate, always assume long format 'loca' table; correct this->outShortIndexToLocTable determined in PackGlyph only
 				sizeOfTable = (numberOfGlyphs + 1)*sizeof(int32_t);
 				break;
 			case PRIVATE_GROUP:
@@ -4261,7 +4261,7 @@ bool TrueTypeFont::IncrBuildNewSfnt( wchar_t errMsg[]) {
 		sfntPos += this->tmpOffsetTable->table[i].length;
 		
 		pad = DWordPad(sfntPos) - sfntPos;
-		memcpy((char*)&tmpSfnt[sfntPos],(char*)&zero,pad); // zero pad for int32_t word alignment
+		memcpy((char*)&tmpSfnt[sfntPos],(char*)&zero,pad); // zero pad for long word alignment
 		sfntPos += pad;
 	}
 #ifdef _DEBUG

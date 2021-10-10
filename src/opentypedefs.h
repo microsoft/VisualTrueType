@@ -339,7 +339,7 @@ struct sfnt_maxProfileTable
 
 #define DEVEXTRA    2   /* size + max */
 /*
- *  Each record is n+2 bytes, padded to int32_t word alignment.
+ *  Each record is n+2 bytes, padded to long word alignment.
  *  First byte is ppem, second is maxWidth, rest are widths for each glyph
  */
 typedef struct {
