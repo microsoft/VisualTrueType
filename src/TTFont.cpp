@@ -2102,7 +2102,7 @@ bool TrueTypeFont::UnpackGlitsLoca(wchar_t errMsg[]) {
 	int32_t tableLength,progrLength,i,j,numberOfGlyphs,oldMaxGlyph;
 	sfnt_FileDataEntry *fileGlit;
 	sfnt_MemDataEntry *glit1, *glit2;
-	uint32_t *int32_tIndexToLoc;
+	uint32_t *longIndexToLoc;
 	unsigned short *shortIndexToLoc;
 	
 	numberOfGlyphs = this->NumberOfGlyphs();
@@ -2163,11 +2163,11 @@ bool TrueTypeFont::UnpackGlitsLoca(wchar_t errMsg[]) {
 // we need to read again the loca table at the same time as we need to read the glit table
 // this is an ugly programming under heavy time stress !!!
 
-	int32_tIndexToLoc = (uint32_t *)this->GetTablePointer(tag_IndexToLoc );
-	shortIndexToLoc = (unsigned short *)int32_tIndexToLoc;
+	longIndexToLoc = (uint32_t *)this->GetTablePointer(tag_IndexToLoc );
+	shortIndexToLoc = (unsigned short *)longIndexToLoc;
 	this->numLocaEntries = this->GetTableLength(tag_IndexToLoc)/(this->shortIndexToLocTable ? sizeof(short) : sizeof(int32_t)) - 1;
 	for (i = 0; i <= this->numLocaEntries; i++) 
-		this->IndexToLoc[i] = this->shortIndexToLocTable ? ((int32_t)((unsigned short)SWAPW(shortIndexToLoc[i]))) << 1 : SWAPL(int32_tIndexToLoc[i]);
+		this->IndexToLoc[i] = this->shortIndexToLocTable ? ((int32_t)((unsigned short)SWAPW(shortIndexToLoc[i]))) << 1 : SWAPL(longIndexToLoc[i]);
 	
 //	for (i = 0; i < Min(numberOfGlyphs,this->numLocaEntries); i++) // 2nd Ed Win98 fonts somehow got a loca table with one extra entry
 	for (i = 0; i < this->numLocaEntries; i++) // 2nd Ed Win98 fonts somehow got a loca table with one extra entry
@@ -2835,13 +2835,13 @@ bool TrueTypeFont::BuildNewSfnt(StripCommand strip, CharGroup group, int32_t gly
 						shortIndexToLoc[j] = SWAPW(tempIdx);
 					}
 				} else {
-					int32_t *int32_tIndexLoca = (int32_t *)&tmpSfnt[sfntPos];
+					int32_t *longIndexLoca = (int32_t *)&tmpSfnt[sfntPos];
 
 					this->tmpOffsetTable->table[i].length = (numberOfGlyphs + 1) * sizeof(int32_t);
 					head->indexToLocFormat = CSWAPW(LONG_INDEX_TO_LOC_FORMAT);
 					for (j = 0; j <= numberOfGlyphs; j++)
 					{
-						int32_tIndexLoca[j] = SWAPL(this->tmpIndexToLoc[j]);
+						longIndexLoca[j] = SWAPL(this->tmpIndexToLoc[j]);
 					}
 				}
 #ifdef _DEBUG
@@ -3394,14 +3394,14 @@ bool TrueTypeFont::IncrBuildNewSfnt( wchar_t errMsg[]) {
 					tempIdx = (unsigned short)(iSfnt->binary.used >> 1);
 					shortIndexToLoc[numberOfGlyphs] = SWAPW(tempIdx);
 				} else {
-					int32_t *int32_tIndexLoca = (int32_t *)&tmpSfnt[sfntPos];
+					int32_t *longIndexLoca = (int32_t *)&tmpSfnt[sfntPos];
 
 					this->tmpOffsetTable->table[i].length = (numberOfGlyphs + 1) * sizeof(int32_t);
 					head->indexToLocFormat = CSWAPW(LONG_INDEX_TO_LOC_FORMAT);
 					for (j = 0; j < numberOfGlyphs; j++) {
-						int32_tIndexLoca[j] = SWAPL(iSfnt->binary.dataPos[j]);
+						longIndexLoca[j] = SWAPL(iSfnt->binary.dataPos[j]);
 					}
-					int32_tIndexLoca[numberOfGlyphs] = SWAPL(iSfnt->binary.used);
+					longIndexLoca[numberOfGlyphs] = SWAPL(iSfnt->binary.used);
 				}
 				break;
 			
