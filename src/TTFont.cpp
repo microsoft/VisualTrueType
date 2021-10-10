@@ -3578,13 +3578,13 @@ bool TrueTypeFont::BuildNewSfnt(StripCommand strip, CharGroup group, int glyphIn
 						shortIndexToLoc[j] = SWAPW(tempIdx);
 					}
 				} else {
-					int *intIndexLoca = (int *)&tmpSfnt[sfntPos];
+					int *longIndexLoca = (int *)&tmpSfnt[sfntPos];
 
 					this->tmpOffsetTable->table[i].length = (numberOfGlyphs + 1) * sizeof(int);
 					head->indexToLocFormat = CSWAPW(LONG_INDEX_TO_LOC_FORMAT);
 					for (j = 0; j <= numberOfGlyphs; j++)
 					{
-						intIndexLoca[j] = SWAPL(this->tmpIndexToLoc[j]);
+						longIndexLoca[j] = SWAPL(this->tmpIndexToLoc[j]);
 					}
 				}
 #ifdef _DEBUG
@@ -4137,14 +4137,14 @@ bool TrueTypeFont::IncrBuildNewSfnt( wchar_t errMsg[]) {
 					tempIdx = (unsigned short)(iSfnt->binary.used >> 1);
 					shortIndexToLoc[numberOfGlyphs] = SWAPW(tempIdx);
 				} else {
-					int *intIndexLoca = (int *)&tmpSfnt[sfntPos];
+					int *longIndexLoca = (int *)&tmpSfnt[sfntPos];
 
 					this->tmpOffsetTable->table[i].length = (numberOfGlyphs + 1) * sizeof(int);
 					head->indexToLocFormat = CSWAPW(LONG_INDEX_TO_LOC_FORMAT);
 					for (j = 0; j < numberOfGlyphs; j++) {
-						intIndexLoca[j] = SWAPL(iSfnt->binary.dataPos[j]);
+						longIndexLoca[j] = SWAPL(iSfnt->binary.dataPos[j]);
 					}
-					intIndexLoca[numberOfGlyphs] = SWAPL(iSfnt->binary.used);
+					longIndexLoca[numberOfGlyphs] = SWAPL(iSfnt->binary.used);
 				}
 				break;
 			
