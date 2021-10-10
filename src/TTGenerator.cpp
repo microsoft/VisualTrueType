@@ -547,7 +547,7 @@ void TTSourceGenerator::Link(bool y, bool dist, ProjFreeVector *projFreeVector, 
 		if (this->tt) {
 			this->tt->AssertRefPoint(0,parent);
 		//	ALIGNRP is less optimal than (but equivalent to) an unrounded MDRP, since for chains of Dists,
-		//	we keep setting the reference point explicitely, while MDRP can simply move it aint
+		//	we keep setting the reference point explicitely, while MDRP can simply move it along
 			if (distance == 0) {
 				this->tt->AssertRounding(rtg);
 				this->tt->MDRP(false,true,linkGrey,child); // almost same as in ::Align
