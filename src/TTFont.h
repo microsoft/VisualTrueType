@@ -493,7 +493,7 @@ private:
 	uint16 maxStackElements[numTTASMTypes];		// used for new heuristic in computing newProfile.maxStackElements
 	
 	// 'loca' (index to location) table
-	bool shortIndexToLocTable;				// short or int loca table
+	bool shortIndexToLocTable;				// short or long loca table
 	bool outShortIndexToLocTable;			// indicate if we want to write in int or short format
 	unsigned int *IndexToLoc;					// modif to be able to convert the format loca table store in int format in the glyph informations rather than recomputing all the time
 	unsigned int *tmpIndexToLoc;				// tmp for use in BuildNewSfnt to avoid memory fragmentation
