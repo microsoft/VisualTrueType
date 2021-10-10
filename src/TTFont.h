@@ -88,7 +88,7 @@ glyph n starts at TS01[TS00[n].offset] and TMT of glyph n starts at TS03[TS02[n]
 are talking byte offsets here, and TS01 and TS03 are just arrays of bytes. The fact that we have two dif-
 ferent structs here could be hidden in the sfnt module: in the font files we may have a short form of the
 'glit' table, wherein all the offsets are short (sfnt_FileDataEntry), restricting the size, but in the rest
-of the application we want to work only with the int offsets (sfnt_MemDataEntry) *****/
+of the application we want to work only with the long offsets (sfnt_MemDataEntry) *****/
 
 typedef struct {
 	short xMin, yMin, xMax, yMax; // rectilinear convex hull of all glyphs (union of all glyphs' bounding boxes)
