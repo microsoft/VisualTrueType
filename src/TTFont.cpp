@@ -1296,7 +1296,7 @@ bool TrueTypeFont::GetPrep(TextBuffer *prepText, wchar_t errMsg[]) {
 	data = this->GetTablePointer(tag_PreProgram);
 	size = this->GetTableLength(tag_PreProgram);
 	if (size > MAXBINSIZE) {
-		swprintf(errMsg,L"GetPrep: pre-program is %li bytes int (cannot be longer than %li bytes)",size,MAXBINSIZE);
+		swprintf(errMsg,L"GetPrep: pre-program is %li bytes long (cannot be longer than %li bytes)",size,MAXBINSIZE);
 		return false;
 	}	
 	return this->UpdateBinData(asmPREP,size,data) && this->GetSource(true,PRE_PGM_GLYPH_INDEX,prepText,errMsg); // get source after binary, in case binary exists but source doesn't...
@@ -1314,7 +1314,7 @@ bool TrueTypeFont::GetFpgm(TextBuffer *fpgmText, wchar_t errMsg[]) {
 	data = this->GetTablePointer(tag_FontProgram);
 	size = this->GetTableLength(tag_FontProgram);
 	if (size > MAXBINSIZE) {
-		swprintf(errMsg,L"GetFpgm: font program is %li bytes int (cannot be longer than %li bytes)",size,MAXBINSIZE);
+		swprintf(errMsg,L"GetFpgm: font program is %li bytes long (cannot be longer than %li bytes)",size,MAXBINSIZE);
 		return false;
 	}
 	return this->UpdateBinData(asmFPGM,size,data) && this->GetSource(true,FONT_PGM_GLYPH_INDEX,fpgmText,errMsg); // get source after binary, in case binary exists but source doesn't...
