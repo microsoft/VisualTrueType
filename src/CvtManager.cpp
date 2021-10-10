@@ -918,7 +918,7 @@ bool PrivateControlValueTable::ValueAssociation(unsigned int attribute, int *cvt
 	if (!AssertNatural(&cvtNumParam,0,maxCvtNum-1,L"Cvt number",this->errMsg)) { this->scanner.ErrUnGetSym(); return false; }
 	*cvtNum = cvtNumParam.value;
 //	we're currently not testing this as there may be users with different fpgms and we should really un-hardwire the remaining hard-wired cvts
-//	if (cvtReservedFrom <= *cvtNum && *cvtNum <= cvtReservedTo) { swprintf(this->errMsg,L"Cvt numbers in range %li through %li are reserved",(int)cvtReservedFrom,(int)cvtReservedTo); this->scanner.ErrUnGetSym(); return false; }
+//	if (cvtReservedFrom <= *cvtNum && *cvtNum <= cvtReservedTo) { swprintf(this->errMsg,L"Cvt numbers in range %i through %i are reserved",(int)cvtReservedFrom,(int)cvtReservedTo); this->scanner.ErrUnGetSym(); return false; }
 	*cvt = &this->tempData[cvtNumParam.value];
 	if ((*cvt)->flags & cvtDefined) { swprintf(this->errMsg,L"cvt number already defined"); this->scanner.ErrUnGetSym(); return false; }
 	if (this->scanner.sym != colon) { swprintf(this->errMsg,L"':' expected"); return false; }
