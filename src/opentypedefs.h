@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 #pragma once
+#include <cstdint>
 
 #define tag_AxisVariations      0x61766172        /* 'avar' */
 #define tag_CharToIndexMap      0x636d6170        /* 'cmap' */

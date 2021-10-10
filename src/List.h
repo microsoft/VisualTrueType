@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
+#include <cstdint>
 
 #ifndef List_dot_h
 #define List_dot_h
