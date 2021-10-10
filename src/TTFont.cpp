@@ -2845,7 +2845,7 @@ bool TrueTypeFont::UnpackGlitsLoca(wchar_t errMsg[]) {
 	int tableLength,progrLength,i,j,numberOfGlyphs,oldMaxGlyph;
 	sfnt_FileDataEntry *fileGlit;
 	sfnt_MemDataEntry *glit1, *glit2;
-	unsigned int *intIndexToLoc;
+	unsigned int *longIndexToLoc;
 	unsigned short *shortIndexToLoc;
 	
 	numberOfGlyphs = this->NumberOfGlyphs();
@@ -2906,11 +2906,11 @@ bool TrueTypeFont::UnpackGlitsLoca(wchar_t errMsg[]) {
 // we need to read again the loca table at the same time as we need to read the glit table
 // this is an ugly programming under heavy time stress !!!
 
-	intIndexToLoc = (unsigned int *)this->GetTablePointer(tag_IndexToLoc );
-	shortIndexToLoc = (unsigned short *)intIndexToLoc;
+	longIndexToLoc = (unsigned int *)this->GetTablePointer(tag_IndexToLoc );
+	shortIndexToLoc = (unsigned short *)longIndexToLoc;
 	this->numLocaEntries = this->GetTableLength(tag_IndexToLoc)/(this->shortIndexToLocTable ? sizeof(short) : sizeof(int)) - 1;
 	for (i = 0; i <= this->numLocaEntries; i++) 
-		this->IndexToLoc[i] = this->shortIndexToLocTable ? ((int)((unsigned short)SWAPW(shortIndexToLoc[i]))) << 1 : SWAPL(intIndexToLoc[i]);
+		this->IndexToLoc[i] = this->shortIndexToLocTable ? ((int)((unsigned short)SWAPW(shortIndexToLoc[i]))) << 1 : SWAPL(longIndexToLoc[i]);
 	
 //	for (i = 0; i < Min(numberOfGlyphs,this->numLocaEntries); i++) // 2nd Ed Win98 fonts somehow got a loca table with one extra entry
 	for (i = 0; i < this->numLocaEntries; i++) // 2nd Ed Win98 fonts somehow got a loca table with one extra entry
