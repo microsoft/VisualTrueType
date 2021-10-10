@@ -1142,7 +1142,7 @@ void TTSourceGenerator::AssertStrokePhaseAngle(FVOverride fv, bool leftStationar
 			this->tt->AssertRefPoint(0,lsb);
 			if (fv == fvOldMethod || !this->attrib[knot[A1]].touched[yRomanDir]) {
 				this->tt->MDRP(false,false,linkGrey,knot[A1]);
-			} else {								// push it back up where it once beinted
+			} else {								// push it back up where it once belonged
 				this->tt->Emit(L"#END");				// end block started above
 				this->tt->AssertPVonCA(yRomanDir);
 				swprintf(code,L"SCFS[], %hi, *",knot[A1]); this->tt->Emit(code);
@@ -1750,7 +1750,7 @@ void TTSourceGenerator::Serif(bool forward, short type, short knots, short knot[
 							else						   fun = 36;
 							this->tt->CALL3456(fun,knot[3],cvt[2],knot[2],cvt[1],knot[1],cvt[0]);
 							/* this doesn't update the knots as being touched, but since this is only relevant for STROKEs that are
-							   neither horizontal nor vertical, and the present serif beints to a vertical stroke, we couldn't care less... */
+							   neither horizontal nor vertical, and the present serif belongs to a vertical stroke, we couldn't care less... */
 						}
 						
 						
