@@ -2869,7 +2869,7 @@ bool TrueTypeFont::UnpackGlitsLoca(wchar_t errMsg[]) {
 			// unless cast to unsigned short, compiler will sign extend the result of SWAPW to 32 bit signed,
 			// turning 0x8000 into 0ffff8000 and subsequently compare it to 0x00008000 !!!
 				this->glit1[j].length = SWAPW(fileGlit[j].length);
-			} else { // length is (regular case) int
+			} else { // length is (regular case) long
 				this->glit1[j].length = SWAPL(fileGlit[j+1].offset) - SWAPL(fileGlit[j].offset);
 			}
 			this->glit1[j].offset = SWAPL(fileGlit[j].offset);
