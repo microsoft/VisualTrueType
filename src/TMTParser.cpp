@@ -805,7 +805,7 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 				if (cvt < 0) cvt = cvtHint; // no cvt override => try previously specified cvt
 				// since MDAP, MIAP don't ever use the dual projection vector, we'll define the knot to be a child, hence it gets to override the fv
 				// this may change once I implement overrides for italic and adjusted italic angles, and this may turn out to be somewhat tricky:
-				// if we measure perpendicular to the italic angle, and move in x, then subsequent instructions on the same knot must move aint32_t the italic angle, and measure in y
+				// if we measure perpendicular to the italic angle, and move in x, then subsequent instructions on the same knot must move along the italic angle, and measure in y
 				// in other words, XAnchor/(knot) overrides the pv, while YAnchor/(knot) overrides the fv.
 				if (this->MakeProjFreeVector(haveFlag,param[0].numValue,y,NULL,knotParam,1,&projFreeVector,errMsg)) {
 					for (i = 0; i < this->generators; i++) this->gen[i]->Anchor(cmd == yAnchor,&projFreeVector,knot,cvt,true,errMsg);
@@ -1235,7 +1235,7 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 		case tail:
 		case tweakMetrics:
 		default:
-			swprintf(errMsg,L"Sorry, this command is no int32_ter supported");
+			swprintf(errMsg,L"Sorry, this command is no longer supported");
 			break;
 	}
 } /* TMTSourceParser::Dispatch */
@@ -2031,7 +2031,7 @@ void TMTSourceParser::GetLiteral(void) {
 	if (!this->ch) this->ErrorMsg(special,L"string quoted but not unquoted");
 	this->GetCh();
 	if (overflow) {
-		swprintf(errMsg,L"string too int32_t (cannot be int32_ter than %li characters)",maxAsmSize-1); this->ErrorMsg(syntactical,errMsg);
+		swprintf(errMsg,L"string too long (cannot be longer than %li characters)",maxAsmSize-1); this->ErrorMsg(syntactical,errMsg);
 	}
 }
 

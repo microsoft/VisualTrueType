@@ -88,7 +88,7 @@ glyph n starts at TS01[TS00[n].offset] and TMT of glyph n starts at TS03[TS02[n]
 are talking byte offsets here, and TS01 and TS03 are just arrays of bytes. The fact that we have two dif-
 ferent structs here could be hidden in the sfnt module: in the font files we may have a short form of the
 'glit' table, wherein all the offsets are short (sfnt_FileDataEntry), restricting the size, but in the rest
-of the application we want to work only with the int32_t offsets (sfnt_MemDataEntry) *****/
+of the application we want to work only with the long offsets (sfnt_MemDataEntry) *****/
 
 typedef struct {
 	short xMin, yMin, xMax, yMax; // rectilinear convex hull of all glyphs (union of all glyphs' bounding boxes)
@@ -480,9 +480,9 @@ private:
 	uint16 maxStackElements[numTTASMTypes];		// used for new heuristic in computing newProfile.maxStackElements
 	
 	// 'loca' (index to location) table
-	bool shortIndexToLocTable;				// short or int32_t loca table
-	bool outShortIndexToLocTable;			// indicate if we want to write in int32_t or short format
-	uint32_t *IndexToLoc;					// modif to be able to convert the format loca table store in int32_t format in the glyph informations rather than recomputing all the time
+	bool shortIndexToLocTable;				// short or long loca table
+	bool outShortIndexToLocTable;			// indicate if we want to write in long or short format
+	uint32_t *IndexToLoc;					// modif to be able to convert the format loca table store in long format in the glyph informations rather than recomputing all the time
 	uint32_t *tmpIndexToLoc;				// tmp for use in BuildNewSfnt to avoid memory fragmentation
 	int32_t numLocaEntries;
 	
