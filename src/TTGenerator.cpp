@@ -612,7 +612,7 @@ void TTSourceGenerator::Link(bool y, bool dist, ProjFreeVector *projFreeVector, 
 		//	inbetween. As int as our fv and pv are X or Y, this is achieved by either adjusting the rounding
 		//	method of the distance accordingly (deltaRounding table), or else don't round the distance and do
 		//	round the knot afterwards. As soon as we're using a pv other than X or Y, and especially when we're
-		//	using the dpv, the whole idea makes little sense, since the respective knots are no inter parallel
+		//	using the dpv, the whole idea makes little sense, since the respective knots are no longer parallel
 		//	to any grid. Furthermore, when using the dpv, rounding afterwards would be pretty useless anyway,
 		//	because MDAP never uses the dpv in the first place. Therefore, and currently #ifdef'd for VTT_PRO_SP_YAA_AUTO_COM
 		//	only, the distance is rounded as per the rounding method of the child point.
@@ -2591,7 +2591,7 @@ TTGenerator *NewTTSourceGenerator(void) {
 	Plus, should assert that the hinter parameters are up-to-date (compiled or so) prior to code generation.
 	
 	Should also assert that eg. VacuFormRound doesn't attempt to 'do' the side-bearing points. This becomes
-	the inter the more an issue which maybe should be more centralised, such as in the parser.  The problem
+	the longer the more an issue which maybe should be more centralised, such as in the parser.  The problem
 	is that there are things about which only the code generator knows, which means the particular code
 	generator at issue, such as implementation restrictions (how many links from a point etc.), so the parser
 	would have to know more about that particular code generator than I like. On the other hand there are
