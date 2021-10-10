@@ -495,7 +495,7 @@ private:
 	// 'loca' (index to location) table
 	bool shortIndexToLocTable;				// short or long loca table
 	bool outShortIndexToLocTable;			// indicate if we want to write in long or short format
-	unsigned int *IndexToLoc;					// modif to be able to convert the format loca table store in int format in the glyph informations rather than recomputing all the time
+	unsigned int *IndexToLoc;					// modif to be able to convert the format loca table store in long format in the glyph informations rather than recomputing all the time
 	unsigned int *tmpIndexToLoc;				// tmp for use in BuildNewSfnt to avoid memory fragmentation
 	int numLocaEntries;
 	

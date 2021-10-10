@@ -3402,7 +3402,7 @@ bool TrueTypeFont::BuildNewSfnt(StripCommand strip, CharGroup group, int glyphIn
 				sizeOfTable = this->GetPackedGlyphsSizeEstimate(glyph,glyphIndex,this->IndexToLoc);
 				break;
 			case tag_IndexToLoc:
-				// for size estimate, always assume int format 'loca' table; correct this->outShortIndexToLocTable determined in PackGlyph only
+				// for size estimate, always assume long format 'loca' table; correct this->outShortIndexToLocTable determined in PackGlyph only
 				sizeOfTable = (numberOfGlyphs + 1)*sizeof(int);
 				break;
 			case PRIVATE_GROUP:
@@ -3563,7 +3563,7 @@ bool TrueTypeFont::BuildNewSfnt(StripCommand strip, CharGroup group, int glyphIn
 			case tag_IndexToLoc:
 				//	here 'head' is (still) valid and pointing to the header of the sfnt being built
 				
-				// for size estimate, always assume int format 'loca' table; correct this->outShortIndexToLocTable determined in PackGlyph only
+				// for size estimate, always assume long format 'loca' table; correct this->outShortIndexToLocTable determined in PackGlyph only
 #ifdef _DEBUG
 				sizeOfTable = (numberOfGlyphs + 1)*sizeof(int);
 #endif	
@@ -4003,7 +4003,7 @@ bool TrueTypeFont::IncrBuildNewSfnt( wchar_t errMsg[]) {
 				sizeOfTable = iSfnt->binary.used;
 				break;
 			case tag_IndexToLoc:
-				// for size estimate, always assume int format 'loca' table; correct this->outShortIndexToLocTable determined in PackGlyph only
+				// for size estimate, always assume long format 'loca' table; correct this->outShortIndexToLocTable determined in PackGlyph only
 				sizeOfTable = (numberOfGlyphs + 1)*sizeof(int);
 				break;
 			case PRIVATE_GROUP:
