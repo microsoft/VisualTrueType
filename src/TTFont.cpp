@@ -3303,7 +3303,7 @@ bool TrueTypeFont::BuildNewSfnt(StripCommand strip, CharGroup group, int glyphIn
 	sfnt_HorizontalHeader *hhea;
 	bool result = false;
 
-	// fileGlit will polong longo tmpSfnt as it is being built (tags PRIVATE_GLIT1 and PRIVATE_GLIT2)
+	// fileGlit will point into tmpSfnt as it is being built (tags PRIVATE_GLIT1 and PRIVATE_GLIT2)
 	// its correct setup is relied on upon packing PRIVATE_PGM1 and PRIVATE_PGM2 (not BeatS design...)
 	sfnt_MemDataEntry *memGlit = NULL;
 	sfnt_FileDataEntry *fileGlit = NULL;
