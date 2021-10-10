@@ -59,7 +59,7 @@ public:
 	virtual void Call(short actParams, short anyNum[], short functNum);
 	virtual void Asm(bool inLine, wchar_t text[], wchar_t error[]);
 	virtual void Quit(void);
-	virtual void InitTTGenerator(TrueTypeFont *font, TrueTypeGlyph *glyph, long glyphIndex, TTEngine *tt, bool legacyCompile, bool *memError);
+	virtual void InitTTGenerator(TrueTypeFont *font, TrueTypeGlyph *glyph, int32_t glyphIndex, TTEngine *tt, bool legacyCompile, bool *memError);
 	virtual void TermTTGenerator(void);
 	TTGenerator(void);
 	virtual ~TTGenerator(void);
