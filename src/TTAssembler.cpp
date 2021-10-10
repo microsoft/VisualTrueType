@@ -3272,7 +3272,7 @@ void TT_GetErrorString (short ErrorNb, wchar_t * ErrorString)
 			swprintf( ErrorString, L"Too many labels in the same block");
 			break;
 		case tt_LabelTooLong:
-			swprintf( ErrorString, L"Label too int, limited to %hd character",(short) (MAXLABELLENGTH-1));
+			swprintf( ErrorString, L"Label too long, limited to %hd character",(short) (MAXLABELLENGTH-1));
 			break;
 		case tt_DuplicateLabel:
 			swprintf( ErrorString, L"Same label used twice");
@@ -3731,7 +3731,7 @@ wchar_t *CO_Compile(TrueTypeFont * font, TrueTypeGlyph * glyph, wchar_t *StartPt
 wchar_t *CO_Compile(TrueTypeFont * font, TrueTypeGlyph * glyph, wchar_t *StartPtr, wchar_t * EndPtr, short *numCompositeContours, short *numCompositePoints, int * SelectionLength, short * co_error) {
 //	B.St.'s DISCLAIMER: So far, I've barely done a minimum to make this hideous piece of code somewhat understandable.
 //	The way this appears to work is by looking at a pair of composite instructions (prevInstrIndex and currInstrIndex)
-//	in a window that is being slided aint the code. This appears to be used to determine, whether such instructions
+//	in a window that is being slided along the code. This appears to be used to determine, whether such instructions
 //	as USEMYMETRICS or OVERLAP and NONOVERLAP (the latter two being obsolete, as far as I understand the TT manual),
 //	are properly followed by further composite instructions...
 	short	LineNb,LastLineCompiled,RoundingCode,currInstrIndex,prevInstrIndex,args[256],argc;

@@ -628,7 +628,7 @@ bool Scanner::GetIdent(void) {
 	while (Alpha(this->ch) || Numeric(this->ch)) {
 		if (i >= cvtAttributeStrgLen) 
 		{ 
-			swprintf(this->errMsg,L"Identifier too int (cannot have more than %li characters)",(int)cvtAttributeStrgLen); return false; 
+			swprintf(this->errMsg,L"Identifier too long (cannot have more than %li characters)",(int)cvtAttributeStrgLen); return false; 
 		}
 		this->literal[i++] = this->ch;
 		this->GetCh();
@@ -651,7 +651,7 @@ bool Scanner::GetLiteral(void) {
 	this->GetCh();
 	i = 0;
 	while (this->ch && this->ch != L'"') {
-		if (i >= maxAsmSize-1) { swprintf(this->errMsg,L"String too int (cannot be inter than %li characters)",maxAsmSize-1); return true; }
+		if (i >= maxAsmSize-1) { swprintf(this->errMsg,L"String too long (cannot be longer than %li characters)",maxAsmSize-1); return true; }
 		this->literal[i++] = this->ch;
 		this->GetCh();
 	}
@@ -775,7 +775,7 @@ bool PrivateControlValueTable::SettingsDeclaration(void) {
 			if (this->tempSettings.defined[scanCtrl-firstSetting] || this->tempSettings.defined[scanType-firstSetting]) { swprintf(this->errMsg,L"Cannot use %s together with %s or %s",keyWord[sym],keyWord[scanCtrl],keyWord[scanType]); this->scanner.ErrUnGetSym(); return false; }
 			dropOffParam.lowPpemSize = -1; dropOffParam.highPpemSize = maxPpemSize-1; // lowest permissible ppem size - 1
 			if (!this->Parameter(&dropOffParam)) return false;
-			if (dropOffParam.type != ppemN) { swprintf(this->errMsg,L"Drop-out control turn-off ppem size expected (must be an integer in range @%li through @%li)" BRK L"Drop-out control turn-off ppem size specifies the ppem size at and above which drop-out control is no inter turned on.",1,dropOffParam.highPpemSize); this->scanner.ErrUnGetSym(); return false; }
+			if (dropOffParam.type != ppemN) { swprintf(this->errMsg,L"Drop-out control turn-off ppem size expected (must be an integer in range @%li through @%li)" BRK L"Drop-out control turn-off ppem size specifies the ppem size at and above which drop-out control is no longer turned on.",1,dropOffParam.highPpemSize); this->scanner.ErrUnGetSym(); return false; }
 			this->tempSettings.dropOutCtrlOffPpemSize = (short)dropOffParam.value;
 			this->tempSettings.scanCtrlFlags = (this->tempSettings.scanCtrlFlags & 0xff00) | this->tempSettings.dropOutCtrlOffPpemSize;
 			this->tt->SCANCTRL(this->tempSettings.scanCtrlFlags);
@@ -969,7 +969,7 @@ bool PrivateControlValueTable::InheritanceRelation(int cvtNum, ControlValue *cvt
 
 		ppemValueParam.highPpemSize = maxPpemSize-1;
 		if (!this->Parameter(&ppemValueParam)) return false;
-		if (ppemValueParam.type != ppemN) { swprintf(this->errMsg,L"Break ppem size expected (must be an integer in range @%li through @%li)" BRK L"The break ppem size specifies the ppem size at which this child cvt is no inter tied to its parent.",parentCvt->breakPpemSize+1,ppemValueParam.highPpemSize); this->scanner.ErrUnGetSym(); return false; }
+		if (ppemValueParam.type != ppemN) { swprintf(this->errMsg,L"Break ppem size expected (must be an integer in range @%li through @%li)" BRK L"The break ppem size specifies the ppem size at which this child cvt is no longer tied to its parent.",parentCvt->breakPpemSize+1,ppemValueParam.highPpemSize); this->scanner.ErrUnGetSym(); return false; }
 		if (this->legacyCompile){
 			if (ppemValueParam.value <= parentCvt->breakPpemSize || ppemValueParam.highPpemSize < ppemValueParam.value) { swprintf(this->errMsg, L"Break ppem size out of range (must be in range @%li through @%li)" BRK L"The break ppem size must be above the break ppem size of the parent of this child cvt)", parentCvt->breakPpemSize + 1, ppemValueParam.highPpemSize); this->scanner.ErrUnGetSym(); return false; }
 		}
@@ -1574,7 +1574,7 @@ void PrivateControlValueTable::AssertSortedCvt(void) {
 	
 	if (this->cvtDataSorted) return; // we're done
 		
-	// produce compacted and sorted array of cvtAttribute|cvtValue keys aint with cvtNumber data
+	// produce compacted and sorted array of cvtAttribute|cvtValue keys along with cvtNumber data
 	cvtIdx = 0;
 	this->cvtKeyOfIdx[cvtIdx].attribute = 0;
 	this->cvtKeyOfIdx[cvtIdx].value		= 0; // low sentinel

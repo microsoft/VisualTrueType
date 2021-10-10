@@ -547,7 +547,7 @@ void TTSourceGenerator::Link(bool y, bool dist, ProjFreeVector *projFreeVector, 
 		if (this->tt) {
 			this->tt->AssertRefPoint(0,parent);
 		//	ALIGNRP is less optimal than (but equivalent to) an unrounded MDRP, since for chains of Dists,
-		//	we keep setting the reference point explicitely, while MDRP can simply move it aint
+		//	we keep setting the reference point explicitely, while MDRP can simply move it along
 			if (distance == 0) {
 				this->tt->AssertRounding(rtg);
 				this->tt->MDRP(false,true,linkGrey,child); // almost same as in ::Align
@@ -609,10 +609,10 @@ void TTSourceGenerator::Link(bool y, bool dist, ProjFreeVector *projFreeVector, 
 		if (this->tt && !postRoundFlag && deltaR == roff && childR != roff) { // can't do otherwise
 		//	I think the original idea here was to ensure that the rounding method is an attribute of the knot,
 		//	i.e. if I wanted the knot "down-to-grid" then it will end up "down-to-grid", and not the distance
-		//	inbetween. As int as our fv and pv are X or Y, this is achieved by either adjusting the rounding
+		//	inbetween. As long as our fv and pv are X or Y, this is achieved by either adjusting the rounding
 		//	method of the distance accordingly (deltaRounding table), or else don't round the distance and do
 		//	round the knot afterwards. As soon as we're using a pv other than X or Y, and especially when we're
-		//	using the dpv, the whole idea makes little sense, since the respective knots are no inter parallel
+		//	using the dpv, the whole idea makes little sense, since the respective knots are no longer parallel
 		//	to any grid. Furthermore, when using the dpv, rounding afterwards would be pretty useless anyway,
 		//	because MDAP never uses the dpv in the first place. Therefore, and currently #ifdef'd for VTT_PRO_SP_YAA_AUTO_COM
 		//	only, the distance is rounded as per the rounding method of the child point.
@@ -1142,7 +1142,7 @@ void TTSourceGenerator::AssertStrokePhaseAngle(FVOverride fv, bool leftStationar
 			this->tt->AssertRefPoint(0,lsb);
 			if (fv == fvOldMethod || !this->attrib[knot[A1]].touched[yRomanDir]) {
 				this->tt->MDRP(false,false,linkGrey,knot[A1]);
-			} else {								// push it back up where it once beinted
+			} else {								// push it back up where it once belonged
 				this->tt->Emit(L"#END");				// end block started above
 				this->tt->AssertPVonCA(yRomanDir);
 				swprintf(code,L"SCFS[], %hi, *",knot[A1]); this->tt->Emit(code);
@@ -1750,7 +1750,7 @@ void TTSourceGenerator::Serif(bool forward, short type, short knots, short knot[
 							else						   fun = 36;
 							this->tt->CALL3456(fun,knot[3],cvt[2],knot[2],cvt[1],knot[1],cvt[0]);
 							/* this doesn't update the knots as being touched, but since this is only relevant for STROKEs that are
-							   neither horizontal nor vertical, and the present serif beints to a vertical stroke, we couldn't care less... */
+							   neither horizontal nor vertical, and the present serif belongs to a vertical stroke, we couldn't care less... */
 						}
 						
 						
@@ -2134,10 +2134,10 @@ short TTSourceGenerator::Neighbour(short parent0, short parent1, short child, bo
 	
 	/*****
 	
-	aint contour, pick child's neighbours (one of the parents or the neighbour we're looking for)
+	along contour, pick child's neighbours (one of the parents or the neighbour we're looking for)
 	and select the one with larger angle to "parent line". Notice that the neighbour may actually
 	be the neighbour's neighbour, if it is too close, and will be taken from neighbour's neighbour
-	aint the contour as int as it is not too far away and its angle is within neighFudge degrees...
+	along the contour as long as it is not too far away and its angle is within neighFudge degrees...
 	The problem here seems to be that we would like to set the FV onto the line [neighbour]-[child],
 	but these two may not be where they used to be due to previous instructions, so we attempt to
 	find a neighbour which is far enough on a roughly straight line in order to define the freedom
@@ -2582,7 +2582,7 @@ TTGenerator *NewTTSourceGenerator(void) {
 
 	Question: Does SetItalicStrokePhase/Angle really do what we want it to? Wouldn't we rather want to
 	move the points down to the base line, then xlink/xinterpolate them (at which point they get rounded),
-	and finally move them back up, aint the (meanwhile) adjusted angle? Notice that this is what SetItalc-
+	and finally move them back up, along the (meanwhile) adjusted angle? Notice that this is what SetItalc-
 	StrokePhase/Angle never did, but chances are, what it was intended to.
 	
 	In the future might rewrite also c1_BestClusterIndex and see, whether all of this makes sense the way
@@ -2591,7 +2591,7 @@ TTGenerator *NewTTSourceGenerator(void) {
 	Plus, should assert that the hinter parameters are up-to-date (compiled or so) prior to code generation.
 	
 	Should also assert that eg. VacuFormRound doesn't attempt to 'do' the side-bearing points. This becomes
-	the inter the more an issue which maybe should be more centralised, such as in the parser.  The problem
+	the longer the more an issue which maybe should be more centralised, such as in the parser.  The problem
 	is that there are things about which only the code generator knows, which means the particular code
 	generator at issue, such as implementation restrictions (how many links from a point etc.), so the parser
 	would have to know more about that particular code generator than I like. On the other hand there are
