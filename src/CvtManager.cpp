@@ -628,7 +628,7 @@ bool Scanner::GetIdent(void) {
 	while (Alpha(this->ch) || Numeric(this->ch)) {
 		if (i >= cvtAttributeStrgLen) 
 		{ 
-			swprintf(this->errMsg,L"Identifier too long (cannot have more than %li characters)",(int)cvtAttributeStrgLen); return false; 
+			swprintf(this->errMsg,L"Identifier too long (cannot have more than %i characters)",(int)cvtAttributeStrgLen); return false; 
 		}
 		this->literal[i++] = this->ch;
 		this->GetCh();
