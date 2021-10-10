@@ -783,7 +783,7 @@ bool TrueTypeGlyph::Misoriented(short contour) {
 	V[1].y = this->y[start + knot];
 	V[0].x = this->x[start + (knot+n-1)%n];
 	V[0].y = this->y[start + (knot+n-1)%n];
-	// go backwards as int as there is no vector with which to calculate a change in direction
+	// go backwards as long as there is no vector with which to calculate a change in direction
 	iter = 0;
 	while (SameKnot(V[0],V[1]) && iter < n) {
 		knot = (knot+n-1)%n;
@@ -793,7 +793,7 @@ bool TrueTypeGlyph::Misoriented(short contour) {
 	}
 	D[0] = SubV(V[1],V[0]);
 	knot = minXknot - start;
-	// go forwards as int as there is no change in direction, skipping vectors with which we cannot calculate a change in direction
+	// go forwards as long as there is no change in direction, skipping vectors with which we cannot calculate a change in direction
 	sgn = 0;
 	iter = 0;
 	while (sgn == 0 && iter < n) {
@@ -3646,7 +3646,7 @@ bool TrueTypeFont::BuildNewSfnt(StripCommand strip, CharGroup group, int glyphIn
 			case PRIVATE_PGM1:
 			case PRIVATE_PGM2: {
 			//	this assumes that we do the PRIVATE_GLIT1 and 2 prior to the respective PRIVATE_PGM1 and 2,
-			//	which is a valid assumption as int as VTT is the only instance to add and remove either of them,
+			//	which is a valid assumption as long as VTT is the only instance to add and remove either of them,
 			//	otherwise the fileGlit and memGlit below are not pointing to the correct locations in the sfnt being built
 #ifdef _DEBUG
 				sizeOfTable = GetPackedGlyphSourcesSize(glyfText,prepText,cvtText,talkText,fpgmText,

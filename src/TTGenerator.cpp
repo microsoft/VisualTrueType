@@ -609,7 +609,7 @@ void TTSourceGenerator::Link(bool y, bool dist, ProjFreeVector *projFreeVector, 
 		if (this->tt && !postRoundFlag && deltaR == roff && childR != roff) { // can't do otherwise
 		//	I think the original idea here was to ensure that the rounding method is an attribute of the knot,
 		//	i.e. if I wanted the knot "down-to-grid" then it will end up "down-to-grid", and not the distance
-		//	inbetween. As int as our fv and pv are X or Y, this is achieved by either adjusting the rounding
+		//	inbetween. As long as our fv and pv are X or Y, this is achieved by either adjusting the rounding
 		//	method of the distance accordingly (deltaRounding table), or else don't round the distance and do
 		//	round the knot afterwards. As soon as we're using a pv other than X or Y, and especially when we're
 		//	using the dpv, the whole idea makes little sense, since the respective knots are no longer parallel
@@ -2137,7 +2137,7 @@ short TTSourceGenerator::Neighbour(short parent0, short parent1, short child, bo
 	along contour, pick child's neighbours (one of the parents or the neighbour we're looking for)
 	and select the one with larger angle to "parent line". Notice that the neighbour may actually
 	be the neighbour's neighbour, if it is too close, and will be taken from neighbour's neighbour
-	along the contour as int as it is not too far away and its angle is within neighFudge degrees...
+	along the contour as long as it is not too far away and its angle is within neighFudge degrees...
 	The problem here seems to be that we would like to set the FV onto the line [neighbour]-[child],
 	but these two may not be where they used to be due to previous instructions, so we attempt to
 	find a neighbour which is far enough on a roughly straight line in order to define the freedom
