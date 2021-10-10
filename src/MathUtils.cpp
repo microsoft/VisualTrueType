@@ -44,7 +44,7 @@ F26Dot6Vector SubFV(const F26Dot6Vector a, const F26Dot6Vector b) {
 	return c;
 } // SubFV
 
-F26Dot6Vector ScaleFV(const F26Dot6Vector v, long scale) {
+F26Dot6Vector ScaleFV(const F26Dot6Vector v, int32_t scale) {
 	F26Dot6Vector w;
 	
 	w.x = scale*v.x;
@@ -60,7 +60,7 @@ F26Dot6Vector ScaleFVF(const F26Dot6Vector v, F26Dot6 scale) {
 	return w;
 } // ScaleFVF
 
-Vector ShlV(const Vector a, long by) {
+Vector ShlV(const Vector a, int32_t by) {
 	Vector b;
 	
 	b.x = a.x << by;
@@ -68,7 +68,7 @@ Vector ShlV(const Vector a, long by) {
 	return b;
 } // ShlV
 
-Vector ShrV(const Vector a, long by) {
+Vector ShrV(const Vector a, int32_t by) {
 	Vector b;
 	
 	b.x = a.x >> by;
@@ -77,7 +77,7 @@ Vector ShrV(const Vector a, long by) {
 } // ShrV
 
 
-F26Dot6Vector ShlFV(const F26Dot6Vector a, long by) {
+F26Dot6Vector ShlFV(const F26Dot6Vector a, int32_t by) {
 	F26Dot6Vector b;
 	
 	b.x = a.x << by;
@@ -85,7 +85,7 @@ F26Dot6Vector ShlFV(const F26Dot6Vector a, long by) {
 	return b;
 } // ShlFV
 
-F26Dot6Vector ShrFV(const F26Dot6Vector a, long by) {
+F26Dot6Vector ShrFV(const F26Dot6Vector a, int32_t by) {
 	F26Dot6Vector b;
 	
 	b.x = a.x >> by;
@@ -94,7 +94,7 @@ F26Dot6Vector ShrFV(const F26Dot6Vector a, long by) {
 } // ShrFV
 
 
-long DistV(const Vector a, const Vector b) {
+int32_t DistV(const Vector a, const Vector b) {
 	double dx,dy; // to avoid overflow...
 	
 	dx = a.x - b.x;
@@ -122,8 +122,8 @@ double LengthR(const RVector a) {
 	return sqrt(a.x*a.x + a.y*a.y);
 } // LengthR
 
-long SqrDistV(const Vector a, const Vector b) {
-	long dx,dy;
+int32_t SqrDistV(const Vector a, const Vector b) {
+	int32_t dx,dy;
 	
 	dx = a.x - b.x;
 	dy = a.y - b.y;
@@ -217,19 +217,19 @@ F26Dot6Vector DirectionFV(const F26Dot6Vector a, const F26Dot6Vector b) {
 	return dir;
 } // DirectionFV
 
-long ScalProdV(const Vector a, const Vector b) {
+int32_t ScalProdV(const Vector a, const Vector b) {
 	return a.x*b.x + a.y*b.y;
 } // ScalProdV
 
-long ScalProdP(const Vector a, const Vector A, const Vector b, const Vector B) { // 4-point form
+int32_t ScalProdP(const Vector a, const Vector A, const Vector b, const Vector B) { // 4-point form
 	return (A.x-a.x)*(B.x-b.x) + (A.y-a.y)*(B.y-b.y);
 } // ScalProdP
 
-long VectProdV(const Vector a, const Vector b) { // z-component, 2-vector form
+int32_t VectProdV(const Vector a, const Vector b) { // z-component, 2-vector form
 	return a.x*b.y - b.x*a.y;
 } // VectProdV
 
-long VectProdP(const Vector a, const Vector A, const Vector b, const Vector B) { // z-component, 4-point form
+int32_t VectProdP(const Vector a, const Vector A, const Vector b, const Vector B) { // z-component, 4-point form
 	return (A.x-a.x)*(B.y-b.y) - (B.x-b.x)*(A.y-a.y);
 } // VectProdP
 
@@ -269,7 +269,7 @@ double VectProdRP(const RVector a, const RVector A, const RVector b, const RVect
 
 bool Collinear(const Vector v, const Vector p, const Vector V, Collinearity c) { // p on line through v and V?
 	/***** see wether there is a t such that p = v + t*(V-v) *****/
-	long n = p.x-v.x, N = Abs(n), d = V.x-v.x, D = Abs(d); // t = n/d
+	int32_t n = p.x-v.x, N = Abs(n), d = V.x-v.x, D = Abs(d); // t = n/d
 	
 	if (n*(V.y-v.y) != d*(p.y-v.y)) return false; // not collinear
 	switch (c) {
@@ -321,8 +321,8 @@ bool Collinear(const Vector v, const Vector p, const Vector V, Collinearity c) {
 	average of the two solutions, in hopes that this evens out numerical effects)
 *****/
 
-bool IntersectI(long ax, long ay, long Ax, long Ay, long bx, long by, long Bx, long By, long* x, long* y) {
-	long a11,a12,a21,a22,b1,b2,t1,t2,det;
+bool IntersectI(int32_t ax, int32_t ay, int32_t Ax, int32_t Ay, int32_t bx, int32_t by, int32_t Bx, int32_t By, int32_t* x, int32_t* y) {
+	int32_t a11,a12,a21,a22,b1,b2,t1,t2,det;
 	
 	b1 = ax - bx; a11 = ax - Ax; a12 = Bx - bx;
 	b2 = ay - by; a21 = ay - Ay; a22 = By - by;
@@ -381,7 +381,7 @@ bool IntersectF(F26Dot6 ax, F26Dot6 ay, F26Dot6 Ax, F26Dot6 Ay, F26Dot6 bx, F26D
 	}
 } // IntersectF
 
-void QuadraticEqn(double a, double b, double c, long* solutions, double* t1, double* t2) {
+void QuadraticEqn(double a, double b, double c, int32_t* solutions, double* t1, double* t2) {
 	// the usual method for solving quadratic equations
 	double radicand,root;
 	
@@ -410,8 +410,8 @@ void QuadraticEqn(double a, double b, double c, long* solutions, double* t1, dou
 
 #define epsilon 1.0e-12
 
-void CubicEqn(double a, double b, double c, double d, long* solutions, double* t1, double* t2, double* t3); // not general enough that I'd want to make it public
-void CubicEqn(double a, double b, double c, double d, long* solutions, double* t1, double* t2, double* t3) {
+void CubicEqn(double a, double b, double c, double d, int32_t* solutions, double* t1, double* t2, double* t3); // not general enough that I'd want to make it public
+void CubicEqn(double a, double b, double c, double d, int32_t* solutions, double* t1, double* t2, double* t3) {
 	// a cubic equation always has at least one solution, Newton was unstable, therefore find solution by interval halfing
     double f = 0,low = 0,mid = 0,high = 0;
 	
@@ -458,9 +458,9 @@ void CubicEqn(double a, double b, double c, double d, long* solutions, double* t
 	}
 }
 
-void DropPerpToLineV(const Vector from, const Vector V0, const Vector V1, long* solutions, Vector foot[], F26Dot6Vector tangent[]) {
+void DropPerpToLineV(const Vector from, const Vector V0, const Vector V1, int32_t* solutions, Vector foot[], F26Dot6Vector tangent[]) {
 	Vector V,W;
-	long vw,ww;
+	int32_t vw,ww;
 	double len,zero;
 	
 	*solutions = 0;
@@ -481,7 +481,7 @@ void DropPerpToLineV(const Vector from, const Vector V0, const Vector V1, long* 
 	}
 } // DropPerpToLineV
 
-void DropPerpToLineFV(const F26Dot6Vector from, const F26Dot6Vector V0, const F26Dot6Vector V1, long* solutions, F26Dot6Vector foot[], F26Dot6Vector tangent[]) {
+void DropPerpToLineFV(const F26Dot6Vector from, const F26Dot6Vector V0, const F26Dot6Vector V1, int32_t* solutions, F26Dot6Vector foot[], F26Dot6Vector tangent[]) {
 	RVector V,W;
 	double vw,ww,len,zero;
 	
@@ -503,9 +503,9 @@ void DropPerpToLineFV(const F26Dot6Vector from, const F26Dot6Vector V0, const F2
 	}
 } // DropPerpToLineFV
 
-void DropPerpToBezierV(const Vector from, const Vector V0, const Vector V1, const Vector V2, long* solutions, Vector foot[], F26Dot6Vector tangent[]) {
+void DropPerpToBezierV(const Vector from, const Vector V0, const Vector V1, const Vector V2, int32_t* solutions, Vector foot[], F26Dot6Vector tangent[]) {
 	RVector A,B,C,D,E;
-	long i,zeroes;
+	int32_t i,zeroes;
 	double t[3],zero,dx,dy,len;
 	
 	C.x = V0.x - 2*V1.x + V2.x; D.x = 2*(V1.x - V0.x); E.x = V0.x - from.x; A.x = 2*C.x; B.x = D.x;
@@ -531,9 +531,9 @@ void DropPerpToBezierV(const Vector from, const Vector V0, const Vector V1, cons
 	}
 } // DropPerpToBezierV
 
-void DropPerpToBezierFV(const F26Dot6Vector from, const F26Dot6Vector V0, const F26Dot6Vector V1, const F26Dot6Vector V2, long* solutions, F26Dot6Vector foot[], F26Dot6Vector tangent[]) {
+void DropPerpToBezierFV(const F26Dot6Vector from, const F26Dot6Vector V0, const F26Dot6Vector V1, const F26Dot6Vector V2, int32_t* solutions, F26Dot6Vector foot[], F26Dot6Vector tangent[]) {
 	RVector A,B,C,D,E;
-	long i,zeroes;
+	int32_t i,zeroes;
 	double t[3],zero,dx,dy,len;
 	
 	C.x = V0.x - 2*V1.x + V2.x; D.x = 2*(V1.x - V0.x); E.x = V0.x - from.x; A.x = 2*C.x; B.x = D.x;

@@ -335,19 +335,19 @@ private:
 	bool autoFlip;
 	short deltaBase,deltaShift;
 	short lastChild; // to optimise the move flag in MDRP, MIRP
-	long lastChildPos; // fixup position...
-	long bufPos,bufLen;
+	int32_t lastChildPos; // fixup position...
+	int32_t bufPos,bufLen;
 	wchar_t *buf;
 	wchar_t mov[2],min[2],rnd[2],col[numLinkColors][2]; // characters for encoding
 	bool legacyCompile; 
 };
 
 void TTSourceEngine::Emit(const wchar_t text[]) {
-	long len;
+	int32_t len;
 	wchar_t *newBuf;
 	
 	if (this->error) return; // no further code generation possible...
-	len = (long)STRLENW(text);
+	len = (int32_t)STRLENW(text);
 	while (this->bufPos + len + 2 > this->bufLen) { // test for CR and trailing 0
 		newBuf = (wchar_t*)NewP(2*this->bufLen * sizeof(wchar_t));
 		this->error = newBuf == NULL;
@@ -1086,13 +1086,13 @@ void TTSourceEngine::ResIPMDAP(TTVDirection pvP, bool postRoundFlag, short paren
 
 void TTSourceEngine::ResMIRP(short parent, short child, short cvt, bool useMinDist) {
 	bool useCvt;
-	long pos;
+	int32_t pos;
 	wchar_t buf[64];
 	
 	useCvt = cvt != illegalCvtNum;
 	pos = swprintf(buf,L"CALL[], %hi, %hi",parent,child);
 	if (useCvt) pos += swprintf(&buf[pos],L", %hi",cvt);
-	pos += swprintf(&buf[pos],L", %hi",this->fnBias + resMIRPFn00 + 2*(long)useCvt + (long)useMinDist);
+	pos += swprintf(&buf[pos],L", %hi",this->fnBias + resMIRPFn00 + 2*(int32_t)useCvt + (int32_t)useMinDist);
 
 	this->Emit(buf);
 	
@@ -1107,7 +1107,7 @@ void TTSourceEngine::ResIPMIRP(TTVDirection pvGP, short strokeOptimizationFlag, 
 	swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi",pvGP,grandParent0,parent,child,cvt,grandParent1,strokeOptimizationFlag,this->fnBias + resIPMIRPFn);
 	this->Emit(buf);
 	
-	this->ttv[pv].dir = (TTVDirection)((long)pvGP % 2); this->ttv[pv].from = this->ttv[pv].to = illegalKnotNum;
+	this->ttv[pv].dir = (TTVDirection)((int32_t)pvGP % 2); this->ttv[pv].from = this->ttv[pv].to = illegalKnotNum;
 	this->ttv[fv] = this->ttv[pv]; // SO FAR, WILL NEED TO MAKE MORE GENERAL TO ACCOMODATE fvP and fvC
 	this->usedpv = false;
 	this->lastChild = illegalKnotNum;
@@ -1116,7 +1116,7 @@ void TTSourceEngine::ResIPMIRP(TTVDirection pvGP, short strokeOptimizationFlag, 
 
 void TTSourceEngine::ResDDMIRP(short parent0, short child0, TTVectorDesc fv0, short cvt0, short parent1, short child1, TTVectorDesc fv1, short cvt1) {
 	wchar_t buf[128];
-	long pos;
+	int32_t pos;
 	
 	// CAUTION: this scheme doesn't support setting the fv PERPENDICULAR to a line (so far it doesn't need to)
 	pos = swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi, ",parent0,child0,parent1,child1,cvt0,cvt1);
@@ -1143,7 +1143,7 @@ void TTSourceEngine::ResIPDMIRP(TTVDirection pvGP, short grandParent0, short par
 	swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi",pvGP,grandParent0,parent0,child0,cvt0,parent1,child1,cvt1,grandParent1,this->fnBias + resIPDMIRPFn);
 	this->Emit(buf);
 
-	this->ttv[pv].dir = (TTVDirection)((long)pvGP % 2); this->ttv[pv].from = this->ttv[pv].to = illegalKnotNum;
+	this->ttv[pv].dir = (TTVDirection)((int32_t)pvGP % 2); this->ttv[pv].from = this->ttv[pv].to = illegalKnotNum;
 	this->ttv[fv] = this->ttv[pv]; // so far; may have to make more general to accomodate generalized freedom vectors used by the last knot moved, or have fn reset state to pvGP
 	this->usedpv = false;
 	this->lastChild = illegalKnotNum;
@@ -1152,16 +1152,16 @@ void TTSourceEngine::ResIPDMIRP(TTVDirection pvGP, short grandParent0, short par
 
 void TTSourceEngine::ResIPDDMIRP(TTVDirection pvGP, short grandParent0, short parent0, short child0, TTVectorDesc fv0, short cvt0, short parent1, short child1, TTVectorDesc fv1, short cvt1, short grandParent1) {
 	wchar_t buf[128];
-	long pos;
+	int32_t pos;
 	
 	// CAUTION: this scheme doesn't support setting the fv PERPENDICULAR to a line (so far it doesn't need to)
 	pos = swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi, ",pvGP,grandParent0,parent0,child0,cvt0,parent1,child1,cvt1,grandParent1);
 	if (fv0.dir < diagDir && fv1.dir < diagDir) // simple case
-		swprintf(&buf[pos],L"%hi, %hi, %hi",(long)fv0.dir,(long)fv1.dir,this->fnBias + resIPDDMIRPGlue0Fn);
+		swprintf(&buf[pos],L"%hi, %hi, %hi",(int32_t)fv0.dir,(int32_t)fv1.dir,this->fnBias + resIPDDMIRPGlue0Fn);
 	else if (fv1.dir < diagDir) // fv0.type set to line
-		swprintf(&buf[pos],L"%hi, %hi, %hi, %hi",fv0.from,fv0.to,(long)fv1.dir,this->fnBias + resIPDDMIRPGlue1Fn);
+		swprintf(&buf[pos],L"%hi, %hi, %hi, %hi",fv0.from,fv0.to,(int32_t)fv1.dir,this->fnBias + resIPDDMIRPGlue1Fn);
 	else if (fv0.dir < diagDir) // fv1.type set to line
-		swprintf(&buf[pos],L"%hi, %hi, %hi, %hi",(long)fv0.dir,fv1.from,fv1.to,this->fnBias + resIPDDMIRPGlue2Fn); 
+		swprintf(&buf[pos],L"%hi, %hi, %hi, %hi",(int32_t)fv0.dir,fv1.from,fv1.to,this->fnBias + resIPDDMIRPGlue2Fn); 
 	else // both fv0.type and fv1.type set to line
 		swprintf(&buf[pos],L"%hi, %hi, %hi, %hi, %hi",fv0.from,fv0.to,fv1.from,fv1.to,this->fnBias + resIPDDMIRPGlue3Fn); 
 	this->Emit(buf);
@@ -1239,7 +1239,7 @@ void TTSourceEngine::SCANCTRL(short ctrl) {
 } // TTSourceEngine::SCANCTRL
 
 void TTSourceEngine::SCANTYPE(short type) {
-	long pos;
+	int32_t pos;
 	wchar_t code[maxLineSize];
 
 	pos = type <= 4 ? 0 : swprintf(code,L"SCANTYPE[], %hi" BRK,type-4); // Mac rasterizer doesn't handle types > 4
@@ -1444,7 +1444,7 @@ void GenGuardCond(TextBuffer *text, AltCodePath path) {
 	swprintf(codePath,L"%sEQ[]",path < altCodePathMonochromeOnly ? L"N" : L"LT"); text->AppendLine(codePath);
 } // GenGuardCond
 
-void GenTalkIf(TextBuffer *talk, AltCodePath path, long fpgmBias) {
+void GenTalkIf(TextBuffer *talk, AltCodePath path, int32_t fpgmBias) {
 	wchar_t codePath[32];
 
 	talk->AppendLine(L"Inline(\x22");
@@ -1459,7 +1459,7 @@ void GenTalkIf(TextBuffer *talk, AltCodePath path, long fpgmBias) {
 	talk->AppendLine(L"");
 } // GenTalkIf
 
-void GenTalkElse(TextBuffer *talk, long fpgmBias) {
+void GenTalkElse(TextBuffer *talk, int32_t fpgmBias) {
 	wchar_t codePath[32];
 
 	talk->AppendLine(L"");

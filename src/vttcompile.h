@@ -14,12 +14,12 @@ public:
 	bool SaveFont(std::string fileName, StripCommand strip, wchar_t errMsg[]);
 
 	bool GotoFont(wchar_t errMsg[]);
-	bool GotoGlyph(long code, bool isGlyphIndex);
+	bool GotoGlyph(int32_t code, bool isGlyphIndex);
 
-	bool CompileTalk(long* errPos, long* errLen, wchar_t errMsg[]);
-	bool CompileCommon(long* errPos, long* errLen, wchar_t errMsg[]);
-	bool CompileGlyphRange(unsigned short g1, unsigned short g2, long* errPos, long* errLen, bool quiet, wchar_t errMsg[]);
-	bool CompileAll(long* errPos, long* errLen, bool quiet, wchar_t errMsg[]);
+	bool CompileTalk(int32_t* errPos, int32_t* errLen, wchar_t errMsg[]);
+	bool CompileCommon(int32_t* errPos, int32_t* errLen, wchar_t errMsg[]);
+	bool CompileGlyphRange(unsigned short g1, unsigned short g2, int32_t* errPos, int32_t* errLen, bool quiet, wchar_t errMsg[]);
+	bool CompileAll(int32_t* errPos, int32_t* errLen, bool quiet, wchar_t errMsg[]);
 
 	bool BuildFont(StripCommand strip, wchar_t errMsg[]);
 
@@ -34,7 +34,7 @@ private:
 	std::unique_ptr<TrueTypeFont> font = nullptr;
 	std::unique_ptr<TrueTypeGlyph> glyph = nullptr;
 	std::string fileName;
-	long charCode = 0, glyphIndex = 0;
+	int32_t charCode = 0, glyphIndex = 0;
 
 	
 };

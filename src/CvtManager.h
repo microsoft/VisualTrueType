@@ -42,27 +42,27 @@ class ControlValueTable {
 public:
 	ControlValueTable(void) {}
 	virtual ~ControlValueTable(void) {}
-	virtual bool Compile(TextBuffer *source, TextBuffer *prepText, bool legacyCompile, long *errPos, long *errLen, wchar_t errMsg[]) = 0;
+	virtual bool Compile(TextBuffer *source, TextBuffer *prepText, bool legacyCompile, int32_t *errPos, int32_t *errLen, wchar_t errMsg[]) = 0;
 	virtual bool IsControlProgramFormat(void) = 0;
 	virtual bool LinearAdvanceWidths(void) = 0;
-	virtual long LowestCvtNum(void) = 0;
-	virtual long HighestCvtNum(void) = 0;
-	virtual long LowestCvtIdx(void) = 0;
-	virtual long HighestCvtIdx(void) = 0;
-	virtual long CvtNumOf(long idx) = 0;
-	virtual long CvtIdxOf(long num) = 0; 
-	virtual bool CvtNumExists(long cvtNum) = 0;
-	virtual bool GetCvtValue(long cvtNum, short *cvtValue) = 0;
-	virtual bool CvtAttributesExist(long cvtNum) = 0;  // entered a cvt "comment"?
-	virtual bool GetCvtAttributes(long cvtNum, CharGroup *charGroup, LinkColor *linkColor, LinkDirection *linkDirection, CvtCategory *cvtCategory, bool *relative) = 0;
-	virtual bool GetAttributeStrings(long cvtNum, wchar_t charGroup[], wchar_t linkColor[], wchar_t linkDirection[], wchar_t cvtCategory[], wchar_t relative[]) = 0;
-	virtual long NumCharGroups(void) = 0;
+	virtual int32_t LowestCvtNum(void) = 0;
+	virtual int32_t HighestCvtNum(void) = 0;
+	virtual int32_t LowestCvtIdx(void) = 0;
+	virtual int32_t HighestCvtIdx(void) = 0;
+	virtual int32_t CvtNumOf(int32_t idx) = 0;
+	virtual int32_t CvtIdxOf(int32_t num) = 0; 
+	virtual bool CvtNumExists(int32_t cvtNum) = 0;
+	virtual bool GetCvtValue(int32_t cvtNum, short *cvtValue) = 0;
+	virtual bool CvtAttributesExist(int32_t cvtNum) = 0;  // entered a cvt "comment"?
+	virtual bool GetCvtAttributes(int32_t cvtNum, CharGroup *charGroup, LinkColor *linkColor, LinkDirection *linkDirection, CvtCategory *cvtCategory, bool *relative) = 0;
+	virtual bool GetAttributeStrings(int32_t cvtNum, wchar_t charGroup[], wchar_t linkColor[], wchar_t linkDirection[], wchar_t cvtCategory[], wchar_t relative[]) = 0;
+	virtual int32_t NumCharGroups(void) = 0;
 	virtual bool GetCharGroupString(CharGroup charGroup, wchar_t string[]) = 0;
 	virtual bool GetSpacingText(CharGroup charGroup, wchar_t spacingText[]) = 0;
-	virtual long GetBestCvtMatch(CharGroup charGroup, LinkColor linkColor, LinkDirection linkDirection, CvtCategory cvtCategory, long distance) = 0; // returns illegalCvtNum if no match
-	virtual void PutCvtBinary(long size, unsigned char data[]) = 0;
-	virtual void GetCvtBinary(long *size, unsigned char data[]) = 0;
-	virtual long GetCvtBinarySize(void) = 0;
+	virtual int32_t GetBestCvtMatch(CharGroup charGroup, LinkColor linkColor, LinkDirection linkDirection, CvtCategory cvtCategory, int32_t distance) = 0; // returns illegalCvtNum if no match
+	virtual void PutCvtBinary(int32_t size, unsigned char data[]) = 0;
+	virtual void GetCvtBinary(int32_t *size, unsigned char data[]) = 0;
+	virtual int32_t GetCvtBinarySize(void) = 0;
 	virtual bool DumpControlValueTable(TextBuffer *text) = 0;
 	virtual bool CompileCharGroup(File *from, short platformID, unsigned char toCharGroupOfCharCode[], wchar_t errMsg[]) = 0;
 private:

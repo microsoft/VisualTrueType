@@ -74,13 +74,13 @@ typedef struct {
 typedef struct {
     unsigned short	glyphCode;
     unsigned short	length;
-    long			offset;
+    int32_t			offset;
 } sfnt_FileDataEntry;
 
 typedef struct {
     unsigned short	glyphCode;
-    unsigned long	length;
-    long			offset;
+    uint32_t	length;
+    int32_t			offset;
 } sfnt_MemDataEntry;
 /****** what we have here are two pairs of private tables TS00 through TS03, the first pair for TT sources,
 the second pair for TMT sources. Within each pair, the first is merely an index into the second, i.e. TT of
@@ -88,7 +88,7 @@ glyph n starts at TS01[TS00[n].offset] and TMT of glyph n starts at TS03[TS02[n]
 are talking byte offsets here, and TS01 and TS03 are just arrays of bytes. The fact that we have two dif-
 ferent structs here could be hidden in the sfnt module: in the font files we may have a short form of the
 'glit' table, wherein all the offsets are short (sfnt_FileDataEntry), restricting the size, but in the rest
-of the application we want to work only with the long offsets (sfnt_MemDataEntry) *****/
+of the application we want to work only with the int32_t offsets (sfnt_MemDataEntry) *****/
 
 typedef struct {
 	short xMin, yMin, xMax, yMax; // rectilinear convex hull of all glyphs (union of all glyphs' bounding boxes)
@@ -200,12 +200,12 @@ typedef struct {
 #define MAGIC 0xA2340987 // note that this is a different magic number than SFNT_MAGIC...
 
 typedef struct {
-	unsigned long unicode;
+	uint32_t unicode;
 	unsigned short glyphIndex; 
 } UniGlyphMap; 
 
 typedef struct {
-	unsigned long unicode;
+	uint32_t unicode;
 	unsigned short glyphIndex;
 	unsigned short numContours;
 	bool rounded;
@@ -246,7 +246,7 @@ public:
 	short realLeftSideBearing, realRightSideBearing, blackBodyWidth; // as obtained from specifying left and right point by GrabHereInX, to do with auto-hinter???
 	
 	// contour, knot data
-	long numContoursInGlyph;
+	int32_t numContoursInGlyph;
 	short startPoint[MAXCONTOURS];
 	short endPoint[MAXCONTOURS];
 	
@@ -296,53 +296,53 @@ public:
 	TrueTypeFont(void);
 	bool Create();
 	virtual ~TrueTypeFont(void);
-	void AssertMaxSfntSize(unsigned long minSfntSize, bool assertMainHandle, bool assertTempHandle);
-	void AssertMaxGlyphs(long minGlyphs);
+	void AssertMaxSfntSize(uint32_t minSfntSize, bool assertMainHandle, bool assertTempHandle);
+	void AssertMaxGlyphs(int32_t minGlyphs);
 	bool Read(File *file, TrueTypeGlyph *glyph, short *platformID, short *encodingID, wchar_t errMsg[]);
 	bool Write(File *file, wchar_t errMsg[]);
 	ControlValueTable *TheCvt(void);
 	bool GetCvt (TextBuffer *cvtText,  wchar_t errMsg[]);
 	bool GetPrep(TextBuffer *prepText, wchar_t errMsg[]);
-	long PrepBinSize(void);
+	int32_t PrepBinSize(void);
 	bool GetFpgm(TextBuffer *fpgmText, wchar_t errMsg[]);
-	long FpgmBinSize(void);
-	bool GetGlyf(long glyphIndex, TextBuffer *glyfText, wchar_t errMsg[]);
-	bool GetTalk(long glyphIndex, TextBuffer *talkText, wchar_t errMsg[]);		
-	bool GetGlyph(long glyphIndex, TrueTypeGlyph *glyph, wchar_t errMsg[]);
-	long GlyfBinSize(void);
+	int32_t FpgmBinSize(void);
+	bool GetGlyf(int32_t glyphIndex, TextBuffer *glyfText, wchar_t errMsg[]);
+	bool GetTalk(int32_t glyphIndex, TextBuffer *talkText, wchar_t errMsg[]);		
+	bool GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t errMsg[]);
+	int32_t GlyfBinSize(void);
 	unsigned char* GlyfBin(void); 
 	Areas::Area GetBoundingBox(void);
-	void GetHeights(long *emHeight, long *descender, long *baseHeight, long *meanHeight, long *capHeight, long *ascender);
-	bool GetHMTXEntry(long glyphIndex, long *leftSideBearing, long *advanceWidth);
-	bool GetVDMXEntry(long xResolution, long yResolution, long ppemSize, F26Dot6 *descender, F26Dot6 *ascender); // returns false if not avail for this font/resolution ratio/ppem size
-	long NumberOfGlyphs(void);
-	long NumberOfChars(void);
-	long GlyphIndexOf(unsigned long charCode);
-	bool GlyphIndecesOf(wchar_t textString[], long maxNumGlyphIndeces, long glyphIndeces[], long *numGlyphIndeces, wchar_t errMsg[]);
-	unsigned long CharCodeOf(long glyphIndex);
-	unsigned long AdjacentChar(unsigned long charCode, bool forward);
-	unsigned long FirstChar(); 
-	CharGroup CharGroupOf(long glyphIndex);
+	void GetHeights(int32_t *emHeight, int32_t *descender, int32_t *baseHeight, int32_t *meanHeight, int32_t *capHeight, int32_t *ascender);
+	bool GetHMTXEntry(int32_t glyphIndex, int32_t *leftSideBearing, int32_t *advanceWidth);
+	bool GetVDMXEntry(int32_t xResolution, int32_t yResolution, int32_t ppemSize, F26Dot6 *descender, F26Dot6 *ascender); // returns false if not avail for this font/resolution ratio/ppem size
+	int32_t NumberOfGlyphs(void);
+	int32_t NumberOfChars(void);
+	int32_t GlyphIndexOf(uint32_t charCode);
+	bool GlyphIndecesOf(wchar_t textString[], int32_t maxNumGlyphIndeces, int32_t glyphIndeces[], int32_t *numGlyphIndeces, wchar_t errMsg[]);
+	uint32_t CharCodeOf(int32_t glyphIndex);
+	uint32_t AdjacentChar(uint32_t charCode, bool forward);
+	uint32_t FirstChar(); 
+	CharGroup CharGroupOf(int32_t glyphIndex);
 	bool CMapExists(short platformID, short encodingID);
 	bool DefaultCMap(short *platformID, short *encodingID, wchar_t errMsg[]);
 	bool UnpackCMap(short platformID, short encodingID, wchar_t errMsg[]);
 	bool IsCvarTupleData();
-	long EstimatePrivateCvar();
-	long UpdatePrivateCvar(long *size, unsigned char data[]);
+	int32_t EstimatePrivateCvar();
+	int32_t UpdatePrivateCvar(int32_t *size, unsigned char data[]);
 	bool HasPrivateCvar(); 
 	bool GetPrivateCvar(TSICHeader &header);
 	bool MergePrivateCvarWithInstanceManager(const TSICHeader &header); 
-	long EstimateCvar(); 
-	long UpdateCvar(long *size, unsigned char data[]);	
+	int32_t EstimateCvar(); 
+	int32_t UpdateCvar(int32_t *size, unsigned char data[]);	
 	void UpdateAdvanceWidthFlag(bool linear);
 	bool FontIsOptimizedForClearType(); 
-	bool UpdateBinData(ASMType asmType, long binSize, unsigned char *binData);
-	bool BuildNewSfnt(StripCommand strip, CharGroup group, long glyphIndex, TrueTypeGlyph *glyph,
+	bool UpdateBinData(ASMType asmType, int32_t binSize, unsigned char *binData);
+	bool BuildNewSfnt(StripCommand strip, CharGroup group, int32_t glyphIndex, TrueTypeGlyph *glyph,
 					  TextBuffer *glyfText, TextBuffer *prepText, TextBuffer *cvtText,  TextBuffer *talkText, TextBuffer *fpgmText,
 					  wchar_t errMsg[]);
 	
 	bool InitIncrBuildSfnt(bool binaryOnly, wchar_t errMsg[]);
-	bool AddGlyphToNewSfnt(CharGroup group, long glyphIndex, TrueTypeGlyph *glyph, long glyfBinSize, unsigned char *glyfBin, TextBuffer *glyfText, TextBuffer *talkText, wchar_t errMsg[]);
+	bool AddGlyphToNewSfnt(CharGroup group, int32_t glyphIndex, TrueTypeGlyph *glyph, int32_t glyfBinSize, unsigned char *glyfBin, TextBuffer *glyfText, TextBuffer *talkText, wchar_t errMsg[]);
 
 	bool TermIncrBuildSfnt(bool disposeOnly, TextBuffer *prepText, TextBuffer *cvtText, TextBuffer *fpgmText, wchar_t errMsg[]);
 	
@@ -353,21 +353,21 @@ public:
 	void UpdateGlyphProfile(TrueTypeGlyph *glyph); // used not only in BuildNewSfnt, but also in calculation of maxp and other odd places...
 	void UpdateAssemblerProfile(ASMType asmType, short maxFunctionDefs, short maxStackElements, short maxSizeOfInstructions);
 	void UpdateCompositeProfile(TrueTypeGlyph *glyph, TTCompositeProfile *compositeProfile, short context, short RoundingCode, short InstructionIndex, short *args, short argc, sfnt_glyphbbox *Newbbox, short *error);
-	bool GetNumberOfPointsAndContours(long glyphIndex, short *contours, short *points, short *ComponentDepth, sfnt_glyphbbox *bbox);
-	long GetUnitsPerEm(void);							// FUnits Per EM (2048 is typical)
+	bool GetNumberOfPointsAndContours(int32_t glyphIndex, short *contours, short *points, short *ComponentDepth, sfnt_glyphbbox *bbox);
+	int32_t GetUnitsPerEm(void);							// FUnits Per EM (2048 is typical)
 	float GetItalicAngleFromPostTable(void);  // for autohinting, get the italic angle from the post table
 	void UpdateAutohinterProfile(short maxElements, short maxTwilightPoints, short maxStorage);
 	bool HasSource(); 
 	bool GetPostScriptHeader(sfnt_PostScriptInfo *postHeader); 
-	char* GetPostScriptName(char* psName, long code);	
+	char* GetPostScriptName(char* psName, int32_t code);	
 	bool IsMakeTupleName(const std::wstring &name) const; 
 
-	unsigned char* GetSfntPtr(long offset)
+	unsigned char* GetSfntPtr(int32_t offset)
 	{
 		return (sfntHandle + offset);
 	}
 
-	unsigned long GetSfntSize()
+	uint32_t GetSfntSize()
 	{
 		return sfntSize;
 	}
@@ -386,11 +386,11 @@ public:
 	bool GetDefaultCvts(std::vector<T> & defaultCvts) 
 	{
 		ControlValueTable *cvt = this->TheCvt();
-		long highestCvtNum = cvt->HighestCvtNum();
+		int32_t highestCvtNum = cvt->HighestCvtNum();
 		defaultCvts.resize(highestCvtNum + 1, 0);
 
 		// Get the default cvts. 
-		for (long i = 0; i <= highestCvtNum; i++)
+		for (int32_t i = 0; i <= highestCvtNum; i++)
 		{
 			short cvtValue;
 			if (cvt->GetCvtValue(i, &cvtValue))
@@ -429,43 +429,43 @@ public:
 		
 private:
 	void UpdateMetricProfile(TrueTypeGlyph *glyph);
-	bool SubGetNumberOfPointsAndContours(long glyphIndex, short *contours, short *points, short *ComponentDepth, sfnt_glyphbbox *bbox);
+	bool SubGetNumberOfPointsAndContours(int32_t glyphIndex, short *contours, short *points, short *ComponentDepth, sfnt_glyphbbox *bbox);
 	bool TableExists(sfnt_TableTag tag);
-	long GetTableOffset(sfnt_TableTag tag);
-	long GetTableLength(sfnt_TableTag tag);
+	int32_t GetTableOffset(sfnt_TableTag tag);
+	int32_t GetTableLength(sfnt_TableTag tag);
 	unsigned char *GetTablePointer(sfnt_TableTag tag);
 	bool UnpackHeadHheaMaxpHmtx(wchar_t errMsg[]);
 	bool UnpackGlitsLoca(wchar_t errMsg[]);
 	bool UpdateMaxPointsAndContours(wchar_t errMsg[]);	
-	void EnterChar(long glyphIndex, unsigned long charCode);
+	void EnterChar(int32_t glyphIndex, uint32_t charCode);
 	void SortGlyphMap(); 
 	void GetFmt0(sfnt_mappingTable *map);
 	void GetFmt4(sfnt_mappingTable *map);
 	void GetFmt6(sfnt_mappingTable *map);
 	void GetFmt12(sfnt_mappingTable *map);
 	bool UnpackCharGroup(wchar_t errMsg[]);
-	bool GetSource(bool lowLevel, long glyphIndex, TextBuffer *source, wchar_t errMsg[]);
+	bool GetSource(bool lowLevel, int32_t glyphIndex, TextBuffer *source, wchar_t errMsg[]);
 	bool GetTTOTable(sfnt_TableTag srcTag, TextBuffer *src, sfnt_TableTag binTag, ASMType asmType);
 	void CalculateNewCheckSums(void);
 	void CalculateCheckSumAdjustment(void);
 	void SortTableDirectory(void);
 	void PackMaxpHeadHhea(void);	
-	unsigned long GetPackedGlyphsSizeEstimate(TrueTypeGlyph *glyph, long glyphIndex, unsigned long *oldIndexToLoc);
-	unsigned long GetPackedGlyphSize(long glyphIndex, TrueTypeGlyph *glyph, long glyfBinSize);
-	unsigned long PackGlyphs(StripCommand strip, TrueTypeGlyph *glyph, long glyphIndex, unsigned long *oldIndexToLoc, unsigned long *newIndexToLoc, unsigned char *dst);
-	unsigned long PackGlyph(unsigned char *dst, long glyphIndex, TrueTypeGlyph *glyph, long glyfBinSize, unsigned char *glyfInstruction, sfnt_HorizontalMetrics *hmtx);
-	unsigned long StripGlyphBinary(unsigned char *dst, unsigned char *src, unsigned long srcLen);
-	unsigned long GetPackedGlyphSourceSize(TextBuffer *glyfText, TextBuffer *prepText, TextBuffer *cvtText, TextBuffer *talkText, TextBuffer *fpgmText,
-							  		   short type, long glyphIndex, long glitIndex, sfnt_MemDataEntry *memGlit);
-	unsigned long GetPackedGlyphSourcesSize(TextBuffer *glyfText, TextBuffer *prepText, TextBuffer *cvtText, TextBuffer *talkText, TextBuffer *fpgmText,
-							   			short type, long glyphIndex, sfnt_MemDataEntry *memGlit);
+	uint32_t GetPackedGlyphsSizeEstimate(TrueTypeGlyph *glyph, int32_t glyphIndex, uint32_t *oldIndexToLoc);
+	uint32_t GetPackedGlyphSize(int32_t glyphIndex, TrueTypeGlyph *glyph, int32_t glyfBinSize);
+	uint32_t PackGlyphs(StripCommand strip, TrueTypeGlyph *glyph, int32_t glyphIndex, uint32_t *oldIndexToLoc, uint32_t *newIndexToLoc, unsigned char *dst);
+	uint32_t PackGlyph(unsigned char *dst, int32_t glyphIndex, TrueTypeGlyph *glyph, int32_t glyfBinSize, unsigned char *glyfInstruction, sfnt_HorizontalMetrics *hmtx);
+	uint32_t StripGlyphBinary(unsigned char *dst, unsigned char *src, uint32_t srcLen);
+	uint32_t GetPackedGlyphSourceSize(TextBuffer *glyfText, TextBuffer *prepText, TextBuffer *cvtText, TextBuffer *talkText, TextBuffer *fpgmText,
+							  		   short type, int32_t glyphIndex, int32_t glitIndex, sfnt_MemDataEntry *memGlit);
+	uint32_t GetPackedGlyphSourcesSize(TextBuffer *glyfText, TextBuffer *prepText, TextBuffer *cvtText, TextBuffer *talkText, TextBuffer *fpgmText,
+							   			short type, int32_t glyphIndex, sfnt_MemDataEntry *memGlit);
 	void PackGlyphSource(TextBuffer *glyfText, TextBuffer *prepText, TextBuffer *cvtText, TextBuffer *talkText, TextBuffer *fpgmText,
-							  short type, long glyphIndex, long glitIndex, sfnt_FileDataEntry *fileGlit, sfnt_MemDataEntry *memGlit,
-							  unsigned long *dstPos, unsigned char *dst);
+							  short type, int32_t glyphIndex, int32_t glitIndex, sfnt_FileDataEntry *fileGlit, sfnt_MemDataEntry *memGlit,
+							  uint32_t *dstPos, unsigned char *dst);
 	void PackGlyphSources(TextBuffer *glyfText, TextBuffer *prepText, TextBuffer *cvtText, TextBuffer *talkText, TextBuffer *fpgmText,
-							   short type, long glyphIndex, sfnt_FileDataEntry *fileGlit, sfnt_MemDataEntry *memGlit,
-							   unsigned long *dstPos, unsigned char *dst);
-	bool GetNumPointsAndContours(long glyphIndex, long *numKnots, long *numContours, long *componentDepth);
+							   short type, int32_t glyphIndex, sfnt_FileDataEntry *fileGlit, sfnt_MemDataEntry *memGlit,
+							   uint32_t *dstPos, unsigned char *dst);
+	bool GetNumPointsAndContours(int32_t glyphIndex, int32_t *numKnots, int32_t *numContours, int32_t *componentDepth);
 	bool IncrBuildNewSfnt(wchar_t errMsg[]);
 	bool SetSfnt(short platformID, short encodingID, wchar_t errMsg[]);
 
@@ -474,10 +474,10 @@ private:
 			
 	// sfnt	
 	unsigned char *sfntHandle = nullptr; 		// handle to the sfnt file layout
-	unsigned long sfntSize = 0;				    // actual sfnt data size (in bytes)
-	unsigned long maxSfntSize = 0;				// memory (in bytes) allocated for above handle
+	uint32_t sfntSize = 0;				    // actual sfnt data size (in bytes)
+	uint32_t maxSfntSize = 0;				// memory (in bytes) allocated for above handle
 	unsigned char *sfntTmpHandle = nullptr;		// claudebe 1/26/94 temp sfnt Handle for use in BuildNewSfnt to avoid memory fragmentation
-	unsigned long maxTmpSfntSize = 0;			// memory (in bytes) allocated for above handle	
+	uint32_t maxTmpSfntSize = 0;			// memory (in bytes) allocated for above handle	
 	
 	sfnt_OffsetTable *offsetTable;				// tmp for use in BuildNewSfnt to avoid memory fragmentation
 	sfnt_OffsetTable *tmpOffsetTable;			// tmp for use in BuildNewSfnt to avoid memory fragmentation
@@ -493,11 +493,11 @@ private:
 	uint16 maxStackElements[numTTASMTypes];		// used for new heuristic in computing newProfile.maxStackElements
 	
 	// 'loca' (index to location) table
-	bool shortIndexToLocTable;				// short or long loca table
-	bool outShortIndexToLocTable;			// indicate if we want to write in long or short format
-	unsigned long *IndexToLoc;					// modif to be able to convert the format loca table store in long format in the glyph informations rather than recomputing all the time
-	unsigned long *tmpIndexToLoc;				// tmp for use in BuildNewSfnt to avoid memory fragmentation
-	long numLocaEntries;
+	bool shortIndexToLocTable;				// short or int32_t loca table
+	bool outShortIndexToLocTable;			// indicate if we want to write in int32_t or short format
+	uint32_t *IndexToLoc;					// modif to be able to convert the format loca table store in int32_t format in the glyph informations rather than recomputing all the time
+	uint32_t *tmpIndexToLoc;				// tmp for use in BuildNewSfnt to avoid memory fragmentation
+	int32_t numLocaEntries;
 	
 	// 'head', 'hhea' tables
 	FontMetricProfile metricProfile;
@@ -508,47 +508,47 @@ private:
 	
 	
 	// 'GLIT' (glyph index) table
-	long maxGlitEntries;
-	long maxGlyphs;
+	int32_t maxGlitEntries;
+	int32_t maxGlyphs;
 	sfnt_MemDataEntry *glit1;
-	long glit1Entries;
+	int32_t glit1Entries;
 	sfnt_MemDataEntry *glit2;
-	long glit2Entries;
+	int32_t glit2Entries;
 	
-	long numberOfChars, numberOfGlyphs;			// numberOfChars in *currently* unpacked cmap
-	unsigned long *charCodeOf;					// glyph index
+	int32_t numberOfChars, numberOfGlyphs;			// numberOfChars in *currently* unpacked cmap
+	uint32_t *charCodeOf;					// glyph index
 	unsigned char *charGroupOf;					// glyph index
 
 	std::vector<UniGlyphMap> *glyphIndexMap;
 		
 	//	TT Asm Tables
-	long binSize[numASMTypes];
+	int32_t binSize[numASMTypes];
 	unsigned char *binData[numASMTypes];
 	
 	unsigned char *tmpFlags;					// tmp for use in BuildNewSfnt to avoid memory fragmentation
 	
 	char *devMetricsPtr;
-	long hdmxBinSize;
+	int32_t hdmxBinSize;
 
 	char *ltshPtr;
-	long ltshBinSize;
+	int32_t ltshBinSize;
 
 	char *vdmxPtr;
-	long vdmxBinSize;
+	int32_t vdmxBinSize;
 
 	// 'gasp' table
 	TtFont::GaspTable gaspTable;
-    long gaspBinSize;
+    int32_t gaspBinSize;
 	bool gaspLoaded = false; 
 
 	// 'TSIC' table 
-	long tsicBinSize; 
+	int32_t tsicBinSize; 
     // 'cvar' table
-    long cvarBinSize; 
+    int32_t cvarBinSize; 
 	bool tsicError = false; 
 
     // vertical metrics: Quick & dirty "guess" for drawing the height lines in the main window.
-    long unitsPerEm,                            // FUnits Per EM (2048 is typical)
+    int32_t unitsPerEm,                            // FUnits Per EM (2048 is typical)
          capHeight,                             // glyph->ymax of 'H'...
          xHeight,                               // glyph->ymax of 'x'...
          descenderHeight;                       // glyph->ymin of 'p'

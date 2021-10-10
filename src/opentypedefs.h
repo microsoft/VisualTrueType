@@ -52,8 +52,8 @@ typedef signed char int8;
 typedef unsigned char uint8;
 typedef short int16;
 typedef unsigned short uint16;
-typedef long int32;
-typedef unsigned long uint32;
+typedef int32_t int32;
+typedef uint32_t uint32;
 
 typedef long long int64;
 typedef unsigned long long uint64;
@@ -67,11 +67,11 @@ typedef unsigned short uFUnit;
 
 typedef short ShortFract;
 
-typedef long Fixed;
+typedef int32_t Fixed;
 
 typedef uint32 sfnt_TableTag;
 
-/* Portable code to extract a short or a long from a 2- or 4-byte buffer */
+/* Portable code to extract a short or a int32_t from a 2- or 4-byte buffer */
 /* which was encoded using Motorola 68000 (TrueType "native") byte order. */
 #define FS_2BYTE(p) ( ((unsigned short)((p)[0]) << 8) |  (p)[1])
 #define FS_4BYTE(p) ( FS_2BYTE((p)+2) | ( (FS_2BYTE(p)+0L) << 16) )
@@ -83,7 +83,7 @@ typedef uint32 sfnt_TableTag;
 
 
 #ifndef F26Dot6
-#define F26Dot6 long
+#define F26Dot6 int32_t
 #endif
 #define places6	6L
 #define two6	0x80L
@@ -91,7 +91,7 @@ typedef uint32 sfnt_TableTag;
 #define half6	0x20L
 #define Round6(x) (((x) + half6) >> places6)
 
-#define F16Dot16 long
+#define F16Dot16 int32_t
 
 #ifndef	Min
 #define Min(a,b)	((a) < (b) ? (a) : (b))
@@ -109,7 +109,7 @@ typedef uint32 sfnt_TableTag;
 #define Abs(x)		((x) < 0 ? (-(x)) : (x))
 #endif
 #ifndef Len
-#define Len(a) ((signed long)(sizeof(a)/sizeof(a[0])))
+#define Len(a) ((int32_t)(sizeof(a)/sizeof(a[0])))
 #endif
 
 
@@ -338,7 +338,7 @@ struct sfnt_maxProfileTable
 
 #define DEVEXTRA    2   /* size + max */
 /*
- *  Each record is n+2 bytes, padded to long word alignment.
+ *  Each record is n+2 bytes, padded to int32_t word alignment.
  *  First byte is ppem, second is maxWidth, rest are widths for each glyph
  */
 typedef struct {

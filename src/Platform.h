@@ -15,10 +15,10 @@ typedef enum {
 
 typedef enum { set, inquire, reset } Trinary;
 
-typedef unsigned long UChar32; 
+typedef uint32_t UChar32; 
 
 #ifndef F26Dot6
-#define F26Dot6 long
+#define F26Dot6 int32_t
 #endif
 #define places6	6L
 #define two6	0x80L
@@ -26,7 +26,7 @@ typedef unsigned long UChar32;
 #define half6	0x20L
 #define Round6(x) (((x) + half6) >> places6)
 
-#define F16Dot16 long
+#define F16Dot16 int32_t
 
 #define PixelOfPt(pt,dpi) (((pt)*(dpi) + 36)/72)
 
@@ -46,7 +46,7 @@ typedef unsigned long UChar32;
 	#define Abs(x)		((x) < 0 ? (-(x)) : (x))
 #endif
 #ifndef Len
-	#define Len(a) ((signed long)(sizeof(a)/sizeof(a[0])))
+	#define Len(a) ((int32_t)(sizeof(a)/sizeof(a[0])))
 #endif
 
 #define Cap(ch) (L'a' <= (ch) && (ch) <= L'z' ? ((wchar_t)((short)(ch) - ((short)'a' - (short)'A'))) : (ch))
@@ -80,7 +80,7 @@ typedef unsigned long UChar32;
 #define IntelOrMac(x,y) x
 #define maxStdEditBufSize 65531 // don't push the limits, or else the standard edit control will choke on Win9x
 
-#define MapSystemColor(color)	(Shade)((long)(color) + systemColor)
+#define MapSystemColor(color)	(Shade)((int32_t)(color) + systemColor)
 
 #define LF L'\n'
 #define CR L'\r'
