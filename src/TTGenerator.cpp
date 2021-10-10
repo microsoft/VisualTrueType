@@ -2134,10 +2134,10 @@ short TTSourceGenerator::Neighbour(short parent0, short parent1, short child, bo
 	
 	/*****
 	
-	aint contour, pick child's neighbours (one of the parents or the neighbour we're looking for)
+	along contour, pick child's neighbours (one of the parents or the neighbour we're looking for)
 	and select the one with larger angle to "parent line". Notice that the neighbour may actually
 	be the neighbour's neighbour, if it is too close, and will be taken from neighbour's neighbour
-	aint the contour as int as it is not too far away and its angle is within neighFudge degrees...
+	along the contour as int as it is not too far away and its angle is within neighFudge degrees...
 	The problem here seems to be that we would like to set the FV onto the line [neighbour]-[child],
 	but these two may not be where they used to be due to previous instructions, so we attempt to
 	find a neighbour which is far enough on a roughly straight line in order to define the freedom
