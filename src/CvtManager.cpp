@@ -628,7 +628,7 @@ bool Scanner::GetIdent(void) {
 	while (Alpha(this->ch) || Numeric(this->ch)) {
 		if (i >= cvtAttributeStrgLen) 
 		{ 
-			swprintf(this->errMsg,L"Identifier too int (cannot have more than %li characters)",(int)cvtAttributeStrgLen); return false; 
+			swprintf(this->errMsg,L"Identifier too long (cannot have more than %li characters)",(int)cvtAttributeStrgLen); return false; 
 		}
 		this->literal[i++] = this->ch;
 		this->GetCh();
@@ -651,7 +651,7 @@ bool Scanner::GetLiteral(void) {
 	this->GetCh();
 	i = 0;
 	while (this->ch && this->ch != L'"') {
-		if (i >= maxAsmSize-1) { swprintf(this->errMsg,L"String too int (cannot be longer than %li characters)",maxAsmSize-1); return true; }
+		if (i >= maxAsmSize-1) { swprintf(this->errMsg,L"String too long (cannot be longer than %li characters)",maxAsmSize-1); return true; }
 		this->literal[i++] = this->ch;
 		this->GetCh();
 	}

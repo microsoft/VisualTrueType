@@ -3272,7 +3272,7 @@ void TT_GetErrorString (short ErrorNb, wchar_t * ErrorString)
 			swprintf( ErrorString, L"Too many labels in the same block");
 			break;
 		case tt_LabelTooLong:
-			swprintf( ErrorString, L"Label too int, limited to %hd character",(short) (MAXLABELLENGTH-1));
+			swprintf( ErrorString, L"Label too long, limited to %hd character",(short) (MAXLABELLENGTH-1));
 			break;
 		case tt_DuplicateLabel:
 			swprintf( ErrorString, L"Same label used twice");

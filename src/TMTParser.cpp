@@ -2031,7 +2031,7 @@ void TMTSourceParser::GetLiteral(void) {
 	if (!this->ch) this->ErrorMsg(special,L"string quoted but not unquoted");
 	this->GetCh();
 	if (overflow) {
-		swprintf(errMsg,L"string too int (cannot be longer than %li characters)",maxAsmSize-1); this->ErrorMsg(syntactical,errMsg);
+		swprintf(errMsg,L"string too long (cannot be longer than %li characters)",maxAsmSize-1); this->ErrorMsg(syntactical,errMsg);
 	}
 }
 
