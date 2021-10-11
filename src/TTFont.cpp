@@ -1438,7 +1438,7 @@ bool TrueTypeFont::GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t er
 			if (GetNumPointsAndContours(cgIdx,&numKnots,&numContours,&componentDepth)) {
 				component->numContours = (unsigned short)numContours;
 			} else {
-				swprintf(errMsg,L"GetGlyph: failed to obtain number of contours for component %li of glyph %li",(int32_t)cgIdx,glyphIndex); return false;
+				swprintf(errMsg,L"GetGlyph: failed to obtain number of contours for component %i of glyph %i",(int32_t)cgIdx,glyphIndex); return false;
 			}
 
 			if (flags & USE_MY_METRICS) { 
