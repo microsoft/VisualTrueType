@@ -109,7 +109,7 @@ void TTGenerator::VacuFormRound(short type, short radius, bool forward[], short 
 void TTGenerator::Call(short actParams, short anyNum[], short functNum) { /* abstract */ }
 void TTGenerator::Asm(bool inLine, wchar_t text[], wchar_t error[]) { /* abstract */ }
 void TTGenerator::Quit(void) { /* abstract */ }
-void TTGenerator::InitTTGenerator(TrueTypeFont *font, TrueTypeGlyph *glyph, long glyphIndex, TTEngine *tt, bool legacyCompile, bool *memError) { /* abstract */ }
+void TTGenerator::InitTTGenerator(TrueTypeFont *font, TrueTypeGlyph *glyph, int32_t glyphIndex, TTEngine *tt, bool legacyCompile, bool *memError) { /* abstract */ }
 void TTGenerator::TermTTGenerator(void) { /* abstract */ }
 TTGenerator::TTGenerator(void) { /* abstract */ }
 TTGenerator::~TTGenerator(void) { /* abstract */ }
@@ -184,7 +184,7 @@ public:
 	virtual void Call(short actParams, short anyNum[], short functNum);
 	virtual void Asm(bool inLine, wchar_t text[], wchar_t error[]);
 	virtual void Quit(void);
-	virtual void InitTTGenerator(TrueTypeFont *font, TrueTypeGlyph *glyph, long glyphIndex, TTEngine *tt, bool legacyCompile, bool *memError);
+	virtual void InitTTGenerator(TrueTypeFont *font, TrueTypeGlyph *glyph, int32_t glyphIndex, TTEngine *tt, bool legacyCompile, bool *memError);
 	virtual void InitCodePathState(void);
 	virtual void TermCodePathState(void);
 	virtual void TermTTGenerator(void);
@@ -210,7 +210,7 @@ private:
 	short leftAnchor,rightAnchor; // for GrabHereInX
 	TrueTypeFont *font;
 	TrueTypeGlyph *glyph;
-	long glyphIndex,charCode,emHeight;
+	int32_t glyphIndex,charCode,emHeight;
 	CharGroup charGroup; // mapped from current glyph
 	short knots;
 	AttributePtr attrib; // allocate just as many as we need
@@ -246,8 +246,8 @@ short Next(short knot, short base, short n, short delta) {
 	return (knot - base + delta)%n + base;
 } // Next
 
-bool SameVectorsForAllChildren(ProjFreeVector *projFreeVector, long children) {
-	long i;
+bool SameVectorsForAllChildren(ProjFreeVector *projFreeVector, int32_t children) {
+	int32_t i;
 	TTVectorDesc fv;
 
 	if (children <= 1) return true;
@@ -442,7 +442,7 @@ void TTSourceGenerator::GrabHereInX(short left, short right, wchar_t error[]) {
 } /* TTSourceGenerator::GrabHereInX */
 
 short TTSourceGenerator::ProjectedDistance(bool signedDistance, short parent, short child, ProjFreeVector *projFreeVector) {
-	long distance;
+	int32_t distance;
 	Vector link;
 	RVector pv;
 	double temp;
@@ -636,7 +636,7 @@ void TTSourceGenerator::Link(bool y, bool dist, ProjFreeVector *projFreeVector, 
 - but now unrounded interpolee is at same y-coordinate as its (temporary) parent
 bool ValidateInterpolee(bool y, short parent0, short child, short parent1, Vector V[], wchar_t error[]);
 bool ValidateInterpolee(bool y, short parent0, short child, short parent1, Vector V[], wchar_t error[]) {
-	long low,mid,high;
+	int32_t low,mid,high;
 	short parent;
 	wchar_t dir;
 
@@ -847,7 +847,7 @@ void TTSourceGenerator::Intersect(short intersection, short line0start, short li
 bool ClassifyAlign(Vector parent0, Vector child, Vector parent1, short ppem) { // within rectangular hull of ±0.5° from "parent line"?
 	double tanAlignTolerance;
 	Vector p,q;
-	long pq,p2;
+	int32_t pq,p2;
 	
 	if (ppem > 0) return true; // ppem limit specified, hence we'll gladly align anything
 	
@@ -861,7 +861,7 @@ bool ClassifyAlign(Vector parent0, Vector child, Vector parent1, short ppem) { /
 
 void TTSourceGenerator::Align(FVOverride fvOverride, short parent0, short children, short child[], short parent1, short ppem, wchar_t error[]) {
 	short i,ch,iChildren[2],iChild[2][maxParams],refPoint[maxParams][2];
-	long minX,minY,x,y,maxX,maxY;
+	int32_t minX,minY,x,y,maxX,maxY;
 	AlignParam *align;
 	wchar_t buf[8*maxParams];
 	RVector alignDirection = RDirectionV(this->V[parent0],this->V[parent1]);
@@ -1080,7 +1080,7 @@ short RectilinearDistanceOfDiagonal(bool x, const Vector V0, const Vector V1, co
 
 bool ClassifyStroke(Vector A1, Vector A2, Vector B1, Vector B2, short ppem, bool *crissCross, RVector *strokeDirection, bool *xLinks, short distance[], wchar_t error[]) {
 	double cosF0;
-	long sgn0,sgn1;
+	int32_t sgn0,sgn1;
 	Vector aux;
 	RVector leftDirection,rightDirection;
 	
@@ -1361,7 +1361,7 @@ void TTSourceGenerator::Stroke(bool leftStationary[], short knot[], short cvt, s
 	RVector leftDirection,rightDirection,strokeDirection;
 	bool iStroke;
 	double dist;
-	long infoBits;
+	int32_t infoBits;
 	wchar_t buf[64];
 	
 	leftDirection  = RDirectionV(this->V[knot[2]],this->V[knot[0]]);
@@ -1951,7 +1951,7 @@ void InitFreeProjVector(TTVDirection pv, ProjFreeVector *projFreeVector) {
 	}
 } // InitFreeProjVector
 
-void TTSourceGenerator::InitTTGenerator(TrueTypeFont *font, TrueTypeGlyph *glyph, long glyphIndex, TTEngine *tt, bool legacyCompile, bool *memError) {
+void TTSourceGenerator::InitTTGenerator(TrueTypeFont *font, TrueTypeGlyph *glyph, int32_t glyphIndex, TTEngine *tt, bool legacyCompile, bool *memError) {
 	short i,j,n,cont;
 	double vectProd,deg;
 	Attribute *attrib;
@@ -2505,10 +2505,11 @@ void TTSourceGenerator::DoVacuFormRound(void) {
 						}
 						if (knots > 1)
 							this->tt->CALL6(knots,knot,nextX1);
-						else if (knots == 1)
+						else if (knots == 1) {
 							if		(nextX1 == knot[0] + 1) this->tt->CALL378(37,knot[0]); // special case of function 6 for nextX1 = knot[0] + 1...
 							else if (nextX1 == knot[0] - 1) this->tt->CALL378(38,knot[0]); // special case of function 6 for nextX1 = knot[0] - 1...
 							else							this->tt->CALL6(knots,knot,nextX1);
+						}
 						for (j = 0; j < knots; j++) this->attrib[knot[j]].vacu = true;
 					}
 					if (nextX2 != nextY2 && nextX2 != y2 && nextY2 != x2) { // outer contour (or inner)
@@ -2519,10 +2520,11 @@ void TTSourceGenerator::DoVacuFormRound(void) {
 						}
 						if (knots > 1)
 							this->tt->CALL6(knots,knot,nextX2);
-						else if (knots == 1)
+						else if (knots == 1) {
 							if		(nextX2 == knot[0] + 1) this->tt->CALL378(37,knot[0]); // special case of function 6 for nextX2 = knot[0] + 1...
 							else if (nextX2 == knot[0] - 1) this->tt->CALL378(38,knot[0]); // special case of function 6 for nextX2 = knot[0] - 1...
 							else							this->tt->CALL6(knots,knot,nextX2);
+						}
 						for (j = 0; j < knots; j++) this->attrib[knot[j]].vacu = true;
 					}
 				}

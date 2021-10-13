@@ -36,7 +36,7 @@
 #define C_RESERVED3	7
 #define groupPos	(colorPos + colorBits)
 #define groupBits	3
-#define groupMask	(~((unsigned long)(-1) << groupBits))
+#define groupMask	(~((uint32_t)(-1) << groupBits))
 
 /* color 2 bits */
 #define C_GREY	 	0
@@ -45,7 +45,7 @@
 #define C_ANYCOLOR	3
 #define colorPos	(dirPos + dirBits)
 #define colorBits	2
-#define colorMask	(~((unsigned long)(-1) << colorBits))
+#define colorMask	(~((uint32_t)(-1) << colorBits))
 
 /* direction 3 bits */
 #define C_XDIR	 	1
@@ -54,7 +54,7 @@
 #define C_ANYDIR	4
 #define dirPos		(catPos + catBits)
 #define dirBits		3
-#define dirMask		(~((unsigned long)(-1) << dirBits))
+#define dirMask		(~((uint32_t)(-1) << dirBits))
 
 /* features 6 bits */
 #define C_DUMMY					 0
@@ -82,7 +82,7 @@
 #define C_ITALIC_RISE			22 // new cvt category, too
 #define catPos					0
 #define catBits					6
-#define catMask					(~((unsigned long)(-1) << catBits))
+#define catMask					(~((uint32_t)(-1) << catBits))
 
 // @@TM::LIGHT - begin
 const short charGroupToInt[numCharGroups] = {C_ANYGROUP, C_OTHER, C_UC, C_LC, C_FIG, C_NONLATIN, C_RESERVED2, C_RESERVED3};
@@ -126,7 +126,7 @@ typedef enum {group = 0, color, direction, category,									   // attribute dec
 			  period, comma, ellipsis, colon, semiColon, percent, at,
 			  leftParen, plus, minus, times, divide, rightParen, equals, relatesTo, eot} Symbol; // followed by all the other symbols (ordered, don't re-order)
 
-#define numKeyWords (long)ident
+#define numKeyWords (int32_t)ident
 #define maxKeyWordLen 32
 const wchar_t keyWord[numKeyWords][maxKeyWordLen] = {L"GROUP", L"COLOR", L"DIRECTION", L"CATEGORY",
 												  L"FPgmBias",
@@ -141,10 +141,10 @@ const wchar_t keyWord[numKeyWords][maxKeyWordLen] = {L"GROUP", L"COLOR", L"DIREC
 typedef struct Scanner { // make it a static class, neither want to dynamically allocate nor subclass it
 public:
 	Symbol sym;
-	long value;
+	int32_t value;
 	wchar_t literal[maxAsmSize];
 	bool Init(TextBuffer*source, File *file, wchar_t errMsg[]);
-	void Term(long *errPos, long *errLen);
+	void Term(int32_t *errPos, int32_t *errLen);
 	bool GetSym(void);
 	void ReplaceIdent(const wchar_t capIdent[]);
 	void ErrUnGetSym(void);
@@ -157,26 +157,26 @@ private:
 	bool GetLiteral(void);
 	TextBuffer*source; // for replacing properly capitalized text
 	File *file; // when compiling character group
-	long pos,len; // into and of text
+	int32_t pos,len; // into and of text
 	wchar_t *text;
 	wchar_t ch,ch2; // 2-char look-ahead
-	long prevSymPos,prevSymEnd,symPos; // symPos >= 0 => error
+	int32_t prevSymPos,prevSymEnd,symPos; // symPos >= 0 => error
 	wchar_t *errMsg;
 } Scanner;
 
-#define numSubAttributes (long)instructionsOn
+#define numSubAttributes (int32_t)instructionsOn
 #define maxSubAttributes 0x100 // e.g. max # character groups
 #define subAttributeBits 8
-#define subAttributeMask (~((unsigned long)(-1) << subAttributeBits))
+#define subAttributeMask (~((uint32_t)(-1) << subAttributeBits))
 
 class Attribute {
 public:
 	Attribute(void);
 	virtual ~Attribute(void);
-	static bool InsertByName(Attribute **tree, bool predefined, const wchar_t name[], const wchar_t spacingText[], Symbol subAttribute, long value, wchar_t errMsg[]);
-	static bool SearchByName(Attribute *tree, wchar_t name[], wchar_t actualName[], Symbol *subAttribute, long *value, wchar_t errMsg[]);
-	static bool InsertByValue(Attribute **tree, Symbol subAttribute, long value, wchar_t name[], wchar_t spacingText[], wchar_t errMsg[]);
-	static bool SearchByValue(Attribute *tree, Symbol subAttribute, long value, wchar_t name[], wchar_t spacingText[], wchar_t errMsg[]);
+	static bool InsertByName(Attribute **tree, bool predefined, const wchar_t name[], const wchar_t spacingText[], Symbol subAttribute, int32_t value, wchar_t errMsg[]);
+	static bool SearchByName(Attribute *tree, wchar_t name[], wchar_t actualName[], Symbol *subAttribute, int32_t *value, wchar_t errMsg[]);
+	static bool InsertByValue(Attribute **tree, Symbol subAttribute, int32_t value, wchar_t name[], wchar_t spacingText[], wchar_t errMsg[]);
+	static bool SearchByValue(Attribute *tree, Symbol subAttribute, int32_t value, wchar_t name[], wchar_t spacingText[], wchar_t errMsg[]);
 	static bool SortByValue(Attribute **to, Attribute *from, wchar_t errMsg[]);
 #ifdef DEBUGCVT
 	static void Dump(Attribute *tree);
@@ -186,7 +186,7 @@ private:
 	wchar_t name[cvtAttributeStrgLen],spacingText[cvtAttributeStrgLen];
 	bool predefined;
 	Symbol subAttribute; // group..category
-	long value;
+	int32_t value;
 };
 
 Attribute::Attribute(void) {
@@ -203,15 +203,15 @@ Attribute::~Attribute(void) {
 	if (this->right) delete this->right;
 } // Attribute::~Attribute
 
-void AssignString(wchar_t d[], const wchar_t s[], long n) {
-	long i;
+void AssignString(wchar_t d[], const wchar_t s[], int32_t n) {
+	int32_t i;
 
 	for (i = 0; i < n && *s; i++) *d++ = *s++;
 	if (i < n) *d = L'\0';
 } // AssignString
 
-long CompareString(wchar_t a[], wchar_t b[], long n) {
-	long i;
+int32_t CompareString(wchar_t a[], wchar_t b[], int32_t n) {
+	int32_t i;
 
 	for (i = 0; i < n && *a && *b && *a == *b; a++, b++, i++);
 	return i == n ? 0 : *a - *b;
@@ -219,15 +219,15 @@ long CompareString(wchar_t a[], wchar_t b[], long n) {
 
 #define QCap(ch) (((ch) & 0xffdf)) // we know at this point that we compare alpha-numeric strings, hence it's enough to clear bit 5
 
-long CompareCapString(const wchar_t a[], const wchar_t b[], long n) {
-	long i;
+int32_t CompareCapString(const wchar_t a[], const wchar_t b[], int32_t n) {
+	int32_t i;
 
 	for (i = 0; i < n && *a && *b && QCap(*a) == QCap(*b); a++, b++, i++);
 	return i == n ? 0 : QCap(*a) - QCap(*b);
 } // CompareCapString
 
-bool Attribute::InsertByName(Attribute **tree, bool predefined, const wchar_t name[], const wchar_t spacingText[], Symbol subAttribute, long value, wchar_t errMsg[]) {
-	long cmp;
+bool Attribute::InsertByName(Attribute **tree, bool predefined, const wchar_t name[], const wchar_t spacingText[], Symbol subAttribute, int32_t value, wchar_t errMsg[]) {
+	int32_t cmp;
 
 	if (!(*tree)) {
 		*tree = new Attribute;
@@ -245,8 +245,8 @@ bool Attribute::InsertByName(Attribute **tree, bool predefined, const wchar_t na
 	}
 } // Attribute::InsertByName
 
-bool Attribute::SearchByName(Attribute *tree, wchar_t name[], wchar_t actualName[], Symbol *subAttribute, long *value, wchar_t errMsg[]) {
-	long cmp;
+bool Attribute::SearchByName(Attribute *tree, wchar_t name[], wchar_t actualName[], Symbol *subAttribute, int32_t *value, wchar_t errMsg[]) {
+	int32_t cmp;
 
 	while (tree) {
 		cmp = CompareCapString(name,tree->name,cvtAttributeStrgLen);
@@ -261,10 +261,10 @@ bool Attribute::SearchByName(Attribute *tree, wchar_t name[], wchar_t actualName
 	swprintf(errMsg,L"Attribute \x22%s\x22 not defined",name); return false;
 } // Attribute::SearchByName
 
-#define PackKey(subAttribute,value) ((long)(subAttribute) << subAttributeBits | (value))
+#define PackKey(subAttribute,value) ((int32_t)(subAttribute) << subAttributeBits | (value))
 
-bool Attribute::InsertByValue(Attribute **tree, Symbol subAttribute, long value, wchar_t name[], wchar_t spacingText[], wchar_t errMsg[]) {
-	long key,thisKey;
+bool Attribute::InsertByValue(Attribute **tree, Symbol subAttribute, int32_t value, wchar_t name[], wchar_t spacingText[], wchar_t errMsg[]) {
+	int32_t key,thisKey;
 
 	if (!(*tree)) {
 		*tree = new Attribute;
@@ -281,8 +281,8 @@ bool Attribute::InsertByValue(Attribute **tree, Symbol subAttribute, long value,
 	}
 } // Attribute::InsertByValue
 
-bool Attribute::SearchByValue(Attribute *tree, Symbol subAttribute, long value, wchar_t name[], wchar_t spacingText[], wchar_t errMsg[]) {
-	long key,thisKey;
+bool Attribute::SearchByValue(Attribute *tree, Symbol subAttribute, int32_t value, wchar_t name[], wchar_t spacingText[], wchar_t errMsg[]) {
+	int32_t key,thisKey;
 
 	while (tree) {
 		key = PackKey(subAttribute,value); thisKey = PackKey(tree->subAttribute,tree->value);
@@ -336,7 +336,7 @@ typedef struct {
 //	bool relative;
 	short value;
 	unsigned short flags;
-	unsigned long attribute;
+	uint32_t attribute;
 	short breakPpemSize;
 	short parent;
 //	LinearListStruct *delta;
@@ -361,7 +361,7 @@ typedef struct {
 } Settings;
 
 void DefaultSettings(Settings *settings) {
-	long i;
+	int32_t i;
 
 	settings->instructionsOnFromPpemSize = 8;
 	settings->instructionsOnToPpemSize = 2047;
@@ -385,15 +385,15 @@ typedef enum { voidParam = 0, naturalN, rationalN, ppemN, rangeOfPpemN, multiple
 
 typedef struct {
 	ParamType type;
-	long value;
+	int32_t value;
 	wchar_t *literal; // pointer to scanner's literal for memory efficiency, since we don't have more than 1 string parameter per TMT command
-	long lowPpemSize,highPpemSize; // in-out for ppemSize related params
+	int32_t lowPpemSize,highPpemSize; // in-out for ppemSize related params
 	bool deltaPpemSize[maxPpemSize]; // here we have possibly more than one rangeOfPpemN parameter, but could implement bit vectors...
 	DeltaColor deltaColor; // alwaysDelta, blackDelta, greyDelta, ..., same for the entire bit vector deltaPpemSize above
 } ActParam;
 
 typedef struct {
-	unsigned long attribute;
+	uint32_t attribute;
 	unsigned short value; // cvt values are biased by 0x8000
 	short num;
 } CvtKey;
@@ -402,30 +402,30 @@ class PrivateControlValueTable : public ControlValueTable {
 public:
 	PrivateControlValueTable(void);
 	virtual ~PrivateControlValueTable(void);
-	virtual bool Compile(TextBuffer*source, TextBuffer*prepText, bool legacyCompile, long *errPos, long *errLen, wchar_t errMsg[]);
+	virtual bool Compile(TextBuffer*source, TextBuffer*prepText, bool legacyCompile, int32_t *errPos, int32_t *errLen, wchar_t errMsg[]);
 	virtual bool IsControlProgramFormat(void);
 	virtual bool LinearAdvanceWidths(void);
-	virtual long LowestCvtNum(void);
-	virtual long HighestCvtNum(void);
-	virtual long LowestCvtIdx(void);
-	virtual long HighestCvtIdx(void);
-	virtual long CvtNumOf(long idx);
-	virtual long CvtIdxOf(long num);
-	virtual bool CvtNumExists(long cvtNum);
-	virtual bool GetCvtValue(long cvtNum, short *cvtValue);
-	virtual bool CvtAttributesExist(long cvtNum); // entered a cvt "comment"?
-	virtual bool GetCvtAttributes(long cvtNum, CharGroup *charGroup, LinkColor *linkColor, LinkDirection *linkDirection, CvtCategory *cvtCategory, bool *relative);
-	virtual long NumCharGroups(void);
-	virtual bool GetAttributeStrings(long cvtNum, wchar_t charGroup[], wchar_t linkColor[], wchar_t linkDirection[], wchar_t cvtCategory[], wchar_t relative[]);
+	virtual int32_t LowestCvtNum(void);
+	virtual int32_t HighestCvtNum(void);
+	virtual int32_t LowestCvtIdx(void);
+	virtual int32_t HighestCvtIdx(void);
+	virtual int32_t CvtNumOf(int32_t idx);
+	virtual int32_t CvtIdxOf(int32_t num);
+	virtual bool CvtNumExists(int32_t cvtNum);
+	virtual bool GetCvtValue(int32_t cvtNum, short *cvtValue);
+	virtual bool CvtAttributesExist(int32_t cvtNum); // entered a cvt "comment"?
+	virtual bool GetCvtAttributes(int32_t cvtNum, CharGroup *charGroup, LinkColor *linkColor, LinkDirection *linkDirection, CvtCategory *cvtCategory, bool *relative);
+	virtual int32_t NumCharGroups(void);
+	virtual bool GetAttributeStrings(int32_t cvtNum, wchar_t charGroup[], wchar_t linkColor[], wchar_t linkDirection[], wchar_t cvtCategory[], wchar_t relative[]);
 	virtual bool GetCharGroupString(CharGroup group, wchar_t string[]);
 	virtual bool GetSpacingText(CharGroup group, wchar_t spacingText[]);
-	virtual long GetBestCvtMatch(CharGroup charGroup, LinkColor linkColor, LinkDirection linkDirection, CvtCategory cvtCategory, long distance); // returns illegalCvtNum if no match
-	virtual void PutCvtBinary(long size, unsigned char data[]);
-	virtual void GetCvtBinary(long *size, unsigned char data[]);
-	virtual long GetCvtBinarySize(void);
-	virtual unsigned long PackAttribute(CharGroup charGroup, LinkColor linkColor, LinkDirection linkDirection, CvtCategory cvtCategory);
-	virtual void UnpackAttribute(unsigned long attribute, CharGroup *charGroup, LinkColor *linkColor, LinkDirection *linkDirection, CvtCategory *cvtCategory);
-	virtual void UnpackAttributeStrings(unsigned long attribute, wchar_t charGroup[], wchar_t linkColor[], wchar_t linkDirection[], wchar_t cvtCategory[]);
+	virtual int32_t GetBestCvtMatch(CharGroup charGroup, LinkColor linkColor, LinkDirection linkDirection, CvtCategory cvtCategory, int32_t distance); // returns illegalCvtNum if no match
+	virtual void PutCvtBinary(int32_t size, unsigned char data[]);
+	virtual void GetCvtBinary(int32_t *size, unsigned char data[]);
+	virtual int32_t GetCvtBinarySize(void);
+	virtual uint32_t PackAttribute(CharGroup charGroup, LinkColor linkColor, LinkDirection linkDirection, CvtCategory cvtCategory);
+	virtual void UnpackAttribute(uint32_t attribute, CharGroup *charGroup, LinkColor *linkColor, LinkDirection *linkDirection, CvtCategory *cvtCategory);
+	virtual void UnpackAttributeStrings(uint32_t attribute, wchar_t charGroup[], wchar_t linkColor[], wchar_t linkDirection[], wchar_t cvtCategory[]);
 	virtual bool DumpControlValueTable(TextBuffer *text);
 	virtual bool CompileCharGroup(File *from, short platformID, unsigned char toCharGroupOfCharCode[], wchar_t errMsg[]);
 private:
@@ -436,20 +436,20 @@ private:
 	bool legacyCompile; 
 	wchar_t *errMsg;
 	bool cvtDataValid,cvtDataSorted;
-	long lowestCvtNum,highestCvtNum;
-	long lowestCvtIdx,highestCvtIdx;
-	long newNumCharGroups;
+	int32_t lowestCvtNum,highestCvtNum;
+	int32_t lowestCvtIdx,highestCvtIdx;
+	int32_t newNumCharGroups;
 	Settings cpgmSettings,tempSettings;
 	ControlValue *cpgmData,*tempData;
 	CvtKey cvtKeyOfIdx[1 + maxCvtNum + 1]; // cvt key sorted by cvtAttribute and cvtValue, with sentinels at either end
 	short cvtIdxOfNum[maxCvtNum]; // inverse table of above, cvtIdx[cvtNum[idx]] = idx
-	bool AttributeDeclaration(long firstAvailSubAttributeValue[]);
+	bool AttributeDeclaration(int32_t firstAvailSubAttributeValue[]);
 	bool SettingsDeclaration(void);
-	bool CvtDeclaration(unsigned long *attribute);
-	bool AttributeAssociation(unsigned long *attribute);
-	bool ValueAssociation(unsigned long attribute, long *cvtNum, ControlValue **cvt);
-	bool InheritanceRelation(long cvtNum, ControlValue *cvt);
-	bool DeltaDeclaration(long cvtNum, ControlValue *cvt);
+	bool CvtDeclaration(uint32_t *attribute);
+	bool AttributeAssociation(uint32_t *attribute);
+	bool ValueAssociation(uint32_t attribute, int32_t *cvtNum, ControlValue **cvt);
+	bool InheritanceRelation(int32_t cvtNum, ControlValue *cvt);
+	bool DeltaDeclaration(int32_t cvtNum, ControlValue *cvt);
 	bool InlineSttmt(void);
 	bool Parameter(ActParam *actParam);
 	bool Expression(ActParam *actParam);
@@ -459,14 +459,14 @@ private:
 	bool PpemRange(ActParam *actParam);
 	bool Range(ActParam *actParam);
 	void AssertSortedCvt(void);
-	void SortCvtKeys(long low, long high);
+	void SortCvtKeys(int32_t low, int32_t high);
 };
 
 ControlValue *NewCvtData(void) {
-	long cvtNum;
+	int32_t cvtNum;
 	ControlValue *cvt,*cvtData;
 	
-	cvtData = (ControlValue *)NewP(((long)maxCvtNum)*((long)sizeof(ControlValue))); // all these parens appear to be necessary to convice the vc compiler that the operation should be carried out in long...
+	cvtData = (ControlValue *)NewP(((int32_t)maxCvtNum)*((int32_t)sizeof(ControlValue))); // all these parens appear to be necessary to convice the vc compiler that the operation should be carried out in int32_t...
 	if (!cvtData) return NULL;
 	for (cvt = cvtData, cvtNum = 0; cvtNum < maxCvtNum; cvt++, cvtNum++) {
 		cvt->flags = 0;
@@ -480,7 +480,7 @@ ControlValue *NewCvtData(void) {
 } // NewCvtData
 
 void DisposeCvtData(ControlValue **cvtData) {
-//	long cvtNum;
+//	int32_t cvtNum;
 //	ControlValue *cvt;
 	
 	if (!(*cvtData)) return;
@@ -525,7 +525,7 @@ void Scanner::GetCh(void) {
 } // Scanner::GetCh
 
 bool Scanner::SkipComment(void) {
-	long commentPos = this->pos;
+	int32_t commentPos = this->pos;
 	
 	this->GetCh(); this->GetCh();
 	while (this->ch && !TermComment(this)) {
@@ -550,7 +550,7 @@ bool Scanner::Skip(void) {
 } // Scanner::Skip
 
 bool Scanner::Init(TextBuffer*source, File *file, wchar_t errMsg[]) {
-	long i; 
+	int32_t i; 
 	size_t textLen;
 
 	this->prevSymPos = this->prevSymEnd = this->symPos = -1;
@@ -576,20 +576,20 @@ bool Scanner::Init(TextBuffer*source, File *file, wchar_t errMsg[]) {
 	return this->GetSym();
 } // Scanner::Init
 
-void Scanner::Term(long *errPos, long *errLen) {
+void Scanner::Term(int32_t *errPos, int32_t *errLen) {
 	*errPos = this->symPos - lookahead;
 	*errLen = this->pos - this->symPos;
 	if (this->text) DisposeP((void **)(&this->text));
 } // Scanner::Term
 
 bool Scanner::GetNum(void) {
-	long digit,decPlcs,pwrOf10;
+	int32_t digit,decPlcs,pwrOf10;
 	
 	this->value = 0;
 	if (this->ch == L'0' && Cap(this->ch2) == L'X') {
 		this->GetCh(); this->GetCh(); this->ch = Cap(this->ch);
 		while (Numeric(this->ch) || (L'A' <= this->ch && this->ch <= L'F')) {
-			digit = this->ch <= L'9' ? (long)this->ch - (long)'0' : (long)this->ch - (long)'A' + 10;
+			digit = this->ch <= L'9' ? (int32_t)this->ch - (int32_t)'0' : (int32_t)this->ch - (int32_t)'A' + 10;
 			if (this->value*16 + digit > hShortMax) { swprintf(this->errMsg,L"Hexadecimal number too large"); return false; }
 			this->value = this->value*16 + digit;
 			this->GetCh(); this->ch = Cap(this->ch);
@@ -597,7 +597,7 @@ bool Scanner::GetNum(void) {
 		this->sym = hexadecimal;
 	} else {
 		while (Numeric(this->ch)) {
-			digit = (long)this->ch - (long)'0';
+			digit = (int32_t)this->ch - (int32_t)'0';
 			if (this->value*10 + digit > shortMax) { swprintf(this->errMsg,L"Number too large"); return false; }
 			this->value = this->value*10 + digit;
 			this->GetCh();
@@ -607,7 +607,7 @@ bool Scanner::GetNum(void) {
 			this->GetCh();
 			decPlcs = 0; pwrOf10 = 1;
 			while (Numeric(this->ch)) {
-				digit = (long)this->ch - (long)'0';
+				digit = (int32_t)this->ch - (int32_t)'0';
 				if (decPlcs*10 * digit > 1000000L) { swprintf(this->errMsg,L"Too many decimal places"); return false; } // 1/64 = 0.015625
 				decPlcs = 10*decPlcs + digit; pwrOf10 *= 10L;
 				this->GetCh();
@@ -622,13 +622,13 @@ bool Scanner::GetNum(void) {
 } // Scanner::GetNum
 
 bool Scanner::GetIdent(void) {
-	long i;
+	int32_t i;
 	
 	i = 0;
 	while (Alpha(this->ch) || Numeric(this->ch)) {
 		if (i >= cvtAttributeStrgLen) 
 		{ 
-			swprintf(this->errMsg,L"Identifier too long (cannot have more than %li characters)",(long)cvtAttributeStrgLen); return false; 
+			swprintf(this->errMsg,L"Identifier too long (cannot have more than %i characters)",(int32_t)cvtAttributeStrgLen); return false; 
 		}
 		this->literal[i++] = this->ch;
 		this->GetCh();
@@ -646,7 +646,7 @@ bool Scanner::GetIdent(void) {
 } // Scanner::GetIdent
 
 bool Scanner::GetLiteral(void) {
-	long i;
+	int32_t i;
 	
 	this->GetCh();
 	i = 0;
@@ -699,10 +699,10 @@ bool Scanner::GetSym(void) {
 } // Scanner::GetSym
 
 void Scanner::ReplaceIdent(const wchar_t capIdent[]) {
-	long beg,end;
+	int32_t beg,end;
 
 	beg = this->symPos - lookahead;
-	end = beg + (long)STRLENW(capIdent);
+	end = beg + (int32_t)STRLENW(capIdent);
 	this->source->Delete(beg,end);
 	this->source->Insert(beg,capIdent);
 } // Scanner::ReplaceIdent
@@ -711,7 +711,7 @@ void Scanner::ErrUnGetSym(void) {
 	this->pos = this->prevSymEnd; this->symPos = this->prevSymPos; // after semantical/contextual error, we're one symbol ahead, hence retract for correct error high-lighting
 } // Scanner::ErrUnGetSym
 
-bool AssertNatural(ActParam *actParam, long low, long high, const wchar_t name[], wchar_t errMsg[]) {
+bool AssertNatural(ActParam *actParam, int32_t low, int32_t high, const wchar_t name[], wchar_t errMsg[]) {
 	if (actParam->type != naturalN) { swprintf(errMsg,L"%s expected (must be an integer in range %li through %li)",name,low,high); return false; }
 	actParam->value >>= places6;
 	if (actParam->value < low || high < actParam->value) { swprintf(errMsg,L"%s out of range (must be in range %li through %li)",name,low,high); return false; }
@@ -725,7 +725,7 @@ bool AssertPixelAmount(ActParam *actParam, F26Dot6 low, F26Dot6 high, const wcha
 	return true; // by now
 } // AssertPixelAmount
 
-bool PrivateControlValueTable::AttributeDeclaration(long firstAvailSubAttributeValue[]) {
+bool PrivateControlValueTable::AttributeDeclaration(int32_t firstAvailSubAttributeValue[]) {
 	Symbol sym;
 	wchar_t name[cvtAttributeStrgLen],spacingText[cvtAttributeStrgLen];
 
@@ -867,8 +867,8 @@ bool PrivateControlValueTable::SettingsDeclaration(void) {
 	return true; // by now
 } // PrivateControlValueTable::SettingsDeclaration
 
-bool PrivateControlValueTable::CvtDeclaration(unsigned long *attribute) {
-	long cvtNum;
+bool PrivateControlValueTable::CvtDeclaration(uint32_t *attribute) {
+	int32_t cvtNum;
 	ControlValue *cvt;
 
 	if (!(this->AttributeAssociation(attribute) && // this->InlineSttmt() && 
@@ -879,13 +879,13 @@ bool PrivateControlValueTable::CvtDeclaration(unsigned long *attribute) {
 	return true; // by now
 } // PrivateControlValueTable::CvtDeclaration
 
-bool PrivateControlValueTable::AttributeAssociation(unsigned long *attribute) {
+bool PrivateControlValueTable::AttributeAssociation(uint32_t *attribute) {
 	CharGroup currGroup;
 	LinkColor currColor;
 	LinkDirection currDirection;
 	CvtCategory currCategory;
 	Symbol subAttribute;
-	long value;
+	int32_t value;
 	wchar_t actualName[cvtAttributeStrgLen];
 
 	PrivateControlValueTable::UnpackAttribute(*attribute,&currGroup,&currColor,&currDirection,&currCategory);
@@ -907,7 +907,7 @@ bool PrivateControlValueTable::AttributeAssociation(unsigned long *attribute) {
 	return true; // by now
 } // PrivateControlValueTable::AttributeAssociation
 
-bool PrivateControlValueTable::ValueAssociation(unsigned long attribute, long *cvtNum, ControlValue **cvt) {
+bool PrivateControlValueTable::ValueAssociation(uint32_t attribute, int32_t *cvtNum, ControlValue **cvt) {
 	ActParam cvtNumParam,cvtValueParam;
 	CharGroup charGroup;
 	LinkColor linkColor;
@@ -918,7 +918,7 @@ bool PrivateControlValueTable::ValueAssociation(unsigned long attribute, long *c
 	if (!AssertNatural(&cvtNumParam,0,maxCvtNum-1,L"Cvt number",this->errMsg)) { this->scanner.ErrUnGetSym(); return false; }
 	*cvtNum = cvtNumParam.value;
 //	we're currently not testing this as there may be users with different fpgms and we should really un-hardwire the remaining hard-wired cvts
-//	if (cvtReservedFrom <= *cvtNum && *cvtNum <= cvtReservedTo) { swprintf(this->errMsg,L"Cvt numbers in range %li through %li are reserved",(long)cvtReservedFrom,(long)cvtReservedTo); this->scanner.ErrUnGetSym(); return false; }
+//	if (cvtReservedFrom <= *cvtNum && *cvtNum <= cvtReservedTo) { swprintf(this->errMsg,L"Cvt numbers in range %i through %i are reserved",(int32_t)cvtReservedFrom,(int32_t)cvtReservedTo); this->scanner.ErrUnGetSym(); return false; }
 	*cvt = &this->tempData[cvtNumParam.value];
 	if ((*cvt)->flags & cvtDefined) { swprintf(this->errMsg,L"cvt number already defined"); this->scanner.ErrUnGetSym(); return false; }
 	if (this->scanner.sym != colon) { swprintf(this->errMsg,L"':' expected"); return false; }
@@ -942,7 +942,7 @@ bool PrivateControlValueTable::ValueAssociation(unsigned long attribute, long *c
 	return true; // by now
 } // PrivateControlValueTable::ValueAssociation
 
-bool PrivateControlValueTable::InheritanceRelation(long cvtNum, ControlValue *cvt) {
+bool PrivateControlValueTable::InheritanceRelation(int32_t cvtNum, ControlValue *cvt) {
 	bool relative;
 	ActParam parentCvtNumParam,ppemValueParam;
 	ControlValue *parentCvt;
@@ -985,11 +985,11 @@ bool PrivateControlValueTable::InheritanceRelation(long cvtNum, ControlValue *cv
 	return true; // by now
 } // PrivateControlValueTable::InheritanceRelation
 
-bool PrivateControlValueTable::DeltaDeclaration(long cvtNum, ControlValue *cvt) {
+bool PrivateControlValueTable::DeltaDeclaration(int32_t cvtNum, ControlValue *cvt) {
 	ActParam pixelAtPpemRangeParam;
 	bool colorDeltaDone[numDeltaColors];
 	DeltaColor cmdColor,paramColor;
-	long i;
+	int32_t i;
 	CharGroup charGroup;
 	LinkColor linkColor;
 	LinkDirection linkDirection;
@@ -1149,7 +1149,7 @@ bool PrivateControlValueTable::Factor(ActParam *actParam) {
 } // PrivateControlValueTable::Factor
 
 bool PrivateControlValueTable::PixelAtPpemRange(DeltaColor cmdColor, ActParam *actParam, DeltaColor *paramColor) {
-	long pixelAmount;
+	int32_t pixelAmount;
 	ActParam colorParam;
 
 	if (!this->Parameter(actParam)) return false;
@@ -1180,7 +1180,7 @@ bool PrivateControlValueTable::PixelAtPpemRange(DeltaColor cmdColor, ActParam *a
 } // PrivateControlValueTable::PixelAtPpemRange
 	
 bool PrivateControlValueTable::PpemRange(ActParam *actParam) {
-	long i;
+	int32_t i;
 	
 	actParam->type = ppemN; // for now
 	for (i = 0; i < maxPpemSize; i++) actParam->deltaPpemSize[i] = false;
@@ -1197,7 +1197,7 @@ bool PrivateControlValueTable::PpemRange(ActParam *actParam) {
 
 bool PrivateControlValueTable::Range(ActParam *actParam) {
 	ActParam lowParam,highParam;
-	long low,high,i;
+	int32_t low,high,i;
 
 	if (!this->Expression(&lowParam)) return false;
 	if (!AssertNatural(&lowParam,actParam->lowPpemSize+1,actParam->highPpemSize,L"Ppem size",this->errMsg)) { this->scanner.ErrUnGetSym(); return false; }
@@ -1213,9 +1213,9 @@ bool PrivateControlValueTable::Range(ActParam *actParam) {
 	return true; // by now
 } // PrivateControlValueTable::Range
 
-bool PrivateControlValueTable::Compile(TextBuffer*source, TextBuffer*prepText, bool legacyCompile, long *errPos, long *errLen, wchar_t errMsg[]) {
-	long i,firstAvailSubAttributeValue[numSubAttributes];
-	unsigned long currAttribute;
+bool PrivateControlValueTable::Compile(TextBuffer*source, TextBuffer*prepText, bool legacyCompile, int32_t *errPos, int32_t *errLen, wchar_t errMsg[]) {
+	int32_t i,firstAvailSubAttributeValue[numSubAttributes];
+	uint32_t currAttribute;
 	Attribute *sortedAttributes;
 	bool memError;
 	wchar_t comment[maxLineSize],dateTime[32];
@@ -1382,30 +1382,30 @@ bool PrivateControlValueTable::LinearAdvanceWidths(void) {
 } // PrivateControlValueTable::LinearAdvanceWidths
 
 
-long PrivateControlValueTable::LowestCvtNum(void) {
+int32_t PrivateControlValueTable::LowestCvtNum(void) {
 	return this->cvtDataValid ? this->lowestCvtNum : maxCvtNum;
 } // PrivateControlValueTable::LowestCvtNum
 
-long PrivateControlValueTable::HighestCvtNum(void) {
+int32_t PrivateControlValueTable::HighestCvtNum(void) {
 	return this->cvtDataValid ? this->highestCvtNum : -1;
 } // PrivateControlValueTable::HighestCvtNum
 
-long PrivateControlValueTable::LowestCvtIdx(void) {
+int32_t PrivateControlValueTable::LowestCvtIdx(void) {
 	this->AssertSortedCvt();
 	return this->cvtDataSorted ? this->lowestCvtIdx : maxCvtNum;
 } // PrivateControlValueTable::LowestCvtIdx
 
-long PrivateControlValueTable::HighestCvtIdx(void) {
+int32_t PrivateControlValueTable::HighestCvtIdx(void) {
 	this->AssertSortedCvt();
 	return this->cvtDataSorted ? this->highestCvtIdx : -1;
 } // PrivateControlValueTable::HighestCvtIdx
 
-long PrivateControlValueTable::CvtNumOf(long idx) {
+int32_t PrivateControlValueTable::CvtNumOf(int32_t idx) {
 	this->AssertSortedCvt();
 	return this->cvtDataSorted && this->lowestCvtIdx <= idx && idx <= this->highestCvtIdx ? this->cvtKeyOfIdx[idx].num : illegalCvtNum;
 } // PrivateControlValueTable::CvtNumOf
 
-long PrivateControlValueTable::CvtIdxOf(long num) {
+int32_t PrivateControlValueTable::CvtIdxOf(int32_t num) {
 	this->AssertSortedCvt();
 	return this->cvtDataSorted && this->lowestCvtNum <= num && num <= this->highestCvtNum ? this->cvtIdxOfNum[num] : -1;
 } // PrivateControlValueTable::CvtIdxOf
@@ -1413,32 +1413,32 @@ long PrivateControlValueTable::CvtIdxOf(long num) {
 #define Exists(this,cvtNum) (this->cvtDataValid && 0 <= cvtNum && cvtNum <= this->highestCvtNum && this->cpgmData[cvtNum].flags & cvtDefined)
 #define AttribExists(this,cvtNum) (Exists(this,cvtNum) && this->cpgmData[cvtNum].flags & attributeDefined)
 
-bool PrivateControlValueTable::CvtNumExists(long cvtNum) {
+bool PrivateControlValueTable::CvtNumExists(int32_t cvtNum) {
 	return Exists(this,cvtNum);
 } // PrivateControlValueTable::CvtNumExists
 
-bool PrivateControlValueTable::GetCvtValue(long cvtNum, short *cvtValue) {
+bool PrivateControlValueTable::GetCvtValue(int32_t cvtNum, short *cvtValue) {
 	if (!Exists(this,cvtNum)) return false;
 	*cvtValue = this->cpgmData[cvtNum].value;
 	return true;
 } // PrivateControlValueTable::GetCvtValue
 
-bool PrivateControlValueTable::CvtAttributesExist(long cvtNum) {
+bool PrivateControlValueTable::CvtAttributesExist(int32_t cvtNum) {
 	return AttribExists(this,cvtNum);
 } // PrivateControlValueTable::CvtAttributesExist
 
-bool PrivateControlValueTable::GetCvtAttributes(long cvtNum, CharGroup *charGroup, LinkColor *linkColor, LinkDirection *linkDirection, CvtCategory *cvtCategory, bool *relative) {
+bool PrivateControlValueTable::GetCvtAttributes(int32_t cvtNum, CharGroup *charGroup, LinkColor *linkColor, LinkDirection *linkDirection, CvtCategory *cvtCategory, bool *relative) {
 	if (!AttribExists(this,cvtNum)) return false;
 	PrivateControlValueTable::UnpackAttribute(this->cpgmData[cvtNum].attribute,charGroup,linkColor,linkDirection,cvtCategory);
 	*relative = (this->cpgmData[cvtNum].flags & relativeValue) != 0;
 	return true;
 } // PrivateControlValueTable::GetCvtAttributes
 
-long PrivateControlValueTable::NumCharGroups(void) {
+int32_t PrivateControlValueTable::NumCharGroups(void) {
 	return this->cvtDataValid ? this->newNumCharGroups : 0;
 } // PrivateControlValueTable::NumCharGroups
 
-bool PrivateControlValueTable::GetAttributeStrings(long cvtNum, wchar_t charGroup[], wchar_t linkColor[], wchar_t linkDirection[], wchar_t cvtCategory[], wchar_t relative[]) {
+bool PrivateControlValueTable::GetAttributeStrings(int32_t cvtNum, wchar_t charGroup[], wchar_t linkColor[], wchar_t linkDirection[], wchar_t cvtCategory[], wchar_t relative[]) {
 	charGroup[0] = linkColor[0] = linkDirection[0] = cvtCategory[0] = relative[0] = L'\0';
 	if (!AttribExists(this,cvtNum)) return false;
 	PrivateControlValueTable::UnpackAttributeStrings(this->cpgmData[cvtNum].attribute,charGroup,linkColor,linkDirection,cvtCategory);
@@ -1462,11 +1462,11 @@ bool PrivateControlValueTable::GetSpacingText(CharGroup charGroup, wchar_t spaci
 	return Attribute::SearchByValue(this->attributes,group,charGroup,NULL,spacingText,errMsg);
 } // PrivateControlValueTable::GetSpacingText
 
-#define CompareKey(a,b) ((a).attribute < (b).attribute ? -1 : ((a).attribute > (b).attribute ? +1 : (long)(a).value - (long)(b).value))
+#define CompareKey(a,b) ((a).attribute < (b).attribute ? -1 : ((a).attribute > (b).attribute ? +1 : (int32_t)(a).value - (int32_t)(b).value))
 
-long PrivateControlValueTable::GetBestCvtMatch(CharGroup charGroup, LinkColor linkColor, LinkDirection linkDirection, CvtCategory cvtCategory, long distance) {
-	long attempt,firstAttempt,low,high,mid,cmp,lowCvtNum,highCvtNum;
-	unsigned long lowAttr,highAttr,lowValue,highValue,catMask4cvtDummy;
+int32_t PrivateControlValueTable::GetBestCvtMatch(CharGroup charGroup, LinkColor linkColor, LinkDirection linkDirection, CvtCategory cvtCategory, int32_t distance) {
+	int32_t attempt,firstAttempt,low,high,mid,cmp,lowCvtNum,highCvtNum;
+	uint32_t lowAttr,highAttr,lowValue,highValue,catMask4cvtDummy;
 	CvtKey cvtKey,targetKey;
 
 	if (!this->cvtDataValid || cvtCategory == cvtAnyCategory) return illegalCvtNum;
@@ -1515,39 +1515,39 @@ long PrivateControlValueTable::GetBestCvtMatch(CharGroup charGroup, LinkColor li
 	return illegalCvtNum; // by now
 } // PrivateControlValueTable::GetBestCvtMatch
 
-void PrivateControlValueTable::PutCvtBinary(long size, unsigned char data[]) {
+void PrivateControlValueTable::PutCvtBinary(int32_t size, unsigned char data[]) {
 	short *cvtData = (short *)data;
-	long i;
+	int32_t i;
 	
 	this->lowestCvtNum = 0; // we don't know any better at this point, plus there are no valid attributes...
 	this->highestCvtNum = (size >> 1) - 1;
 	for (i = 0; i <= this->highestCvtNum; i++, cvtData++) this->cpgmData[i].value = SWAPW(*cvtData);
 } // PrivateControlValueTable::PutCvtBinary
 
-void PrivateControlValueTable::GetCvtBinary(long *size, unsigned char data[]) {
+void PrivateControlValueTable::GetCvtBinary(int32_t *size, unsigned char data[]) {
 	short *cvtData = (short *)data;
-	long i;
+	int32_t i;
 
 	*size = (this->highestCvtNum + 1) << 1;
 	for (i = 0; i <= this->highestCvtNum; i++, cvtData++) *cvtData = SWAPW(this->cpgmData[i].value);
 } // PrivateControlValueTable::GetCvtBinary
 
-long PrivateControlValueTable::GetCvtBinarySize(void) {
+int32_t PrivateControlValueTable::GetCvtBinarySize(void) {
 	return (this->highestCvtNum + 1) << 1;
 } // PrivateControlValueTable::GetCvtBinarySize
 
-unsigned long PrivateControlValueTable::PackAttribute(CharGroup charGroup, LinkColor linkColor, LinkDirection linkDirection, CvtCategory cvtCategory) {
-	return ((((((unsigned long)charGroup << subAttributeBits) + (unsigned long)linkColor) << subAttributeBits) + (unsigned long)linkDirection) << subAttributeBits) + (unsigned long)cvtCategory;
+uint32_t PrivateControlValueTable::PackAttribute(CharGroup charGroup, LinkColor linkColor, LinkDirection linkDirection, CvtCategory cvtCategory) {
+	return ((((((uint32_t)charGroup << subAttributeBits) + (uint32_t)linkColor) << subAttributeBits) + (uint32_t)linkDirection) << subAttributeBits) + (uint32_t)cvtCategory;
 } // PrivateControlValueTable::PackAttribute
 
-void PrivateControlValueTable::UnpackAttribute(unsigned long attribute, CharGroup *charGroup, LinkColor *linkColor, LinkDirection *linkDirection, CvtCategory *cvtCategory) {
+void PrivateControlValueTable::UnpackAttribute(uint32_t attribute, CharGroup *charGroup, LinkColor *linkColor, LinkDirection *linkDirection, CvtCategory *cvtCategory) {
 	*cvtCategory   = (CvtCategory)  (attribute & subAttributeMask); attribute >>= subAttributeBits;
 	*linkDirection = (LinkDirection)(attribute & subAttributeMask); attribute >>= subAttributeBits;
 	*linkColor     = (LinkColor)    (attribute & subAttributeMask); attribute >>= subAttributeBits;
 	*charGroup     = (CharGroup)    (attribute & subAttributeMask);
 } // PrivateControlValueTable::UnpackAttribute
 
-void PrivateControlValueTable::UnpackAttributeStrings(unsigned long attribute, wchar_t charGroup[], wchar_t linkColor[], wchar_t linkDirection[], wchar_t cvtCategory[]) {
+void PrivateControlValueTable::UnpackAttributeStrings(uint32_t attribute, wchar_t charGroup[], wchar_t linkColor[], wchar_t linkDirection[], wchar_t cvtCategory[]) {
 	CharGroup theGroup;
 	LinkColor theColor;
 	LinkDirection theDirection;
@@ -1562,9 +1562,9 @@ void PrivateControlValueTable::UnpackAttributeStrings(unsigned long attribute, w
 } // PrivateControlValueTable::UnpackAttributeStrings
 
 void PrivateControlValueTable::AssertSortedCvt(void) {
-	long cvtNum,cvtIdx,actCvtValue;
+	int32_t cvtNum,cvtIdx,actCvtValue;
 	ControlValue *cvt;
-	unsigned long attribute;
+	uint32_t attribute;
 	CharGroup aGroup;
 	LinkColor aColor;
 	LinkDirection aDir;
@@ -1609,8 +1609,8 @@ void PrivateControlValueTable::AssertSortedCvt(void) {
 	this->cvtDataSorted = true;
 } // PrivateControlValueTable::AssertSortedCvt
 
-void PrivateControlValueTable::SortCvtKeys(long low, long high) { // quicksort
-	long i,j;
+void PrivateControlValueTable::SortCvtKeys(int32_t low, int32_t high) { // quicksort
+	int32_t i,j;
 	CvtKey midKey,auxKey;
 	
 	if (low < high) {
@@ -1658,7 +1658,7 @@ void PrivateControlValueTable::SortCvtKeys(long low, long high) { // quicksort
 #define unknownUnicode 0xffff
 
 bool PrivateControlValueTable::DumpControlValueTable(TextBuffer *text) {
-	long cvtNum,pos;
+	int32_t cvtNum,pos;
 	bool newFormat;
 	wchar_t dump[maxLineSize],groupStrg[32],colorStrg[32],directionStrg[32],categoryStrg[32],relativeStrg[32];
 
@@ -1678,7 +1678,7 @@ bool PrivateControlValueTable::DumpControlValueTable(TextBuffer *text) {
 } // PrivateControlValueTable::DumpControlValueTable
 
 bool PrivateControlValueTable::CompileCharGroup(File *from, short platformID, unsigned char toCharGroupOfCharCode[], wchar_t errMsg[]) {
-	long aGroup,errPos,errLen,row,col,theCol,code[4],platToCol[5] = {2, 1, 2 /* bug??? */, 0, 3}; // plat_Unicode, plat_Macintosh, plat_ISO, plat_MS, unknown case 4
+	int32_t aGroup,errPos,errLen,row,col,theCol,code[4],platToCol[5] = {2, 1, 2 /* bug??? */, 0, 3}; // plat_Unicode, plat_Macintosh, plat_ISO, plat_MS, unknown case 4
 	wchar_t data[2][cvtAttributeStrgLen];
 	Scanner scanner;
 	Attribute *groups;

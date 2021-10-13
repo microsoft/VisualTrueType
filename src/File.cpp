@@ -50,25 +50,25 @@ void File::OpenNew(const std::string& fileName) {
 	m_error = (m_hfile == nullptr); 
 } // File::OpenNew
 
-long File::Length(void) {
+int32_t File::Length(void) {
 	//return (m_hfile != INVALID_HANDLE_VALUE) ? GetFileSize(m_hfile, NULL) : 0;
 	struct stat st; 
 	stat(m_fileName.c_str(), &st); 
 	return st.st_size; 
 } // File::Length
 
-void File::SetPos(long pos, bool truncate) {
+void File::SetPos(int32_t pos, bool truncate) {
 	//SetFilePointer(m_hfile, pos, NULL, FILE_BEGIN);
 	//if (truncate)
 	//	SetEndOfFile(m_hfile);
 	fseek((FILE*)m_hfile, SEEK_SET, pos); 
 } // File::SetPos
 
-long File::GetPos(void) {
+int32_t File::GetPos(void) {
 	return ftell((FILE*)m_hfile);
 } // File::GetPos
 
-void File::ReadBytes(long numBytes, void *buffer) {
+void File::ReadBytes(int32_t numBytes, void *buffer) {
 	//if (m_hfile != INVALID_HANDLE_VALUE) {
 	//	DWORD cb = 0;
 	//	m_error = !ReadFile(m_hfile, buffer, numBytes, &cb, NULL);
@@ -80,7 +80,7 @@ void File::ReadBytes(long numBytes, void *buffer) {
 	}
 } // File::ReadBytes
 
-void File::ReadUnicode(long *len, wchar_t **text)
+void File::ReadUnicode(int32_t *len, wchar_t **text)
 {
 	assert(false); 
 	/*if (m_hfile != INVALID_HANDLE_VALUE) {
@@ -91,7 +91,7 @@ void File::ReadUnicode(long *len, wchar_t **text)
 		assert(4 == cb);
 		if (m_error) return;
 
-		long fileLen = this->Length();
+		int32_t fileLen = this->Length();
 
 		if (IsUnicode(start) || IsUnicodeBig(start))
 		{
@@ -113,7 +113,7 @@ void File::ReadUnicode(long *len, wchar_t **text)
 
 			if (IsUnicodeBig(start))
 			{
-				for (long i = 0; i < *len; i++)
+				for (int32_t i = 0; i < *len; i++)
 				{
 					(*text)[i] = SWAPW((*text)[i]);
 				}
@@ -147,7 +147,7 @@ void File::ReadUnicode(long *len, wchar_t **text)
 	*/ 
 }
 
-void File::WriteBytes(long numBytes, void *buffer)
+void File::WriteBytes(int32_t numBytes, void *buffer)
 {
 	//if (m_hfile != INVALID_HANDLE_VALUE) {
 	//	DWORD cb = 0;

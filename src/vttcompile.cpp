@@ -63,9 +63,7 @@ Application::~Application(void)
 	
 }
 
-bool Application::OpenFont(std::string fileName) {
-	wchar_t errMsg[maxLineSize];
-
+bool Application::OpenFont(std::string fileName, wchar_t errMsg[]) {
 	auto file = std::make_unique<File>();
 
 	this->charCode = this->glyphIndex = ILLEGAL_GLYPH_INDEX;
@@ -109,7 +107,7 @@ bool Application::SaveFont(std::string fileN, StripCommand strip, wchar_t errMsg
 }
 
 bool Application::GotoFont(wchar_t errMsg[]) {
-	long errPos, errLen;
+	int32_t errPos, errLen;
 	bool legacy = false; 
 
 	if (!this->font->GetCvt(this->cpgm.get(), errMsg)) return false;
@@ -120,8 +118,8 @@ bool Application::GotoFont(wchar_t errMsg[]) {
 	return true; // by now, ignoring the fact that a stripped font will not have any of the sources above
 } // Application::GotoFont
 
-bool Application::GotoGlyph(long code, bool isGlyphIndex) {
-	long numGlyphs = this->font->NumberOfGlyphs(), glyphIndex, charCode;
+bool Application::GotoGlyph(int32_t code, bool isGlyphIndex) {
+	int32_t numGlyphs = this->font->NumberOfGlyphs(), glyphIndex, charCode;
 	wchar_t errMsg[maxLineSize];
 
 	if (isGlyphIndex) {
@@ -143,7 +141,7 @@ bool Application::GotoGlyph(long code, bool isGlyphIndex) {
 	return true; // by now, ignoring the fact that a stripped font will not have any of the sources above
 } // Application::GotoGlyph
 
-bool Application::CompileTalk(long* errPos, long* errLen, wchar_t errMsg[])
+bool Application::CompileTalk(int32_t* errPos, int32_t* errLen, wchar_t errMsg[])
 {
 	bool legacy = false;
 
@@ -152,13 +150,13 @@ bool Application::CompileTalk(long* errPos, long* errLen, wchar_t errMsg[])
 	return done;
 }
 
-bool Application::CompileCommon(long* errPos, long* errLen, wchar_t errMsg[])
+bool Application::CompileCommon(int32_t* errPos, int32_t* errLen, wchar_t errMsg[])
 {
 	bool done = false;
 	bool legacy = false; 
 	bool variationCompositeGuard = true; 
 
-	long glyphIndex, binSize;
+	int32_t glyphIndex, binSize;
 	unsigned char* binData;
 	wchar_t tempErrMsg[maxLineSize], compErrMsg[maxLineSize];
 	TextBuffer* errBuf = NULL;
@@ -254,9 +252,9 @@ bool Application::CompileCommon(long* errPos, long* errLen, wchar_t errMsg[])
 	return done;
 }
 
-bool Application::CompileGlyphRange(unsigned short g1, unsigned short g2, long* errPos, long* errLen, bool quiet, wchar_t errMsg[])
+bool Application::CompileGlyphRange(unsigned short g1, unsigned short g2, int32_t* errPos, int32_t* errLen, bool quiet, wchar_t errMsg[])
 {
-	long glyphIndex, binSize, fromGlyph, toGlyph, numGlyphs = this->font->NumberOfGlyphs();
+	int32_t glyphIndex, binSize, fromGlyph, toGlyph, numGlyphs = this->font->NumberOfGlyphs();
 	bool done = false;
 	unsigned char* binData;
 	wchar_t tempErrMsg[maxLineSize], compErrMsg[maxLineSize];
@@ -297,7 +295,7 @@ bool Application::CompileGlyphRange(unsigned short g1, unsigned short g2, long* 
 				swprintf(tempErrMsg, L"VTT Talk, glyph %li (Unicode 0x%lx), line %li: %s", this->glyphIndex, this->charCode, this->talk->LineNumOf(*errPos), compErrMsg);
 				errBuf->AppendLine(tempErrMsg);
 				swprintf(tempErrMsg, L"/* Error in VTT Talk, line %li: %s */", this->talk->LineNumOf(*errPos), compErrMsg);
-				this->glyf->SetText((long)STRLENW(tempErrMsg), tempErrMsg); // prevent follow-up errors
+				this->glyf->SetText((int32_t)STRLENW(tempErrMsg), tempErrMsg); // prevent follow-up errors
 			}
 		}
 
@@ -341,9 +339,9 @@ bool Application::CompileGlyphRange(unsigned short g1, unsigned short g2, long* 
 	return done;
 }
 
-bool Application::CompileAll(long* errPos, long* errLen, bool quiet, wchar_t errMsg[])
+bool Application::CompileAll(int32_t* errPos, int32_t* errLen, bool quiet, wchar_t errMsg[])
 {
-	long glyphIndex, binSize, fromGlyph, fromChar, numGlyphs = this->font->NumberOfGlyphs();
+	int32_t glyphIndex, binSize, fromGlyph, fromChar, numGlyphs = this->font->NumberOfGlyphs();
 	bool done;
 	unsigned char* binData;
 	wchar_t tempErrMsg[maxLineSize], compErrMsg[maxLineSize];
@@ -442,7 +440,7 @@ bool Application::CompileAll(long* errPos, long* errLen, bool quiet, wchar_t err
 				swprintf(tempErrMsg, L"VTT Talk, glyph %li (Unicode 0x%lx), line %li: %s", this->glyphIndex, this->charCode, this->talk->LineNumOf(*errPos), compErrMsg);
 				errBuf->AppendLine(tempErrMsg);
 				swprintf(tempErrMsg, L"/* Error in VTT Talk, line %li: %s */", this->talk->LineNumOf(*errPos), compErrMsg);
-				this->glyf->SetText((long)STRLENW(tempErrMsg), tempErrMsg); // prevent follow-up errors
+				this->glyf->SetText((int32_t)STRLENW(tempErrMsg), tempErrMsg); // prevent follow-up errors
 			}
 		}
 
@@ -531,7 +529,7 @@ int main(int argc, char* argv[])
 	bool bCompileAll = false;
 	bool bQuiet = false;
 	std::string sg1, sg2;
-	unsigned long g1 = 0, g2 = 0;
+	uint32_t g1 = 0, g2 = 0;
 	bool haveGlyph = false;
 	bool haveRange = false;
 
@@ -648,9 +646,11 @@ int main(int argc, char* argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	if (!application->OpenFont(inFile))
+	if (!application->OpenFont(inFile, errMsg))
 	{
-		fwprintf(stderr, L"Can not open font file! \n");
+		fwprintf(stderr, errMsg);
+		fwprintf(stderr, L"\n");
+		fwprintf(stderr, L"Can not open font file %s!\n", inFile.c_str());
 		exit(EXIT_FAILURE);
 	}
 
@@ -664,7 +664,7 @@ int main(int argc, char* argv[])
 
 	if (bCompileAll)
 	{
-		long errPos, errLen;
+		int32_t errPos, errLen;
 
 		if (!application->CompileAll(&errPos, &errLen, bQuiet, errMsg))
 		{
@@ -677,7 +677,7 @@ int main(int argc, char* argv[])
 	}
 	else if (haveGlyph)
 	{
-		long errPos, errLen;
+		int32_t errPos, errLen;
 
 		if (!application->CompileGlyphRange((unsigned short)g1, (unsigned short)g2, &errPos, &errLen, bQuiet, errMsg))
 		{

@@ -45,9 +45,9 @@
 #define InterpolateCmd(cmd) ((cmd) == xInterpolate || (cmd) == xInterpolate0 || (cmd) == xInterpolate1 || (cmd) == xIPAnchor || (cmd) == yInterpolate || (cmd) == yInterpolate0 || (cmd) == yInterpolate1 || (cmd) == yIPAnchor)
 #define maxGenerators 3
 
-void TMTParser::Parse(bool *changedSrc, long *errPos, long *errLen, wchar_t errMsg[]) { /* abstract */ }
+void TMTParser::Parse(bool *changedSrc, int32_t *errPos, int32_t *errLen, wchar_t errMsg[]) { /* abstract */ }
 #if _DEBUG
-void TMTParser::RemoveAltCodePath(bool *changedSrc, long *errPos, long *errLen, wchar_t error[]) { /* abstract */ }
+void TMTParser::RemoveAltCodePath(bool *changedSrc, int32_t *errPos, int32_t *errLen, wchar_t error[]) { /* abstract */ }
 #endif
 void TMTParser::InitTMTParser(TextBuffer *talkText, TrueTypeFont *font, TrueTypeGlyph *glyph, bool legacyCompile, short generators, TTGenerator *gen[]) { /* abstract */ }
 void TMTParser::TermTMTParser(void) { /* abstract */ }
@@ -109,10 +109,10 @@ typedef struct {
 
 typedef struct {
 	ParamType type;
-	long numValue;
+	int32_t numValue;
 	wchar_t *litValue; // pointer to parser's litValue for memory efficiency, since we don't have more than 1 string parameter per TMT command
 	short minDists;
-	long jumpPpemSize[maxMinDist],pixelSize[maxMinDist];
+	int32_t jumpPpemSize[maxMinDist],pixelSize[maxMinDist];
 	bool deltaPpemSize[maxPpemSize]; // here we have possibly more than one rangeOfPpemN parameter, but could implement bit vectors...
 	DeltaColor deltaColor; // alwaysDelta, blackDelta, greyDelta, ..., same for the entire bit vector deltaPpemSize above
 	bool hasTtvOverride;
@@ -155,16 +155,16 @@ Partner::~Partner(void) {
 
 class TMTSourceParser : public TMTParser {
 public:
-	virtual void Parse(bool *changedSrc, long *errPos, long *errLen, wchar_t errMsg[]);
+	virtual void Parse(bool *changedSrc, int32_t *errPos, int32_t *errLen, wchar_t errMsg[]);
 #if _DEBUG
-	virtual void RemoveAltCodePath(bool *changedSrc, long *errPos, long *errLen, wchar_t error[]);
+	virtual void RemoveAltCodePath(bool *changedSrc, int32_t *errPos, int32_t *errLen, wchar_t error[]);
 #endif
 	virtual void InitTMTParser(TextBuffer *talkText, TrueTypeFont *font, TrueTypeGlyph *glyph, bool legacyCompile, short generators, TTGenerator *gen[]);
 	virtual void TermTMTParser(void);
 	TMTSourceParser(void);
 	virtual ~TMTSourceParser(void);
 private:
-	long errPos,symLen;
+	int32_t errPos,symLen;
 	wchar_t errMsg[maxLineSize];
 	TextBuffer *talkText;
 	TrueTypeFont *font;
@@ -176,18 +176,18 @@ private:
 	short generators;
 	TTGenerator *gen[maxGenerators];
 	bool changedSrc;
-	long pos,prevPos,prevPrevPos; // prevPos = position previous to starting the scanning of current symbol
+	int32_t pos,prevPos,prevPrevPos; // prevPos = position previous to starting the scanning of current symbol
 	wchar_t ch,ch2; // 2-char look-ahead
 	Symbol sym;  // 1-symbol look-ahead
-	long numValue;
+	int32_t numValue;
 	bool legacyCompile; 
 	wchar_t litValue[maxAsmSize];
 	
 	short actParams;
 	ActParam actParam[maxParams];
-	long paramPos[maxParams + 1]; // +1 needed to avoid out of bounds error if at max parameters
+	int32_t paramPos[maxParams + 1]; // +1 needed to avoid out of bounds error if at max parameters
 	
-	bool MakeProjFreeVector(bool haveFlag, long flagValue, bool y, ActParam *parent, ActParam child[], long children, ProjFreeVector *projFreeVector, wchar_t errMsg[]);
+	bool MakeProjFreeVector(bool haveFlag, int32_t flagValue, bool y, ActParam *parent, ActParam child[], int32_t children, ProjFreeVector *projFreeVector, wchar_t errMsg[]);
 	
 	virtual void Dispatch(Symbol cmd, short params, ActParam param[], wchar_t errMsg[]);
 	
@@ -205,8 +205,8 @@ private:
 	virtual void GetLiteral(void);
 	virtual void GetSym(void);
 	
-	void Delete(long pos, long len);
-	void Insert(long pos, const wchar_t strg[]);
+	void Delete(int32_t pos, int32_t len);
+	void Insert(int32_t pos, const wchar_t strg[]);
 	void ReplAtCurrPos(short origLen, const wchar_t repl[]);
 	
 	/***** Parser *****/
@@ -373,12 +373,12 @@ void AdjustFPs(short serifType, FormParam *formParams) {
 	for (i = params; i < maxFPs-1; i++) formParams[i] = formParams[maxFPs-1];
 } /* AdjustFPs */
 
-void TMTSourceParser::Parse(bool *changedSrc, long *errPos, long *errLen, wchar_t errMsg[]) {
+void TMTSourceParser::Parse(bool *changedSrc, int32_t *errPos, int32_t *errLen, wchar_t errMsg[]) {
 	Symbol cmd;
 	ActParam aParam;
 	short formParamNum;
 	FormParam formParams[maxFPs];
-	long cmdStart,actParam;
+	int32_t cmdStart,actParam;
 
 	this->GetSym();
 	while (this->errPos < 0 && Command(this)) {
@@ -465,8 +465,8 @@ void TMTSourceParser::Parse(bool *changedSrc, long *errPos, long *errLen, wchar_
 } /* TMTSourceParser::Parse */
 
 #if _DEBUG
-void TMTSourceParser::RemoveAltCodePath(bool *changedSrc, long *errPos, long *errLen, wchar_t error[]) {
-	long beginPos,endPos;
+void TMTSourceParser::RemoveAltCodePath(bool *changedSrc, int32_t *errPos, int32_t *errLen, wchar_t error[]) {
+	int32_t beginPos,endPos;
 	
 	beginPos = endPos = -1; *changedSrc = false;
 	this->GetSym();
@@ -576,9 +576,9 @@ void TMTSourceParser::TermTMTParser(void) {
 	
 } /* TMTSourceParser::TermTMTParser */
 
-bool TMTSourceParser::MakeProjFreeVector(bool haveFlag, long flagValue, bool y, ActParam *parent, ActParam child[], long children, ProjFreeVector *projFreeVector, wchar_t errMsg[]) {
+bool TMTSourceParser::MakeProjFreeVector(bool haveFlag, int32_t flagValue, bool y, ActParam *parent, ActParam child[], int32_t children, ProjFreeVector *projFreeVector, wchar_t errMsg[]) {
 	TTVDirection flagToDir[numTTVDirections] = {xRomanDir, yRomanDir, xItalDir, yItalDir, xAdjItalDir, yAdjItalDir, diagDir, perpDiagDir};
-	long i,idx = 2*(haveFlag ? 1 + flagValue : 0) + (long)y;
+	int32_t i,idx = 2*(haveFlag ? 1 + flagValue : 0) + (int32_t)y;
 	bool pvOverrideError = false,fvOverrideError = false;
 
 	projFreeVector->pv.dir = flagToDir[idx%numTTVDirections];
@@ -830,7 +830,7 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 				  cvt = haveCvt ? (short)(param[base].numValue/one6) : illegalCvtNum,actualCvt = cvt,
 				  minDists = haveMinDist ? param[base+haveCvt].minDists : -1,
 				  jumpPpemSize[maxMinDist];
-			long *jSize = minDists >= 0 ? &param[base+haveCvt].jumpPpemSize[0] : NULL;
+			int32_t *jSize = minDists >= 0 ? &param[base+haveCvt].jumpPpemSize[0] : NULL;
 			Partner *partner = this->ThePartner(y,parent,child);
 			CvtCategory cvtCategory = dist ? cvtAnyCategory : (partner ? partner->category : cvtDistance);
 			short cvtHint = partner ? partner->cvtOverride : illegalCvtNum;
@@ -1242,7 +1242,7 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 
 void TMTSourceParser::XFormToNewSyntax(void) {
 /* this is a bit of a botched job, but I'd rather have the standard parameter checking mechanism do all the serious work */
-	long savePos,flagPos,parmPos;
+	int32_t savePos,flagPos,parmPos;
 	wchar_t old[32],neu[64];
 	short s,d,l;
 	
@@ -1353,18 +1353,18 @@ void TMTSourceParser::XFormToNewSyntax(void) {
 
 /*****/
 void TMTSourceParser::Flag(ActParam *actParam) {
-	long paramStart;
+	int32_t paramStart;
 	
 	paramStart = this->prevPos;
 	switch (this->sym) {
 		case leftDir:
 		case rightDir:
-			actParam->type = dirFlag; actParam->numValue = (long)this->sym - (long)leftDir;
+			actParam->type = dirFlag; actParam->numValue = (int32_t)this->sym - (int32_t)leftDir;
 			this->GetSym();
 			break;
 		case italAngle:
 		case adjItalAngle:
-			actParam->type = angleFlag; actParam->numValue = (long)this->sym - (long)italAngle;
+			actParam->type = angleFlag; actParam->numValue = (int32_t)this->sym - (int32_t)italAngle;
 			this->GetSym();
 			break;
 		case optStroke:
@@ -1372,7 +1372,7 @@ void TMTSourceParser::Flag(ActParam *actParam) {
 		case optStrokeRightBias:
 			if (!this->legacyCompile)
 			{
-				actParam->type = strokeFlag; actParam->numValue = (long)this->sym - (long) optStroke + 1;
+				actParam->type = strokeFlag; actParam->numValue = (int32_t)this->sym - (int32_t) optStroke + 1;
 				this->GetSym();
 			}
 			break;
@@ -1388,7 +1388,7 @@ void TMTSourceParser::Flag(ActParam *actParam) {
 
 /*****
 void TMTSourceParser::Flag(ActParam *actParam) {
-	long paramStart;
+	int32_t paramStart;
 #ifdef VTT_PRO_SP_YAA_AUTO
 	bool doubleSlash;
 	ActParam fvPoint0,fvPoint1;
@@ -1399,7 +1399,7 @@ void TMTSourceParser::Flag(ActParam *actParam) {
 	switch (this->sym) {
 		case leftDir:
 		case rightDir:
-			actParam->type = dirFlag; actParam->numValue = (long)this->sym - (long)leftDir;
+			actParam->type = dirFlag; actParam->numValue = (int32_t)this->sym - (int32_t)leftDir;
 			this->GetSym();
 			break;
 		case italAngle:
@@ -1408,7 +1408,7 @@ void TMTSourceParser::Flag(ActParam *actParam) {
 			doubleSlash = this->sym == adjItalAngle;
 #endif
 			actParam->type = angleFlag;
-			actParam->numValue = (long)this->sym - (long)italAngle;
+			actParam->numValue = (int32_t)this->sym - (int32_t)italAngle;
 			this->GetSym();
 #ifdef VTT_PRO_SP_YAA_AUTO
 			if (InitParam(this)) {
@@ -1440,12 +1440,12 @@ void TMTSourceParser::Flag(ActParam *actParam) {
 *****/
 
 void TMTSourceParser::Parameter(ActParam *actParam) {
-	long paramStart,localParamStart;
+	int32_t paramStart,localParamStart;
 	short subParams;
 	ActParam colorParam;
 	Symbol ttvSym;
 	ParamType paramType;
-	long numValue,firstLocalParamStart;
+	int32_t numValue,firstLocalParamStart;
 	bool gotKnot[2];
 	
 	paramStart = this->prevPos;
@@ -1640,7 +1640,7 @@ void TMTSourceParser::ValidateParameter(ActParam *actParam) {
 			break;
 		case knotNttvOpt:
 		case knotN: {
-			long knot = actParam->numValue/one6;
+			int32_t knot = actParam->numValue/one6;
 			
 			if (knot < 0 || knot >= this->knots) {
 				swprintf(errMsg,L"illegal knot number (can be in range 0 through %hi only)",this->knots-1); this->ErrorMsg(contextual,errMsg);
@@ -1653,7 +1653,7 @@ void TMTSourceParser::ValidateParameter(ActParam *actParam) {
 			break;
 		}
 		case cvtN: {
-			long cvt = actParam->numValue/one6;
+			int32_t cvt = actParam->numValue/one6;
 			
 			if (!this->font->TheCvt()->CvtNumExists(cvt)) {
 				this->ErrorMsg(contextual,L"illegal cvt number (must be defined in the control value table)");
@@ -1907,7 +1907,7 @@ void TMTSourceParser::GetCh(void) {
 } /* TMTSourceParser::GetCh */
 
 void TMTSourceParser::SkipComment(void) {
-	long startPos;
+	int32_t startPos;
 	
 	startPos = this->pos-chLookAhead;
 	this->GetCh(); this->GetCh();
@@ -1931,7 +1931,7 @@ void TMTSourceParser::SkipWhiteSpace(bool includingComments) {
 
 void TMTSourceParser::GetNumber(void) {
 	bool overflow;
-	long digit,decPlcs,pwrOf10;
+	int32_t digit,decPlcs,pwrOf10;
 	wchar_t errMsg[maxLineSize];
 	
 	this->sym = natural;
@@ -1939,7 +1939,7 @@ void TMTSourceParser::GetNumber(void) {
 	this->numValue = 0;
 	while (Numeric(this->ch) || Alpha(this->ch) || this->ch == L'_') {
 		if (Numeric(this->ch)) {
-			digit = (long)this->ch - (long)'0';
+			digit = (int32_t)this->ch - (int32_t)'0';
 			if (this->numValue <= (shortMax - digit)/10)
 				this->numValue = 10*this->numValue + digit;
 			else
@@ -1955,7 +1955,7 @@ void TMTSourceParser::GetNumber(void) {
 		decPlcs = 0; pwrOf10 = 1;
 		while (Numeric(this->ch) || Alpha(this->ch) || this->ch == L'_') {
 			if (Numeric(this->ch)) {
-				digit = (long)this->ch - (long)'0';
+				digit = (int32_t)this->ch - (int32_t)'0';
 				if (decPlcs <= (1000000L - digit)/10) { // 1/64 = 0.015625
 					decPlcs = 10*decPlcs + digit; pwrOf10 *= 10L;
 				} else
@@ -2127,7 +2127,7 @@ void TMTSourceParser::GetSym(void) {
 	}
 } /* TMTSourceParser::GetSym */
 
-void TMTSourceParser::Delete(long pos, long len) {
+void TMTSourceParser::Delete(int32_t pos, int32_t len) {
 	if (len > 0) {
 		this->talkText->Delete(pos,pos + len);
 		if (this->pos > pos + len) this->pos -= len;
@@ -2136,10 +2136,10 @@ void TMTSourceParser::Delete(long pos, long len) {
 	}
 } /* TMTSourceParser::Delete */
 
-void TMTSourceParser::Insert(long pos, const wchar_t strg[]) {
-	long len;
+void TMTSourceParser::Insert(int32_t pos, const wchar_t strg[]) {
+	int32_t len;
 	
-	len = (long)STRLENW(strg);
+	len = (int32_t)STRLENW(strg);
 	if (len > 0) {
 		this->talkText->Insert(pos,strg);
 		if (this->pos > pos) this->pos += len;
@@ -2148,7 +2148,7 @@ void TMTSourceParser::Insert(long pos, const wchar_t strg[]) {
 } /* TMTSourceParser::Insert */
 
 void TMTSourceParser::ReplAtCurrPos(short origLen, const wchar_t repl[]) {
-	long pos;
+	int32_t pos;
 	
 	pos = this->pos-chLookAhead-origLen;
 	this->Delete(pos,origLen);
@@ -2177,7 +2177,7 @@ TMTParser *NewTMTSourceParser(void) {
 	return new TMTSourceParser;
 }
 
-bool TMTCompile(TextBuffer *talkText, TrueTypeFont *font, TrueTypeGlyph *glyph, long glyphIndex, TextBuffer *glyfText, bool legacyCompile, long *errPos, long *errLen, wchar_t errMsg[]) {
+bool TMTCompile(TextBuffer *talkText, TrueTypeFont *font, TrueTypeGlyph *glyph, int32_t glyphIndex, TextBuffer *glyfText, bool legacyCompile, int32_t *errPos, int32_t *errLen, wchar_t errMsg[]) {
 	TTEngine *ttengine; // should think of keeping these around somewhere w/o having to allocate over and over again...
 	short generators,i;
 	TTGenerator *ttgenerator[3];
@@ -2222,7 +2222,7 @@ bool TMTCompile(TextBuffer *talkText, TrueTypeFont *font, TrueTypeGlyph *glyph, 
 } /* TMTCompile */
 
 #if _DEBUG
-bool TMTRemoveAltCodePath(TextBuffer *talkText, TrueTypeFont *font, TrueTypeGlyph *glyph, long *errPos, long *errLen, wchar_t errMsg[]) {
+bool TMTRemoveAltCodePath(TextBuffer *talkText, TrueTypeFont *font, TrueTypeGlyph *glyph, int32_t *errPos, int32_t *errLen, wchar_t errMsg[]) {
 	TMTParser *tmtparser;
 	bool memError,changedSrc;
 	
