@@ -650,7 +650,7 @@ int main(int argc, char* argv[])
 	{
 		fwprintf(stderr, errMsg);
 		fwprintf(stderr, L"\n");
-		fwprintf(stderr, L"Can not open font file %s!\n", inFile.c_str());
+		fwprintf(stderr, L"Can not open font file %hs!\n", inFile.c_str());
 		exit(EXIT_FAILURE);
 	}
 
