@@ -4819,7 +4819,7 @@ uint32_t TrueTypeFont::GetPackedGlyphSourceSize(TextBuffer *glyfText, TextBuffer
 
 uint32_t TrueTypeFont::GetPackedGlyphSourcesSize(TextBuffer *glyfText, TextBuffer *prepText, TextBuffer *cvtText, TextBuffer *talkText, TextBuffer *fpgmText,
 							   				 short type, int32_t glyphIndex, sfnt_MemDataEntry *memGlit) {
-	int32_t unsigned size;
+	uint32_t size;
 	int32_t glitIndex;
 	
 	size = 0;
