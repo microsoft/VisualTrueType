@@ -28,7 +28,7 @@ void DateTimeStrg(wchar_t strg[]) {
 	time(&dateTime);
 #ifndef _WIN32
        char *cstring = ctime(&dateTime);
-       mbstowcs(strg, cstring, strlen(cstring));
+       mbstowcs(strg, cstring, strlen(cstring) + 1 /* the final '\0' */);
 #else
 	STRCPYW(strg, _wctime(&dateTime));
 #endif
