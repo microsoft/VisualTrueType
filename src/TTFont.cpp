@@ -1281,7 +1281,7 @@ bool TrueTypeFont::GetCvt(TextBuffer *cvtText, wchar_t errMsg[]) {
 	if (!this->GetSource(true,CVT_GLYPH_INDEX,cvtText,errMsg)) return false;
 
 	if (cvtText->TheLength() == 0) { // decode binary cvt
-		for (i = 0; i < entries; i++) { swprintf(buffer,L"%li: %hi\r",i,SWAPW(cvt[i])); cvtText->Append(buffer); }
+		for (i = 0; i < entries; i++) { swprintf(buffer,L"%i: %hi\r",i,SWAPW(cvt[i])); cvtText->Append(buffer); }
 		
 	}
 	this->cvt->PutCvtBinary(size,(unsigned char *)cvt);
