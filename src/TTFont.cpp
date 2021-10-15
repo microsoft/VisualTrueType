@@ -5609,14 +5609,8 @@ uint32_t TrueTypeFont::PackGlyph(unsigned char *dst, int32_t glyphIndex, TrueTyp
 		}
 	}
 	
-	//hmtx->leftSideBearing = glyph->xmin - glyph->x[numberOfPoints]; // some rather oldish fonts have x[LSB] != 0
-	//hmtx->advanceWidth = useMyMetrics ? this->horMetric[whoseMetrics].advanceWidth : glyph->x[numberOfPoints + 1] - glyph->x[numberOfPoints];
-
-	int16 newLSB = glyph->xmin - glyph->x[numberOfPoints];			// some rather oldish fonts have x[LSB] != 0
-	uint16 newAW = useMyMetrics ? this->horMetric[whoseMetrics].advanceWidth : glyph->x[numberOfPoints + 1] - glyph->x[numberOfPoints];
-
-	hmtx->leftSideBearing = newLSB;
-	hmtx->advanceWidth = newAW; 
+	hmtx->leftSideBearing = glyph->xmin - glyph->x[numberOfPoints]; // some rather oldish fonts have x[LSB] != 0
+	hmtx->advanceWidth = useMyMetrics ? this->horMetric[whoseMetrics].advanceWidth : glyph->x[numberOfPoints + 1] - glyph->x[numberOfPoints];
 
 	size = (short)(ptrdiff_t)(dst - pStart);
 	return size;
