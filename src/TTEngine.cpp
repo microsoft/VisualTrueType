@@ -1441,7 +1441,7 @@ void GenGuardCond(TextBuffer *text, AltCodePath path) {
 
 	swprintf(codePath,L"#PUSH, %i, 2",path); text->AppendLine(codePath);
 	text->AppendLine(L"RS[]");
-	swprintf(codePath,L"%sEQ[]",path < altCodePathMonochromeOnly ? L"N" : L"LT"); text->AppendLine(codePath);
+	swprintf(codePath,WIDE_STR_FORMAT L"EQ[]",path < altCodePathMonochromeOnly ? L"N" : L"LT"); text->AppendLine(codePath);
 } // GenGuardCond
 
 void GenTalkIf(TextBuffer *talk, AltCodePath path, int32_t fpgmBias) {

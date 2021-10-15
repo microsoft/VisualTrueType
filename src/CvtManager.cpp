@@ -712,16 +712,16 @@ void Scanner::ErrUnGetSym(void) {
 } // Scanner::ErrUnGetSym
 
 bool AssertNatural(ActParam *actParam, int32_t low, int32_t high, const wchar_t name[], wchar_t errMsg[]) {
-	if (actParam->type != naturalN) { swprintf(errMsg,L"%s expected (must be an integer in range %li through %li)",name,low,high); return false; }
+	if (actParam->type != naturalN) { swprintf(errMsg,WIDE_STR_FORMAT L" expected (must be an integer in range %li through %li)",name,low,high); return false; }
 	actParam->value >>= places6;
-	if (actParam->value < low || high < actParam->value) { swprintf(errMsg,L"%s out of range (must be in range %li through %li)",name,low,high); return false; }
+	if (actParam->value < low || high < actParam->value) { swprintf(errMsg,WIDE_STR_FORMAT L" out of range (must be in range %li through %li)",name,low,high); return false; }
 	return true; // by now
 } // AssertNatural
 
 bool AssertPixelAmount(ActParam *actParam, F26Dot6 low, F26Dot6 high, const wchar_t name[], wchar_t errMsg[]) {
 	if (actParam->type == naturalN) actParam->type = rationalN;
-	if (actParam->type != rationalN) { swprintf(errMsg,L"%s expected (must be a pixel amount in range %8.6f through %8.6f)",name,(double)low/one6,(double)high/one6); return false; }
-	if (actParam->value < low || high < actParam->value) { swprintf(errMsg,L"%s expected (must be in range %8.6f through %8.6f)",name,(double)low/one6,(double)high/one6); return false; }
+	if (actParam->type != rationalN) { swprintf(errMsg,WIDE_STR_FORMAT L" expected (must be a pixel amount in range %8.6f through %8.6f)",name,(double)low/one6,(double)high/one6); return false; }
+	if (actParam->value < low || high < actParam->value) { swprintf(errMsg,WIDE_STR_FORMAT L" expected (must be in range %8.6f through %8.6f)",name,(double)low/one6,(double)high/one6); return false; }
 	return true; // by now
 } // AssertPixelAmount
 
@@ -732,8 +732,8 @@ bool PrivateControlValueTable::AttributeDeclaration(int32_t firstAvailSubAttribu
 	this->newSyntax = true;
 	sym = this->scanner.sym;
 	if (!this->scanner.GetSym()) return false;
-	if (this->scanner.sym != ident) { swprintf(errMsg,L"%s name expected",keyWord[sym]); return false; }
-	if (firstAvailSubAttributeValue[sym] >= maxSubAttributes) { swprintf(errMsg,L"%s name exceeds capacity (cannot have more than %li)",keyWord[sym],maxSubAttributes); return false; }
+	if (this->scanner.sym != ident) { swprintf(errMsg,WIDE_STR_FORMAT L" name expected",keyWord[sym]); return false; }
+	if (firstAvailSubAttributeValue[sym] >= maxSubAttributes) { swprintf(errMsg,WIDE_STR_FORMAT L" name exceeds capacity (cannot have more than %li)",keyWord[sym],maxSubAttributes); return false; }
 	AssignString(name,this->scanner.literal,cvtAttributeStrgLen);
 	if (!this->scanner.GetSym()) return false;
 	spacingText[0] = L'\0';
@@ -754,7 +754,7 @@ bool PrivateControlValueTable::SettingsDeclaration(void) {
 
 	this->newSyntax = true;
 	sym = this->scanner.sym;
-	if (this->tempSettings.defined[sym-firstSetting]) { swprintf(this->errMsg,L"%s already defined",keyWord[sym]); return false; }
+	if (this->tempSettings.defined[sym-firstSetting]) { swprintf(this->errMsg,WIDE_STR_FORMAT L" already defined",keyWord[sym]); return false; }
 	if (!this->scanner.GetSym()) return false;
 
 	if (this->legacyCompile || sym != fpgmBias) {
@@ -1699,13 +1699,13 @@ bool PrivateControlValueTable::CompileCharGroup(File *from, short platformID, un
 			col++;
 			if (!scanner.GetSym()) goto error;
 		}
-		if (col < 4) { swprintf(errMsg,L"%s number expected",col < 3 ? L"hexadecimal" : L"decimal"); goto error; }
+		if (col < 4) { swprintf(errMsg,WIDE_STR_FORMAT L" number expected",col < 3 ? L"hexadecimal" : L"decimal"); goto error; }
 		while (col < 6 && scanner.sym == ident) {
 			AssignString(data[col-4],scanner.literal,cvtAttributeStrgLen);
 			col++;
 			if (!scanner.GetSym()) goto error;
 		}
-		if (col < 6) { swprintf(errMsg,L"%s expected",col < 5 ? L"character group" : L"postscript name"); goto error; }
+		if (col < 6) { swprintf(errMsg,WIDE_STR_FORMAT L" expected",col < 5 ? L"character group" : L"postscript name"); goto error; }
 		if (!Attribute::SearchByName(groups,data[0],NULL,&subAttribute,&aGroup,errMsg) || subAttribute != group) goto error;
 		if (code[theCol] != unknownUnicode) toCharGroupOfCharCode[code[theCol]] = (unsigned char)aGroup;
 		row++;

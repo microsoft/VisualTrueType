@@ -1027,7 +1027,7 @@ void TrueTypeFont::AssertMaxGlyphs(int32_t minGlyphs) {
 
 void MaxSfntSizeError(const wchar_t from[], int32_t size, wchar_t errMsg[]);
 void MaxSfntSizeError(const wchar_t from[], int32_t size, wchar_t errMsg[]) {
-	swprintf(errMsg,L"%s, \r" BULLET L" Unable to allocate %li to work on this font.",from, size);
+	swprintf(errMsg,WIDE_STR_FORMAT L", \r" BULLET L" Unable to allocate %li to work on this font.",from, size);
 } // MaxSfntSizeError
 
 bool TrueTypeFont::SetSfnt(short platformID, short encodingID, wchar_t errMsg[])
