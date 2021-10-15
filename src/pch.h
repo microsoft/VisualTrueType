@@ -54,3 +54,13 @@
 #define swprintf(wcs, ...) swprintf(wcs, 1024, __VA_ARGS__)
 #define wprintf_s wprintf
 #endif
+
+#ifndef _MSC_VER
+/* ISO C Standard for *w*printf() */
+#define WIDE_STR_FORMAT L"%S"
+#define NARROW_STR_FORMAT L"%s"
+#else
+/* Microsoft compiler's w*printf() behavior */
+#define WIDE_STR_FORMAT L"%s"
+#define NARROW_STR_FORMAT L"%S"
+#endif
