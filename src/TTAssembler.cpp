@@ -863,7 +863,7 @@ void TT_JRpushON_ReplaceLabel(tt_JRtype  *JR,tt_LabelType *Label,short *argStore
 			 /* JR->jr[i]->aPtr[index] = delta; */
 			 argStore[index] = delta; 
 			 /*
-			 printf(L"\n JRlabel=%s JRipos = %hd, labeliPos= %hd, delta = %hd",
+			 printf(L"\n JRlabel=" WIDE_STR_FORMAT L" JRipos = %hd, labeliPos= %hd, delta = %hd",
 			 			JR->jr[i]->label,	JRiPos, labeliPos, delta );
 			 */
 	}

@@ -422,7 +422,7 @@ void TTSourceEngine::AssertTTVonLine(TTVector ttv, short parent0, short parent1,
 			if (ttv == fv && ((proj->from == parent0 && proj->to == parent1) || (proj->from == parent1 && proj->to == parent0)) && proj->dir == dir) {
 				swprintf(buf,L"SFVTPV[]");
 			} else {
-				swprintf(buf,L"S%sVTL[%c], %hi, %hi",ttv == fv ? L"F" : (ttv == pv ? L"P" : L"DP"),dir == perpDiagDir ? L'R' : L'r',parent0,parent1);
+				swprintf(buf,L"S" WIDE_STR_FORMAT L"VTL[%c], %hi, %hi",ttv == fv ? L"F" : (ttv == pv ? L"P" : L"DP"),dir == perpDiagDir ? L'R' : L'r',parent0,parent1);
 			}
 			this->Emit(buf);
 			v->dir = dir; v->from = parent0; v->to = parent1;

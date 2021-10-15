@@ -732,7 +732,7 @@ bool TrueTypeGlyph::Misoriented(short contour) {
 		for (iter = 0; iter <= 100; iter++) {
 			ir = (double)((int32_t)(FSqrt(iter) + 128 >> 8))/16777216.0;
 			r = sqrt(iter);
-			swprintf(msg,L"Sqrt(%hi) = %lf (%lf) %s\n",iter,ir,r,floor(1.e6*ir + .5) == floor(1.e6*r + .5) ? L"" : "NOT EQUAL");
+			swprintf(msg,L"Sqrt(%hi) = %lf (%lf) " WIDE_STR_FORMAT L"\n",iter,ir,r,floor(1.e6*ir + .5) == floor(1.e6*r + .5) ? L"" : "NOT EQUAL");
 			ParentView::ActiveApplication()->ApplicationError(msg);
 		}
 		tested = true;
@@ -2993,7 +2993,7 @@ bool TrueTypeFont::UpdateMaxPointsAndContours(wchar_t errMsg[]) {
 
 	return true;
 failure:
-	swprintf(errMsg,L"Failed to update max points and contours due to %s table",failureMsg[failureCode]);
+	swprintf(errMsg,L"Failed to update max points and contours due to " WIDE_STR_FORMAT L" table",failureMsg[failureCode]);
 	return false;
 } // TrueTypeFont::UpdateMaxPointsAndContours
 
@@ -3132,7 +3132,7 @@ bool TrueTypeFont::GetSource(bool lowLevel, int32_t glyphIndex, TextBuffer *sour
 	{		
 		swprintf(errMsg,L"Unpacking source: ");
 		if (len == 0)
-			swprintf(&errMsg[STRLENW(errMsg)],L"private %slevel table empty",lowLevel ? L"low" : L"high");
+			swprintf(&errMsg[STRLENW(errMsg)],L"private " WIDE_STR_FORMAT L"level table empty",lowLevel ? L"low" : L"high");
 		else if (glitIndex == glitEntries)
 			swprintf(&errMsg[STRLENW(errMsg)],L"glyph %li not in private glit",glyphIndex);
 		else

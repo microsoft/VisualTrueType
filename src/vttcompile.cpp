@@ -294,7 +294,7 @@ bool Application::CompileGlyphRange(unsigned short g1, unsigned short g2, int32_
 			if (!TMTCompile(this->talk.get(), this->font.get(), this->glyph.get(), this->glyphIndex, this->glyf.get(), legacyCompile, errPos, errLen, compErrMsg)) {
 				swprintf(tempErrMsg, L"VTT Talk, glyph %li (Unicode 0x%lx), line %li: " WIDE_STR_FORMAT, this->glyphIndex, this->charCode, this->talk->LineNumOf(*errPos), compErrMsg);
 				errBuf->AppendLine(tempErrMsg);
-				swprintf(tempErrMsg, L"/* Error in VTT Talk, line %li: %s */", this->talk->LineNumOf(*errPos), compErrMsg);
+				swprintf(tempErrMsg, L"/* Error in VTT Talk, line %li: " WIDE_STR_FORMAT L" */", this->talk->LineNumOf(*errPos), compErrMsg);
 				this->glyf->SetText((int32_t)STRLENW(tempErrMsg), tempErrMsg); // prevent follow-up errors
 			}
 		}
@@ -439,7 +439,7 @@ bool Application::CompileAll(int32_t* errPos, int32_t* errLen, bool quiet, wchar
 			if (!TMTCompile(this->talk.get(), this->font.get(), this->glyph.get(), this->glyphIndex, this->glyf.get(), legacyCompile, errPos, errLen, compErrMsg)) {
 				swprintf(tempErrMsg, L"VTT Talk, glyph %li (Unicode 0x%lx), line %li: " WIDE_STR_FORMAT, this->glyphIndex, this->charCode, this->talk->LineNumOf(*errPos), compErrMsg);
 				errBuf->AppendLine(tempErrMsg);
-				swprintf(tempErrMsg, L"/* Error in VTT Talk, line %li: %s */", this->talk->LineNumOf(*errPos), compErrMsg);
+				swprintf(tempErrMsg, L"/* Error in VTT Talk, line %li: " WIDE_STR_FORMAT L" */", this->talk->LineNumOf(*errPos), compErrMsg);
 				this->glyf->SetText((int32_t)STRLENW(tempErrMsg), tempErrMsg); // prevent follow-up errors
 			}
 		}
@@ -505,7 +505,7 @@ int ShowUsage(wchar_t* strErr)
 {
 	if (strErr)
 	{
-		wprintf(L"ERROR: %s\n\n", strErr);
+		wprintf(L"ERROR: " WIDE_STR_FORMAT L"\n\n", strErr);
 	}
 	wprintf(L"USAGE: vttcompile [options] <in.ttf> [out.ttf] \n");
 	wprintf(L"\t-a compile everything \n");
@@ -650,7 +650,7 @@ int main(int argc, char* argv[])
 	{
 		fwprintf(stderr, errMsg);
 		fwprintf(stderr, L"\n");
-		fwprintf(stderr, L"Can not open font file %s!\n", inFile.c_str());
+		fwprintf(stderr, L"Can not open font file " NARROW_STR_FORMAT L"!\n", inFile.c_str());
 		exit(EXIT_FAILURE);
 	}
 
