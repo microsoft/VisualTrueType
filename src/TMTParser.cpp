@@ -1679,7 +1679,7 @@ void TMTSourceParser::ValidateParameter(ActParam *actParam) {
 			break;
 		case colorN:
 			if (DeltaColorOfByte((unsigned char)(actParam->numValue/one6)) == illegalDelta) {
-				swprintf(errMsg,L"illegal delta color flag (can be %hs only)",AllDeltaColorBytes()); this->ErrorMsg(contextual,errMsg);
+				swprintf(errMsg,L"illegal delta color flag (can be " NARROW_STR_FORMAT L" only)",AllDeltaColorBytes()); this->ErrorMsg(contextual,errMsg);
 				actParam->numValue = 0;
 			}
 			break;
