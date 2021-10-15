@@ -1442,7 +1442,7 @@ bool PrivateControlValueTable::GetAttributeStrings(int32_t cvtNum, wchar_t charG
 	charGroup[0] = linkColor[0] = linkDirection[0] = cvtCategory[0] = relative[0] = L'\0';
 	if (!AttribExists(this,cvtNum)) return false;
 	PrivateControlValueTable::UnpackAttributeStrings(this->cpgmData[cvtNum].attribute,charGroup,linkColor,linkDirection,cvtCategory);
-	swprintf(relative,L"%s",this->cpgmData[cvtNum].flags & relativeValue ? L"relative" : L"absolute");
+	swprintf(relative,WIDE_STR_FORMAT,this->cpgmData[cvtNum].flags & relativeValue ? L"relative" : L"absolute");
 	return true;
 } // PrivateControlValueTable::GetAttributeStrings
 
