@@ -391,10 +391,10 @@ void TMTSourceParser::Parse(bool *changedSrc, int32_t *errPos, int32_t *errLen, 
 		/*****
 		if (cmd == ::mainStrokeAngle || cmd == ::glyphStrokeAngle || cmd == setItalicStrokeAngle || cmd == setItalicStrokePhase) {
 			if (cmd == ::mainStrokeAngle && this->mainStrokeAngle || cmd == ::glyphStrokeAngle && this->glyphStrokeAngle || cmd == setItalicStrokeAngle && this->italicStrokeAngle || cmd == setItalicStrokePhase && this->italicStrokePhase) {
-				swprintf(errMsg,L"%s already used in this glyph",tmtCmd[cmd].name); this->ErrorMsg(contextual,errMsg);
+				swprintf(errMsg,WIDE_STR_FORMAT L" already used in this glyph",tmtCmd[cmd].name); this->ErrorMsg(contextual,errMsg);
 			}
 			if (cmd == ::mainStrokeAngle && this->glyphStrokeAngle || cmd == ::glyphStrokeAngle && this->mainStrokeAngle) {
-				swprintf(errMsg,L"Cannot use both %s and %s in the same glyph",tmtCmd[::mainStrokeAngle].name,tmtCmd[::glyphStrokeAngle].name); this->ErrorMsg(contextual,errMsg);
+				swprintf(errMsg,L"Cannot use both " WIDE_STR_FORMAT L" and " WIDE_STR_FORMAT L" in the same glyph",tmtCmd[::mainStrokeAngle].name,tmtCmd[::glyphStrokeAngle].name); this->ErrorMsg(contextual,errMsg);
 			}
 			if (cmd == ::mainStrokeAngle) this->mainStrokeAngle = true;
 			else if (cmd == ::glyphStrokeAngle) this->glyphStrokeAngle = true;
@@ -600,7 +600,7 @@ bool TMTSourceParser::MakeProjFreeVector(bool haveFlag, int32_t flagValue, bool 
 			}
 		}
 		if (pvOverrideError || fvOverrideError)
-			swprintf(errMsg, L"cannot override %s direction when using the italic or adjusted italic angle / or //", pvOverrideError ? L"projection" : L"freedom");
+			swprintf(errMsg, L"cannot override " WIDE_STR_FORMAT L" direction when using the italic or adjusted italic angle / or //", pvOverrideError ? L"projection" : L"freedom");
 	}
 	return !(pvOverrideError || fvOverrideError);
 } // TMTSourceParser::MakeProjFreeVector

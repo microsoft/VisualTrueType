@@ -1723,7 +1723,7 @@ void TTSourceGenerator::Serif(bool forward, short type, short knots, short knot[
 			italBase = this->italic && absVectProd < length*this->sinF22; // angle between base and yAxis < 2*MAXIMUM_ITALIC_ANGLE_DEVIATION
 			if (vertBase || horzBase || italBase) {
 				if (this->tt) {
-					swprintf(buf,L"/* %s serif %hi %hi %hi */",forward ? L"Forward" : L"Backward",knot[1],knot[2],knot[3]); this->tt->Emit(buf);
+					swprintf(buf,L"/* " WIDE_STR_FORMAT L" serif %hi %hi %hi */",forward ? L"Forward" : L"Backward",knot[1],knot[2],knot[3]); this->tt->Emit(buf);
 					if (horzBase && type == 2) { // seems to be some kind of optimisation for the frequent case of a simple serif such as in a Times 'I'...
 						cvt[0] = this->TheCvt(knot[3],knot[1],linkGrey,linkX,cvtSerifExt,   -1);
 						cvt[1] = this->TheCvt(knot[1],knot[2],linkGrey,linkY,cvtSerifThin,  -1);
@@ -1801,7 +1801,7 @@ void TTSourceGenerator::Serif(bool forward, short type, short knots, short knot[
 			if (vertBase || horzBase || italBase) {
 /* universal serif used by the new feature recognition */
 				if (this->tt) {
-					swprintf(buf,L"/* %s univ-serif %hi %hi %hi %hi */",forward ? L"Forward" : L"Backward",knot[1],knot[2],knot[3],knot[4]); this->tt->Emit(buf);
+					swprintf(buf,L"/* " WIDE_STR_FORMAT L" univ-serif %hi %hi %hi %hi */",forward ? L"Forward" : L"Backward",knot[1],knot[2],knot[3],knot[4]); this->tt->Emit(buf);
 					
 					this->Link(horzBase,false,horzBase ? &this->yRomanPV : &this->yRomanPV,false,knot[1],knot[3],cvtSerifThin,illegalCvtNum,1,ppem,dist,&actualCvt,error);
 					this->Link(!horzBase,false,!horzBase ? &this->yRomanPV : &this->yRomanPV,false,knot[4],knot[2],cvtSerifExt,illegalCvtNum,0,NULL,NULL,&actualCvt,error);
@@ -2034,7 +2034,7 @@ void TTSourceGenerator::InitTTGenerator(TrueTypeFont *font, TrueTypeGlyph *glyph
 		if (L' ' < this->charCode && this->charCode < 0x7f) { swprintf(&buf[STRLENW(buf)],L" (%c)",(wchar_t)this->charCode); }
 		swprintf(&buf[STRLENW(buf)],L" */");
 		this->tt->Emit(buf);
-		swprintf(buf,L"/* VTT %s compiler %s */",VTTVersionString,dateTime); this->tt->Emit(buf);
+		swprintf(buf,L"/* VTT " WIDE_STR_FORMAT L" compiler " WIDE_STR_FORMAT L" */",VTTVersionString,dateTime); this->tt->Emit(buf);
 	}
 } /* TTSourceGenerator::InitTTGenerator */
 

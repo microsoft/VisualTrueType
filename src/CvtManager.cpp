@@ -231,7 +231,7 @@ bool Attribute::InsertByName(Attribute **tree, bool predefined, const wchar_t na
 
 	if (!(*tree)) {
 		*tree = new Attribute;
-		if (!(*tree)) { swprintf(errMsg,L"Insufficient memory to define attribute \x22%s\x22",name); return false; }
+		if (!(*tree)) { swprintf(errMsg,L"Insufficient memory to define attribute \x22" WIDE_STR_FORMAT L"\x22",name); return false; }
 		(*tree)->predefined = predefined;
 		AssignString((*tree)->name,name,cvtAttributeStrgLen);
 		if (spacingText) AssignString((*tree)->spacingText,spacingText,cvtAttributeStrgLen);
@@ -240,7 +240,7 @@ bool Attribute::InsertByName(Attribute **tree, bool predefined, const wchar_t na
 		return true;
 	} else {
 		cmp = CompareCapString(name,(*tree)->name,cvtAttributeStrgLen);
-		if (!cmp) { swprintf(errMsg,L"Attribute \x22%s\x22 %sdefined",(*tree)->name,(*tree)->predefined ? L"is pre-" : L"already "); return false; }
+		if (!cmp) { swprintf(errMsg,L"Attribute \x22" WIDE_STR_FORMAT L"\x22 " WIDE_STR_FORMAT L"defined",(*tree)->name,(*tree)->predefined ? L"is pre-" : L"already "); return false; }
 		return Attribute::InsertByName(cmp < 0 ? &(*tree)->left : &(*tree)->right,predefined,name,spacingText,subAttribute,value,errMsg);
 	}
 } // Attribute::InsertByName
@@ -258,7 +258,7 @@ bool Attribute::SearchByName(Attribute *tree, wchar_t name[], wchar_t actualName
 		}
 		tree = cmp < 0 ? tree->left : tree->right;
 	}
-	swprintf(errMsg,L"Attribute \x22%s\x22 not defined",name); return false;
+	swprintf(errMsg,L"Attribute \x22" WIDE_STR_FORMAT L"\x22 not defined",name); return false;
 } // Attribute::SearchByName
 
 #define PackKey(subAttribute,value) ((int32_t)(subAttribute) << subAttributeBits | (value))
@@ -268,7 +268,7 @@ bool Attribute::InsertByValue(Attribute **tree, Symbol subAttribute, int32_t val
 
 	if (!(*tree)) {
 		*tree = new Attribute;
-		if (!(*tree)) { swprintf(errMsg,L"Insufficient memory to insert attribute \x22%s\x22",name); return false; }
+		if (!(*tree)) { swprintf(errMsg,L"Insufficient memory to insert attribute \x22" WIDE_STR_FORMAT L"\x22",name); return false; }
 		AssignString((*tree)->name,name,cvtAttributeStrgLen);
 		AssignString((*tree)->spacingText,spacingText,cvtAttributeStrgLen);
 		(*tree)->subAttribute = subAttribute;
@@ -276,7 +276,7 @@ bool Attribute::InsertByValue(Attribute **tree, Symbol subAttribute, int32_t val
 		return true;
 	} else {
 		key = PackKey(subAttribute,value); thisKey = PackKey((*tree)->subAttribute,(*tree)->value);
-		if (key == thisKey) { swprintf(errMsg,L"Attribute \x22%s\x22 already inserted",name); return false; } // not expected by now, though
+		if (key == thisKey) { swprintf(errMsg,L"Attribute \x22" WIDE_STR_FORMAT L"\x22 already inserted",name); return false; } // not expected by now, though
 		return Attribute::InsertByValue(key < thisKey ? &(*tree)->left : &(*tree)->right,subAttribute,value,name,spacingText,errMsg);
 	}
 } // Attribute::InsertByValue
@@ -293,7 +293,7 @@ bool Attribute::SearchByValue(Attribute *tree, Symbol subAttribute, int32_t valu
 		}
 		tree = key < thisKey ? tree->left : tree->right;
 	}
-	swprintf(errMsg,L"Attribute \x22%s\x22 not defined",name); return false;
+	swprintf(errMsg,L"Attribute \x22" WIDE_STR_FORMAT L"\x22 not defined",name); return false;
 } // Attribute::SearchByValue
 
 bool Attribute::SortByValue(Attribute **to, Attribute *from, wchar_t errMsg[]) {
@@ -712,16 +712,16 @@ void Scanner::ErrUnGetSym(void) {
 } // Scanner::ErrUnGetSym
 
 bool AssertNatural(ActParam *actParam, int32_t low, int32_t high, const wchar_t name[], wchar_t errMsg[]) {
-	if (actParam->type != naturalN) { swprintf(errMsg,L"%s expected (must be an integer in range %li through %li)",name,low,high); return false; }
+	if (actParam->type != naturalN) { swprintf(errMsg,WIDE_STR_FORMAT L" expected (must be an integer in range %li through %li)",name,low,high); return false; }
 	actParam->value >>= places6;
-	if (actParam->value < low || high < actParam->value) { swprintf(errMsg,L"%s out of range (must be in range %li through %li)",name,low,high); return false; }
+	if (actParam->value < low || high < actParam->value) { swprintf(errMsg,WIDE_STR_FORMAT L" out of range (must be in range %li through %li)",name,low,high); return false; }
 	return true; // by now
 } // AssertNatural
 
 bool AssertPixelAmount(ActParam *actParam, F26Dot6 low, F26Dot6 high, const wchar_t name[], wchar_t errMsg[]) {
 	if (actParam->type == naturalN) actParam->type = rationalN;
-	if (actParam->type != rationalN) { swprintf(errMsg,L"%s expected (must be a pixel amount in range %8.6f through %8.6f)",name,(double)low/one6,(double)high/one6); return false; }
-	if (actParam->value < low || high < actParam->value) { swprintf(errMsg,L"%s expected (must be in range %8.6f through %8.6f)",name,(double)low/one6,(double)high/one6); return false; }
+	if (actParam->type != rationalN) { swprintf(errMsg,WIDE_STR_FORMAT L" expected (must be a pixel amount in range %8.6f through %8.6f)",name,(double)low/one6,(double)high/one6); return false; }
+	if (actParam->value < low || high < actParam->value) { swprintf(errMsg,WIDE_STR_FORMAT L" expected (must be in range %8.6f through %8.6f)",name,(double)low/one6,(double)high/one6); return false; }
 	return true; // by now
 } // AssertPixelAmount
 
@@ -732,8 +732,8 @@ bool PrivateControlValueTable::AttributeDeclaration(int32_t firstAvailSubAttribu
 	this->newSyntax = true;
 	sym = this->scanner.sym;
 	if (!this->scanner.GetSym()) return false;
-	if (this->scanner.sym != ident) { swprintf(errMsg,L"%s name expected",keyWord[sym]); return false; }
-	if (firstAvailSubAttributeValue[sym] >= maxSubAttributes) { swprintf(errMsg,L"%s name exceeds capacity (cannot have more than %li)",keyWord[sym],maxSubAttributes); return false; }
+	if (this->scanner.sym != ident) { swprintf(errMsg,WIDE_STR_FORMAT L" name expected",keyWord[sym]); return false; }
+	if (firstAvailSubAttributeValue[sym] >= maxSubAttributes) { swprintf(errMsg,WIDE_STR_FORMAT L" name exceeds capacity (cannot have more than %li)",keyWord[sym],maxSubAttributes); return false; }
 	AssignString(name,this->scanner.literal,cvtAttributeStrgLen);
 	if (!this->scanner.GetSym()) return false;
 	spacingText[0] = L'\0';
@@ -754,11 +754,11 @@ bool PrivateControlValueTable::SettingsDeclaration(void) {
 
 	this->newSyntax = true;
 	sym = this->scanner.sym;
-	if (this->tempSettings.defined[sym-firstSetting]) { swprintf(this->errMsg,L"%s already defined",keyWord[sym]); return false; }
+	if (this->tempSettings.defined[sym-firstSetting]) { swprintf(this->errMsg,WIDE_STR_FORMAT L" already defined",keyWord[sym]); return false; }
 	if (!this->scanner.GetSym()) return false;
 
 	if (this->legacyCompile || sym != fpgmBias) {
-	swprintf(comment,L"/* %s */",keyWord[sym]); this->tt->Emit(comment);
+	swprintf(comment,L"/* " WIDE_STR_FORMAT L" */",keyWord[sym]); this->tt->Emit(comment);
 	}
 
 	switch (sym) {
@@ -772,7 +772,7 @@ bool PrivateControlValueTable::SettingsDeclaration(void) {
 			this->tempSettings.defined[sym - firstSetting] = true;
 			break;
 		case dropOutCtrlOff:
-			if (this->tempSettings.defined[scanCtrl-firstSetting] || this->tempSettings.defined[scanType-firstSetting]) { swprintf(this->errMsg,L"Cannot use %s together with %s or %s",keyWord[sym],keyWord[scanCtrl],keyWord[scanType]); this->scanner.ErrUnGetSym(); return false; }
+			if (this->tempSettings.defined[scanCtrl-firstSetting] || this->tempSettings.defined[scanType-firstSetting]) { swprintf(this->errMsg,L"Cannot use " WIDE_STR_FORMAT L" together with " WIDE_STR_FORMAT L" or " WIDE_STR_FORMAT,keyWord[sym],keyWord[scanCtrl],keyWord[scanType]); this->scanner.ErrUnGetSym(); return false; }
 			dropOffParam.lowPpemSize = -1; dropOffParam.highPpemSize = maxPpemSize-1; // lowest permissible ppem size - 1
 			if (!this->Parameter(&dropOffParam)) return false;
 			if (dropOffParam.type != ppemN) { swprintf(this->errMsg,L"Drop-out control turn-off ppem size expected (must be an integer in range @%li through @%li)" BRK L"Drop-out control turn-off ppem size specifies the ppem size at and above which drop-out control is no longer turned on.",1,dropOffParam.highPpemSize); this->scanner.ErrUnGetSym(); return false; }
@@ -783,7 +783,7 @@ bool PrivateControlValueTable::SettingsDeclaration(void) {
 			this->tempSettings.defined[sym - firstSetting] = true;
 			break;
 		case scanCtrl:
-			if (this->tempSettings.defined[dropOutCtrlOff-firstSetting]) { swprintf(this->errMsg,L"Cannot use %s together with %s",keyWord[sym],keyWord[dropOutCtrlOff]); this->scanner.ErrUnGetSym(); return false; }
+			if (this->tempSettings.defined[dropOutCtrlOff-firstSetting]) { swprintf(this->errMsg,L"Cannot use " WIDE_STR_FORMAT L" together with " WIDE_STR_FORMAT,keyWord[sym],keyWord[dropOutCtrlOff]); this->scanner.ErrUnGetSym(); return false; }
 			if (this->scanner.sym != equals) { swprintf(this->errMsg,L"= expected"); return false; }
 			if (!this->scanner.GetSym()) return false;
 			if (!this->Parameter(&scanCtrlParam)) return false;
@@ -793,7 +793,7 @@ bool PrivateControlValueTable::SettingsDeclaration(void) {
 			this->tempSettings.defined[sym - firstSetting] = true;
 			break;
 		case scanType:
-			if (this->tempSettings.defined[dropOutCtrlOff-firstSetting]) { swprintf(this->errMsg,L"Cannot use %s together with %s",keyWord[sym],keyWord[dropOutCtrlOff]); return false; }
+			if (this->tempSettings.defined[dropOutCtrlOff-firstSetting]) { swprintf(this->errMsg,L"Cannot use " WIDE_STR_FORMAT L" together with " WIDE_STR_FORMAT,keyWord[sym],keyWord[dropOutCtrlOff]); return false; }
 			if (this->scanner.sym != equals) { swprintf(this->errMsg,L"= expected"); return false; }
 			if (!this->scanner.GetSym()) return false;
 			if (!this->Parameter(&scanTypeParam)) return false;
@@ -999,8 +999,8 @@ bool PrivateControlValueTable::DeltaDeclaration(int32_t cvtNum, ControlValue *cv
 	while (cvtDelta <= this->scanner.sym && this->scanner.sym <= gCvtDelta) {
 		this->newSyntax = true;
 		cmdColor = (DeltaColor)(this->scanner.sym-cvtDelta);
-		if (colorDeltaDone[cmdColor]) { swprintf(this->errMsg,L"Cannot have more than one %s command per control value" BRK \
-										 L"Please combine them to a single %s command. Example: %s(1 @18..20;22, -1 @ 24..25)",
+		if (colorDeltaDone[cmdColor]) { swprintf(this->errMsg,L"Cannot have more than one " WIDE_STR_FORMAT L" command per control value" BRK \
+										 L"Please combine them to a single " WIDE_STR_FORMAT L" command. Example: " WIDE_STR_FORMAT L"(1 @18..20;22, -1 @ 24..25)",
 										  keyWord[this->scanner.sym],keyWord[this->scanner.sym],keyWord[this->scanner.sym]); return false; }
 		colorDeltaDone[cmdColor] = true;
 		if (!this->scanner.GetSym()) return false;
@@ -1062,7 +1062,7 @@ bool ValidBinaryOperation(ActParam *a, ActParam *b, Symbol op, wchar_t errMsg[])
 	wchar_t opName[4][10] = {L"add",L"subtract",L"multiply",L"divide"};
 	
 	if (a->type < naturalN || rationalN < a->type || b->type < naturalN || rationalN < b->type) {
-		swprintf(errMsg,L"cannot %s these operands",opName[op-plus]); return false;
+		swprintf(errMsg,L"cannot " WIDE_STR_FORMAT L" these operands",opName[op-plus]); return false;
 	}
 	a->type = Max(a->type,b->type);
 	if (op == divide && a->type == naturalN && b->type == naturalN && b->value != 0 && a->value % b->value != 0) a->type = rationalN;
@@ -1251,7 +1251,7 @@ bool PrivateControlValueTable::Compile(TextBuffer*source, TextBuffer*prepText, b
 	
 	this->tt->Emit(L"/* auto-generated pre-program */");
 	DateTimeStrg(dateTime);
-	swprintf(comment,L"/* VTT %s compiler %s */",VTTVersionString,dateTime); 
+	swprintf(comment,L"/* VTT " WIDE_STR_FORMAT L" compiler " WIDE_STR_FORMAT L" */",VTTVersionString,dateTime); 
 	this->tt->Emit(comment);
 	this->tt->Emit(L"");
 
@@ -1283,19 +1283,19 @@ bool PrivateControlValueTable::Compile(TextBuffer*source, TextBuffer*prepText, b
 
 	// provide defaults for settings if necessary
 	if (!this->tempSettings.defined[instructionsOn-firstSetting]) {
-		swprintf(comment,L"/* %s (default) */",keyWord[instructionsOn]); this->tt->Emit(comment);
+		swprintf(comment,L"/* " WIDE_STR_FORMAT L" (default) */",keyWord[instructionsOn]); this->tt->Emit(comment);
 		this->tt->INSTCTRL(this->tempSettings.instructionsOnFromPpemSize,this->tempSettings.instructionsOnToPpemSize);
 	}
 	if (!this->tempSettings.defined[dropOutCtrlOff-firstSetting] && !this->tempSettings.defined[scanCtrl-firstSetting]) {
-		swprintf(comment,L"/* %s (default) */",keyWord[scanCtrl]); this->tt->Emit(comment);
+		swprintf(comment,L"/* " WIDE_STR_FORMAT L" (default) */",keyWord[scanCtrl]); this->tt->Emit(comment);
 		this->tt->SCANCTRL(this->tempSettings.scanCtrlFlags);
 	}
 	if (!this->tempSettings.defined[dropOutCtrlOff-firstSetting] && !this->tempSettings.defined[scanType-firstSetting]) {
-		swprintf(comment,L"/* %s (default) */",keyWord[scanType]); this->tt->Emit(comment);
+		swprintf(comment,L"/* " WIDE_STR_FORMAT L" (default) */",keyWord[scanType]); this->tt->Emit(comment);
 		this->tt->SCANTYPE(this->tempSettings.scanTypeFlags);
 	}
 	if (!this->tempSettings.defined[cvtCutIn-firstSetting]) {
-		swprintf(comment,L"/* %s (default) */",keyWord[cvtCutIn]); this->tt->Emit(comment);
+		swprintf(comment,L"/* " WIDE_STR_FORMAT L" (default) */",keyWord[cvtCutIn]); this->tt->Emit(comment);
 		this->tt->AssertFreeProjVector(yRomanDir); // so far, this may become aspect-ration dependent, or such like...
 		this->tt->SCVTCI(this->tempSettings.numCvtCutIns,this->tempSettings.cvtCutInPpemSize,this->tempSettings.cvtCutInValue);
 	}
@@ -1442,7 +1442,7 @@ bool PrivateControlValueTable::GetAttributeStrings(int32_t cvtNum, wchar_t charG
 	charGroup[0] = linkColor[0] = linkDirection[0] = cvtCategory[0] = relative[0] = L'\0';
 	if (!AttribExists(this,cvtNum)) return false;
 	PrivateControlValueTable::UnpackAttributeStrings(this->cpgmData[cvtNum].attribute,charGroup,linkColor,linkDirection,cvtCategory);
-	swprintf(relative,L"%s",this->cpgmData[cvtNum].flags & relativeValue ? L"relative" : L"absolute");
+	swprintf(relative,WIDE_STR_FORMAT,this->cpgmData[cvtNum].flags & relativeValue ? L"relative" : L"absolute");
 	return true;
 } // PrivateControlValueTable::GetAttributeStrings
 
@@ -1669,7 +1669,7 @@ bool PrivateControlValueTable::DumpControlValueTable(TextBuffer *text) {
 			pos = swprintf(dump,L"%4li: %6i",cvtNum,cvtValue);
 			if (this->CvtAttributesExist(cvtNum)) {
 				this->GetAttributeStrings(cvtNum,groupStrg,colorStrg,directionStrg,categoryStrg,relativeStrg);
-				pos += swprintf(&dump[pos],L" /* %s %s %s %s (%s) */",groupStrg,colorStrg,directionStrg,categoryStrg,relativeStrg);
+				pos += swprintf(&dump[pos],L" /* " WIDE_STR_FORMAT L" " WIDE_STR_FORMAT L" " WIDE_STR_FORMAT L" " WIDE_STR_FORMAT L" (" WIDE_STR_FORMAT L") */",groupStrg,colorStrg,directionStrg,categoryStrg,relativeStrg);
 			}
 			text->AppendLine(dump);
 		}
@@ -1699,13 +1699,13 @@ bool PrivateControlValueTable::CompileCharGroup(File *from, short platformID, un
 			col++;
 			if (!scanner.GetSym()) goto error;
 		}
-		if (col < 4) { swprintf(errMsg,L"%s number expected",col < 3 ? L"hexadecimal" : L"decimal"); goto error; }
+		if (col < 4) { swprintf(errMsg,WIDE_STR_FORMAT L" number expected",col < 3 ? L"hexadecimal" : L"decimal"); goto error; }
 		while (col < 6 && scanner.sym == ident) {
 			AssignString(data[col-4],scanner.literal,cvtAttributeStrgLen);
 			col++;
 			if (!scanner.GetSym()) goto error;
 		}
-		if (col < 6) { swprintf(errMsg,L"%s expected",col < 5 ? L"character group" : L"postscript name"); goto error; }
+		if (col < 6) { swprintf(errMsg,WIDE_STR_FORMAT L" expected",col < 5 ? L"character group" : L"postscript name"); goto error; }
 		if (!Attribute::SearchByName(groups,data[0],NULL,&subAttribute,&aGroup,errMsg) || subAttribute != group) goto error;
 		if (code[theCol] != unknownUnicode) toCharGroupOfCharCode[code[theCol]] = (unsigned char)aGroup;
 		row++;

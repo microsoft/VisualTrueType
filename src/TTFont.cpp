@@ -366,7 +366,7 @@ void TrueTypeFont::AssertMaxGlyphs(int32_t minGlyphs) {
 
 void MaxSfntSizeError(const wchar_t from[], int32_t size, wchar_t errMsg[]);
 void MaxSfntSizeError(const wchar_t from[], int32_t size, wchar_t errMsg[]) {
-	swprintf(errMsg,L"%s, \r" BULLET L" Unable to allocate %li to work on this font.",from, size);
+	swprintf(errMsg,WIDE_STR_FORMAT L", \r" BULLET L" Unable to allocate %li to work on this font.",from, size);
 } // MaxSfntSizeError
 
 bool TrueTypeFont::SetSfnt(short platformID, short encodingID, wchar_t errMsg[])
@@ -2250,7 +2250,7 @@ bool TrueTypeFont::UpdateMaxPointsAndContours(wchar_t errMsg[]) {
 
 	return true;
 failure:
-	swprintf(errMsg,L"Failed to update max points and contours due to %s table",failureMsg[failureCode]);
+	swprintf(errMsg,L"Failed to update max points and contours due to " WIDE_STR_FORMAT L" table",failureMsg[failureCode]);
 	return false;
 } // TrueTypeFont::UpdateMaxPointsAndContours
 
@@ -2389,7 +2389,7 @@ bool TrueTypeFont::GetSource(bool lowLevel, int32_t glyphIndex, TextBuffer *sour
 	{		
 		swprintf(errMsg,L"Unpacking source: ");
 		if (len == 0)
-			swprintf(&errMsg[STRLENW(errMsg)],L"private %slevel table empty",lowLevel ? L"low" : L"high");
+			swprintf(&errMsg[STRLENW(errMsg)],L"private " WIDE_STR_FORMAT L"level table empty",lowLevel ? L"low" : L"high");
 		else if (glitIndex == glitEntries)
 			swprintf(&errMsg[STRLENW(errMsg)],L"glyph %li not in private glit",glyphIndex);
 		else
