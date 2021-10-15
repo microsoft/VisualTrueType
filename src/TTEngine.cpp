@@ -379,16 +379,16 @@ void TTSourceEngine::AssertFreeProjVector(TTVDirection dir) {
 			swprintf(code,L"SVTCA[Y]");
 			break;
 		case xItalDir:
-			swprintf(code,L"CALL[], %li",this->fnBias + setTTVtoXItalDirFn);
+			swprintf(code,L"CALL[], %i",this->fnBias + setTTVtoXItalDirFn);
 			break;
 		case yItalDir:
-			swprintf(code,L"CALL[], %li",this->fnBias + setTTVtoYItalDirFn);
+			swprintf(code,L"CALL[], %i",this->fnBias + setTTVtoYItalDirFn);
 			break;
 		case xAdjItalDir:
-			swprintf(code,L"CALL[], %li",this->fnBias + setTTVtoXAdjItalDirFn);
+			swprintf(code,L"CALL[], %i",this->fnBias + setTTVtoXAdjItalDirFn);
 			break;
 		case yAdjItalDir:
-			swprintf(code,L"CALL[], %li",this->fnBias + setTTVtoYAdjItalDirFn);
+			swprintf(code,L"CALL[], %i",this->fnBias + setTTVtoYAdjItalDirFn);
 			break;
 		default:
 			swprintf(code,L"/* illegal TT vector direction */");
@@ -500,7 +500,7 @@ void TTSourceEngine::AssertMinDist(short minDists, short jumpPpemSize[], F26Dot6
 	switch (minDists) {
 		case 1:
 			if (this->minDist != pixelSize[0]) {
-				swprintf(buf,L"SMD[], %li",pixelSize[0]); this->Emit(buf);
+				swprintf(buf,L"SMD[], %i",pixelSize[0]); this->Emit(buf);
 				this->minDist = pixelSize[0];
 			}
 			break;
@@ -510,21 +510,21 @@ void TTSourceEngine::AssertMinDist(short minDists, short jumpPpemSize[], F26Dot6
 				swprintf(buf,L"GT[], %hi, *",jumpPpemSize[1]); this->Emit(buf);	// [TOS](= jumpPpemSize[1]) > [TOS-1](= MPPEM[]) ?
 				this->Emit( L"IF[], *");											// MPPEM[] < jumpPpemSize[1] ?
 				this->Emit( L"#BEGIN");											// but current minDist is pixelSize[1]
-				swprintf(buf,L"SMD[], %li",pixelSize[0]); this->Emit(buf);		// hence use pixelSize[0] instead
+				swprintf(buf,L"SMD[], %i",pixelSize[0]); this->Emit(buf);		// hence use pixelSize[0] instead
 			} else if (this->minDist == pixelSize[0]) {
 				swprintf(buf,L"LTEQ[], %hi, *",jumpPpemSize[1]); this->Emit(buf);	// [TOS](= jumpPpemSize[1]) ≤ [TOS-1](= MPPEM[]) ?
 				this->Emit( L"IF[], *");											// MPPEM[] ≥ jumpPpemSize[1]
 				this->Emit( L"#BEGIN");											// but current minDist is pixelSize[0]
-				swprintf(buf,L"SMD[], %li",pixelSize[1]); this->Emit(buf);		// use pixelSize[1] instead
+				swprintf(buf,L"SMD[], %i",pixelSize[1]); this->Emit(buf);		// use pixelSize[1] instead
 			} else {
 				swprintf(buf,L"GT[], %hi, *",jumpPpemSize[1]); this->Emit(buf);
 				this->Emit( L"IF[], *");
 				this->Emit( L"#BEGIN");
-				swprintf(buf,L"SMD[], %li",pixelSize[0]); this->Emit(buf);
+				swprintf(buf,L"SMD[], %i",pixelSize[0]); this->Emit(buf);
 				this->Emit( L"#END");
 				this->Emit( L"ELSE[]");
 				this->Emit( L"#BEGIN");
-				swprintf(buf,L"SMD[], %li",pixelSize[1]); this->Emit(buf);
+				swprintf(buf,L"SMD[], %i",pixelSize[1]); this->Emit(buf);
 			}
 			this->Emit(		L"#END");
 			this->Emit(		L"EIF[]");
@@ -712,7 +712,7 @@ void TTSourceEngine::SHPIX(short knots, short knot[], F26Dot6 amount) {
 	
 	swprintf(buf,L"SHPIX[]");
 	for (i = 0; i < knots; i++) swprintf(&buf[STRLENW(buf)],L", %hi",knot[i]);
-	swprintf(&buf[STRLENW(buf)],L", %li",amount);
+	swprintf(&buf[STRLENW(buf)],L", %i",amount);
 	this->Emit(buf);
 } // TTSourceEngine::SHPIX
 
@@ -886,25 +886,25 @@ void TTSourceEngine::DLT(bool cvt, DeltaColor color, short knot, F26Dot6 amount,
 			if (ppemRangeLow[size] == ppemRangeHigh[size])
 				if (color == alwaysDelta)
 					if (cvt)
-						swprintf(buf,L"CALL[], %li, %hi, %hi, %hi",amount,knot,ppemRangeLow[size],this->fnBias + deltaCvtSinglePpemFn);
+						swprintf(buf,L"CALL[], %i, %hi, %hi, %hi",amount,knot,ppemRangeLow[size],this->fnBias + deltaCvtSinglePpemFn);
 					else
-						swprintf(buf,L"CALL[], %hi, %li, %hi, %hi",knot,amount,ppemRangeLow[size],this->fnBias + deltaKnotSinglePpemFn);
+						swprintf(buf,L"CALL[], %hi, %i, %hi, %hi",knot,amount,ppemRangeLow[size],this->fnBias + deltaKnotSinglePpemFn);
 				else
 					if (cvt)
-						swprintf(buf,L"CALL[], %li, %hi, %hi, %hi, %hi",amount,knot,ppemRangeLow[size],ByteOfDeltaColor(color),this->fnBias + colorDeltaCvtSinglePpemFn);
+						swprintf(buf,L"CALL[], %i, %hi, %hi, %hi, %hi",amount,knot,ppemRangeLow[size],ByteOfDeltaColor(color),this->fnBias + colorDeltaCvtSinglePpemFn);
 					else
-						swprintf(buf,L"CALL[], %hi, %li, %hi, %hi, %hi",knot,amount,ppemRangeLow[size],ByteOfDeltaColor(color),this->fnBias + colorDeltaKnotSinglePpemFn);
+						swprintf(buf,L"CALL[], %hi, %i, %hi, %hi, %hi",knot,amount,ppemRangeLow[size],ByteOfDeltaColor(color),this->fnBias + colorDeltaKnotSinglePpemFn);
 			else
 				if (color == alwaysDelta)
 					if (cvt)
-						swprintf(buf,L"CALL[], %li, %hi, %hi, %hi, %hi",amount,knot,ppemRangeLow[size],ppemRangeHigh[size],this->fnBias + deltaCvtPpemRangeFn);
+						swprintf(buf,L"CALL[], %i, %hi, %hi, %hi, %hi",amount,knot,ppemRangeLow[size],ppemRangeHigh[size],this->fnBias + deltaCvtPpemRangeFn);
 					else
-						swprintf(buf,L"CALL[], %hi, %li, %hi, %hi, %hi",knot,amount,ppemRangeLow[size],ppemRangeHigh[size],this->fnBias + deltaKnotPpemRangeFn);
+						swprintf(buf,L"CALL[], %hi, %i, %hi, %hi, %hi",knot,amount,ppemRangeLow[size],ppemRangeHigh[size],this->fnBias + deltaKnotPpemRangeFn);
 				else
 					if (cvt)
-						swprintf(buf,L"CALL[], %li, %hi, %hi, %hi, %hi, %hi",amount,knot,ppemRangeLow[size],ppemRangeHigh[size],ByteOfDeltaColor(color),this->fnBias + colorDeltaCvtPpemRangeFn);
+						swprintf(buf,L"CALL[], %i, %hi, %hi, %hi, %hi, %hi",amount,knot,ppemRangeLow[size],ppemRangeHigh[size],ByteOfDeltaColor(color),this->fnBias + colorDeltaCvtPpemRangeFn);
 					else
-						swprintf(buf,L"CALL[], %hi, %li, %hi, %hi, %hi, %hi",knot,amount,ppemRangeLow[size],ppemRangeHigh[size],ByteOfDeltaColor(color),this->fnBias + colorDeltaKnotPpemRangeFn);
+						swprintf(buf,L"CALL[], %hi, %i, %hi, %hi, %hi, %hi",knot,amount,ppemRangeLow[size],ppemRangeHigh[size],ByteOfDeltaColor(color),this->fnBias + colorDeltaKnotPpemRangeFn);
 			this->Emit(buf);
 		}
 	}
@@ -1257,10 +1257,10 @@ void TTSourceEngine::SCVTCI(short numCvtCutIns, short cvtCutInPpemSize[], F26Dot
 	}
 
 	if (numCvtCutIns > 0) {
-		swprintf(code,L"SCVTCI[], %li",cvtCutInValue[0]); this->Emit(code);
+		swprintf(code,L"SCVTCI[], %i",cvtCutInValue[0]); this->Emit(code);
 		if (!this->legacyCompile)
 		{
-			swprintf(code, L"WS[], %li, %li", cvtCutInStorage, cvtCutInValue[0]); this->Emit(code);
+			swprintf(code, L"WS[], %i, %i", cvtCutInStorage, cvtCutInValue[0]); this->Emit(code);
 		}
 	}
 	if (numCvtCutIns > 1) {
@@ -1275,7 +1275,7 @@ void TTSourceEngine::SCVTCI(short numCvtCutIns, short cvtCutInPpemSize[], F26Dot
 					L"#PUSH, %hi" BRK
 					L"GTEQ[]" BRK
 					L"IF[]" BRK
-					L"#PUSH, %li, %li, %li" BRK
+					L"#PUSH, %i, %i, %i" BRK
 					L"SCVTCI[]" BRK
 					L"WS[]", cvtCutInPpemSize[cvtCutIn], cvtCutInStorage, cvtCutInValue[cvtCutIn], cvtCutInValue[cvtCutIn]);
 			}
@@ -1285,7 +1285,7 @@ void TTSourceEngine::SCVTCI(short numCvtCutIns, short cvtCutInPpemSize[], F26Dot
 					L"#PUSH, %hi" BRK
 					L"GTEQ[]" BRK
 					L"IF[]" BRK
-					L"#PUSH, %li" BRK
+					L"#PUSH, %i" BRK
 					L"SCVTCI[]",cvtCutInPpemSize[cvtCutIn],cvtCutInValue[cvtCutIn]);
 			}
 
@@ -1330,7 +1330,7 @@ void TTSourceEngine::SetClearTypeCtrl(short ctrl) {
 					  L"RS[]"              BRK
 					  L"LTEQ[]"            BRK
 					  L"IF[]"              BRK
-					  L"    #PUSH, %li, 3" BRK
+					  L"    #PUSH, %i, 3" BRK
 					  L"    INSTCTRL[]"    BRK
 					  L"EIF[]"             BRK
 					  L"#PUSHON"           BRK,4);
@@ -1439,7 +1439,7 @@ void GenGuardCond(TextBuffer *text, AltCodePath path) {
 
 	path = (AltCodePath)Min(Max(firstAltCodePath,path),lastAltCodePath);
 
-	swprintf(codePath,L"#PUSH, %li, 2",path); text->AppendLine(codePath);
+	swprintf(codePath,L"#PUSH, %i, 2",path); text->AppendLine(codePath);
 	text->AppendLine(L"RS[]");
 	swprintf(codePath,L"%sEQ[]",path < altCodePathMonochromeOnly ? L"N" : L"LT"); text->AppendLine(codePath);
 } // GenGuardCond
@@ -1455,7 +1455,7 @@ void GenTalkIf(TextBuffer *talk, AltCodePath path, int32_t fpgmBias) {
 	talk->AppendLine(L"#BEGIN");
 	talk->AppendLine(L"\x22)");
 	talk->AppendLine(L"");
-	swprintf(codePath,L"BeginCodePath(%li)",fpgmBias); talk->AppendLine(codePath);
+	swprintf(codePath,L"BeginCodePath(%i)",fpgmBias); talk->AppendLine(codePath);
 	talk->AppendLine(L"");
 } // GenTalkIf
 
@@ -1471,7 +1471,7 @@ void GenTalkElse(TextBuffer *talk, int32_t fpgmBias) {
 	talk->AppendLine(L"#BEGIN");
 	talk->AppendLine(L"\x22)");
 	talk->AppendLine(L"");
-	swprintf(codePath,L"BeginCodePath(%li)",fpgmBias); talk->AppendLine(codePath);
+	swprintf(codePath,L"BeginCodePath(%i)",fpgmBias); talk->AppendLine(codePath);
 	talk->AppendLine(L"");
 } // GenTalkElse
 
@@ -1489,7 +1489,7 @@ void GenPrepIf(TextBuffer *prep, AltCodePath path) {
 	wchar_t codePath[32];
 
 	prep->AppendLine(L"#PUSHOFF");
-	swprintf(codePath,L"#PUSH, %li",greyScalingFn); prep->AppendLine(codePath);
+	swprintf(codePath,L"#PUSH, %i",greyScalingFn); prep->AppendLine(codePath);
 	prep->AppendLine(L"CALL[]");
 	GenGuardCond(prep,path);
 	prep->AppendLine(L"IF[]");
