@@ -183,7 +183,7 @@ bool Application::CompileCommon(int32_t* errPos, int32_t* errLen, wchar_t errMsg
 			this->font->UpdateAdvanceWidthFlag(this->font->TheCvt()->LinearAdvanceWidths());
 		}
 		else {
-			swprintf(tempErrMsg, L"Ctrl Pgm, line %li: %s", this->cpgm->LineNumOf(*errPos), compErrMsg);
+			swprintf(tempErrMsg, L"Ctrl Pgm, line %li: " WIDE_STR_FORMAT, this->cpgm->LineNumOf(*errPos), compErrMsg);
 			errBuf->AppendLine(tempErrMsg);
 		}
 	}
@@ -216,7 +216,7 @@ bool Application::CompileCommon(int32_t* errPos, int32_t* errLen, wchar_t errMsg
 			done = this->font->UpdateBinData(asmFPGM, binSize, binData);
 		else {
 			done = this->font->UpdateBinData(asmFPGM, 0, NULL);
-			swprintf(tempErrMsg, L"Font Pgm, line %li: %s", this->fpgm->LineNumOf(*errPos), compErrMsg);
+			swprintf(tempErrMsg, L"Font Pgm, line %li: " WIDE_STR_FORMAT, this->fpgm->LineNumOf(*errPos), compErrMsg);
 			errBuf->AppendLine(tempErrMsg);
 		}
 	}
@@ -226,7 +226,7 @@ bool Application::CompileCommon(int32_t* errPos, int32_t* errLen, wchar_t errMsg
 			done = this->font->UpdateBinData(asmPREP, binSize, binData);
 		else {
 			done = this->font->UpdateBinData(asmPREP, 0, NULL);
-			swprintf(tempErrMsg, L"Pre Pgm, line %li: %s", this->prep->LineNumOf(*errPos), compErrMsg);
+			swprintf(tempErrMsg, L"Pre Pgm, line %li: " WIDE_STR_FORMAT, this->prep->LineNumOf(*errPos), compErrMsg);
 			errBuf->AppendLine(tempErrMsg);
 		}
 	}
@@ -292,7 +292,7 @@ bool Application::CompileGlyphRange(unsigned short g1, unsigned short g2, int32_
 
 		if (done) {
 			if (!TMTCompile(this->talk.get(), this->font.get(), this->glyph.get(), this->glyphIndex, this->glyf.get(), legacyCompile, errPos, errLen, compErrMsg)) {
-				swprintf(tempErrMsg, L"VTT Talk, glyph %li (Unicode 0x%lx), line %li: %s", this->glyphIndex, this->charCode, this->talk->LineNumOf(*errPos), compErrMsg);
+				swprintf(tempErrMsg, L"VTT Talk, glyph %li (Unicode 0x%lx), line %li: " WIDE_STR_FORMAT, this->glyphIndex, this->charCode, this->talk->LineNumOf(*errPos), compErrMsg);
 				errBuf->AppendLine(tempErrMsg);
 				swprintf(tempErrMsg, L"/* Error in VTT Talk, line %li: %s */", this->talk->LineNumOf(*errPos), compErrMsg);
 				this->glyf->SetText((int32_t)STRLENW(tempErrMsg), tempErrMsg); // prevent follow-up errors
@@ -307,7 +307,7 @@ bool Application::CompileGlyphRange(unsigned short g1, unsigned short g2, int32_
 			else
 			{
 				done = this->font->UpdateBinData(asmGLYF, 0, NULL);
-				swprintf(tempErrMsg, L"Glyf Pgm, glyph %li (Unicode 0x%lx), line %li: %s", this->glyphIndex, this->charCode, this->glyf->LineNumOf(*errPos), compErrMsg);
+				swprintf(tempErrMsg, L"Glyf Pgm, glyph %li (Unicode 0x%lx), line %li: " WIDE_STR_FORMAT, this->glyphIndex, this->charCode, this->glyf->LineNumOf(*errPos), compErrMsg);
 				errBuf->AppendLine(tempErrMsg);
 			}
 		}
@@ -375,7 +375,7 @@ bool Application::CompileAll(int32_t* errPos, int32_t* errLen, bool quiet, wchar
 			this->font->UpdateAdvanceWidthFlag(this->font->TheCvt()->LinearAdvanceWidths());
 		}
 		else {
-			swprintf(tempErrMsg, L"Ctrl Pgm, line %li: %s", this->cpgm->LineNumOf(*errPos), compErrMsg);
+			swprintf(tempErrMsg, L"Ctrl Pgm, line %li: " WIDE_STR_FORMAT, this->cpgm->LineNumOf(*errPos), compErrMsg);
 			errBuf->AppendLine(tempErrMsg);
 		}
 	}
@@ -409,7 +409,7 @@ bool Application::CompileAll(int32_t* errPos, int32_t* errLen, bool quiet, wchar
 			done = this->font->UpdateBinData(asmFPGM, binSize, binData);
 		else {
 			done = this->font->UpdateBinData(asmFPGM, 0, NULL);
-			swprintf(tempErrMsg, L"Font Pgm, line %li: %s", this->fpgm->LineNumOf(*errPos), compErrMsg);
+			swprintf(tempErrMsg, L"Font Pgm, line %li: " WIDE_STR_FORMAT, this->fpgm->LineNumOf(*errPos), compErrMsg);
 			errBuf->AppendLine(tempErrMsg);
 		}
 	}
@@ -419,7 +419,7 @@ bool Application::CompileAll(int32_t* errPos, int32_t* errLen, bool quiet, wchar
 			done = this->font->UpdateBinData(asmPREP, binSize, binData);
 		else {
 			done = this->font->UpdateBinData(asmPREP, 0, NULL);
-			swprintf(tempErrMsg, L"Pre Pgm, line %li: %s", this->prep->LineNumOf(*errPos), compErrMsg);
+			swprintf(tempErrMsg, L"Pre Pgm, line %li: " WIDE_STR_FORMAT, this->prep->LineNumOf(*errPos), compErrMsg);
 			errBuf->AppendLine(tempErrMsg);
 		}
 	}
@@ -437,7 +437,7 @@ bool Application::CompileAll(int32_t* errPos, int32_t* errLen, bool quiet, wchar
 
 		if (done) {
 			if (!TMTCompile(this->talk.get(), this->font.get(), this->glyph.get(), this->glyphIndex, this->glyf.get(), legacyCompile, errPos, errLen, compErrMsg)) {
-				swprintf(tempErrMsg, L"VTT Talk, glyph %li (Unicode 0x%lx), line %li: %s", this->glyphIndex, this->charCode, this->talk->LineNumOf(*errPos), compErrMsg);
+				swprintf(tempErrMsg, L"VTT Talk, glyph %li (Unicode 0x%lx), line %li: " WIDE_STR_FORMAT, this->glyphIndex, this->charCode, this->talk->LineNumOf(*errPos), compErrMsg);
 				errBuf->AppendLine(tempErrMsg);
 				swprintf(tempErrMsg, L"/* Error in VTT Talk, line %li: %s */", this->talk->LineNumOf(*errPos), compErrMsg);
 				this->glyf->SetText((int32_t)STRLENW(tempErrMsg), tempErrMsg); // prevent follow-up errors
@@ -447,7 +447,7 @@ bool Application::CompileAll(int32_t* errPos, int32_t* errLen, bool quiet, wchar
 		binSize = 0;
 		if (done) {
 			if (!TTAssemble(asmGLYF, this->glyf.get(), this->font.get(), this->glyph.get(), MAXBINSIZE, binData, &binSize, variationCompositeGuard, errPos, errLen, compErrMsg)) {
-				swprintf(tempErrMsg, L"Glyf Pgm, glyph %li (Unicode 0x%lx), line %li: %s", this->glyphIndex, this->charCode, this->glyf->LineNumOf(*errPos), compErrMsg);
+				swprintf(tempErrMsg, L"Glyf Pgm, glyph %li (Unicode 0x%lx), line %li: " WIDE_STR_FORMAT, this->glyphIndex, this->charCode, this->glyf->LineNumOf(*errPos), compErrMsg);
 				errBuf->AppendLine(tempErrMsg);
 			}
 		}

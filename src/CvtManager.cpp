@@ -772,7 +772,7 @@ bool PrivateControlValueTable::SettingsDeclaration(void) {
 			this->tempSettings.defined[sym - firstSetting] = true;
 			break;
 		case dropOutCtrlOff:
-			if (this->tempSettings.defined[scanCtrl-firstSetting] || this->tempSettings.defined[scanType-firstSetting]) { swprintf(this->errMsg,L"Cannot use %s together with %s or %s",keyWord[sym],keyWord[scanCtrl],keyWord[scanType]); this->scanner.ErrUnGetSym(); return false; }
+			if (this->tempSettings.defined[scanCtrl-firstSetting] || this->tempSettings.defined[scanType-firstSetting]) { swprintf(this->errMsg,L"Cannot use %s together with %s or " WIDE_STR_FORMAT,keyWord[sym],keyWord[scanCtrl],keyWord[scanType]); this->scanner.ErrUnGetSym(); return false; }
 			dropOffParam.lowPpemSize = -1; dropOffParam.highPpemSize = maxPpemSize-1; // lowest permissible ppem size - 1
 			if (!this->Parameter(&dropOffParam)) return false;
 			if (dropOffParam.type != ppemN) { swprintf(this->errMsg,L"Drop-out control turn-off ppem size expected (must be an integer in range @%li through @%li)" BRK L"Drop-out control turn-off ppem size specifies the ppem size at and above which drop-out control is no longer turned on.",1,dropOffParam.highPpemSize); this->scanner.ErrUnGetSym(); return false; }
@@ -783,7 +783,7 @@ bool PrivateControlValueTable::SettingsDeclaration(void) {
 			this->tempSettings.defined[sym - firstSetting] = true;
 			break;
 		case scanCtrl:
-			if (this->tempSettings.defined[dropOutCtrlOff-firstSetting]) { swprintf(this->errMsg,L"Cannot use %s together with %s",keyWord[sym],keyWord[dropOutCtrlOff]); this->scanner.ErrUnGetSym(); return false; }
+			if (this->tempSettings.defined[dropOutCtrlOff-firstSetting]) { swprintf(this->errMsg,L"Cannot use %s together with " WIDE_STR_FORMAT,keyWord[sym],keyWord[dropOutCtrlOff]); this->scanner.ErrUnGetSym(); return false; }
 			if (this->scanner.sym != equals) { swprintf(this->errMsg,L"= expected"); return false; }
 			if (!this->scanner.GetSym()) return false;
 			if (!this->Parameter(&scanCtrlParam)) return false;
@@ -793,7 +793,7 @@ bool PrivateControlValueTable::SettingsDeclaration(void) {
 			this->tempSettings.defined[sym - firstSetting] = true;
 			break;
 		case scanType:
-			if (this->tempSettings.defined[dropOutCtrlOff-firstSetting]) { swprintf(this->errMsg,L"Cannot use %s together with %s",keyWord[sym],keyWord[dropOutCtrlOff]); return false; }
+			if (this->tempSettings.defined[dropOutCtrlOff-firstSetting]) { swprintf(this->errMsg,L"Cannot use %s together with " WIDE_STR_FORMAT,keyWord[sym],keyWord[dropOutCtrlOff]); return false; }
 			if (this->scanner.sym != equals) { swprintf(this->errMsg,L"= expected"); return false; }
 			if (!this->scanner.GetSym()) return false;
 			if (!this->Parameter(&scanTypeParam)) return false;
