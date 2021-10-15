@@ -61,6 +61,7 @@
 #define NARROW_STR_FORMAT L"%s"
 #else
 /* Microsoft compiler's w*printf() behavior */
+/* define _CRT_STDIO_ISO_WIDE_SPECIFIERS to get ISO C Standard behavior */
 #define WIDE_STR_FORMAT L"%s"
 #define NARROW_STR_FORMAT L"%S"
 #endif
