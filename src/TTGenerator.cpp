@@ -2030,7 +2030,7 @@ void TTSourceGenerator::InitTTGenerator(TrueTypeFont *font, TrueTypeGlyph *glyph
 
 	if (this->tt) {
 		DateTimeStrg(dateTime);
-		swprintf(buf,L"/* TT glyph %li, char 0x%lx",this->glyphIndex,this->charCode);
+		swprintf(buf,L"/* TT glyph %i, char 0x%lx",this->glyphIndex,this->charCode);
 		if (L' ' < this->charCode && this->charCode < 0x7f) { swprintf(&buf[STRLENW(buf)],L" (%c)",(wchar_t)this->charCode); }
 		swprintf(&buf[STRLENW(buf)],L" */");
 		this->tt->Emit(buf);
