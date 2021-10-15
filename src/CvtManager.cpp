@@ -1164,7 +1164,7 @@ bool PrivateControlValueTable::PixelAtPpemRange(DeltaColor cmdColor, ActParam *a
 		this->scanner.GetSym();
 		this->Parameter(&colorParam);
 		if (colorParam.type != naturalN || DeltaColorOfByte((unsigned char)(colorParam.value/one6)) == illegalDelta) {
-			swprintf(this->errMsg,L"illegal delta color flag (can be %hs only)",AllDeltaColorBytes());
+			swprintf(this->errMsg,L"illegal delta color flag (can be " NARROW_STR_FORMAT L" only)",AllDeltaColorBytes());
 			this->scanner.ErrUnGetSym(); return false;
 		}
 		actParam->deltaColor = DeltaColorOfByte((unsigned char)(colorParam.value/one6));
