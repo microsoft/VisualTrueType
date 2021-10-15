@@ -730,7 +730,7 @@ bool TrueTypeFont::GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t er
 	glyph->xx[0] = 0; 
 	glyph->yy[0] = 0;
 
-	glyph->numContoursInGlyph = numContoursInGlyph; 
+	glyph->numContoursInGlyph = 0; 
 	signedWord = READALIGNEDWORD(sp);
 	glyph->xmin = SWAPW(signedWord);
 
@@ -749,6 +749,8 @@ bool TrueTypeFont::GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t er
 	if ( numContoursInGlyph < 0  ) {
  		glyph->composite = true;
 		weHaveInstructions = false;
+		int32_t accumulatedKnots = 0; 
+		int32_t accumulatedContours = 0; 
  		do {
 			if (glyph->bluePrint.numComponents >= MAXNUMCOMPONENTS) {
 				swprintf(errMsg,L"GetGlyph: glyph %hu has more than %hu components ",glyphIndex,(unsigned short)MAXNUMCOMPONENTS); return false;
@@ -775,6 +777,12 @@ bool TrueTypeFont::GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t er
 
 			numKnots = numContours = componentDepth = 0;
 			if (GetNumPointsAndContours(cgIdx,&numKnots,&numContours,&componentDepth)) {
+				accumulatedKnots += numKnots;
+				accumulatedContours += numContours; 
+				if (accumulatedContours > 0 && accumulatedKnots > 0) {
+					glyph->endPoint[accumulatedContours - 1] = accumulatedKnots - 1; 
+				}
+				glyph->numContoursInGlyph += numContours; 
 				component->numContours = (unsigned short)numContours;
 			} else {
 				swprintf(errMsg,L"GetGlyph: failed to obtain number of contours for component %i of glyph %i",(int32_t)cgIdx,glyphIndex); return false;
@@ -848,6 +856,8 @@ bool TrueTypeFont::GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t er
 		}
 
  	} else {
+
+	    glyph->numContoursInGlyph = numContoursInGlyph; 
 
 		uint8 abyOnCurve[MAXPOINTS]; 		
 		numKnots = 0; 
@@ -993,20 +1003,21 @@ bool TrueTypeFont::GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t er
 			glyph->onCurve[lPointIndex] = *pbyFlags & ONCURVE; 
 			pbyFlags++;
 		}	
-
-		end = glyph->endPoint[glyph->numContoursInGlyph - 1];
-
-		F26Dot6 fxXMinMinusLSB = glyph->xmin - lsb; 
-		glyph->xx[end + 1 + LEFTSIDEBEARING] = fxXMinMinusLSB;
-		glyph->xx[end + 1 + RIGHTSIDEBEARING] = fxXMinMinusLSB + advWidth;
-		glyph->yy[end + 1 + LEFTSIDEBEARING] = 0; 
-		glyph->yy[end + 1 + RIGHTSIDEBEARING] = 0; 
-
-		for (i = 0; i <= end + PHANTOMPOINTS; i++) { // lsb, rsb
-			glyph->x[i] = (short)(glyph->xx[i]); // >> places6);
-			glyph->y[i] = (short)(glyph->yy[i]); // >> places6);
-		}
 	}	
+
+	end = glyph->endPoint[glyph->numContoursInGlyph - 1];
+
+	F26Dot6 fxXMinMinusLSB = glyph->xmin - lsb;
+	glyph->xx[end + 1 + LEFTSIDEBEARING] = fxXMinMinusLSB;
+	glyph->xx[end + 1 + RIGHTSIDEBEARING] = fxXMinMinusLSB + advWidth;
+	glyph->yy[end + 1 + LEFTSIDEBEARING] = 0;
+	glyph->yy[end + 1 + RIGHTSIDEBEARING] = 0;
+
+	for (i = 0; i <= end + PHANTOMPOINTS; i++)
+	{										 // lsb, rsb
+		glyph->x[i] = (short)(glyph->xx[i]); // >> places6);
+		glyph->y[i] = (short)(glyph->yy[i]); // >> places6);
+	}
 	
 	this->UpdateGlyphProfile(glyph);
 	this->UpdateMetricProfile(glyph);
@@ -4734,8 +4745,14 @@ uint32_t TrueTypeFont::PackGlyph(unsigned char *dst, int32_t glyphIndex, TrueTyp
 		}
 	}
 	
-	hmtx->leftSideBearing = glyph->xmin - glyph->x[numberOfPoints]; // some rather oldish fonts have x[LSB] != 0
-	hmtx->advanceWidth = useMyMetrics ? this->horMetric[whoseMetrics].advanceWidth : glyph->x[numberOfPoints + 1] - glyph->x[numberOfPoints];
+	//hmtx->leftSideBearing = glyph->xmin - glyph->x[numberOfPoints]; // some rather oldish fonts have x[LSB] != 0
+	//hmtx->advanceWidth = useMyMetrics ? this->horMetric[whoseMetrics].advanceWidth : glyph->x[numberOfPoints + 1] - glyph->x[numberOfPoints];
+
+	int16 newLSB = glyph->xmin - glyph->x[numberOfPoints];			// some rather oldish fonts have x[LSB] != 0
+	uint16 newAW = useMyMetrics ? this->horMetric[whoseMetrics].advanceWidth : glyph->x[numberOfPoints + 1] - glyph->x[numberOfPoints];
+
+	hmtx->leftSideBearing = newLSB;
+	hmtx->advanceWidth = newAW; 
 
 	size = (short)(ptrdiff_t)(dst - pStart);
 	return size;
