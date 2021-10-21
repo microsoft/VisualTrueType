@@ -419,7 +419,7 @@ public:
 	virtual bool GetAttributeStrings(int32_t cvtNum, wchar_t charGroup[], wchar_t linkColor[], wchar_t linkDirection[], wchar_t cvtCategory[], wchar_t relative[]);
 	virtual bool GetCharGroupString(CharGroup group, wchar_t string[]);
 	virtual bool GetSpacingText(CharGroup group, wchar_t spacingText[]);
-	virtual int32_t GetBestCvtMatch(CharGroup charGroup, LinkColor linkColor, LinkDirection linkDirection, CvtCategory cvtCategory, int32_t distance); // returns illegalCvtNum if no match
+	virtual int32_t GetBestCvtMatch(CharGroup charGroup, LinkColor linkColor, LinkDirection linkDirection, CvtCategory cvtCategory, int32_t distance); // returns invalidCvtNum if no match
 	virtual void PutCvtBinary(int32_t size, unsigned char data[]);
 	virtual void GetCvtBinary(int32_t *size, unsigned char data[]);
 	virtual int32_t GetCvtBinarySize(void);
@@ -473,7 +473,7 @@ ControlValue *NewCvtData(void) {
 		cvt->value = 0;
 		cvt->attribute = 0;
 		cvt->breakPpemSize = 0;
-		cvt->parent = illegalCvtNum;
+		cvt->parent = invalidCvtNum;
 	//	cvt->delta = NULL;
 	}
 	return cvtData;
@@ -1053,7 +1053,7 @@ bool PrivateControlValueTable::Parameter(ActParam *actParam) {
 		actParam->type = anyS; actParam->literal = this->scanner.literal;
 		if (!this->scanner.GetSym()) return false;
 	} else {
-		swprintf(this->errMsg,L"parameter starts with illegal symbol (+, -, @, number, or \x22string\x22 expected)"); return false;
+		swprintf(this->errMsg,L"parameter starts with invalid symbol (+, -, @, number, or \x22string\x22 expected)"); return false;
 	}
 	return true; // by now
 } // PrivateControlValueTable::Parameter
@@ -1143,7 +1143,7 @@ bool PrivateControlValueTable::Factor(ActParam *actParam) {
 		if (this->scanner.sym != rightParen) { swprintf(this->errMsg,L") expected"); return false; }
 		if (!this->scanner.GetSym()) return false;
 	} else {
-		swprintf(this->errMsg,L"factor starts with illegal symbol (number or ( expected)"); return false;
+		swprintf(this->errMsg,L"factor starts with invalid symbol (number or ( expected)"); return false;
 	}
 	return true; // by now
 } // PrivateControlValueTable::Factor
@@ -1163,8 +1163,8 @@ bool PrivateControlValueTable::PixelAtPpemRange(DeltaColor cmdColor, ActParam *a
 	if (this->scanner.sym == percent) { // optional delta color sub-parameter
 		this->scanner.GetSym();
 		this->Parameter(&colorParam);
-		if (colorParam.type != naturalN || DeltaColorOfByte((unsigned char)(colorParam.value/one6)) == illegalDelta) {
-			swprintf(this->errMsg,L"illegal delta color flag (can be " NARROW_STR_FORMAT L" only)",AllDeltaColorBytes());
+		if (colorParam.type != naturalN || DeltaColorOfByte((unsigned char)(colorParam.value/one6)) == invalidDelta) {
+			swprintf(this->errMsg,L"invalid delta color flag (can be " NARROW_STR_FORMAT L" only)",AllDeltaColorBytes());
 			this->scanner.ErrUnGetSym(); return false;
 		}
 		actParam->deltaColor = DeltaColorOfByte((unsigned char)(colorParam.value/one6));
@@ -1402,7 +1402,7 @@ int32_t PrivateControlValueTable::HighestCvtIdx(void) {
 
 int32_t PrivateControlValueTable::CvtNumOf(int32_t idx) {
 	this->AssertSortedCvt();
-	return this->cvtDataSorted && this->lowestCvtIdx <= idx && idx <= this->highestCvtIdx ? this->cvtKeyOfIdx[idx].num : illegalCvtNum;
+	return this->cvtDataSorted && this->lowestCvtIdx <= idx && idx <= this->highestCvtIdx ? this->cvtKeyOfIdx[idx].num : invalidCvtNum;
 } // PrivateControlValueTable::CvtNumOf
 
 int32_t PrivateControlValueTable::CvtIdxOf(int32_t num) {
@@ -1469,7 +1469,7 @@ int32_t PrivateControlValueTable::GetBestCvtMatch(CharGroup charGroup, LinkColor
 	uint32_t lowAttr,highAttr,lowValue,highValue,catMask4cvtDummy;
 	CvtKey cvtKey,targetKey;
 
-	if (!this->cvtDataValid || cvtCategory == cvtAnyCategory) return illegalCvtNum;
+	if (!this->cvtDataValid || cvtCategory == cvtAnyCategory) return invalidCvtNum;
 	
 	if (cvtCategory == -1) {
 		catMask4cvtDummy = ~subAttributeMask; // since cvtCategory occupies lowest 8 bits...
@@ -1512,7 +1512,7 @@ int32_t PrivateControlValueTable::GetBestCvtMatch(CharGroup charGroup, LinkColor
 		else if (highAttr == targetKey.attribute) return highCvtNum;
 	//	else there is no cvt in this linkDirection and cvtCategory
 	}
-	return illegalCvtNum; // by now
+	return invalidCvtNum; // by now
 } // PrivateControlValueTable::GetBestCvtMatch
 
 void PrivateControlValueTable::PutCvtBinary(int32_t size, unsigned char data[]) {
@@ -1578,7 +1578,7 @@ void PrivateControlValueTable::AssertSortedCvt(void) {
 	cvtIdx = 0;
 	this->cvtKeyOfIdx[cvtIdx].attribute = 0;
 	this->cvtKeyOfIdx[cvtIdx].value		= 0; // low sentinel
-	this->cvtKeyOfIdx[cvtIdx].num		= illegalCvtNum; // cvtNum irrelevant, just silence BC
+	this->cvtKeyOfIdx[cvtIdx].num		= invalidCvtNum; // cvtNum irrelevant, just silence BC
 	cvtIdx++;
 	for (cvtNum = 0; cvtNum <= this->highestCvtNum; cvtNum++) {
 		cvt = &this->cpgmData[cvtNum];
@@ -1599,12 +1599,12 @@ void PrivateControlValueTable::AssertSortedCvt(void) {
 	}
 	this->cvtKeyOfIdx[cvtIdx].attribute = 0xffffffff;
 	this->cvtKeyOfIdx[cvtIdx].value		= 0xffff; // high sentinel
-	this->cvtKeyOfIdx[cvtIdx].num		= illegalCvtNum; // cvtNum irrelevant, just silence BC
+	this->cvtKeyOfIdx[cvtIdx].num		= invalidCvtNum; // cvtNum irrelevant, just silence BC
 	cvtIdx++;
 	this->lowestCvtIdx = 1;
 	this->highestCvtIdx = cvtIdx-2;
 	this->SortCvtKeys(0,cvtIdx-1);
-	for (cvtNum = this->lowestCvtNum; cvtNum <= this->highestCvtNum; cvtNum++) this->cvtIdxOfNum[cvtNum] = illegalCvtNum; // init possibly sparsely populated cvt
+	for (cvtNum = this->lowestCvtNum; cvtNum <= this->highestCvtNum; cvtNum++) this->cvtIdxOfNum[cvtNum] = invalidCvtNum; // init possibly sparsely populated cvt
 	for (cvtIdx = this->lowestCvtIdx; cvtIdx <= this->highestCvtIdx; cvtIdx++) this->cvtIdxOfNum[this->cvtKeyOfIdx[cvtIdx].num] = (short)cvtIdx; // setup bijectivity
 	this->cvtDataSorted = true;
 } // PrivateControlValueTable::AssertSortedCvt

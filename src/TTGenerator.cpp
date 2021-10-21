@@ -238,7 +238,7 @@ private:
 	FVMTDirection CalcAlignFVMT(FVOverride fv, short parent0, short parent1, short child, RVector alignDirection, short *refPoint0, short *refPoint1);
 	void AssertFVMT(FVMTDirection fvmt, short point0, short point1);
 	void Touched(short knot, TTVDirection dir);
-	short TheCvt(short parent, short child, LinkColor color, LinkDirection direction, CvtCategory category, short distance); // color, category, and distance: -1 or illegalCvtNum for default
+	short TheCvt(short parent, short child, LinkColor color, LinkDirection direction, CvtCategory category, short distance); // color, category, and distance: -1 or invalidCvtNum for default
 	void DoVacuFormRound(void);
 };
 
@@ -626,7 +626,7 @@ void TTSourceGenerator::Link(bool y, bool dist, ProjFreeVector *projFreeVector, 
 		this->tt->MDAP(true,child);
 	}
 	if (this->tt) this->Touched(child,projFreeVector->fv[0].dir);	
-	*actualCvt = lsbLink || rsbLink ? illegalCvtNum : cvt;
+	*actualCvt = lsbLink || rsbLink ? invalidCvtNum : cvt;
 } /* TTSourceGenerator::Link */
 
 /***** have to test this on the visual level, because we might end up with the following scenario:
@@ -1626,12 +1626,12 @@ void TTSourceGenerator::Serif(bool forward, short type, short knots, short knot[
 			*****/
 			if (this->tt) {
 				swprintf(buf,L"/* Round serif %hi %hi %hi %hi %hi %hi %hi */",knot[0],knot[1],knot[2],knot[3],knot[4],knot[5],knot[6]); this->tt->Emit(buf);
-				this->Link(true, false,&this->yRomanPV,false,knot[0],knot[1],cvtSerifOther,illegalCvtNum,1,ppem,dist,&actualCvt,error);
-				this->Link(true, false,&this->yRomanPV,false,knot[0],knot[3],cvtSerifOther,illegalCvtNum,0,NULL,NULL,&actualCvt,error);
-				this->Link(true, false,&this->yRomanPV,false,knot[3],knot[4],cvtSerifOther,illegalCvtNum,1,ppem,dist,&actualCvt,error);
-				this->Link(false,false,&this->xRomanPV,false,knot[4],knot[5],cvtSerifThin, illegalCvtNum,1,ppem,dist,&actualCvt,error);
-				this->Link(false,false,&this->xRomanPV,false,knot[4],knot[3],cvtSerifOther,illegalCvtNum,0,NULL,NULL,&actualCvt,error);
-				this->Link(false,false,&this->xRomanPV,false,knot[3],knot[2],cvtSerifThin, illegalCvtNum,1,ppem,dist,&actualCvt,error);
+				this->Link(true, false,&this->yRomanPV,false,knot[0],knot[1],cvtSerifOther,invalidCvtNum,1,ppem,dist,&actualCvt,error);
+				this->Link(true, false,&this->yRomanPV,false,knot[0],knot[3],cvtSerifOther,invalidCvtNum,0,NULL,NULL,&actualCvt,error);
+				this->Link(true, false,&this->yRomanPV,false,knot[3],knot[4],cvtSerifOther,invalidCvtNum,1,ppem,dist,&actualCvt,error);
+				this->Link(false,false,&this->xRomanPV,false,knot[4],knot[5],cvtSerifThin, invalidCvtNum,1,ppem,dist,&actualCvt,error);
+				this->Link(false,false,&this->xRomanPV,false,knot[4],knot[3],cvtSerifOther,invalidCvtNum,0,NULL,NULL,&actualCvt,error);
+				this->Link(false,false,&this->xRomanPV,false,knot[3],knot[2],cvtSerifThin, invalidCvtNum,1,ppem,dist,&actualCvt,error);
 			}
 			break;
 		case 1: /*****
@@ -1656,11 +1656,11 @@ void TTSourceGenerator::Serif(bool forward, short type, short knots, short knot[
 			*****/
 			if (this->tt) {
 				swprintf(buf,L"/* Triangular serif %hi %hi %hi %hi */",knot[0],knot[1],knot[2],knot[3]); this->tt->Emit(buf);
-				this->Link(true, false,&this->yRomanPV,false,knot[3],knot[2],cvtSerifCurveHeight,illegalCvtNum,0,NULL,NULL,&actualCvt,error);
-				this->Link(true, false,&this->yRomanPV,false,knot[2],knot[1],cvtSerifThin,  		illegalCvtNum,1,ppem,dist,&actualCvt,error);
-				this->Link(true, false,this->attrib[knot[0]].iStroke ? &this->yAdjItalPV : &this->yRomanPV,false,knot[2],knot[0],cvtSerifHeight,illegalCvtNum,1,ppem,dist,&actualCvt,error);
+				this->Link(true, false,&this->yRomanPV,false,knot[3],knot[2],cvtSerifCurveHeight,invalidCvtNum,0,NULL,NULL,&actualCvt,error);
+				this->Link(true, false,&this->yRomanPV,false,knot[2],knot[1],cvtSerifThin,  		invalidCvtNum,1,ppem,dist,&actualCvt,error);
+				this->Link(true, false,this->attrib[knot[0]].iStroke ? &this->yAdjItalPV : &this->yRomanPV,false,knot[2],knot[0],cvtSerifHeight,invalidCvtNum,1,ppem,dist,&actualCvt,error);
 									// set vectors to yAdjItalDir if knot[0] is part of an iStroke...
-				this->Link(false,false,&this->xRomanPV,false,knot[0],knot[2],cvtSerifExt,   		illegalCvtNum,0,NULL,NULL,&actualCvt,error);
+				this->Link(false,false,&this->xRomanPV,false,knot[0],knot[2],cvtSerifExt,   		invalidCvtNum,0,NULL,NULL,&actualCvt,error);
 			}
 			break;
 		case 2:
@@ -1755,10 +1755,10 @@ void TTSourceGenerator::Serif(bool forward, short type, short knots, short knot[
 						
 						
 					} else {
-						if (italBase) this->Anchor(false,&this->xRomanPV,knot[1],illegalCvtNum,false,error);
-						this->Link(horzBase,false,horzBase ? &this->yRomanPV : &this->yRomanPV,false,knot[1],knot[2],cvtSerifThin,illegalCvtNum,1,ppem,dist,&actualCvt,error);
-						if (type == 2) this->Link(horzBase,false,horzBase ? &this->yRomanPV : &this->yRomanPV,false,knot[1],knot[3],cvtSerifHeight,illegalCvtNum,1,ppem,dist,&actualCvt,error); // control serif height
-						this->Link(!horzBase,this->attrib[knot[3]].dStroke || this->attrib[knot[3]].iStroke,!horzBase ? &this->yRomanPV : &this->yRomanPV,false,knot[3],knot[1],cvtSerifExt,illegalCvtNum,0,NULL,NULL,&actualCvt,error);
+						if (italBase) this->Anchor(false,&this->xRomanPV,knot[1],invalidCvtNum,false,error);
+						this->Link(horzBase,false,horzBase ? &this->yRomanPV : &this->yRomanPV,false,knot[1],knot[2],cvtSerifThin,invalidCvtNum,1,ppem,dist,&actualCvt,error);
+						if (type == 2) this->Link(horzBase,false,horzBase ? &this->yRomanPV : &this->yRomanPV,false,knot[1],knot[3],cvtSerifHeight,invalidCvtNum,1,ppem,dist,&actualCvt,error); // control serif height
+						this->Link(!horzBase,this->attrib[knot[3]].dStroke || this->attrib[knot[3]].iStroke,!horzBase ? &this->yRomanPV : &this->yRomanPV,false,knot[3],knot[1],cvtSerifExt,invalidCvtNum,0,NULL,NULL,&actualCvt,error);
 					}
 				}
 			} else
@@ -1803,16 +1803,16 @@ void TTSourceGenerator::Serif(bool forward, short type, short knots, short knot[
 				if (this->tt) {
 					swprintf(buf,L"/* " WIDE_STR_FORMAT L" univ-serif %hi %hi %hi %hi */",forward ? L"Forward" : L"Backward",knot[1],knot[2],knot[3],knot[4]); this->tt->Emit(buf);
 					
-					this->Link(horzBase,false,horzBase ? &this->yRomanPV : &this->yRomanPV,false,knot[1],knot[3],cvtSerifThin,illegalCvtNum,1,ppem,dist,&actualCvt,error);
-					this->Link(!horzBase,false,!horzBase ? &this->yRomanPV : &this->yRomanPV,false,knot[4],knot[2],cvtSerifExt,illegalCvtNum,0,NULL,NULL,&actualCvt,error);
+					this->Link(horzBase,false,horzBase ? &this->yRomanPV : &this->yRomanPV,false,knot[1],knot[3],cvtSerifThin,invalidCvtNum,1,ppem,dist,&actualCvt,error);
+					this->Link(!horzBase,false,!horzBase ? &this->yRomanPV : &this->yRomanPV,false,knot[4],knot[2],cvtSerifExt,invalidCvtNum,0,NULL,NULL,&actualCvt,error);
 					link34 = SubV(this->V[knot[3]],this->V[knot[4]]);
 					if (horzBase) {
 						if ((Abs(link34.x) > 0)) { // could compare with a small value
-							this->Link(horzBase,false,horzBase ? &this->yRomanPV : &this->yRomanPV,false,knot[1],knot[4],cvtSerifHeight,illegalCvtNum,1,ppem,dist,&actualCvt,error);
+							this->Link(horzBase,false,horzBase ? &this->yRomanPV : &this->yRomanPV,false,knot[1],knot[4],cvtSerifHeight,invalidCvtNum,1,ppem,dist,&actualCvt,error);
 						}
 					} else {
 						if ((Abs(link34.y) > 0)) {
-							this->Link(horzBase,false,horzBase ? &this->yRomanPV : &this->yRomanPV,false,knot[1],knot[4],cvtSerifHeight,illegalCvtNum,1,ppem,dist,&actualCvt,error);
+							this->Link(horzBase,false,horzBase ? &this->yRomanPV : &this->yRomanPV,false,knot[1],knot[4],cvtSerifHeight,invalidCvtNum,1,ppem,dist,&actualCvt,error);
 						}
 					}
 				}
@@ -1840,7 +1840,7 @@ void TTSourceGenerator::Scoop(short parent0, short child, short parent1, wchar_t
 		swprintf(error,L"cannot accept SCOOP (base differs from horizontal or vertical by %f degrees or more)",(double)strokeFudge);
 	}
 	if (ok)
-		if (this->tt) this->Link(y,false,y ? &this->yRomanPV : &this->yRomanPV,false,parent0,child,cvtScoopDepth,illegalCvtNum,0,NULL,NULL,&actualCvt,error);
+		if (this->tt) this->Link(y,false,y ? &this->yRomanPV : &this->yRomanPV,false,parent0,child,cvtScoopDepth,invalidCvtNum,0,NULL,NULL,&actualCvt,error);
 } /* TTSourceGenerator::Scoop */
 
 void TTSourceGenerator::Smooth(short y, short italicFlag) {
@@ -1944,10 +1944,10 @@ void InitFreeProjVector(TTVDirection pv, ProjFreeVector *projFreeVector) {
 	short i;
 	
 	projFreeVector->pv.dir = pv;
-	projFreeVector->pv.from = projFreeVector->pv.to = illegalKnotNum;
+	projFreeVector->pv.from = projFreeVector->pv.to = invalidKnotNum;
 	for (i = 0; i < maxParams; i++) {
 		projFreeVector->fv[i].dir = pv;
-		projFreeVector->fv[i].from = projFreeVector->fv[i].to = illegalKnotNum;
+		projFreeVector->fv[i].from = projFreeVector->fv[i].to = invalidKnotNum;
 	}
 } // InitFreeProjVector
 
@@ -1970,7 +1970,7 @@ void TTSourceGenerator::InitTTGenerator(TrueTypeFont *font, TrueTypeGlyph *glyph
 	
 	this->xAxis.x = 1; this->yAxis.x = 0; this->slope.x = 0;
 	this->xAxis.y = 0; this->yAxis.y = 1; this->slope.y = 1;
-	this->riseCvt = this->runCvt = illegalCvtNum;
+	this->riseCvt = this->runCvt = invalidCvtNum;
 	this->cosF = cos(Rad(strokeFudge));
 	this->tanF = tan(Rad(strokeFudge));
 	this->cosF0 = cos(Rad(MAXSTROKESIDEANGLEDIFFERENCE));
@@ -2050,7 +2050,7 @@ void TTSourceGenerator::InitCodePathState(void) {
 	for (i = 0; i < this->knots; i++) {
 		attrib = &this->attrib[i];
 		for (j = 0; j < 2; j++) attrib->round[j] = rtg; // default
-		attrib->cvt = illegalCvtNum;
+		attrib->cvt = invalidCvtNum;
 		for (j = 0; j < 2; j++) attrib->touched[j] = false;
 		attrib->dStroke = false;
 		attrib->iStroke = false;

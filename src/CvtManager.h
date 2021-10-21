@@ -34,7 +34,7 @@ typedef enum {cvtAnyCategory = 0, cvtDistance, cvtStroke, cvtRound,
 
 #define	maxCvtNum 0x1000L // get past FontLab's Else
 
-#define illegalCvtNum (-1)
+#define invalidCvtNum (-1)
 
 #define cvtAttributeStrgLen 64
 
@@ -59,7 +59,7 @@ public:
 	virtual int32_t NumCharGroups(void) = 0;
 	virtual bool GetCharGroupString(CharGroup charGroup, wchar_t string[]) = 0;
 	virtual bool GetSpacingText(CharGroup charGroup, wchar_t spacingText[]) = 0;
-	virtual int32_t GetBestCvtMatch(CharGroup charGroup, LinkColor linkColor, LinkDirection linkDirection, CvtCategory cvtCategory, int32_t distance) = 0; // returns illegalCvtNum if no match
+	virtual int32_t GetBestCvtMatch(CharGroup charGroup, LinkColor linkColor, LinkDirection linkDirection, CvtCategory cvtCategory, int32_t distance) = 0; // returns invalidCvtNum if no match
 	virtual void PutCvtBinary(int32_t size, unsigned char data[]) = 0;
 	virtual void GetCvtBinary(int32_t *size, unsigned char data[]) = 0;
 	virtual int32_t GetCvtBinarySize(void) = 0;

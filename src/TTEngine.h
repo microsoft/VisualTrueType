@@ -22,7 +22,7 @@
 
 #define maxAsmSize 0x2000L
 
-#define illegalKnotNum (-1)
+#define invalidKnotNum (-1)
 
 typedef enum {rthg = 0, rtdg, rtg, rdtg, rutg, roff, rnone} Rounding;
 

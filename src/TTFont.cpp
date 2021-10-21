@@ -1827,7 +1827,7 @@ bool TrueTypeFont::GlyphIndecesOf(wchar_t textString[], int32_t maxNumGlyphIndec
 			ch = textString[i++]; dec = 0;
 			while (ch && ch != L'^') {
 				if (L'0' <= ch && ch <= L'9') dec = 10*dec + (int32_t)(ch - L'0');
-				else { swprintf(errMsg,L"illegal decimal digit in glyph index"); return false; }
+				else { swprintf(errMsg,L"invalid decimal digit in glyph index"); return false; }
 				ch = textString[i++];
 			}
 			if (ch == L'^') ch = textString[i++];
@@ -1838,7 +1838,7 @@ bool TrueTypeFont::GlyphIndecesOf(wchar_t textString[], int32_t maxNumGlyphIndec
 				if (L'0' <= ch && ch <= L'9') hex = 16*hex + (int32_t)(ch - L'0');
 				else if (L'A' <= ch && ch <= L'F') hex = 16*hex + (int32_t)(ch - L'A' + 10);
 				else if (L'a' <= ch && ch <= L'f') hex = 16*hex + (int32_t)(ch - L'a' + 10);
-				else { swprintf(errMsg,L"illegal hexadecimal digit in glyph index"); return false; }
+				else { swprintf(errMsg,L"invalid hexadecimal digit in glyph index"); return false; }
 				ch = textString[i++];
 			}
 			if (ch == L'~') ch = textString[i++];

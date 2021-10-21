@@ -88,65 +88,65 @@ DeltaColor DeltaColorOfByte(unsigned char byte) {
 	static DeltaColor deltaColorOfByte[0xE0] = {
 		/*   0 */ blackDelta,
 		/*   1 */ greyDelta,
-		/*   2 */ ctNatVerRGBIAWBLYDelta, illegalDelta, illegalDelta, illegalDelta,
-		/*   6 */ ctComVerRGBIAWBLYDelta, illegalDelta, illegalDelta, illegalDelta,
-		/*  10 */ ctNatHorRGBIAWBLYDelta, illegalDelta, illegalDelta, illegalDelta,
-		/*  14 */ ctComHorRGBIAWBLYDelta, illegalDelta, illegalDelta, illegalDelta,
-		/*  18 */ ctNatVerBGRIAWBLYDelta, illegalDelta, illegalDelta, illegalDelta,
-		/*  22 */ ctComVerBGRIAWBLYDelta, illegalDelta, illegalDelta, illegalDelta,
-		/*  26 */ ctNatHorBGRIAWBLYDelta, illegalDelta, illegalDelta, illegalDelta,
-		/*  30 */ ctComHorBGRIAWBLYDelta, illegalDelta, illegalDelta, illegalDelta,
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-		/*  66 */ ctNatVerRGBFAWBLYDelta, illegalDelta, illegalDelta, illegalDelta,
-		/*  70 */ ctComVerRGBFAWBLYDelta, illegalDelta, illegalDelta, illegalDelta,
-		/*  74 */ ctNatHorRGBFAWBLYDelta, illegalDelta, illegalDelta, illegalDelta,
-		/*  78 */ ctComHorRGBFAWBLYDelta, illegalDelta, illegalDelta, illegalDelta,
-		/*  82 */ ctNatVerBGRFAWBLYDelta, illegalDelta, illegalDelta, illegalDelta,
-		/*  86 */ ctComVerBGRFAWBLYDelta, illegalDelta, illegalDelta, illegalDelta,
-		/*  90 */ ctNatHorBGRFAWBLYDelta, illegalDelta, illegalDelta, illegalDelta,
-		/*  94 */ ctComHorBGRFAWBLYDelta, illegalDelta, illegalDelta, illegalDelta,
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-		/* 130 */ ctNatVerRGBIAWYAADelta, illegalDelta, illegalDelta, illegalDelta,
-		/* 134 */ ctComVerRGBIAWYAADelta, illegalDelta, illegalDelta, illegalDelta,
-		/* 138 */ ctNatHorRGBIAWYAADelta, illegalDelta, illegalDelta, illegalDelta,
-		/* 142 */ ctComHorRGBIAWYAADelta, illegalDelta, illegalDelta, illegalDelta,
-		/* 146 */ ctNatVerBGRIAWYAADelta, illegalDelta, illegalDelta, illegalDelta,
-		/* 150 */ ctComVerBGRIAWYAADelta, illegalDelta, illegalDelta, illegalDelta,
-		/* 154 */ ctNatHorBGRIAWYAADelta, illegalDelta, illegalDelta, illegalDelta,
-		/* 158 */ ctComHorBGRIAWYAADelta, illegalDelta, illegalDelta, illegalDelta,
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-				  illegalDelta, illegalDelta, illegalDelta, illegalDelta, 
-		/* 194 */ ctNatVerRGBFAWYAADelta, illegalDelta, illegalDelta, illegalDelta,
-		/* 198 */ ctComVerRGBFAWYAADelta, illegalDelta, illegalDelta, illegalDelta,
-		/* 202 */ ctNatHorRGBFAWYAADelta, illegalDelta, illegalDelta, illegalDelta,
-		/* 206 */ ctComHorRGBFAWYAADelta, illegalDelta, illegalDelta, illegalDelta,
-		/* 210 */ ctNatVerBGRFAWYAADelta, illegalDelta, illegalDelta, illegalDelta,
-		/* 214 */ ctComVerBGRFAWYAADelta, illegalDelta, illegalDelta, illegalDelta,
-		/* 218 */ ctNatHorBGRFAWYAADelta, illegalDelta, illegalDelta, illegalDelta,
-		/* 222 */ ctComHorBGRFAWYAADelta, illegalDelta
+		/*   2 */ ctNatVerRGBIAWBLYDelta, invalidDelta, invalidDelta, invalidDelta,
+		/*   6 */ ctComVerRGBIAWBLYDelta, invalidDelta, invalidDelta, invalidDelta,
+		/*  10 */ ctNatHorRGBIAWBLYDelta, invalidDelta, invalidDelta, invalidDelta,
+		/*  14 */ ctComHorRGBIAWBLYDelta, invalidDelta, invalidDelta, invalidDelta,
+		/*  18 */ ctNatVerBGRIAWBLYDelta, invalidDelta, invalidDelta, invalidDelta,
+		/*  22 */ ctComVerBGRIAWBLYDelta, invalidDelta, invalidDelta, invalidDelta,
+		/*  26 */ ctNatHorBGRIAWBLYDelta, invalidDelta, invalidDelta, invalidDelta,
+		/*  30 */ ctComHorBGRIAWBLYDelta, invalidDelta, invalidDelta, invalidDelta,
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+		/*  66 */ ctNatVerRGBFAWBLYDelta, invalidDelta, invalidDelta, invalidDelta,
+		/*  70 */ ctComVerRGBFAWBLYDelta, invalidDelta, invalidDelta, invalidDelta,
+		/*  74 */ ctNatHorRGBFAWBLYDelta, invalidDelta, invalidDelta, invalidDelta,
+		/*  78 */ ctComHorRGBFAWBLYDelta, invalidDelta, invalidDelta, invalidDelta,
+		/*  82 */ ctNatVerBGRFAWBLYDelta, invalidDelta, invalidDelta, invalidDelta,
+		/*  86 */ ctComVerBGRFAWBLYDelta, invalidDelta, invalidDelta, invalidDelta,
+		/*  90 */ ctNatHorBGRFAWBLYDelta, invalidDelta, invalidDelta, invalidDelta,
+		/*  94 */ ctComHorBGRFAWBLYDelta, invalidDelta, invalidDelta, invalidDelta,
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+		/* 130 */ ctNatVerRGBIAWYAADelta, invalidDelta, invalidDelta, invalidDelta,
+		/* 134 */ ctComVerRGBIAWYAADelta, invalidDelta, invalidDelta, invalidDelta,
+		/* 138 */ ctNatHorRGBIAWYAADelta, invalidDelta, invalidDelta, invalidDelta,
+		/* 142 */ ctComHorRGBIAWYAADelta, invalidDelta, invalidDelta, invalidDelta,
+		/* 146 */ ctNatVerBGRIAWYAADelta, invalidDelta, invalidDelta, invalidDelta,
+		/* 150 */ ctComVerBGRIAWYAADelta, invalidDelta, invalidDelta, invalidDelta,
+		/* 154 */ ctNatHorBGRIAWYAADelta, invalidDelta, invalidDelta, invalidDelta,
+		/* 158 */ ctComHorBGRIAWYAADelta, invalidDelta, invalidDelta, invalidDelta,
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+				  invalidDelta, invalidDelta, invalidDelta, invalidDelta, 
+		/* 194 */ ctNatVerRGBFAWYAADelta, invalidDelta, invalidDelta, invalidDelta,
+		/* 198 */ ctComVerRGBFAWYAADelta, invalidDelta, invalidDelta, invalidDelta,
+		/* 202 */ ctNatHorRGBFAWYAADelta, invalidDelta, invalidDelta, invalidDelta,
+		/* 206 */ ctComHorRGBFAWYAADelta, invalidDelta, invalidDelta, invalidDelta,
+		/* 210 */ ctNatVerBGRFAWYAADelta, invalidDelta, invalidDelta, invalidDelta,
+		/* 214 */ ctComVerBGRFAWYAADelta, invalidDelta, invalidDelta, invalidDelta,
+		/* 218 */ ctNatHorBGRFAWYAADelta, invalidDelta, invalidDelta, invalidDelta,
+		/* 222 */ ctComHorBGRFAWYAADelta, invalidDelta
 	};
 
-	return 0 <= byte && byte < 0xE0 ? deltaColorOfByte[byte] : illegalDelta;
+	return 0 <= byte && byte < 0xE0 ? deltaColorOfByte[byte] : invalidDelta;
 } // DeltaColorOfByte
 
 DeltaColor DeltaColorOfOptions(bool grayScale, bool clearType, bool clearTypeCompWidth, /* bool clearTypeVertRGB, */ bool clearTypeBGR, bool clearTypeFract, bool clearTypeYAA, bool clearTypeGray) {
@@ -391,12 +391,12 @@ void TTSourceEngine::AssertFreeProjVector(TTVDirection dir) {
 			swprintf(code,L"CALL[], %i",this->fnBias + setTTVtoYAdjItalDirFn);
 			break;
 		default:
-			swprintf(code,L"/* illegal TT vector direction */");
+			swprintf(code,L"/* invalid TT vector direction */");
 			break;
 		}
 		this->Emit(code);
-		this->ttv[fv].dir = fvDir; this->ttv[fv].from = this->ttv[fv].to = illegalKnotNum;
-		this->ttv[pv].dir = pvDir; this->ttv[pv].from = this->ttv[pv].to = illegalKnotNum;
+		this->ttv[fv].dir = fvDir; this->ttv[fv].from = this->ttv[fv].to = invalidKnotNum;
+		this->ttv[pv].dir = pvDir; this->ttv[pv].from = this->ttv[pv].to = invalidKnotNum;
 		this->usedpv = false;
 	}
 } // TTSourceEngine::AssertFreeProjVector
@@ -412,7 +412,7 @@ void TTSourceEngine::AssertTTVonLine(TTVector ttv, short parent0, short parent1,
 	if (dir < diagDir) {
 		if (dir != v->dir) {
 			swprintf(buf,L"S%cVTCA[%c]",ttv == fv ? L'F' : L'P',L'X' + (dir == yRomanDir)); this->Emit(buf);
-			v->dir = dir; v->from = v->to = illegalKnotNum;
+			v->dir = dir; v->from = v->to = invalidKnotNum;
 			if (ttv > fv) this->usedpv = ttv == dpv;
 		}
 	} else {
@@ -435,14 +435,14 @@ void TTSourceEngine::AssertFVonCA(bool y) {
 	Vector P0 = {0, 0}, P1 = {0, 0};
 	
 	if (y) P1.y = 1; else P1.x = 1;
-	this->AssertTTVonLine(fv,illegalKnotNum,illegalKnotNum,P0,P1,false);
+	this->AssertTTVonLine(fv,invalidKnotNum,invalidKnotNum,P0,P1,false);
 } // TTSourceEngine::AssertFVonCA
 
 void TTSourceEngine::AssertPVonCA(bool y) {
 	Vector P0 = {0, 0}, P1 = {0, 0};
 	
 	if (y) P1.y = 1; else P1.x = 1;
-	this->AssertTTVonLine(pv,illegalKnotNum,illegalKnotNum,P0,P1,false);
+	this->AssertTTVonLine(pv,invalidKnotNum,invalidKnotNum,P0,P1,false);
 } // TTSourceEngine::AssertPVonCA
 
 void TTSourceEngine::AssertFVonPV() {
@@ -471,7 +471,7 @@ void TTSourceEngine::AssertRefPoint(short rp, short knot) {
 		}
 		this->rp[rp] = knot;
 	}
-	if (rp == 0) this->lastChild = illegalKnotNum;
+	if (rp == 0) this->lastChild = invalidKnotNum;
 } // TTSourceEngine::AssertRefPoint
 
 void TTSourceEngine::AssertRefPointPair(short rp0, short rp1, short knot0, short knot1) {
@@ -628,24 +628,24 @@ void TTSourceEngine::Else(void) {
 void TTSourceEngine::End(bool invalidateRefPoints) {
 	this->Emit( L"#END");
 	this->Emit( L"EIF[]");
-	this->ttv[fv].dir = diagDir; this->ttv[fv].from = this->ttv[fv].to = illegalKnotNum; // assume any kind of side-effect, cf. InitTTEngine(true)
+	this->ttv[fv].dir = diagDir; this->ttv[fv].from = this->ttv[fv].to = invalidKnotNum; // assume any kind of side-effect, cf. InitTTEngine(true)
 	this->ttv[pv] = this->ttv[fv];
 	this->usedpv = false; // ?
-	if (invalidateRefPoints) this->rp[0] = this->rp[1] = this->rp[2] = illegalKnotNum;
+	if (invalidateRefPoints) this->rp[0] = this->rp[1] = this->rp[2] = invalidKnotNum;
 } // TTSourceEngine::End
 
 void TTSourceEngine::MDAP(bool round, short knot) {
 	wchar_t buf[32];
 	
 	swprintf(buf,L"MDAP[%c], %hi",this->rnd[round],knot); this->Emit(buf);
-	this->rp[0] = this->rp[1] = knot; this->lastChild = illegalKnotNum;
+	this->rp[0] = this->rp[1] = knot; this->lastChild = invalidKnotNum;
 } // TTSourceEngine::MDAP
 
 void TTSourceEngine::MIAP(bool round, short knot, short cvt) {
 	wchar_t buf[32];
 	
 	swprintf(buf,L"MIAP[%c], %hi, %hi",this->rnd[round],knot,cvt); this->Emit(buf);
-	this->rp[0] = this->rp[1] = knot; this->lastChild = illegalKnotNum;
+	this->rp[0] = this->rp[1] = knot; this->lastChild = invalidKnotNum;
 } // TTSourceEngine::MIAP
 
 void TTSourceEngine::MDRP(bool minDist, bool round, short color, short knot) {
@@ -676,7 +676,7 @@ void TTSourceEngine::DMIRP(short knot, short cvt, short pvFrom, short pvTo) {
 	wchar_t buf[64];
 	
 	swprintf(buf,L"CALL[], %hd, %hd, %hd, %hd, %hi",knot,cvt,pvFrom,pvTo,this->fnBias + oldDiagMirpFn); this->Emit(buf);
-	this->rp[1] = this->rp[0]; this->rp[2] = knot; this->lastChild = illegalKnotNum;
+	this->rp[1] = this->rp[0]; this->rp[2] = knot; this->lastChild = invalidKnotNum;
 	this->round = rtg;
 	this->ttv[pv].dir = perpDiagDir; this->ttv[pv].from = pvFrom; this->ttv[pv].to = pvTo;
 	this->usedpv = true;
@@ -957,9 +957,9 @@ void TTSourceEngine::CALL3456(short type, short knot3, short cvt3, short knot2, 
 			break;
 	}
 	this->Emit(buf);
-	this->ttv[fv].dir = yRomanDir; this->ttv[fv].from = this->ttv[fv].to = illegalKnotNum;
+	this->ttv[fv].dir = yRomanDir; this->ttv[fv].from = this->ttv[fv].to = invalidKnotNum;
 	this->ttv[pv] = this->ttv[fv];
-	this->rp[0] = knot1; this->lastChild = illegalKnotNum;
+	this->rp[0] = knot1; this->lastChild = invalidKnotNum;
 	this->rp[1] = knot1;
 	this->rp[2] = knot3;
 } // TTSourceEngine::CALL3456
@@ -968,7 +968,7 @@ void TTSourceEngine::CALL64(short parent, short child, short cvt, bool half, boo
 	wchar_t buf[64];
 	
  	swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi",parent,child,cvt,half,flip,this->fnBias + 64); this->Emit(buf);
-	this->rp[0] = this->rp[1] = parent; this->lastChild = illegalKnotNum;
+	this->rp[0] = this->rp[1] = parent; this->lastChild = invalidKnotNum;
 	this->rp[2] = child;
 } // TTSourceEngine::CALL64
 
@@ -977,8 +977,8 @@ void TTSourceEngine::CALL656(bool crissCrossLinks, short knot0, short knot1, sho
 	TTVectorDesc *v;
 	
 	swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi",knot0,knot1,knot2,knot3,cvt,storage,(short)xLinks,(short)flip,this->fnBias + 65 + (short)crissCrossLinks); this->Emit(buf);
-	this->rp[0] = this->rp[1] = this->rp[2] = illegalKnotNum; this->lastChild = illegalKnotNum;
-	v = &this->ttv[pv]; v->dir = diagDir; v->from = v->to = illegalKnotNum; // assume any kind of side-effect, cf. InitTTEngine(true)
+	this->rp[0] = this->rp[1] = this->rp[2] = invalidKnotNum; this->lastChild = invalidKnotNum;
+	v = &this->ttv[pv]; v->dir = diagDir; v->from = v->to = invalidKnotNum; // assume any kind of side-effect, cf. InitTTEngine(true)
 	this->ttv[fv] = this->ttv[pv];
 } // TTSourceEngine::CALL656
 
@@ -989,7 +989,7 @@ void TTSourceEngine::CALL678(bool back, short knot, short sameSide, short cvt, s
 	if (back) swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi",knot,sameSide,storage,this->fnBias + 68);
 	else swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi",knot,sameSide,cvt,storage,this->fnBias + 67);
 	this->Emit(buf);
-	v = &this->ttv[pv]; v->dir = diagDir; v->from = v->to = illegalKnotNum; // assume any kind of side-effect, cf. InitTTEngine(true)
+	v = &this->ttv[pv]; v->dir = diagDir; v->from = v->to = invalidKnotNum; // assume any kind of side-effect, cf. InitTTEngine(true)
 	this->ttv[fv] = this->ttv[pv];
 	this->ttv[pv].dir = yRomanDir; // no reference points changed
 } // TTSourceEngine::CALL678
@@ -1012,8 +1012,8 @@ void TTSourceEngine::CALL6(short knots, short knot[], short targetKnot) {
 	} else if (knots == 1)
 		swprintf(buf,L"CALL[], %hi, %hi, %hi",knot[0],targetKnot,this->fnBias + 6);
 	if (knots > 0) {
-		this->rp[0] = targetKnot; this->lastChild = illegalKnotNum;
-		this->ttv[fv].dir = yRomanDir; this->ttv[fv].from = this->ttv[fv].to = illegalKnotNum;
+		this->rp[0] = targetKnot; this->lastChild = invalidKnotNum;
+		this->ttv[fv].dir = yRomanDir; this->ttv[fv].from = this->ttv[fv].to = invalidKnotNum;
 		this->ttv[pv] = this->ttv[fv];
 		this->Emit(buf);
 	}
@@ -1023,8 +1023,8 @@ void TTSourceEngine::CALL378(short type, short targetKnot) {
 	wchar_t buf[32];
 	
 	swprintf(buf,L"CALL[], %hi, %hi",targetKnot,this->fnBias + type); this->Emit(buf);
-	this->rp[0] = type == 37 ? targetKnot + 1 : targetKnot - 1; this->lastChild = illegalKnotNum;
-	this->ttv[fv].dir = yRomanDir; this->ttv[fv].from = this->ttv[fv].to = illegalKnotNum;
+	this->rp[0] = type == 37 ? targetKnot + 1 : targetKnot - 1; this->lastChild = invalidKnotNum;
+	this->ttv[fv].dir = yRomanDir; this->ttv[fv].from = this->ttv[fv].to = invalidKnotNum;
 	this->ttv[pv] = this->ttv[fv];
 } // TTSourceEngine::CALL378
 
@@ -1044,9 +1044,9 @@ void TTSourceEngine::CALL88(short riseCvt, short runCvt) {
 	
 	swprintf(buf,L"CALL[], %hi, %hi, %hi",riseCvt,runCvt,this->fnBias + italicRiseRunFn);
 	this->Emit(buf);
-	this->rp[0] = this->rp[1] = illegalKnotNum; this->lastChild = illegalKnotNum;
+	this->rp[0] = this->rp[1] = invalidKnotNum; this->lastChild = invalidKnotNum;
 	this->sRound = false; this->round = rtg;
-	this->ttv[fv].dir = xRomanDir; this->ttv[fv].from = this->ttv[fv].to = illegalKnotNum;
+	this->ttv[fv].dir = xRomanDir; this->ttv[fv].from = this->ttv[fv].to = invalidKnotNum;
 	this->ttv[pv] = this->ttv[fv];
 } // TTSourceEngine::CALL88
 
@@ -1056,7 +1056,7 @@ void TTSourceEngine::ResMIAP(short child, short cvt) {
 	swprintf(buf,L"CALL[], %hi, %hi, %hi",child,cvt,this->fnBias + resMIAPFn);
 	this->Emit(buf);
 	
-	this->lastChild = illegalKnotNum; // MSIRP in fpgm, cannot patch code in fpgm...
+	this->lastChild = invalidKnotNum; // MSIRP in fpgm, cannot patch code in fpgm...
 	this->rp[0] = this->rp[1] = this->rp[2] = child; // MSIRP[M] used in fpgm
 } // TTSourceEngine::ResMIAP
 
@@ -1070,16 +1070,16 @@ void TTSourceEngine::ResIPMDAP(TTVDirection pvP, bool postRoundFlag, short paren
 	
 	// SO FAR, WILL NEED TO MAKE MORE GENERAL TO ACCOMODATE fvP and fvC
 	if (postRoundFlag) { // only allowed on ResXIPAnchor
-		this->ttv[fv].dir = xRomanDir; this->ttv[pv].from = this->ttv[pv].to = illegalKnotNum;
+		this->ttv[fv].dir = xRomanDir; this->ttv[pv].from = this->ttv[pv].to = invalidKnotNum;
 		this->ttv[fv] = this->ttv[pv];
 		this->rp[1] = child;
 	} else {
-		this->ttv[pv].dir = pvP; this->ttv[pv].from = this->ttv[pv].to = illegalKnotNum;
+		this->ttv[pv].dir = pvP; this->ttv[pv].from = this->ttv[pv].to = invalidKnotNum;
 		this->ttv[fv] = this->ttv[pv];
 		this->rp[1] = parent0;
 	}
 	this->usedpv = false;
-	this->lastChild = illegalKnotNum;
+	this->lastChild = invalidKnotNum;
 	this->rp[0] = this->rp[2] = child;
 	parent1;
 } // TTSourceEngine::ResIPMDAP
@@ -1089,14 +1089,14 @@ void TTSourceEngine::ResMIRP(short parent, short child, short cvt, bool useMinDi
 	int32_t pos;
 	wchar_t buf[64];
 	
-	useCvt = cvt != illegalCvtNum;
+	useCvt = cvt != invalidCvtNum;
 	pos = swprintf(buf,L"CALL[], %hi, %hi",parent,child);
 	if (useCvt) pos += swprintf(&buf[pos],L", %hi",cvt);
 	pos += swprintf(&buf[pos],L", %hi",this->fnBias + resMIRPFn00 + 2*(int32_t)useCvt + (int32_t)useMinDist);
 
 	this->Emit(buf);
 	
-	this->lastChild = illegalKnotNum; // MSIRP in fpgm, cannot patch code in fpgm...
+	this->lastChild = invalidKnotNum; // MSIRP in fpgm, cannot patch code in fpgm...
 	this->rp[1] = parent;
 	this->rp[0] = this->rp[2] = child; // MSIRP[M] used in fpgm
 } // TTSourceEngine::ResMIRP
@@ -1107,10 +1107,10 @@ void TTSourceEngine::ResIPMIRP(TTVDirection pvGP, short strokeOptimizationFlag, 
 	swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi",pvGP,grandParent0,parent,child,cvt,grandParent1,strokeOptimizationFlag,this->fnBias + resIPMIRPFn);
 	this->Emit(buf);
 	
-	this->ttv[pv].dir = (TTVDirection)((int32_t)pvGP % 2); this->ttv[pv].from = this->ttv[pv].to = illegalKnotNum;
+	this->ttv[pv].dir = (TTVDirection)((int32_t)pvGP % 2); this->ttv[pv].from = this->ttv[pv].to = invalidKnotNum;
 	this->ttv[fv] = this->ttv[pv]; // SO FAR, WILL NEED TO MAKE MORE GENERAL TO ACCOMODATE fvP and fvC
 	this->usedpv = false;
-	this->lastChild = illegalKnotNum;
+	this->lastChild = invalidKnotNum;
 	this->rp[0] = this->rp[1] = this->rp[2] = parent; // parent SRP0[]ed and MSIRP[m]ed last in emulate interpolation of median
 } // TTSourceEngine::ResIPMIRP
 
@@ -1130,8 +1130,8 @@ void TTSourceEngine::ResDDMIRP(short parent0, short child0, TTVectorDesc fv0, sh
 		swprintf(&buf[pos],L"%hi, %hi, %hi, %hi, %hi",fv0.from,fv0.to,fv1.from,fv1.to,this->fnBias + resDDMIRP3Fn); 
 	this->Emit(buf);
 
-	this->lastChild = illegalKnotNum;
-	this->rp[0] = parent0; // this->rp[1] = this->rp[2] = illegalKnotNum; unchanged
+	this->lastChild = invalidKnotNum;
+	this->rp[0] = parent0; // this->rp[1] = this->rp[2] = invalidKnotNum; unchanged
 	this->ttv[fv] = fv1;
 	this->ttv[pv].dir = perpDiagDir; this->ttv[pv].from = parent0; this->ttv[pv].to = child1;
 	this->usedpv = false;
@@ -1143,10 +1143,10 @@ void TTSourceEngine::ResIPDMIRP(TTVDirection pvGP, short grandParent0, short par
 	swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi",pvGP,grandParent0,parent0,child0,cvt0,parent1,child1,cvt1,grandParent1,this->fnBias + resIPDMIRPFn);
 	this->Emit(buf);
 
-	this->ttv[pv].dir = (TTVDirection)((int32_t)pvGP % 2); this->ttv[pv].from = this->ttv[pv].to = illegalKnotNum;
+	this->ttv[pv].dir = (TTVDirection)((int32_t)pvGP % 2); this->ttv[pv].from = this->ttv[pv].to = invalidKnotNum;
 	this->ttv[fv] = this->ttv[pv]; // so far; may have to make more general to accomodate generalized freedom vectors used by the last knot moved, or have fn reset state to pvGP
 	this->usedpv = false;
-	this->lastChild = illegalKnotNum;
+	this->lastChild = invalidKnotNum;
 	this->rp[0] = this->rp[1] = this->rp[2] = parent1; // parent1 SRP0[]ed and MSIRP[m]ed last in symDistFn
 } // TTSourceEngine::ResIPDMIRP
 
@@ -1169,7 +1169,7 @@ void TTSourceEngine::ResIPDDMIRP(TTVDirection pvGP, short grandParent0, short pa
 	this->ttv[fv] = fv1;
 	this->ttv[pv].dir = perpDiagDir; this->ttv[pv].from = parent0; this->ttv[pv].to = parent1;
 	this->usedpv = false;
-	this->lastChild = illegalKnotNum;
+	this->lastChild = invalidKnotNum;
 	this->rp[0] = this->rp[1] = this->rp[2] = child1; // child1 MSIRP[m]ed last to re-center the median after asymmetric linking
 } // TTSourceEngine::ResIPDDMIRP
 
@@ -1179,13 +1179,13 @@ void TTSourceEngine::ResIIPDMIRP(short grandParent0, short parent0, short child0
 	swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi",grandParent0,grandParent1,parent0,parent1,child0,child1,cvt0,cvt1,this->fnBias + resIIPDMIRPFn);
 	this->Emit(buf);
 
-	this->lastChild = illegalKnotNum;
+	this->lastChild = invalidKnotNum;
 
-	this->rp[0] = this->rp[1] = this->rp[2] = illegalKnotNum; // because don't know which branch taken
+	this->rp[0] = this->rp[1] = this->rp[2] = invalidKnotNum; // because don't know which branch taken
 
 	this->round = rtg;
-	this->ttv[pv].dir = diagDir; this->ttv[pv].from = this->ttv[pv].to = illegalKnotNum; // branch may or may not have been taken
-	this->ttv[fv].dir = xRomanDir; this->ttv[fv].from = this->ttv[fv].to = illegalKnotNum;
+	this->ttv[pv].dir = diagDir; this->ttv[pv].from = this->ttv[pv].to = invalidKnotNum; // branch may or may not have been taken
+	this->ttv[fv].dir = xRomanDir; this->ttv[fv].from = this->ttv[fv].to = invalidKnotNum;
 	this->usedpv = false;
 } // TTSourceEngine::ResIIPDMIRP
 
@@ -1308,7 +1308,7 @@ void TTSourceEngine::SetAspectRatioFlag(void) {
 	this->Emit(L"/* Square aspect ratio? */");
 	swprintf(code,L"CALL[], %hi",this->fnBias + aspectRatioFn); this->Emit(code);
 	this->Emit(L"");
-	this->ttv[fv].dir = xRomanDir; this->ttv[fv].from = this->ttv[fv].to = illegalKnotNum;
+	this->ttv[fv].dir = xRomanDir; this->ttv[fv].from = this->ttv[fv].to = invalidKnotNum;
 	this->ttv[pv] = this->ttv[fv]; this->ttv[pv].dir = yRomanDir;
 	this->usedpv = false;
 } // TTSourceEngine::SetAspectRatioFlag
@@ -1413,23 +1413,23 @@ void TTSourceEngine::InitTTEngineState(bool forNewGlyph) {
 		this->minDist = one6;
 		this->sRound = false;
 		this->round = rtg;
-		this->ttv[fv].dir = xRomanDir; this->ttv[fv].from = this->ttv[fv].to = illegalKnotNum;
+		this->ttv[fv].dir = xRomanDir; this->ttv[fv].from = this->ttv[fv].to = invalidKnotNum;
 		this->ttv[pv] = this->ttv[fv];
 		this->usedpv = false;
 		this->autoFlip = true;
 		this->deltaBase = defaultDeltaBase; this->deltaShift = defaultDeltaShift;
-		this->lastChild = illegalKnotNum;
+		this->lastChild = invalidKnotNum;
 	} else { // after Call or Inline, assume any kind of side-effect
-		this->rp[0] = this->rp[1] = this->rp[2] = illegalKnotNum;
+		this->rp[0] = this->rp[1] = this->rp[2] = invalidKnotNum;
 		this->minDist = -1;
 		this->sRound = false;
 		this->round = rnone;
-		this->ttv[fv].dir = diagDir; this->ttv[fv].from = this->ttv[fv].to = illegalKnotNum;
+		this->ttv[fv].dir = diagDir; this->ttv[fv].from = this->ttv[fv].to = invalidKnotNum;
 		this->ttv[pv] = this->ttv[fv];
 		this->usedpv = false; // ?
 		this->autoFlip = (bool)-1;
 		this->deltaBase = -48; this->deltaShift = -1;
-		this->lastChild = illegalKnotNum;
+		this->lastChild = invalidKnotNum;
 	}
 } // TTSourceEngine::InitTTEngineState
 
