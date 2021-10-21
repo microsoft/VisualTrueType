@@ -66,7 +66,7 @@ Application::~Application(void)
 bool Application::OpenFont(std::string fileName, wchar_t errMsg[]) {
 	auto file = std::make_unique<File>();
 
-	this->charCode = this->glyphIndex = ILLEGAL_GLYPH_INDEX;
+	this->charCode = this->glyphIndex = INVALID_GLYPH_INDEX;
 
 	this->fileName = fileName;
 	file->OpenOld(this->fileName.c_str());
@@ -129,7 +129,7 @@ bool Application::GotoGlyph(int32_t code, bool isGlyphIndex) {
 	else {
 		charCode = code;
 		glyphIndex = this->font->GlyphIndexOf(code);
-		if (glyphIndex == ILLEGAL_GLYPH_INDEX) glyphIndex = 0;
+		if (glyphIndex == INVALID_GLYPH_INDEX) glyphIndex = 0;
 	}
 	if (this->glyphIndex != glyphIndex || this->charCode != charCode) {
 		
@@ -485,7 +485,7 @@ bool Application::CompileAll(int32_t* errPos, int32_t* errLen, bool quiet, wchar
 bool Application::BuildFont(StripCommand strip, wchar_t errMsg[]) {
 
 	// If we did not compile and are just here to strip data then perform lazy initialization.
-	if (this->glyphIndex == ILLEGAL_GLYPH_INDEX)
+	if (this->glyphIndex == INVALID_GLYPH_INDEX)
 	{
 		this->glyphIndex = 0;
 		this->charCode = this->font->CharCodeOf(this->glyphIndex);

@@ -66,11 +66,11 @@ typedef enum {alwaysDelta = 0,
 			  ctNatVerRGBFAWYAADelta, ctComVerRGBFAWYAADelta, ctNatHorRGBFAWYAADelta, ctComHorRGBFAWYAADelta,
 			  ctNatVerBGRFAWYAADelta, ctComVerBGRFAWYAADelta, ctNatHorBGRFAWYAADelta, ctComHorBGRFAWYAADelta,
 			  // see also PixelValuePanel::DrawColPict
-			  illegalDelta } DeltaColor;
+			  invalidDelta } DeltaColor;
 #define firstDeltaColor alwaysDelta
 #define firstCTDeltaColor ctNatVerRGBIAWBLYDelta
 #define lastCTDeltaColor ctComHorBGRFAWYAADelta
-#define lastDeltaColor illegalDelta
+#define lastDeltaColor invalidDelta
 #define numDeltaColors (lastDeltaColor - firstDeltaColor + 1)
 
 #define maxRoundArrowHeads 9

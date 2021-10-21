@@ -15,10 +15,10 @@
 typedef struct {
 	TTVectorDesc pv;
 	TTVectorDesc fv[maxParams];
-//	TTVDirection pv;                             // if pvKnot1 != illegalKnotNum, SDPVTL[r] (!perpPV) or SDPVTL[R] (perpPV)
-//	short pvKnot0,pvKnot1;                       // if pvKnot1 != illegalKnotNum, SDPVTL[?], pvKnot0, pvKnot1
-//	TTVDirection fv[maxParams];                  // if fvKnot1[i] != illegalKnotNum, SFVTL[r] (!perpFV) or SFVTL[R] (perpFV) (for each of the params of Interpolate)
-//	short fvKnot0[maxParams],fvKnot1[maxParams]; // if fvKnot1[i] != illegalKnotNum, SFVTL[?], fvKnot0, fvKnot1 (for each of the params of Interpolate)
+//	TTVDirection pv;                             // if pvKnot1 != invalidKnotNum, SDPVTL[r] (!perpPV) or SDPVTL[R] (perpPV)
+//	short pvKnot0,pvKnot1;                       // if pvKnot1 != invalidKnotNum, SDPVTL[?], pvKnot0, pvKnot1
+//	TTVDirection fv[maxParams];                  // if fvKnot1[i] != invalidKnotNum, SFVTL[r] (!perpFV) or SFVTL[R] (perpFV) (for each of the params of Interpolate)
+//	short fvKnot0[maxParams],fvKnot1[maxParams]; // if fvKnot1[i] != invalidKnotNum, SFVTL[?], fvKnot0, fvKnot1 (for each of the params of Interpolate)
 } ProjFreeVector;
 
 class TTGenerator {

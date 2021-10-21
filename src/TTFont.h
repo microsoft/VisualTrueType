@@ -29,7 +29,7 @@
 //#define TOPSIDEBEARING      2
 //#define BOTTOMSIDEBEARING   3
 
-#define ILLEGAL_GLYPH_INDEX	0xffff
+#define INVALID_GLYPH_INDEX	0xffff
 
 #define maxNumCharCodes			0x10000
 
@@ -218,7 +218,7 @@ typedef struct {
 
 typedef struct {
 	unsigned short numComponents;
-	unsigned short useMyMetrics; // or ILLEGAL_GLYPH_INDEX if nobody's metrics
+	unsigned short useMyMetrics; // or INVALID_GLYPH_INDEX if nobody's metrics
 	TrueTypeComponent component[MAXNUMCOMPONENTS];
 } TrueTypeBluePrint;
 
