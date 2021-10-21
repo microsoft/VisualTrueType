@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Working with Text-Based Tables</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=0z1qu8></a>Working with Text-Based Tables</h1>
+
+<p>When you want to do hinting not possible with Visual TrueType, you can open
+text-based windows that contain font file information, tables, and hints. Some
+windows display information about the entire font, and others display
+information or programming code relating to a single glyph.</p>
+
+<p>Other topics in this help file discuss:</p>
+
+<p>Using the graphical interface of the main window, character set, and
+snapshot windows to do visual hinting (for details, see “Working in the Main
+Window”).</p>
+
+<p>Reviewing text in the Font Error window for runtime errors detected by the
+rasterizer (for details, see “Using the Font Error Window”).</p>
+
+<p>As an advanced user, you might want to open windows to work directly with
+the text-based content of the three tables used by Visual TrueType: the control
+value table (‘cvt’), font program table (‘fpgm’), and pre-program table
+(‘prep’). </p>
+
+<p>In addition, Visual TrueType has other text-based windows you can open to
+work with OpenType Layout data. All the text-based windows are available as
+commands on the Views menu, or you can use keyboard shortcuts:</p>
+
+<table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0
+ style='border-collapse:collapse;border:none'>
+ <tr>
+  <td width=216 valign=top style='width:107.75pt;border:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><b>Command</b></p>
+  </td>
+  <td width=117 valign=top style='width:58.5pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p><b>Shortcut</b></p>
+  </td>
+  <td width=603 valign=top style='width:301.25pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p><b>What It Displays</b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=216 valign=top style='width:107.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p>VTT Talk</p>
+  </td>
+  <td width=117 valign=top style='width:58.5pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>Ctrl&nbsp;+&nbsp;5</p>
+  </td>
+  <td width=603 valign=top style='width:301.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>Uncompiled text source of the program, VTT Talk.</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=216 valign=top style='width:107.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p>Glyph Program</p>
+  </td>
+  <td width=117 valign=top style='width:58.5pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>Ctrl&nbsp;+&nbsp;2</p>
+  </td>
+  <td width=603 valign=top style='width:301.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>Low-level TrueType instructions (derived from VTT Talk, stored in the
+  ‘glyf’ table.</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=216 valign=top style='width:107.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p>Control Program </p>
+  </td>
+  <td width=117 valign=top style='width:58.5pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>Ctrl&nbsp;+&nbsp;4</p>
+  </td>
+  <td width=603 valign=top style='width:301.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>Uncompiled text source of the Control Value table (‘cvt’). See “Using the
+  Control Value Table”.</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=216 valign=top style='width:107.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p>Pre-program</p>
+  </td>
+  <td width=117 valign=top style='width:58.5pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>Ctrl&nbsp;+&nbsp;3</p>
+  </td>
+  <td width=603 valign=top style='width:301.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>Uncompiled text source of the pre-program ‘prep’ table.</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=216 valign=top style='width:107.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p>Font Program</p>
+  </td>
+  <td width=117 valign=top style='width:58.5pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>Ctrl&nbsp;+&nbsp;7</p>
+  </td>
+  <td width=603 valign=top style='width:301.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>Uncompiled text source of the font program table (‘fpgm’).</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=216 valign=top style='width:107.75pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p>Font Error Window</p>
+  </td>
+  <td width=117 valign=top style='width:58.5pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>&nbsp;</p>
+  </td>
+  <td width=603 valign=top style='width:301.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>Runtime errors that occur when the font is rasterized.</p>
+  </td>
+ </tr>
+</table>
+
+<p>Once a text-based window is open, you can use conventional word-processing
+techniques to click an insertion point, to select text, and to cut, copy, and
+paste text. You also can search for text, go to a specific line, and import or
+export text. </p>
+
+<p><b>To open a text-based window</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>On the View menu, click the window name. OR press its keyboard shortcut
+(if any).</p>
+
+<p><b>To close a text-based window</b></p>
+
+<p>Select the window by clicking on it or pressing its associated keyboard
+shortcut.</p>
+
+<p>On the File menu, select Close, or press Ctrl&nbsp;+&nbsp;W. </p>
+
+</BODY>
+</HTML>

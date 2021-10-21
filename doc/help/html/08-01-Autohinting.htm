@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Introducing Visual TrueType</TITLE>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=h1full></a>Light Latin Autohint </h1>
+
+<h2><a name=h1full></a>About </h2>
+
+<p>VTT includes an Autohinter for Latin fonts. This Autohinter makes use of a new lightweight hinting strategy that focuses on fitting common heights, such as x-height, Cap Height, Ascender, Descender to CVT heights. This strategy, takes advantage of Windows symmetric rendering modes and anchors these key heights to the grid, thereby maintaining consistency in heights across a font family. This method of grid-fitting also helps to reduce blur, and minimizes distortion. </p>
+
+<p><b>Follow these steps to Autohint a Latin font:</b></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><img width=436 height=267 alt="Autohint Latin"
+src="../images/LatinAuto.png"></p>
+
+<p class=Instructionsteps>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Start Visual True Type. </p>
+
+<p class=Instructionsteps>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>File > Open. Navigate to font file you would like to Autohint.</p>
+
+<p class=Instructionsteps>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select Font File and Open.</p>
+
+<p class=Instructionsteps>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>From the Tools menu, select Autohint > Light Latin Autohint.</p>
+
+<p class=Instructionsteps>5.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>	When Autohinting is complete choose Save from File Menu</p>
+
+
+<p style='margin-left:.5in'><b>Note</b> No Autohinter, including this one, is perfect; the intent is that this Autohinter works well enough for most glyphs. Autohinting for all glyphs in the font should be carefully checked and proofed, and certain glyphs may need to be re-hinted manually, either by using the Visual Hinting tools, or by editing the VTT talk. Please see the sample font VTTDemo.ttf, that ships with VTT as a reference on best practices for hinting.</p>
+
+
+</BODY>
+</HTML>

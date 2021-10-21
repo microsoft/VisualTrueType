@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Hinting Strategies</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+<h1><a name=bvrkap></a>Hinting Strategies</h1>
+
+<p>In general, the more detailed hinting you do to a font, the better the
+quality of the font. Some outline editors automatically hint a font for you.
+Although auto-hinting sometimes is better than none at all, Visual TrueType
+offers more sophisticated controls for those people interested in crafting
+high-quality fonts that will display and print reliably on all devices. For
+this reason, Visual TrueType can strip all auto-hinting from your font so you
+add more and better hints. For details, see “Preparing the Open Font” in
+Chapter 3, “Using Visual TrueType: The Basics.”</p>
+
+<p>You hint all glyphs in a font, one glyph at a time. Hints applied to a glyph
+apply to all sizes of that glyph. Consequently, you need to visually inspect a
+range of sizes, both smaller and larger, to verify that the hinting makes all
+sizes look good. </p>
+
+<p>When hinting, staying true to the outline becomes less important than
+producing a clear bitmap at smaller point sizes, particularly on low-resolution
+output devices. Your main concerns are choosing key features to maintain in the
+glyphs and ensuring that features similar or identical on different glyphs
+remain so at different sizes. You should try to:</p>
+
+<p class=MsoListBulletCxSpFirst><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Maintain
+consistent heights (cap height, x-height, ascenders, descenders, and so on).</p>
+
+<p class=MsoListBulletCxSpMiddle><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Keep
+stroke weights consistent.</p>
+
+<p class=MsoListBulletCxSpMiddle><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Prevent
+rounding variations that would cause inappropriate differences at small point
+sizes (for example, rounding one stroke to two pixels while rounding a similar
+stroke to one pixel).</p>
+
+<p class=MsoListBulletCxSpMiddle><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Create
+even “stepping” patterns and consistent widths for diagonal strokes.</p>
+
+<p class=MsoListBulletCxSpMiddle><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Keep
+counters open at small sizes.</p>
+
+<p class=MsoListBulletCxSpLast><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Control
+side bearings so glyphs don’t touch.</p>
+
+
+</BODY>
+</HTML>

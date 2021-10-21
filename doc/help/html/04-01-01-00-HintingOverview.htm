@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Hinting: An Overview</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=6r3pgv></a>Hinting: An Overview</h1>
+
+<p>TrueType fonts are outlines created by mathematical descriptions. Control
+points on the outlines precisely describe the straight lines and curves in each
+glyph of the font. Your computer uses these descriptions to scale each outline to
+point size.</p>
+
+<p><img width=161 height=137 alt="Outline of a Times New Roman letter m" src="../images/Hinting-Outlines.gif"></p>
+
+<p><i>The outline of a Times New Roman “m.”</i></p>
+
+<p>Printers, screens, and other common output devices are raster devices. They
+print or display images, including font outlines, as bitmaps on a regularly
+spaced grid of black and white or colored dots called picture elements (pixels
+for short). Your computer’s operating system uses its built-in rasterizer to
+convert TrueType outlines to the bitmaps needed by the output device. </p>
+
+<p>The resolution of the output device determines the size of the pixel grid
+available to represent the outline. The higher the resolution, the more pixels
+the device has for filling in the font outline. Conversely, lower resolution
+means fewer pixels. </p>
+
+<p>To print or display a TrueType glyph, the computer scales the glyph to the
+right size, rasterizes it, and then “colors in” or “turns on” all pixels that
+fall inside the outline as applied to the pixel grid of the output device.</p>
+
+<p>This simplest approach to rasterizing the outline usually isn’t good enough.
+At small point sizes, a low-resolution device won’t have enough pixels to fill
+in the outline accurately. Stem weights, crossbar widths, and serif details
+might become irregular or drop out completely. </p>
+
+<p>As shown below, the pixel version of the “m” has stems of different widths,
+incomplete serifs, and flattened arches. The right arch doesn’t even connect
+with the left one.</p>
+
+<p><img width=161 height=137 alt="12-point Times New Roman letter m at 96dpi" src="../images/Hinting-Pixels.gif"></p>
+
+<p><i>12-point Times New Roman “m” at 96 dpi.</i></p>
+
+<p>The glyph outline determines which pixels to include in the bitmap, so you
+may need to fit the outline to the grid to create a good bitmap. Hints are
+mathematical instructions added to the font telling the TrueType rasterizer how
+to adjust a glyph’s outline at particular sizes. Modifying an outline this way
+results in grid-fit, because the rasterizer adjusts the glyph outline to fit
+the pixel grid.</p>
+
+<p>The decision whether or not to turn a partial pixel on or off is crucial,
+particularly when the output device produces a monochrome bitmap where each
+pixel is either on or off, black or white. (A grayscale rasterizer can use
+different levels of gray, which lessens the problem.) That’s where hinting
+comes in handy. Without hints to grid-fit the outline, the bitmap depends on
+how the computer rounds the partial pixels up or down.</p>
+
+<p>Hinting controls distances, proportions, and pixel patterns of glyphs. You
+have many options for hinting a font. For starters, you might hint certain
+control points to fall on the grid. You also can create links between two or
+more control points, interpolate between two control points, refer certain
+links to the font’s control value table, create exceptions for certain sizes
+and glyphs, and more. To help you understand how to hint, as well as how to use
+Visual TrueType, this user guide will illustrate each of the hinting procedures
+with examples of how to apply each technique.</p>
+
+
+</BODY>
+</HTML>

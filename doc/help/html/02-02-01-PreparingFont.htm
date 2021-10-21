@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Preparing a font for hinting</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=dq51ar></a><a name=1fq.sg.></a>Preparing a font for hinting</h1>
+
+<p>Hinting controls points on the glyph outline. Some hinting is global,
+affecting the entire font or available to any glyph in the font. Visual
+TrueType stores these global values in three tables: </p>
+
+<p class=MsoListBulletCxSpFirst><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>The
+control value table (‘cvt’) stores values you enter to control the regularity
+of features. Visual TrueType refers to these values when applying links,
+anchors, and strokes.</p>
+
+<p class=MsoListBulletCxSpMiddle><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>The
+pre-program table (‘prep’) stores values for certain conditions, such as the
+ppem size limits for hinting, that always apply to the font. Each time you
+change glyph size or resolution, Visual TrueType executes the table to scale
+the control values to fractional numbers representing the font size and
+resolution you’re hinting.</p>
+
+<p class=MsoListBulletCxSpLast><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>The
+font program table (‘fpgm’) stores functions that can be called from the prep
+table or from hints applied to the glyph. Re-using the same function for
+multiple glyphs eliminates repetitive code. </p>
+
+<p>Other hinting is local, or particular to a glyph, and stored as part of its
+glyph table (‘glyf’). Visual TrueType applies all global hinting to the font
+before executing local hinting of a glyph.</p>
+
+<p>Preparing the font for hinting creates an empty template for the ‘cvt’
+table, a partially completed template for the ‘prep’ table, and a ready-to-use
+‘fpgm table. You will learn more about these tables in conjunction with hinting
+tasks you can do with Visual TrueType. However, before doing any hinting, you
+must fill in the template for the ‘cvt’ table (see “Using the Control Value
+Table”). Completing the other two templates is optional for advanced users who
+know how to set these values to refine hinting for specific situations.</p>
+
+<p>In addition, preparing a font can:</p>
+
+<p class=MsoListBulletCxSpFirst><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Remove
+previous hinting. Many font programs autohint the font. You should remove those
+instructions because Visual TrueType ignores them and they increase the disk
+space required for the font. Or you can clear hinting you’ve done, so Visual
+TrueType removes private tables that contain source data for VTT Talk and
+TrueType (glyph program).</p>
+
+<p class=MsoListBulletCxSpLast><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Import
+character group data included in the font. Each glyph belongs to a character
+group, and Visual TrueType applies ‘cvt’ values for the group as you hint the
+glyph. You can change a glyph’s character group with the Change Char Group
+command on the Edit menu (see “Changing a Glyph’s Character Group”).</p>
+
+<p>Visual TrueType assumes that you want to remove hinting, import character
+group data, and import the templates and tables it needs. If you’ve opened a
+font for the first time, you probably want to accept the default settings. </p>
+
+<p><img width=292 height=263 id="Picture 16" alt="Prepare font dialog" src="../images/ToolsPrepare.png"></p>
+
+<p><i>If you’re preparing the font for the first time, use the default
+settings. </i></p>
+
+<p>However, maybe you’ve been working on the font and need to “start over” on
+some aspect. Just clear the check boxes for those options you don’t want. For
+example, to start over with hinting, yet keep the character groups and table
+data, clear all options except Remove Existing Instructions. </p>
+
+<p>Visual TrueType overwrites any existing information for the selected option.
+To keep you from accidentally overwriting work you wanted to keep, Visual
+TrueType gives you a chance to change your mind. A prompt, customized to the
+selected settings, will ask you to confirm. The default setting is No, so you
+must click Yes to proceed.</p>
+
+<p><img width=605 height=325 id="Picture 22" alt="Prepare font confirmation dialog" src="../images/ToolsPrepareConfirm.png"></p>
+
+<p><i>Click Yes only if you want to proceed with the bulleted actions. </i></p>
+
+<p><b>To prepare the open font for hinting</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>On the Tools menu, click Prepare Font.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Click OK.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>When prompted to confirm the selected options, click Yes.</p>
+
+<p><b>To start over with an open font you’ve been hinting</b></p>
+
+<p class=MsoListBulletCxSpFirst style='margin-left:.5in'>1.<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>On
+the Tools menu, click Prepare Font.</p>
+
+<p class=MsoListBulletCxSpMiddle style='margin-left:.5in'>2.<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>If
+you want to keep hinting you’ve already done to the font, click to clear the
+Remove Existing Instructions check box.<br>
+If you’ve assigned glyphs to new character groups and want to keep those
+assignments, click to clear Import Character Group Data.<br>
+If you want to keep data you’ve already entered in global tables, click to
+clear Import a ‘Cvt’ Template, a Standard ‘Fpgm,’ and a ‘Prep’ Template.</p>
+
+<p class=MsoListBulletCxSpLast style='margin-left:.5in'>3.<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Click
+OK.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>When prompted to confirm the selected options, click Yes.</p>
+
+</BODY>
+</HTML>

@@ -1,0 +1,137 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Creating Strokes</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=m1nnes></a>Creating Strokes</h1>
+
+<p>A stroke is the easiest way to assure a uniform width on a diagonal. Created
+by dragging with the Stroke tool, a stroke connects a “parent” control point to
+a “child” point, then links that linked pair to another linked parent and
+child. The two parent points don’t have to be on the same side of the diagonal.
+</p>
+
+<p>You use the same tool for all strokes because strokes aren’t specific to an
+X or Y direction.</p>
+
+<p><img width=104 height=80 alt="Stroke tool icon"
+src="../images/Toolbar-Stroke.png"></p>
+
+<p>When you select the Stroke tool, the pointer looks like this:</p>
+
+<p><img width=38 height=37 alt="Stroke tool cursor"
+src="../images/Cursor-Stroke.png"></p>
+
+<p>Before creating the stroke, you should add links, interpolations, or other
+hints to control the parent points and possibly round them to the grid. In
+addition, make sure both Show X Direction and Show Y Direction are selected in
+the Display Options dialog. This is necessary because a stroke can cause the
+child points to flex in either the X or Y direction. Because Visual TrueType
+determines that flexing after applying the stroke, both directions must be
+available.</p>
+
+<p>To begin the stroke, you drag the Stroke tool to connect the first parent
+point to its child point. This leaves a black arrow between the two points.</p>
+
+<p>Then you drag to connect the second parent point to its child point. As you
+drag, solid black fills in the area between the four points. When you release the
+mouse button, black lines replace the solid black. If the stroke is within ±
+45° of the vertical, the lines are horizontal; otherwise, the black lines are
+vertical.</p>
+
+<p><b>Note </b>A stroke with all horizontal black lines will be considered
+closer to vertical than horizontal. Consequently, Visual TrueType applies same
+logic it uses to determine circular dependencies in links in the X direction to
+determine circular dependencies in the two arrows at either end of the stroke.
+Likewise, a stroke with all vertical black lines will be considered closer to
+horizontal than vertical, with its arrows subject to the same logic applied to
+links in the Y direction.</p>
+
+<p>Like links and anchors, strokes can refer to a value in the control value
+table (‘cvt’). When Cvts or Cvt Numbers is selected in the Visual TrueType
+menu, a highway sign appears in the black stroke. (Cvt Numbers tells Visual
+TrueType to display a larger version of the highway sign, along with the ‘cvt’
+number, if any, applied to the stroke.) </p>
+
+<p>When you hold down the Shift key and click the sign with the Stroke tool,
+Visual TrueType displays entries from the ‘cvt’ table. You can scroll that list
+until you find the entry that relates to the weight of the stroke.</p>
+
+<p>The following example shows two strokes applied to the two legs of an
+uppercase “A.” Because two arrows cannot end at the same point, all strokes
+move from the inside edge of the glyph to the outside edge. Both strokes
+display ‘cvt’ values, too:</p>
+
+<p><img width=218 height=204 alt="Two strokes defining the width of the diagonals for a capital A"
+src="../images/bm138.gif"></p>
+
+<p><i>Two strokes define the width of the diagonals on an “A.” Because the
+strokes are within ± 45° of the vertical, the stroke lines are horizontal.</i></p>
+
+<p><b>Tip</b> When you’re not working with strokes, you can hide them to make
+more room on the screen for other visual hinting. On the Visual TrueType menu,
+the Strokes command toggles between hiding and displaying all strokes.</p>
+
+<p>To create Strokes via the keyboard, you must type the appropriate VTT Talk
+commands into the VTT Talk window (Ctrl&nbsp;+&nbsp;5).</p>
+
+<p><b>To select the Stroke tool</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>In the Visual TrueType Options submenu of the Display menu, ensure that
+the Strokes option is enabled.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the Stroke tool by clicking its icon in the toolbar.</p>
+
+<p><b>To create a stroke</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the Stroke tool by clicking its icon in the toolbar.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Point to a parent point.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Drag to a child point.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Point to another parent point.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>5.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Drag to the other child point.</p>
+
+<p><b>To assign a ‘cvt’ value to a stroke</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>In the Display Options dialog, ensure that the Cvts and Cvt Numbers
+options are set.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the Stroke tool by clicking its icon in the toolbar.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Point to the highway sign for the Stroke you want to control.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Holding down the right mouse button, scroll through the list of ‘cvt’
+entries and select the entry that corresponds to the desired distance.</p>
+
+<p><b>To delete a stroke</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the Stroke tool by clicking its icon in the toolbar.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Drag the arrowhead off one child point.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Drag the arrowhead off the other child point. </p>
+
+</BODY>
+</HTML>

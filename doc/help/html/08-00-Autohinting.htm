@@ -1,0 +1,29 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Introducing Visual TrueType</TITLE>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=h1full></a>Autohinting in VTT</h1>
+
+<p>Microsoft Visual TrueType (VTT) is a professional-level tool for graphically instructing TrueType and OpenType fonts. VTT includes an Autohinter for Latin and East Asian fonts, that automatically generates a set of instructions for all glyphs in a font. The automatically generated instructions can then be easily edited via the Graphical User Interface, or by directly editing the High Level VTT Talk code. VTT can now also automatically generate a ‘Control Value Table’ for Latin fonts, saving you time, so that you can begin adding Visual hints to your font straight away, without the need to measure the font, and manually fill in the relevant CVT entries. The Autohinter makes use of a new lightweight hinting strategy, that is best suited to today’s rendering environments, such as DirectWrite. </p>
+
+<p style='margin-left:.5in'><b>Note</b> No Autohinter, including this one, is perfect; the intent is that this Autohinter works well enough for most glyphs. Autohinting for all glyphs in the font should be carefully checked and proofed, and certain glyphs may need to be re-hinted manually, either by using the Visual Hinting tools, or by editing the VTT talk.</p>
+
+<h1><a name=h1full></a>NEW: Rendering Environment Specific commands </h1>
+
+<p>In “black-and-white” rendering, the strokes of the fonts’ letterforms typically have a width that is a multiple of a full pixel, because in “black-and-white” rendering a pixel is either fully on or fully off. By contrast, in “grey-scaling” and “ClearType” rendering, a pixel can assume an intermediate shade of grey or color. Typically, the intermediate shade is related to the fractional area of the pixel that is considered as being “inside” a letterform. For “black-and-white” rendering, appropriate “hints” will often constrain parts of the letterforms’ outlines to a full pixel boundary (“round to grid”), while in “grey-scaling” and “ClearType” rendering the same parts of the outlines can be constrained to a fractional pixel value.</p>
+
+<p>VTT 6.01 and higher, supports a new set of commands, in the high-level font hinting language (“VTT Talk”). These commands can replace and extend the functionality of existing commands. The new commands are added automatically when Autohinting a font, and can also be added by manually editing the hinting code in the VTT Talk window and compiling. RES commands, (Rendering Environment Specific) can be used to constrain a glyph for a variety of rendering environments. Unlike VTT Talk’s existing commands, which map to a series of TrueType instructions, the new commands map to TrueType functions, which determine the rounding granularity dynamically. </p>
+
+<p style='margin-left:.5in'><b>Note</b> See the VTTDemo.ttf that ships with VTT for examples of the new commands in use.</p>
+<p style='margin-left:.5in'><b>Note</b> RES commands cannot be added via the graphical interface. </p>
+
+
+
+</BODY>
+</HTML>

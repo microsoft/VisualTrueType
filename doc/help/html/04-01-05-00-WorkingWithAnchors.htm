@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Working with Anchors</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=3sp7vc></a>Working with Anchors</h1>
+
+<p>An anchor is any control point that is:</p>
+
+<p class=MsoListBulletCxSpFirst><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Rounded
+to the grid using any of the rounding options available with Visual TrueType. </p>
+
+<p class=MsoListBulletCxSpMiddle><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Has
+no parent control point.</p>
+
+<p class=MsoListBulletCxSpLast><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>May
+or may not be a parent point itself.</p>
+
+<p>For example, a control point with one or more links going from it, but no
+link coming to it becomes an anchor point. The point snaps to the nearest pixel
+boundary in the specified X or Y direction. </p>
+
+<p>By default, each side-bearing point is anchored in both the X and Y
+direction. You can anchor any other control point that has no parent or child
+points just by rounding it to the grid. However, anchors usually are
+by-products of links, interpolations, and shifts.</p>
+
+<p>An anchor appears on the point, either vertical (Y direction) or horizontal
+(X direction), according to the direction of the hint that created the anchor.
+Linking or shifting to an anchored control point will clear its anchor in the
+direction of the link.</p>
+
+<p>When working with anchors, you should choose Show X Direction or Show Y
+Direction from the Visual TrueType menu so you can see anchors for either or
+both directions. In addition, you should choose:</p>
+
+<p class=MsoListBulletCxSpFirst><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Anchors
+to display the anchors.</p>
+
+<p class=MsoListBulletCxSpMiddle><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Rounding
+Methods to display symbols for the rounding methods applied to the points</p>
+
+<p class=MsoListBulletCxSpLast><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Cvts
+to display highway signs so you can review and change references to the control
+value table.</p>
+
+<p>To create Anchors via the keyboard, you must type the appropriate VTT Talk
+commands into the VTT Talk window (Ctrl&nbsp;+&nbsp;5).</p>
+
+<p><b>To anchor a control point that has no parent or child points</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the Visual TrueType Options submenu of the Display menu, and
+ensure that either Show X Direction or Show Y Direction is enabled.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>On the same Visual TrueType Options submenu, verify that Anchors,
+Rounding Methods, and Cvts are enabled.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the appropriate link, interpolate, or shift tool by clicking its
+icon in the toolbar or pressing the appropriate function key.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Point to the control point you want to round.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>5.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Holding down the right mouse button, and click a rounding method from
+the menu (for details, see “Rounding Control Points”)</p>
+
+</BODY>
+</HTML>

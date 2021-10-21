@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Example 2: Creating Links</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name="e_0qm3"></a>Example 2: Creating Links</h1>
+
+<p>Visual TrueType keeps track of your links so that you cannot do something
+that won’t work. For example, a chain of links can be useful to control the
+curve of the serif:</p>
+
+<p><img width=78 height=146 alt="Vertical links 1" src="../images/bm82.gif"><img
+width=78 height=144 alt="Vertical links 2" src="../images/bm83.gif"><img
+width=78 height=146 alt="Vertical links 3" src="../images/bm84.gif"></p>
+
+<p><i>A chain of three vertical links.</i></p>
+
+<p>Adding a fourth link might seem like a good idea to assure that the stem is
+identical to other such stems in the same font: </p>
+
+<p><img width=78 height=146 alt="Vertical links 4" src="../images/bm85.gif"></p>
+
+<p><i>Adding a fourth link.</i></p>
+
+<p>However, this is one link too many. A link specifies which part of the
+character must not give way upon fitting the outline to the grid. This implies
+that something else must give way. But if the last link in the chain links back
+to the starting point, nothing can give way. Visual TrueType will display a
+message like: </p>
+
+<p><img width=675 height=272 alt="Circular dependency error"
+src="../images/Error-CircularDependency.png"></p>
+
+<p><i>A chain of links cannot begin and end at the same control point.</i></p>
+
+<p>The last link must not link back to a control point used earlier in the
+chain.<b> </b>Visual TrueType alerts you so you can delete a link from the
+chain or forego the last link you tried to create.</p>
+
+</BODY>
+</HTML>
