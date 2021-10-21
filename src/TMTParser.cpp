@@ -1476,7 +1476,7 @@ void TMTSourceParser::Parameter(ActParam *actParam) {
 				actParam->type = rangeOfPpemNcolorOpt; // by now
 			}
 		} else if (!this->legacyCompile && (this->sym == colon || this->sym == rightDir || this->sym == upDir)) {
-			// the following are all legal:
+			// the following are all valid:
 			//
 			// knot                   no ttv override
 			// knot >                 ttv in x-direction

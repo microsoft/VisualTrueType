@@ -298,7 +298,7 @@ bool Attribute::SearchByValue(Attribute *tree, Symbol subAttribute, int32_t valu
 
 bool Attribute::SortByValue(Attribute **to, Attribute *from, wchar_t errMsg[]) {
 //	alternatively, to be a tad more memory efficient, could traverse source tree in prefix, inserting allocated nodes at the end of each visit,
-//	making sure to have two legal trees at any intermediate stage, for the purpose of standard de-allocation in case of any error.
+//	making sure to have two valid trees at any intermediate stage, for the purpose of standard de-allocation in case of any error.
 	if (from) {
 		if (!Attribute::SortByValue(to,from->left,errMsg)) return false;
 		if (!Attribute::SortByValue(to,from->right,errMsg)) return false;
