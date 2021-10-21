@@ -575,13 +575,13 @@ bool TrueTypeFont::Read(File *file, TrueTypeGlyph *glyph, short *platformID, sho
 	if (!this->SetSfnt(*platformID, *encodingID, errMsg)) return false;
 
 	// not the smartest way to get these numbers, another historical legacy
-	if ((glyphIndex = this->GlyphIndexOf(L'H')) == ILLEGAL_GLYPH_INDEX) this->capHeight = this->unitsPerEm;
+	if ((glyphIndex = this->GlyphIndexOf(L'H')) == INVALID_GLYPH_INDEX) this->capHeight = this->unitsPerEm;
 	else if (this->GetGlyph(glyphIndex,glyph,errMsg)) this->capHeight = glyph->ymax;
 	else return false;
-	if ((glyphIndex = this->GlyphIndexOf(L'x')) == ILLEGAL_GLYPH_INDEX) this->xHeight = this->unitsPerEm;
+	if ((glyphIndex = this->GlyphIndexOf(L'x')) == INVALID_GLYPH_INDEX) this->xHeight = this->unitsPerEm;
 	else if (this->GetGlyph(glyphIndex,glyph,errMsg)) this->xHeight = glyph->ymax;
 	else return false;
-	if ((glyphIndex = this->GlyphIndexOf(L'p')) == ILLEGAL_GLYPH_INDEX) this->descenderHeight = 0;
+	if ((glyphIndex = this->GlyphIndexOf(L'p')) == INVALID_GLYPH_INDEX) this->descenderHeight = 0;
 	else if (this->GetGlyph(glyphIndex,glyph,errMsg)) this->descenderHeight = glyph->ymin;
 	else return false;	
 
@@ -752,7 +752,7 @@ bool TrueTypeFont::GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t er
 	glyph->ymax = SWAPW(signedWord);		
 	
 	glyph->bluePrint.numComponents = 0;
-	glyph->bluePrint.useMyMetrics = ILLEGAL_GLYPH_INDEX; // use nobody's metrics so far
+	glyph->bluePrint.useMyMetrics = INVALID_GLYPH_INDEX; // use nobody's metrics so far
 
 	if ( numContoursInGlyph < 0  ) {
  		glyph->composite = true;
@@ -798,7 +798,7 @@ bool TrueTypeFont::GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t er
 
 			if (flags & USE_MY_METRICS) { 
  				glyph->useMyMetrics = true;
-				if (glyph->bluePrint.useMyMetrics == ILLEGAL_GLYPH_INDEX) glyph->bluePrint.useMyMetrics = cgIdx; // first one wins
+				if (glyph->bluePrint.useMyMetrics == INVALID_GLYPH_INDEX) glyph->bluePrint.useMyMetrics = cgIdx; // first one wins
  			}
  			if ( flags & ARG_1_AND_2_ARE_WORDS ) {
  				/* arg 1 and 2 */
@@ -1076,7 +1076,7 @@ int32_t TrueTypeFont::GlyphIndexOf(uint32_t charCode) {
 	map.unicode = charCode;
 
 	if(!std::binary_search(glyphIndexMap->begin(), glyphIndexMap->end(), map, Compare_UniGlyphMap))
-		return ILLEGAL_GLYPH_INDEX; 
+		return INVALID_GLYPH_INDEX; 
 
 	it = std::lower_bound(glyphIndexMap->begin(), glyphIndexMap->end(), map, Compare_UniGlyphMap); 
 
@@ -1094,7 +1094,7 @@ bool TrueTypeFont::GlyphIndecesOf(wchar_t textString[], int32_t maxNumGlyphIndec
 			ch = textString[i++]; dec = 0;
 			while (ch && ch != L'^') {
 				if (L'0' <= ch && ch <= L'9') dec = 10*dec + (int32_t)(ch - L'0');
-				else { swprintf(errMsg,L"illegal decimal digit in glyph index"); return false; }
+				else { swprintf(errMsg,L"invalid decimal digit in glyph index"); return false; }
 				ch = textString[i++];
 			}
 			if (ch == L'^') ch = textString[i++];
@@ -1105,7 +1105,7 @@ bool TrueTypeFont::GlyphIndecesOf(wchar_t textString[], int32_t maxNumGlyphIndec
 				if (L'0' <= ch && ch <= L'9') hex = 16*hex + (int32_t)(ch - L'0');
 				else if (L'A' <= ch && ch <= L'F') hex = 16*hex + (int32_t)(ch - L'A' + 10);
 				else if (L'a' <= ch && ch <= L'f') hex = 16*hex + (int32_t)(ch - L'a' + 10);
-				else { swprintf(errMsg,L"illegal hexadecimal digit in glyph index"); return false; }
+				else { swprintf(errMsg,L"invalid hexadecimal digit in glyph index"); return false; }
 				ch = textString[i++];
 			}
 			if (ch == L'~') ch = textString[i++];

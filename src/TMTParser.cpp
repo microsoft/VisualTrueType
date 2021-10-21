@@ -19,7 +19,7 @@
 #include "TTGenerator.h"
 #include "TMTParser.h"
 
-#define idents 		illegal
+#define idents 		invalid
 #define compLogics	2L
 #define phases		4L
 #define serifs		5L
@@ -38,9 +38,9 @@
 #define TermComment(self) (self->ch == L'*' && self->ch2 == L'/')
 #define	Numeric(ch) (L'0' <= (ch) && (ch) <= L'9')
 #define Alpha(ch) ((L'A' <= (ch) && (ch) <= L'Z') || (L'a' <= (ch) && (ch) <= L'z'))
-#define Command(self) (align <= (self)->sym && (self)->sym <= illegal)
+#define Command(self) (align <= (self)->sym && (self)->sym <= invalid)
 #define InitFlag(self) (leftDir <= (self)->sym && (self)->sym <= postRound)
-#define InitParam(self) (illegal <= (self)->sym && (self)->sym <= leftDir) // leftDir included because it doubles up as lessThan in the minDistGeneral parameter
+#define InitParam(self) (invalid <= (self)->sym && (self)->sym <= leftDir) // leftDir included because it doubles up as lessThan in the minDistGeneral parameter
 #define Separator(self) (period <= (self)->sym && (self)->sym <= semiColon)
 #define InterpolateCmd(cmd) ((cmd) == xInterpolate || (cmd) == xInterpolate0 || (cmd) == xInterpolate1 || (cmd) == xIPAnchor || (cmd) == yInterpolate || (cmd) == yInterpolate0 || (cmd) == yInterpolate1 || (cmd) == yIPAnchor)
 #define maxGenerators 3
@@ -69,10 +69,10 @@ typedef enum { align = 0, asM, autoHinter,
 			   xAlign, xAnchor, xBDelta, xCDelta, xDelta, xDiagonal, xDist, xDoubleGrid, xDownToGrid, xGDelta, xHalfGrid, xInterpolate, xInterpolate0, xInterpolate1, xIPAnchor, xLink, xMove, xNoRound, xRound, xShift, xSmooth, xStem, xStroke, xUpToGrid, // MODIFY GREGH
 			   //yAlign, yAnchor, yBDelta, yDelta, yDiagonal, yDist, yDoubleGrid, yDownToGrid, yGDelta, yHalfGrid, yInterpolate, yInterpolate0, yInterpolate1, yIPAnchor, yLink, yMove, yNoRound, yRound, yShift, ySmooth, yStem, yStroke, yUpToGrid,
 			   yAlign, yAnchor, yBDelta, yCDelta, yDelta, yDiagonal, yDist, yDoubleGrid, yDownToGrid, yGDelta, yHalfGrid, yInterpolate, yInterpolate0, yInterpolate1, yIPAnchor, yLink, yMove, yNoRound, yRound, yShift, ySmooth, yStem, yStroke, yUpToGrid, // MODIFY GREGH
-			   illegal,
+			   invalid,
 			   leftParen, plus, minus, natural, rational, literal, aT, atLeast,
 			   upDir, // COM
-			   leftDir, /* InitParam (including above illegal) */
+			   leftDir, /* InitParam (including above invalid) */
 			   rightDir, italAngle, adjItalAngle, 
 			   optStroke, optStrokeLeftBias, optStrokeRightBias, // COM
 			   postRound, /* leftDir through postRound: Flags() */
@@ -384,7 +384,7 @@ void TMTSourceParser::Parse(bool *changedSrc, int32_t *errPos, int32_t *errLen, 
 	while (this->errPos < 0 && Command(this)) {
 		cmdStart = this->prevPos;
 		cmd = this->sym;
-		if (cmd == illegal) this->ErrorMsg(syntactical,L"unknown VTT Talk command");
+		if (cmd == invalid) this->ErrorMsg(syntactical,L"unknown VTT Talk command");
 		if (cmd == xAnchor || cmd == xInterpolate || cmd == xIPAnchor || cmd == xLink ||
 			cmd == yAnchor || cmd == yInterpolate || cmd == yIPAnchor || cmd == yLink) this->XFormToNewSyntax();
 		this->GetSym();
@@ -582,20 +582,20 @@ bool TMTSourceParser::MakeProjFreeVector(bool haveFlag, int32_t flagValue, bool 
 	bool pvOverrideError = false,fvOverrideError = false;
 
 	projFreeVector->pv.dir = flagToDir[idx%numTTVDirections];
-	projFreeVector->pv.from = projFreeVector->pv.to = illegalKnotNum;
+	projFreeVector->pv.from = projFreeVector->pv.to = invalidKnotNum;
 	for (i = 0; i < children; i++) projFreeVector->fv[i] = projFreeVector->pv;
 	if (!this->legacyCompile)
 	{
 
 		if (parent != NULL && parent->hasTtvOverride) { // NULL for Anchors, they have no parents
 			projFreeVector->pv = parent->ttvOverride;
-			if (projFreeVector->pv.from == illegalKnotNum) projFreeVector->pv.from = (short) (parent->numValue / one6);
+			if (projFreeVector->pv.from == invalidKnotNum) projFreeVector->pv.from = (short) (parent->numValue / one6);
 			if (!y && haveFlag) pvOverrideError = true;
 		}
 		for (i = 0; i < children && !pvOverrideError && !fvOverrideError; i++) {
 			if (child[i].hasTtvOverride) {
 				projFreeVector->fv[i] = child[i].ttvOverride;
-				if (projFreeVector->fv[i].from == illegalKnotNum) projFreeVector->fv[i].from = (short) (child[i].numValue / one6);
+				if (projFreeVector->fv[i].from == invalidKnotNum) projFreeVector->fv[i].from = (short) (child[i].numValue / one6);
 				if (y && haveFlag) fvOverrideError = true;
 			}
 		}
@@ -638,7 +638,7 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 		}
 		case dStroke: {
 			bool leftStationary[2];
-			short cvt = (short)((params <= 6) ? illegalCvtNum : param[6].numValue/one6);
+			short cvt = (short)((params <= 6) ? invalidCvtNum : param[6].numValue/one6);
 			short actualCvt;
 			short knot[4];
 			wchar_t buf[32];
@@ -668,7 +668,7 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 		case iStroke: {
 			bool leftStationary[2];
 			short knot[4],height[2],phase,actualCvt;
-			short cvt = (short)((params <= 9) ? illegalCvtNum : param[9].numValue/one6);
+			short cvt = (short)((params <= 9) ? invalidCvtNum : param[9].numValue/one6);
 			wchar_t buf[32];
 			
 			for (i = 0; i < 2; i++) leftStationary[i] = param[i].numValue > 0;
@@ -731,7 +731,7 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 		case yStroke: {
 			bool leftStationary[2],nearVert,nearHorz;
 			short base = cmd != xStroke && cmd != yStroke ? 2 : 0,optionalBase = base + 4, knot[4];
-			short cvt = (short)((params <= optionalBase || param[optionalBase].type == ppemSize) ? illegalCvtNum : param[optionalBase].numValue/one6);
+			short cvt = (short)((params <= optionalBase || param[optionalBase].type == ppemSize) ? invalidCvtNum : param[optionalBase].numValue/one6);
 			short ppem = (short)((params <= optionalBase || param[params-1].type != ppemSize) ? -1 : param[params-1].numValue/one6);
 			FVOverride fvOverride = cmd == stroke ? fvOldMethod : (cmd == xDiagonal || cmd == xStroke ? fvForceX : (cmd == yDiagonal || cmd == yStroke ? fvForceY : fvStandard));
 			short actualCvt;
@@ -768,7 +768,7 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 		case yRound: {
 			short knot[2],cvt;
 			
-			cvt = params > 2 ? (short)param[2].numValue/one6 : illegalCvtNum;
+			cvt = params > 2 ? (short)param[2].numValue/one6 : invalidCvtNum;
 			for (i = 0; i < 2; i++) knot[i] = (short)(param[i].numValue/one6);
 			
 			this->RegisterPartner(knot[0],knot[1],cmd == yStem || cmd == yRound,cmd == xRound || cmd == yRound,cvt);
@@ -794,9 +794,9 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 			bool y = cmd == yAnchor,haveFlag = param[0].type == angleFlag;
 			ActParam *knotParam = &param[haveFlag];
 			short knot = (short)(knotParam->numValue/one6);
-			short cvt = (short)((params <= haveFlag + 1) ? illegalCvtNum : param[haveFlag + 1].numValue/one6);
+			short cvt = (short)((params <= haveFlag + 1) ? invalidCvtNum : param[haveFlag + 1].numValue/one6);
 			Height *height = y ? this->TheHeight(knot) : NULL;
-			short cvtHint = height ? height->cvtOverride : illegalCvtNum;
+			short cvtHint = height ? height->cvtOverride : invalidCvtNum;
 			ProjFreeVector projFreeVector;
 			
 			if (cvt >= 0 && cvtHint >= 0)
@@ -827,13 +827,13 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 			ActParam *parentParam = &param[haveFlag+havePostRound],*childParam = &param[haveFlag+havePostRound+1];
 			short parent = (short)(parentParam->numValue/one6),
 				  child = (short)(childParam->numValue/one6),
-				  cvt = haveCvt ? (short)(param[base].numValue/one6) : illegalCvtNum,actualCvt = cvt,
+				  cvt = haveCvt ? (short)(param[base].numValue/one6) : invalidCvtNum,actualCvt = cvt,
 				  minDists = haveMinDist ? param[base+haveCvt].minDists : -1,
 				  jumpPpemSize[maxMinDist];
 			int32_t *jSize = minDists >= 0 ? &param[base+haveCvt].jumpPpemSize[0] : NULL;
 			Partner *partner = this->ThePartner(y,parent,child);
 			CvtCategory cvtCategory = dist ? cvtAnyCategory : (partner ? partner->category : cvtDistance);
-			short cvtHint = partner ? partner->cvtOverride : illegalCvtNum;
+			short cvtHint = partner ? partner->cvtOverride : invalidCvtNum;
 			short lsb = this->knots - PHANTOMPOINTS,rsb = lsb + 1;
 			CharGroup charGroup;
 			LinkColor linkColor;
@@ -997,7 +997,7 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 				bool haveCvt = params > optParamOffs && param[optParamOffs].type == cvtN;
 				ActParam *childParam = &param[haveFlag];
 				short child = (short)(childParam->numValue/one6),
-					  cvt = haveCvt ? (short)(param[optParamOffs].numValue/one6) : illegalCvtNum;
+					  cvt = haveCvt ? (short)(param[optParamOffs].numValue/one6) : invalidCvtNum;
 				ProjFreeVector projFreeVector;
 
 				if (this->MakeProjFreeVector(haveFlag,param[0].numValue,y,NULL,childParam,1,&projFreeVector,errMsg)) {
@@ -1041,7 +1041,7 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 				ActParam *parentParam = &param[haveFlag],*childParam = &param[haveFlag+1];
 				short parent = (short)(parentParam->numValue/one6),
 					  child = (short)(childParam->numValue/one6),
-					  cvt = haveCvt ? (short)(param[optParamOffs].numValue/one6) : illegalCvtNum;
+					  cvt = haveCvt ? (short)(param[optParamOffs].numValue/one6) : invalidCvtNum;
 				ProjFreeVector projFreeVector;
 
 				if (this->MakeProjFreeVector(haveFlag,param[0].numValue,y,parentParam,childParam,1,&projFreeVector,errMsg)) {
@@ -1070,7 +1070,7 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 					  grandParent0 = (short)(grandParent0Param->numValue/one6),
 					  parent       = (short)(parentParam->numValue/one6),
 					  child        = (short)(childParam->numValue/one6),
-					  cvt  = !dist ? (short)(cvtParam->numValue/one6) : illegalCvtNum,
+					  cvt  = !dist ? (short)(cvtParam->numValue/one6) : invalidCvtNum,
 					  grandParent1 = (short)(grandParent1Param->numValue/one6);
 				ProjFreeVector projFreeVector;
 
@@ -1105,10 +1105,10 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 					  grandParent0 = (short)(grandParent0Param->numValue/one6),
 					  parent0      = (short)(parent0Param->numValue/one6),
 					  child0       = (short)(child0Param->numValue/one6),
-					  cvt0 = !dist ? (short)(cvt0Param->numValue/one6) : illegalCvtNum,
+					  cvt0 = !dist ? (short)(cvt0Param->numValue/one6) : invalidCvtNum,
 					  parent1      = (short)(parent1Param->numValue/one6),
 					  child1       = (short)(child1Param->numValue/one6),
-					  cvt1 = !dist ? (short)(cvt1Param->numValue/one6) : illegalCvtNum,
+					  cvt1 = !dist ? (short)(cvt1Param->numValue/one6) : invalidCvtNum,
 					  grandParent1 = (short)(grandParent1Param->numValue/one6);
 				ProjFreeVector projFreeVector;
 
@@ -1143,10 +1143,10 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 					  grandParent0 = (short)(grandParent0Param->numValue/one6),
 					  parent0      = (short)(parent0Param->numValue/one6),
 					  child0       = (short)(child0Param->numValue/one6),
-					  cvt0 = !dist ? (short)(cvt0Param->numValue/one6) : illegalCvtNum,
+					  cvt0 = !dist ? (short)(cvt0Param->numValue/one6) : invalidCvtNum,
 					  parent1      = (short)(parent1Param->numValue/one6),
 					  child1       = (short)(child1Param->numValue/one6),
-					  cvt1 = !dist ? (short)(cvt1Param->numValue/one6) : illegalCvtNum,
+					  cvt1 = !dist ? (short)(cvt1Param->numValue/one6) : invalidCvtNum,
 					  grandParent1 = (short)(grandParent1Param->numValue/one6);
 				ProjFreeVector projFreeVector0,projFreeVector1;
 
@@ -1176,7 +1176,7 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 				ActParam *parent0Param = &param[0],*child0Param = &param[1],*parent1Param = &param[2+haveCvt0],*child1Param = &param[3+haveCvt0];
 				short parent0 = (short)(parent0Param->numValue/one6),
 					  child0 = (short)(child0Param->numValue/one6),
-					  cvt0 = haveCvt0 ? (short)(param[cvtParamOffs0].numValue/one6) : illegalCvtNum,
+					  cvt0 = haveCvt0 ? (short)(param[cvtParamOffs0].numValue/one6) : invalidCvtNum,
 					  parent1 = (short)(parent1Param->numValue/one6),
 					  child1 = (short)(child1Param->numValue/one6),
 					  cvt1 = haveCvt1 ? (short)(param[cvtParamOffs1].numValue/one6) : cvt0;
@@ -1208,7 +1208,7 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 				short grandParent0 = (short)(grandParent0Param->numValue/one6),
 					  parent0 = (short)(parent0Param->numValue/one6),
 					  child0 = (short)(child0Param->numValue/one6),
-					  cvt0 = haveCvt0 ? (short)(param[cvtParamOffs0].numValue/one6) : illegalCvtNum,
+					  cvt0 = haveCvt0 ? (short)(param[cvtParamOffs0].numValue/one6) : invalidCvtNum,
 					  parent1 = (short)(parent1Param->numValue/one6),
 					  child1 = (short)(child1Param->numValue/one6),
 					  grandParent1 = (short)(grandParent1Param->numValue/one6),
@@ -1426,7 +1426,7 @@ void TMTSourceParser::Flag(ActParam *actParam) {
 				actParam->fvPoint0 = (short)(fvPoint0.numValue/one6);
 				actParam->fvPoint1 = (short)(fvPoint1.numValue/one6);
 			} else {
-				actParam->fvPoint0 = actParam->fvPoint1 = illegalKnotNum;
+				actParam->fvPoint0 = actParam->fvPoint1 = invalidKnotNum;
 			}
 #endif
 			break;
@@ -1454,8 +1454,8 @@ void TMTSourceParser::Parameter(ActParam *actParam) {
 		this->prevPrevPos = paramStart; // can't recursively call this->Parameter() here...
 		actParam->hasTtvOverride = false;
 		actParam->ttvOverride.dir  = xRomanDir; // say
-		actParam->ttvOverride.from = illegalKnotNum;
-		actParam->ttvOverride.to   = illegalKnotNum;
+		actParam->ttvOverride.from = invalidKnotNum;
+		actParam->ttvOverride.to   = invalidKnotNum;
 
 		if (this->sym == aT) {
 			subParams = 0;
@@ -1476,7 +1476,7 @@ void TMTSourceParser::Parameter(ActParam *actParam) {
 				actParam->type = rangeOfPpemNcolorOpt; // by now
 			}
 		} else if (!this->legacyCompile && (this->sym == colon || this->sym == rightDir || this->sym == upDir)) {
-			// the following are all legal:
+			// the following are all valid:
 			//
 			// knot                   no ttv override
 			// knot >                 ttv in x-direction
@@ -1536,10 +1536,10 @@ void TMTSourceParser::Parameter(ActParam *actParam) {
 
 			if (gotKnot[0] && !gotKnot[1]) {
 				this->prevPrevPos = firstLocalParamStart;
-				this->ErrorMsg(contextual,L"illegal freedom or projection vector (second knot expected)");
+				this->ErrorMsg(contextual,L"invalid freedom or projection vector (second knot expected)");
 			} else if (gotKnot[0] && gotKnot[1] && actParam->ttvOverride.from == actParam->ttvOverride.to) {
 				this->prevPrevPos = firstLocalParamStart;
-				this->ErrorMsg(contextual,L"illegal freedom or projection vector (knots must differ)");
+				this->ErrorMsg(contextual,L"invalid freedom or projection vector (knots must differ)");
 			} 
 			
 			// no italic or adjusted italic angle yet			
@@ -1564,7 +1564,7 @@ void TMTSourceParser::Parameter(ActParam *actParam) {
 	} else if (this->sym == atLeast || this->sym == leftDir) {
 		this->MinDist(actParam);
 	} else {
-		this->ErrorMsg(syntactical,L"parameter starts with illegal symbol (+, -, @, <, >=, number, or \x22string\x22 expected)"); actParam->type = voidParam; actParam->numValue = 0;
+		this->ErrorMsg(syntactical,L"parameter starts with invalid symbol (+, -, @, <, >=, number, or \x22string\x22 expected)"); actParam->type = voidParam; actParam->numValue = 0;
 	}
 	this->prevPrevPos = paramStart;
 } /* TMTSourceParser::Parameter */
@@ -1643,7 +1643,7 @@ void TMTSourceParser::ValidateParameter(ActParam *actParam) {
 			int32_t knot = actParam->numValue/one6;
 			
 			if (knot < 0 || knot >= this->knots) {
-				swprintf(errMsg,L"illegal knot number (can be in range 0 through %hi only)",this->knots-1); this->ErrorMsg(contextual,errMsg);
+				swprintf(errMsg,L"invalid knot number (can be in range 0 through %hi only)",this->knots-1); this->ErrorMsg(contextual,errMsg);
 				actParam->numValue = 0;
 			}
 		//	for knotNttvOpt, ttvKnot[0], and ttvKnot[1] already validated against being in range
@@ -1656,7 +1656,7 @@ void TMTSourceParser::ValidateParameter(ActParam *actParam) {
 			int32_t cvt = actParam->numValue/one6;
 			
 			if (!this->font->TheCvt()->CvtNumExists(cvt)) {
-				this->ErrorMsg(contextual,L"illegal cvt number (must be defined in the control value table)");
+				this->ErrorMsg(contextual,L"invalid cvt number (must be defined in the control value table)");
 				actParam->numValue = 0;
 			}
 			break;
@@ -1667,25 +1667,25 @@ void TMTSourceParser::ValidateParameter(ActParam *actParam) {
 			break;
 		case phaseN:
 			if (actParam->numValue < 0 || actParam->numValue >= phases*one6) {
-				swprintf(errMsg,L"illegal phase type (can be in range 0 through %li only)",phases-1); this->ErrorMsg(contextual,errMsg);
+				swprintf(errMsg,L"invalid phase type (can be in range 0 through %li only)",phases-1); this->ErrorMsg(contextual,errMsg);
 				actParam->numValue = 0;
 			}
 			break;
 		case angle100N:
 			if (actParam->numValue < 0 || actParam->numValue > maxAngle*one6) {
-				swprintf(errMsg,L"illegal angle x100 (can be in range 0 through %li only)",maxAngle); this->ErrorMsg(contextual,errMsg);
+				swprintf(errMsg,L"invalid angle x100 (can be in range 0 through %li only)",maxAngle); this->ErrorMsg(contextual,errMsg);
 				actParam->numValue = 0;
 			}
 			break;
 		case colorN:
-			if (DeltaColorOfByte((unsigned char)(actParam->numValue/one6)) == illegalDelta) {
-				swprintf(errMsg,L"illegal delta color flag (can be " NARROW_STR_FORMAT L" only)",AllDeltaColorBytes()); this->ErrorMsg(contextual,errMsg);
+			if (DeltaColorOfByte((unsigned char)(actParam->numValue/one6)) == invalidDelta) {
+				swprintf(errMsg,L"invalid delta color flag (can be " NARROW_STR_FORMAT L" only)",AllDeltaColorBytes()); this->ErrorMsg(contextual,errMsg);
 				actParam->numValue = 0;
 			}
 			break;
 		case serifN:
 			if (actParam->numValue < 0 || actParam->numValue >= serifs*one6) {
-				swprintf(errMsg,L"illegal serif type (can be in range 0 through %li only)",serifs-1); this->ErrorMsg(contextual,errMsg);
+				swprintf(errMsg,L"invalid serif type (can be in range 0 through %li only)",serifs-1); this->ErrorMsg(contextual,errMsg);
 				actParam->numValue = 0;
 			}
 			break;
@@ -1696,7 +1696,7 @@ void TMTSourceParser::ValidateParameter(ActParam *actParam) {
 		case rationalN:
 		case posRationalN:
 			if ((actParam->type == posRationalN && actParam->numValue < 0) || actParam->numValue < -maxPixelValue || actParam->numValue > maxPixelValue) {
-				swprintf(errMsg,L"illegal pixel size (can be in range %li through %li only)",actParam->type == posRationalN ? 0 : -maxPixelValue/one6,maxPixelValue/one6); this->ErrorMsg(contextual,errMsg);
+				swprintf(errMsg,L"invalid pixel size (can be in range %li through %li only)",actParam->type == posRationalN ? 0 : -maxPixelValue/one6,maxPixelValue/one6); this->ErrorMsg(contextual,errMsg);
 				actParam->numValue = one6;
 			}
 			if (actParam->numValue == 0) {
@@ -1707,7 +1707,7 @@ void TMTSourceParser::ValidateParameter(ActParam *actParam) {
 		case ppemSize:
 		case ppemN:
 			if (actParam->numValue < one6 || actParam->numValue >= maxPpemSize*one6) {
-				swprintf(errMsg,L"illegal ppem number (can be in range 1 through %li only)",maxPpemSize-1); this->ErrorMsg(contextual,errMsg);
+				swprintf(errMsg,L"invalid ppem number (can be in range 1 through %li only)",maxPpemSize-1); this->ErrorMsg(contextual,errMsg);
 				actParam->numValue = one6;
 			}
 			break;
@@ -1793,7 +1793,7 @@ void TMTSourceParser::Factor (ActParam *actParam) {
 		this->Expression(actParam);
 		if (this->sym == rightParen) this->GetSym(); else this->ErrorMsg(syntactical,L") expected");
 	} else {
-		this->ErrorMsg(syntactical,L"factor starts with illegal symbol (number or ( expected)");
+		this->ErrorMsg(syntactical,L"factor starts with invalid symbol (number or ( expected)");
 		actParam->type = voidParam;
 	}
 } /* TMTSourceParser::Factor */
@@ -1945,7 +1945,7 @@ void TMTSourceParser::GetNumber(void) {
 			else
 				overflow = true;
 		} else
-			this->ErrorMsg(lexical,L"illegal character in number (can be digits 0 through 9 only)");
+			this->ErrorMsg(lexical,L"invalid character in number (can be digits 0 through 9 only)");
 		this->GetCh();
 	}
 	this->numValue *= one6;
@@ -1961,7 +1961,7 @@ void TMTSourceParser::GetNumber(void) {
 				} else
 					overflow = true;
 			} else
-				this->ErrorMsg(lexical,L"illegal character in number (can be digits 0 through 9 only)");
+				this->ErrorMsg(lexical,L"invalid character in number (can be digits 0 through 9 only)");
 			this->GetCh();
 		}
 		this->numValue += (decPlcs*one6 + pwrOf10/2)/pwrOf10;
@@ -1984,7 +1984,7 @@ Symbol Search(wchar_t *entry, short left, short right, short *matching) {
 		else if (diff < 0) left = mid + 1;
 		else return (Symbol)mid; // found
 	}
-	return illegal; // not found
+	return invalid; // not found
 } /* Search */
 
 void TMTSourceParser::GetIdent(void) {
@@ -1999,7 +1999,7 @@ void TMTSourceParser::GetIdent(void) {
 	}
 	id[i] = '\0';
 	this->sym = Search(id,0,idents-1,&matching);
-	if (this->sym != illegal) {
+	if (this->sym != invalid) {
 		replId = tmtCmd[this->sym].name;
 		replLen = (short)STRLENW(replId);
 		for (matching = 0; matching < replLen && id[matching] == replId[matching]; matching++);
@@ -2103,7 +2103,7 @@ void TMTSourceParser::GetSym(void) {
 					this->GetCh();
 					this->ReplAtCurrPos(2,L">|");
 				} else {
-					this->sym = illegal;
+					this->sym = invalid;
 				}
 				break;
 			case 0xAF:	this->sym = adjItalAngle; this->GetCh(); this->ReplAtCurrPos(1,L"//"); break; // replace Mac special char
