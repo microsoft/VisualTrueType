@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Example: Anchoring a Height</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name="1_vn2wh"></a>Example: Anchoring a Height</h1>
+
+<p>In general, you should specify the ‘cvt’ values for heights before
+specifying ‘cvt’ values for links and interpolates in the Y direction. You’ll
+anchor the height of this Times New Roman “O.” In this example, Anchors is
+selected and Links And Dists de-selected in the Visual TrueType menu:</p>
+
+<p><img width=158 height=167 alt="Capital O with anchors" src="../images/Anchors-O-NoCVT.gif"></p>
+
+<p><i>The “O” with anchors.</i></p>
+
+<p>Only the two Y anchors have highway signs. The signs are blank because the
+‘cvt’ values for heights don’t come with a ‘cvt’ attribute, which the computer
+needs to determine which height a ‘cvt’ value refers to. You must enter the
+‘cvt’ value.</p>
+
+<p>For this example, the top anchor refers to ‘cvt’ entry 3 and the bottom
+anchor to ‘cvt’ entry 9, even though these entries specify only the overshoots
+(31 and -31, respectively), not the actual heights (1536 and 0). The computer
+knows how to handle this because the first ‘cvt’ entries are reserved for the
+heights.</p>
+
+<p><img width=158 height=167 alt="Capital O with anchors and CVT values" src="../images/Anchors-O-CVT.gif"></p>
+
+<p><i>The “O” with anchors and ‘cvt’ values.</i></p>
+
+<p>For the “H,” the ‘cvt’ entries would be 2 and 8 instead, because the glyph
+has no overshoots. This solves the alignment problem.</p>
+
+<p><img width=282 height=153 alt="The Aligned HO at 15 points" src="../images/Anchors-HO-15ppem.gif"><img
+width=261 height=146 alt="The Aligned HO at 14 points" src="../images/Anchors-HO-14ppem.gif"><img width=278
+height=150 alt="The Aligned HO at 13 points" src="../images/Anchors-HO-13ppem.gif"></p>
+
+<p><i>The aligned “HO” at 15, 14, and 13 points and 96 dpi.</i></p>
+
+</BODY>
+</HTML>

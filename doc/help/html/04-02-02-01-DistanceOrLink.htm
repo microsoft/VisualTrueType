@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Strategy: Distance or Link</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=1mqrkdi></a>Strategy: Distance or Link</h1>
+
+<p>If you create a distance with no ‘cvt’ value, Visual TrueType follows this
+procedure to position the child control point:</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Fit one edge of the stem to the grid.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Calculate the pixels needed to represent the weight of the stem.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>With that number of pixels in-between, fit the other edge of the stem to
+the grid.</p>
+
+<p>With a Times New Roman “B,” this approach yields mixed results from rounding
+fractional numbers up or down:</p>
+
+<p><img width=128 height=128 alt="Varied rounding of Times New Roman B at 12 point" 
+	src="../images/bm87.gif">
+   <img width=131 height=131 alt="Varied rounding of Times New Roman B at 11 point"
+	src="../images/bm88.gif">
+   <img width=132 height=131 alt="Varied rounding of Times New Roman B at 10 point"
+	src="../images/bm89.gif"></p>
+
+<p><i>Rounding varies stroke width in a Times New Roman “B” at 12, 11, and 10
+points and 96 dpi.</i></p>
+
+<p>The left straight stem changes from 2 pixels to 1 pixel at 11 points, while
+the right round stems do so only at 10 points. By design, these round strokes
+are wider than the straight one, but not double the width as displayed at 11
+points. Apparently, the computer calculated just over 1.5 pixels for the round
+strokes and just under 1.5 pixels for the straight stroke. Rounded to the
+nearest number of pixels, the round and straight strokes became 2 and 1 pixels,
+respectively. </p>
+
+<p>You could use the “round-down-to-grid” or “round-up-to-grid” attributes to
+control the stems better. However, in this case, the situation is both too frequent
+and too fundamental a problem to be dealt by changing the rounding attributes. </p>
+
+<p>Instead, the better solution is to refer to a ‘cvt’ value, changing the
+distance to a link. The key to the solution lies in the fact that several links
+can then refer to the same control value. </p>
+
+<p>When you create a link, it refers to a control value, so Visual TrueType
+changes Step 2 of the procedure it follows to position the child point. After
+working out the fractional number of pixels to represent the weight of the
+stem, it compares that result to the fractional number of the scaled control
+value. If these two numbers are “almost the same,” it uses the scaled control
+value, not the original distance between the control points, to calculate the
+pixels. As a result, all links that refer to the same control value will “lock
+into” the same number of pixels at “sufficiently small sizes.”</p>
+
+</BODY>
+</HTML>

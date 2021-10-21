@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Reducing Memory Requirements</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=4b3jebe></a>Reducing Memory Requirements</h1>
+
+<p>Every font comes with a table that is a collection of maximum possible
+(‘maxp’) values for the computer memory required by each glyph. As you hint the
+font, Visual TrueType automatically updates the ‘maxp’ table if the hinted
+glyph requires more memory. This is necessary so the rasterizer can display the
+glyph correctly.</p>
+
+<p>Visual TrueType only keeps track of maximum values. If subsequent changes to
+the hinting reduce the amount of memory needed, Visual TrueType doesn’t update
+the ‘maxp’ table. As a result, by the time you finish hinting the font, some
+glyphs might need less than the maximum. </p>
+
+<p>The final version of your font should require only as much memory as
+necessary. Before you save your font for the last time, you can have Visual
+TrueType recalculate values for the ‘maxp’ table based on the memory actually
+required by each glyph. The calculations take a while, depending on the font
+size and the complexity of the hinting, but they reduce the memory requirements
+for the font.</p>
+
+<p>&nbsp;</p>
+
+<p>Be sure to recalculate the ‘maxp’ table before you prepare the font for
+shipping, which strips out private tables needed for this calculation (see
+“Preparing to Ship Your Font”).</p>
+
+<p><b>To reduce the memory required by the font</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>On the Tools menu, click Recalc ‘Maxp’ Table.</p>
+
+</BODY>
+</HTML>

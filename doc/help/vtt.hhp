@@ -1,0 +1,114 @@
+[OPTIONS]
+Compatibility=1.1 or later
+Compiled file=vtt.chm
+Contents file=vtt.hhc
+Default Window=Main
+Default topic=html\01-01-IntroVTT.htm
+Display compile progress=No
+Full-text search=Yes
+Index file=Index.hhk
+Language=0x409 English (United States)
+Title=Visual TrueType help
+
+[WINDOWS]
+Test="Visual TrueType help","vtt.hhc","Index.hhk","html\01-01-IntroVTT.htm",,,,,,0x2120,400,0x3006,[0,0,800,600],,,,,,,0
+Main="Visual TrueType help","vtt.hhc","Index.hhk","html\01-01-IntroVTT.htm",,,,,,0x41420,300,0x102e,[0,0,800,600],,,,,,,0
+
+
+[FILES]
+css\styles.css
+html\01-01-IntroVTT.htm
+html\01-02-Tool4Users.htm
+html\01-03-OtherResources.htm
+html\02-01-SettingPrefs.htm
+html\02-02-OpenCloseFont.htm
+html\02-03-SetDevResolution.htm
+html\02-04-CompilingResults.htm
+html\02-05-Printing.htm
+html\02-06-GASP.htm
+html\02-07-MemoryReqts.htm
+html\02-08-Saving.htm
+html\02-09-Prep4Ship.htm
+html\03-00-MainWindow.htm
+html\03-01-Toolbar.htm
+html\03-02-MovingAround.htm
+html\03-02-Resizing.htm
+html\03-04-ChgPointSize.htm
+html\03-05-DiffGlyph.htm
+html\03-06-Measuring.htm
+html\03-07-00-OtherWindows.htm
+html\03-07-01-GlyphWindow.htm
+html\03-07-02-SnapShotWindow.htm
+html\04-01-00-HintingBasics.htm
+html\04-01-01-00-HintingOverview.htm
+html\04-01-01-01-HintingWkflow.htm
+html\04-01-01-02-HintingStrategies.htm
+html\04-01-01-03-VisualHinting.htm
+html\04-01-02-00-UsingCVT.htm
+html\04-01-02-01-ReadingCVT.htm
+html\04-01-02-02-SettingInitialCVT.htm
+html\04-01-02-03-HintingWithCVTVals.htm
+html\04-01-02-04-ChangingChrGrp.htm
+html\04-01-03-00-RefiningGlyphOutline.htm
+html\04-01-03-01-OnOffCurvePts.htm
+html\04-01-03-02-NumberingCPts.htm
+html\04-01-03-03-EditingMetrics.htm
+html\04-01-04-00-RoundingCPts.htm
+html\04-01-04-01-SixMethods.htm
+html\04-01-04-02-Ex1-Rounding.htm
+html\04-01-04-03-Ex2-Limitations.htm
+html\04-01-05-00-WorkingWithAnchors.htm
+html\04-01-05-01-AnchoringWithCVT.htm
+html\04-01-05-02-Example.htm
+html\04-01-05-03-FontErrorWindow.htm
+html\04-02-00-ControllingDistances.htm
+html\04-02-01-00-CreatingLinks.htm
+html\04-02-01-01-Ex1-CreatingLinks.htm
+html\04-02-01-02-Ex2-CreatingLinks.htm
+html\04-02-02-00-LinkingWithCVT.htm
+html\04-02-02-01-DistanceOrLink.htm
+html\04-02-02-02-ReviewCVTs.htm
+html\04-02-02-03-AssignCVTCategory.htm
+html\04-02-02-04-ChangingCVTVal.htm
+html\04-02-02-05-Example.htm
+html\04-02-03-ShiftingCPts.htm
+html\04-03-00-ControllingProportions.htm
+html\04-03-01-00-CreatingInterpolations.htm
+html\04-03-01-01-Ex1-InterVsLink.htm
+html\04-03-01-02-Ex2-AlignBowls.htm
+html\04-03-01-03-Ex3-AddSizes.htm
+html\04-04-01-00-HintingDiagonals.htm
+html\04-04-01-01-CreatingStrokes.htm
+html\04-04-01-02-AligningCPts.htm
+html\04-04-02-00-HintingItalics.htm
+html\04-04-02-01-SettingAngle.htm
+html\04-04-02-02-RoundCPtsItalics.htm
+html\05-00-RefiningPixelPatterns.htm
+html\05-01-PreparingMainWindow.htm
+html\05-02-CreatingException.htm
+html\05-03-Example.htm
+html\06-00-AdvancedHinting.htm
+html\06-01-00-TextBasedTables.htm
+html\06-01-01-EditingText.htm
+html\06-01-02-FindingText.htm
+html\06-01-03-GotoLine.htm
+html\06-01-04-ImportingText.htm
+html\06-01-05-ExportingText.htm
+html\06-01-06-ExportAll.htm
+html\06-01-07-00-ModifyingCVT.htm
+html\06-01-07-01-AddingNewCVT.htm
+html\06-01-07-02-ChangeCutIn.htm
+html\06-01-08-Composites.htm
+html\06-01-09-ImportingGlyph.htm
+html\06-01-10-VTTalkWindow.htm
+html\07-00-KeyboardShortcuts.htm
+html\02-02-01-PreparingFont.htm
+html\08-00-Autohinting.htm
+html\08-01-Autohinting.htm
+html\08-02-EAAutohinting.htm
+html\08-03-CVTOnly.htm
+html\08-04-VariationFontEditingOverview.htm
+html\08-05-VariationCVTEditing.htm
+
+[INFOTYPES]
+

@@ -1,0 +1,105 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Compiling Your Results</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=0c1hsv></a>Variation CVT View. Editing Variation CVT’S</h1>
+
+<p class=MsoNormal>&nbsp;</p>
+<p><B>The Variation Cvt View </B> (View Menu > Variation CVT) allows the user to Add, Edit, Delete cvar variation data in a font for axis locations in variation space and set the current location in variation space in the VTT UI.  </p>
+
+<p class=MsoNormal>&nbsp;</p>
+<p class=MsoNormal><img width=561 height=821 alt="VariationCVTEditing"
+src="../images/placeholder.png"></p>
+
+
+<p>The drop down in the view shows a union of locations in variation space including named instances, gvar “master” instances, existing cvar locations and any locations the user has added. The instance represented in the Variation view of VTT will reflect this choice from this drop down. The contents of the drop down are divided into four categories which also roughly correspond to steps in the workflow of creating cvar data. </p>
+
+<p><B>Step 1</B> – Default</p>
+<p><B>Step 2</B> – Axis Masters (from gvar)</p>
+<p><B>Step 3</B> – Other Masters (from gvar) </p> 
+<p><B>Step 4</B> – Interpolated Instances </p>
+
+<p><B>Step 1</B> – Default category will contain one entry corresponding to the default instance of the font. If the font contains a named instance for default, then that name will be shown otherwise the default instance will simply be called default. See illustation below for when the Default instance is choosen. The Main CVT table should be generated for the font as was done before for Non-Variable fonts. See the Help section on Hinting > Hinting Basics > Using the Control Value Table. VTT can also automatically generate a CVT table, see the Help section on Autohinting > Using Control Program Only mode</p>
+
+<p class=MsoNormal>&nbsp;</p>
+<p class=MsoNormal><img width=766 height=711 alt="Default"
+src="../images/Defaultinstance.png"></p>
+
+<p><B>Step 2</B> – Axis Masters (from gvar) category contains locations in variation space found in the gvar table where coordinates represent an Axis Master meaning a single non-default axis point farthest away from the origin in either positive or negative directions in normalized space. The entries in this section will indicate the axis and whether it is min(negative) or max(positive) location on the axis. If there corresponds a named instance for these locations, then the name from the named instance will be used otherwise the name is “Unnamed” along with the axis tags and their respective locations along the axis in user coordinates. </p>
+
+<p><B>Step 3</B> – Other Masters (from gvar) category any remaining masters not represented in <B>Step 2</B> </p>
+
+<p><B>Step 4</B> Interpolated Instances category are any instances other than Masters and Default. This is typically any named instances not represented in the gvar or any cvar instance not represented in the gvar or any user instance. </p>
+
+<p>A document icon shown to the left of any instance in the drop down indicates cvar data associated with that location in variation space. <B>Note:</B> If a change has been made, it may be necessary to recompile the window for the icons to update. </p>
+
+<p>When an instance is selected, the corresponding cvts are shown in the edit window portion of the Variation Cvt view. The cvts are divided into three categories, Edited CVTs, Interpolated CVTs and Unvaried CVTs. Each line in the first two categories shows three pieces of information, the cvt, the cvt value for this location in space and in parenthesis the difference between this point and the default cvt value. The third category simply shows the default cvt values.</p>
+
+<p><B>The Edited CVTs category</B> shows cvts that the user has edited and will most likely result in tuple data depending on tuple optimization. Across sessions of VTT this edited state is stored in a VTT “source” table called TSIC. If a font is loaded that has a cvar but not a TSIC then VTT will use a heuristic to determine a starting point for TSIC. Based on how tuple data can be optimized this may or may not accurately determine which values are edited by the user. </p>
+
+<p><B>The Interpolated CVTs category</B> shows cvt values and deltas (from default) that are not a result of changes at the current point in variation space. That is, there is not a tuple that adjusts its value at this instance. </p>
+
+<p><B>The Unvaried CVTs category</B> shows cvt values that are not modified meaning they are the default cvt values. </p>
+
+<p>All instances are editable except default. To adjust default, you change the base cvt just as previously done in VTT.</p>
+
+<p>Any cvt value or delta in any editable instance is adjustable. After each change, compile the window with Ctrl-R to represent the changes. A compile is implicitly preformed when the user changes to another instance in the view. </p>
+
+<p>The Variation CVT view tool bar includes a <B>‘Plus’</B> <B>‘Minus’</B> and <B>‘Edit’</B> (pencil) buttons that allow the user to adjust the locations in variation space represented in the UI and potentially the cvar table.</p>
+
+<p class=MsoNormal>&nbsp;</p>
+<p class=MsoNormal><img width=589 height=464 alt="PlusMinusEdit"
+src="../images/Plusminusedit.png"></p>
+
+<p><B>The Plus button</B> is used to bring up a dialog to add an instance in variation space for either placing a cvar tuple at that location or simply for being able view the variation outline and/or cvt interpolations at that location. </p> 
+
+<p class=MsoNormal>&nbsp;</p>
+<p class=MsoNormal><img width=560 height=483 alt="PlusEdit"
+src="../images/VarPlus.png"></p>
+
+
+<p>The values for peak are pre-populated with default axis point value for each axis. If an attempt is made to add an instance that already exists either as a cvt or instance an error will be presented as values in the instance drop down should have unique coordinates. A custom name can optionally be associated with this point for display in the UI. If no name is entered a name will be generated based on coordinates. </p>
+
+<p> There are two versions of the dialog, the default version shows each axis, along with its min, max and peak values. The peak value is the coordinate position inputted. The other version contains the same information with the addition of the intermediate start and end points if this is an intermediate location. The intermediate start and end are only for reference and not editable. VTT will calculate the appropriate intermediate start and end values if needed. Which dialog is shown is selectable from Tools->Options Variation tab. If entered values in dialog are outside respective axis min and max values they will be clipped to appropriate min or max. </p>
+
+<p><B>The Minus button</B>  will either remove the instance and its data from the list or it will just clear the associated cvar tuple data from the instance depending on whether the instance comes from the gvar and/or, is a named instance and/or is represented in the cvar or is a user instance. </p>
+
+<p>When the minus button is activated, prior to acting VTT will prompt the user to confirm the pending action. The text in the prompt is subtly different depending on the specific case. If the instance was user created then the prompt will be "Are you sure you wish to remove this user instance?". </p>
+
+<p class=MsoNormal>&nbsp;</p>
+<p class=MsoNormal><img width=571 height=250 alt="Minus"
+src="../images/MinusOne.png"></p>
+
+<p> If the user responds in the affirmative, then that instance will be removed from the list and state reset to default regardless of whether there is associated cvar data with that location. If the instance originates from a named instance or a gvar master the prompt will be "Are you sure you wish to remove the cvar values for this instance?". </p>
+
+<p class=MsoNormal>&nbsp;</p>
+<p class=MsoNormal><img width=571 height=250 alt="Minus"
+src="../images/Minus.png"></p>
+
+<p> If the user responds in the affirmative, any cvar data associated with that location will be cleared but the entry for the instance will remain. If the instance did not originate from named instance or gvar master or a user instance that means it exists only in the cvar. The prompt will be "Are you sure you wish to remove this cvar instance?". If the user responds in the affirmative, then that that instance will be removed from the list and the state reset to default. </p>
+
+<p><B>The Edit button</B>  allows the user to edit coordinates that are not masters or named instances. If the coordinates not editable the edit button allows for viewing of the coordinates. If an instance has no named instance associated with it, then a custom name can be entered which is used for representation in the UI for this instance. </p>
+
+<p class=MsoNormal>&nbsp;</p>
+<p class=MsoNormal><img width=560 height=482 alt="Edit"
+src="../images/Edit.png"></p>
+
+<p><B>The Display->Variation Instance</B> menu shows the same selection options that are in the drop down of the Variation Cvt view. </p>
+
+<p class=MsoNormal>&nbsp;</p>
+<p class=MsoNormal><img width=1243 height=922 alt="DisplayVariation"
+src="../images/DisplayVariationView.png"></p>
+
+There is currently no way in the menus to add/remove/edit coordinates associated with these instances. The instance selected in the Display->Variation Instance menu is kept in sync with the drop-down selection in the Variation Cvt view and vice versa. 
+
+<p>As mentioned above VTT uses a TSIC table to store “source” information for the cvar and instances. Custom names for instances, user edited instance CVT values and other information is stored in the TSIC table. When a variation font is opened in VTT that does not already contain a TISC table, a TSIC table will be added to the font to store this information. When a font is “stripped” through Tools->Ship Font, the TSIC table is removed. </p>
+
+
+</BODY>
+</HTML>

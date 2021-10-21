@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Composite Characters: Using the glyf Table</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=3waizl></a>Composite Characters: Using the ‘Glyf’ Table</h1>
+
+<p>If the ‘glyf’ table (that is, ‘glyf’ program) for a composite character like
+Å says “use my metrics,” you cannot use the Edit Metrics command (Ctrl&nbsp;+&nbsp;M)
+on the Edit menu to make changes. Instead, you must choose Glyph Program on the
+Views menu to display the ‘glyf’ table. There you can see which character the
+composite refers to. Then you can go to that character in the main window and
+edit its metrics.</p>
+
+<p>If the composite doesn’t say “use my metrics,” you can use the Edit Metrics
+command—but only to edit the advance width. Visual TrueType calculates the left
+side-bearing based on the way it puts together the composite.</p>
+
+</BODY>
+</HTML>

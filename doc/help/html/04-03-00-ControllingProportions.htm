@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Controlling Proportions</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=2gsdt.></a>Controlling Proportions</h1>
+
+<p>An interpolation controls the proportions of a glyph by maintaining the
+relative position (in either the X or Y direction) of one or more “child”
+points that fall between two other “parent” points. The key word is
+“between”—the child point(s) cannot be further in the X or Y direction than
+either parent or on the same X or Y coordinate.</p>
+
+<p>Interpolating is useful when a central feature of a glyph is not controlled,
+but other features have been because of known heights (Y direction) or side
+bearings (X direction). Y interpolations are common for these glyphs: 3, 4, 5,
+6, 8, 9, A, B, E, F, G, H. K, P, R, X, Y, a, e, g, k, x, y, &amp;, and *. X
+interpolations are common for 8, A, B, E, G, K, M, R, W, X, Y, k, m, v, w, x,
+y, &amp;, *.</p>
+
+<p>The simplest interpolation controls a single control point for a vertex
+relative to other points. For example, interpolating the vertex in the middle
+of the right side of a “B” can control it in the Y direction relative to the
+top and bottom of the center stem. </p>
+
+<p>However, choices for interpolating can be more complicated. Consider the
+same center stem of the “B.” You’ll have to decide whether to interpolate the
+top or bottom of that stem relative to the top and bottom of the glyph. Either
+choice will result in problems at certain sizes that you can fix with exception
+hints (for details, see “Refining Pixel Patterns”). However, the better your
+choice, the fewer exception hints you’ll need to create, which reduces your
+work and the disk space required by the font.</p>
+
+</BODY>
+</HTML>

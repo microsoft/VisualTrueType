@@ -1,0 +1,153 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Creating Links</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=4363uv5></a>Creating Links</h1>
+
+<p>A link connects two control points over a flexible distance. It starts at a
+point (the “parent”) and ends at a second point (the “child”). The link doesn’t
+affect the parent point, but it determines the location of the child in
+relation to the parent.</p>
+
+<p>More than one link can start from the same point. In addition, what was the
+second control point (“child”) in one link may be the first control point
+(“parent”) for another link. In fact, you can create a chain of connected
+links, each entailing the next, as long as the last control point in the chain
+is not a parent point earlier in the chain<b>.</b></p>
+
+<p>Links go in one direction, so the toolbar has two linking tools—one for the
+X direction and one for the Y direction:</p>
+
+<p><img width=104 height=80 alt="X Link tool icon"
+src="../images/Toolbar-XLink.png"><img width=104 height=80
+alt="Y Link tool icon" src="../images/Toolbar-YLink.png"></p>
+
+<p>The respective tool will be available only if the Show X Direction or Show Y
+Direction options are selected in the Display Options dialog found on the
+Display menu. Similarly, Visual TrueType displays links only for the selected
+direction(s).</p>
+
+<p>Selecting a link tool changes the cursor into a horizontal or vertical arrow
+for the X or Y direction:</p>
+
+<p><img width=40 height=37 alt="X Link Cursor"
+src="../images/Cursor-XLink.png"><img width=34 height=37
+alt="Y Link Cursor" src="../images/Cursor-YLink.png"></p>
+
+<p>To create the link, you drag from one point to another. The link controls
+the child point in either the X or Y direction, based on the link tool you use.
+The link looks like an arrow filled with lines. Both the lines and the
+arrowhead parallel the X or Y direction of the link. Horizontal and vertical
+links will be straight, but diagonal links will curve.</p>
+
+<p><b>Tip</b> A good strategy is to create links on the glyph outline before
+you display pixels.</p>
+
+<p>If you have not previously rounded the linked control points, Visual
+TrueType automatically rounds them for you. By default, Visual TrueType rounds
+to the nearest grid line (X or Y, depending on the direction of the link). If
+you want a different rounding method, you can specify another (for details, see
+“Rounding Control Points”).</p>
+
+<p>The distance, at least one pixel, must be a whole number of pixels (rounded
+to the grid at the current ppem size) as specified in the ‘cvt’ table. As a
+result, if the parent point is controlled to a grid boundary, the link also
+grid-fits the child because you usually want it a whole number of pixels from
+the parent.</p>
+
+<p>By default, the shape of the arrowhead reflects the last-selected option
+relating links to control values. In addition, the link might display a small
+highway sign, with or without a number. For details about both variations, see
+“Linking with ‘Cvt’ Values” in this chapter.</p>
+
+<p>X links typically start at the side-bearing points. You’ll use links most
+often to control side bearings (X direction only) and stem thickness (X and Y
+directions). For other uses, see “Advanced Hinting.”</p>
+
+<p>Links are flexible. For example, you can change the link by making a different
+control point the “parent” or “child.” At any time, you can delete the link. </p>
+
+<p><b>Tip</b> When you’re not working with links, you can hide them to make
+more room on the screen for other visual hinting. In the Display Options
+dialog, you can set the Links and Dists option to show or hide Link commands.</p>
+
+<p>To create Links via the keyboard, you must type the appropriate VTT Talk
+commands into the VTT Talk window (Ctrl + 5).</p>
+
+<p><b>To select the XLink tool</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>In the Visual TrueType Options submenu of the Display menu, ensure that
+the Show X Direction option is enabled.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the XLink tool by clicking its icon in the toolbar or by pressing
+the F5 key.</p>
+
+<p><b>To select the YLink tool</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>In the Visual TrueType Options submenu of the Display menu, ensure that
+the Show Y Direction option is enabled.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the XLink tool by clicking its icon in the toolbar, or by
+pressing the F1 key.</p>
+
+<p><b>To create a link</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the XLink or YLink tool by clicking the appropriate icon, or by
+pressing the F5 or F1 key, respectively.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>If necessary, zoom in for a better view. (For details, see “Resizing the
+View”.)</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Point on what you want as the “parent” point. Visual TrueType will
+display an arrow to indicate the start of the link.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Drag to the “child” point. </p>
+
+<p><b>To change the “parent” or “child” control point</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the XLink or YLink tool by clicking the appropriate icon, or by
+pressing the F5 or F1 key, respectively.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Point on the tail (parent) or head (child) of the arrow.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Drag to another control point.</p>
+
+<p><b>To display or hide existing links</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>In the Visual TrueType Options submenu of the Display menu, select the Links
+and Dists option.</p>
+
+<p><b>To delete a link</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the XLink or YLink tool by clicking the appropriate icon, or by
+pressing the F5 or F1 key, respectively.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Point on the arrowhead of the link you want to delete.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Drag the arrowhead off the “child” control point, and release the mouse
+button. Visual TrueType will delete the link.</p>
+
+
+</BODY>
+</HTML>

@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Preparing to Ship Your Font</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1>Preparing to Ship Your Font</h1>
+
+<p>You’ve finished hinting. You’ve compiled the font, approved the printed
+version, reduced the amount of space required by the font, and saved all the
+results. Before the font is ready for users, you have to do one more task:
+prepare the font for shipping.</p>
+
+<p>The saved version of your font file contains all the source data for the
+hinting you’ve done. You should keep that file in case you later decide to do
+additional hinting to the font or want to import glyphs from it to hint another
+font.</p>
+
+<p style='margin-left:.5in'><b>Note</b> You must recalculate the ‘maxp’ table
+before preparing to ship your font (see “Reducing Memory Requirements”). </p>
+
+<p>The version you give to users should not contain all those Visual
+TrueType-related private tables—users don’t need that hinting data. Including
+it in the font not only increases the disk space required by the font, but also
+gives away data you should protect. Otherwise, users can see how you hinted the
+font and change it, hint a new version of the font, and otherwise appropriate
+your work.</p>
+
+<p>Before distributing the font to any users, prepare a “ship” version that’s
+been stripped of that private data. Visual TrueType removes the Visual TrueType
+source code and the TrueType source code (or glyph program) assembled from that
+Visual TrueType source code, but not the binary TrueType ‘glyf’ table created
+from the TrueType source code.</p>
+
+<p><img width=936 height=702 alt="Ship font dialog" src="../images/ToolsShip.png"></p>
+
+<p><i>Be sure to rename the version you’ll be shipping to users.</i></p>
+
+<p>Save the ship version with a new file name, and keep that version separate
+from your source file of the font. Use that shipped version to make copies of
+the font for users.</p>
+
+<p>If you forget to rename the file, a prompt asks you to confirm that you want
+to overwrite the version that contains all your hinting.</p>
+
+<p>Because “shipping” the font strips out all that work, you don’t want to
+overwrite the original version. Click Cancel, click Prepare Font again, and
+change the name of the shipped version. </p>
+
+<p><b>To prepare a font for shipping</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>On the Tools menu, click Ship Font.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Specify where you want to save the new file.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>In the “File name” field, type a new file name. </p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Click Ship.</p>
+
+</BODY>
+</HTML>

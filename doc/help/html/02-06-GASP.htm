@@ -1,0 +1,155 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Antialiasing (gasp table)</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=1.bl81m></a>The ‘gasp’ Table</h1>
+
+
+<p>The ‘gasp’ table (Grid-fitting and Scan-conversion Procedure Table) in a TrueType font plays an important role in how a Hinted TrueType font will render on-screen. The table contains information that describes the preferred rasterization techniques for the typeface, as well as specifying the combination of sizes and rasterization modes at which hinting should be applied. There is no single rendering solution that works well at all sizes. 
+
+<p>At very small sizes, say below 8 ppem, there are too few pixels available to properly
+grid-fit, causing glyphs to be distorted. At most sizes, from 8-60ppem,
+gridfitting works well to control proportion, weight, and consistency, but at
+even larger sizes, gridfitting is unnecessary as there are plenty of pixels to
+render glyphs accurately. Similarly, vertical antialiasing works well at some sizes
+but not at others: below 8ppem, it helps in absence of gridfitting; from
+8-20ppem, there are too few pixels to antialias well, so it is better disabled;
+at larger sizes, antialiasing helps preserve proportions and improve letter
+shape. Luckily, you can control all this by editing the font’s ‘gasp’ table.</p>
+
+<p>Most Latin typefaces really only need to have three ranges:</p>
+
+<p class=MsoListBulletCxSpFirst><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>At
+small sizes, the font renders without gridfitting, but with vertical antialiasing.
+E.g. below 8ppem. This gives the best forms possible with so few pixels.</p>
+
+<p class=MsoListBulletCxSpMiddle><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>At
+moderate sizes, the font renders with gridfitting, but without vertical
+antialiasing. E.g. 8-20ppem. Gridfitting keeps proportions, consistency, and
+sharpness. The lack of antialiasing also helps keep letters sharp as there’s
+not yet enough pixels for antialiasing.</p>
+
+<p class=MsoListBulletCxSpLast><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>At
+larger sizes, the font renders with gridfitting, and also with vertical antialiasing.
+E.g. above 20ppem. At these sizes, there are enough pixels for antialiasing to
+improve letterform shape, and the perceived blur that antialiasing brings will
+not muddy counters and interior shapes.</p>
+
+<p>One could add a fourth range above *80ppem to disable gridfitting, but this
+is unnecessary in most typefaces. (*Approximately) </p>
+
+<p><b>Note: </b> The above values vary from font to font. For example, a bold typeface
+can often support vertical antialiasing at a smaller size than the regular. Be
+sure to proof each of your fonts at several sizes to choose the right size
+ranges for each font. See section below on proofing using ‘Follow gasp settings’ in VTT. </p>
+
+<p>You can edit the font’s ‘gasp’ table by selecting Edit Gasp table from the
+Edit menu.</p>
+
+<p><img width=542 height=445 alt="GASP table editor" src="../images/EditGasp.png"></p>
+
+<p><i>You can control antialiasing and gridfitting in the ‘gasp’ table editor.
+The settings shown in this image implement the ranges describe in the bullet
+points above. </i></p>
+
+<p><b>To change settings in the ‘gasp’ table</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>From the Edit menu, click Edit Gasp table.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>In the Up To field, type the upper limits of size ranges you wish to
+control. <br>
+Note that the first row controls the rendering for all sizes below and including the first size you enter. Subsequent rows control the range above the previous size and including the current row. (e.g. the second row controls the rendering for all sizes above the first and including the second size you type). The Above row controls the rendering for all sizes above the highest size you type in. The size listed in this row will automatically adjust to your size ranges that you enter.  </p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>After each range, set the rendering options that you want to apply to
+that size range. There are four sets of options, and they work in pairs. Grid
+Fit and Grayscale work together, Grid fit CT and Non CT AA form the second pair.
+See below for details.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Click OK, and Save</p>
+
+<table class=MsoTableGrid border=0 cellspacing=0 cellpadding=0
+ style='border-collapse:collapse;border:none'>
+ <tr>
+  <td width=297 valign=top style='width:148.25pt;border:none;border-bottom:
+  solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p><b>Option</b></p>
+  </td>
+  <td width=639 valign=top style='width:319.25pt;border:none;border-bottom:
+  solid windowtext 1.0pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p><b>What It Means</b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=297 valign=top style='width:148.25pt;border:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p>Grid Fit</p>
+  </td>
+  <td width=639 valign=top style='width:319.25pt;border:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p>Set this option to enable grid fit / Hinting </p>
+  </td>
+ </tr>
+ <tr>
+  <td width=297 valign=top style='width:148.25pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p>Grayscale</p>
+  </td>
+  <td width=639 valign=top style='width:319.25pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p>Set this option to render with Windows XP Grayscale antialiasing mode.
+  This flag only applies when the application is not using ClearType.</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=297 valign=top style='width:148.25pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p>Grid fit CT</p>
+  </td>
+  <td width=639 valign=top style='width:319.25pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p>Set this option to enable grid fitting when the application uses ClearType
+  (e.g. using DirectWrite).</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=297 valign=top style='width:148.25pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p>Non CT AA<br>
+  (Non-ClearType-direction Antialiasing)</p>
+  </td>
+  <td width=639 valign=top style='width:319.25pt;padding:0in 5.4pt 0in 5.4pt'>
+  <p>Set this option to enable vertical antialiasing when the application uses
+  ClearType (e.g. using DirectWrite).</p>
+  </td>
+ </tr>
+</table>
+
+<p><b>‘Follow gasp settings’ (Proofing Mode only)</b></p>
+
+<p>When enabled, ‘Follow gasp settings’ mode in VTT, allows you to proof your font, inside VTT, using the ‘gasp’ table settings. This allows you to proof how the gasp settings will affect the rendering, without having to install the font. When Follow gasp settings is set, the rendering of any sample text in the main window, will follow the ‘gasp’ table settings. While in this mode, you can also view and proof your font, in the Sample Text Window, (Ctrl 6), Waterfall (Ctrl 8) and Character Set Window (Crtl 9). </p>
+
+<p><b>Enable ‘Follow gasp settings’ mode </b></p>
+
+<p>From the Display menu, choose options, or (Ctrl D).  </p>
+<p>Choose the type of rendering you wish to proof, under Rasterizer Options, and click ‘Follow gasp settings’  </p>
+
+<p><img width=667 height=768 alt="Followgasp" src="../images/Followgasp.png"></p>
+
+<p>When ‘Follow gasp settings’ is checked, the words “gasp mode” are added to the end of the status line in the VTT Main window. There are two additional indicators, depending on which rendering mode is chosen. “GS” indicates Grayscale mode, CTAA indicates ClearType Anti-Alias mode meaning Y direction anti-aliasing. </p>
+
+<p><b>Note: </b> ‘Follow gasp settings’ mode is intended for proofing only. While proofing in ‘gasp’ mode it is important to view and proof only. VTT will revert to editing mode, and Follow gasp settings will be disabled, if any changes are made in the main window (e.g.: turning grid-fitting on or off)</p>
+
+<p><b>‘GS’</b> indicates Grayscale smoothing </p>
+<p><img width=632 height=139 alt="Followgasp" src="../images/IndicateGS.png"></p>
+
+<p><b>‘CTAA’</b> indicates ClearType Anti-Alias mode meaning Y direction anti-aliasing or symmetric smoothing </p>
+<p><img width=632 height=139 alt="Followgasp" src="../images/IndicateCTAA.png"></p>
+
+</BODY>
+</HTML>

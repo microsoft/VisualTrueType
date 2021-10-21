@@ -1,0 +1,229 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Refining the Glyph Outline</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=cpqsjd></a>Refining the Glyph Outline</h1>
+
+<p>The better a glyph outline to begin with, the less hinting you’ll have to
+do. If the glyph has irregularities, such as kinks in what should be a straight
+stroke, edit the glyph even before you start hinting. It may have too many or
+too few control points or some of the control points might need to be moved. </p>
+
+<p><b>Note</b> Some irregularities might be part of the design and needed for a
+good quality font on high-resolution printers.</p>
+
+<p>The toolbar has four tools for controlling points: Move Point, Swap Point,
+Delete Point, and Add Point. When you select a point tool, the pointer changes
+shape according to the tool: </p>
+
+<table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0
+ style='border-collapse:collapse;border:none'>
+ <tr>
+  <td width=312 valign=top style='width:155.8pt;border:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>Toolbar icon</p>
+  </td>
+  <td width=312 valign=top style='width:155.85pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p>Mouse cursor</p>
+  </td>
+  <td width=312 valign=top style='width:155.85pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p>Tool name</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=312 valign=top style='width:155.8pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p><img width=104 height=80 alt="Move tool icon"
+  src="../images/Toolbar-PtMove.png"></p>
+  </td>
+  <td width=312 valign=top style='width:155.85pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><img width=33 height=37 alt="Move tool cursor"
+  src="../images/Cursor-PtMove.png"></p>
+  </td>
+  <td width=312 valign=top style='width:155.85pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>Move point</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=312 valign=top style='width:155.8pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p><img width=104 height=80 alt="Swap tool icon"
+  src="../images/Toolbar-PtSwap.png"></p>
+  </td>
+  <td width=312 valign=top style='width:155.85pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><img width=36 height=37 alt="Swap tool cursor"
+  src="../images/Cursor-PtSwap.png"></p>
+  </td>
+  <td width=312 valign=top style='width:155.85pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>Swap point</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=312 valign=top style='width:155.8pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p><img width=104 height=80 alt="Insert tool icon"
+  src="../images/Toolbar-PtInsert.png"></p>
+  </td>
+  <td width=312 valign=top style='width:155.85pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><img width=37 height=37 alt="Insert tool cursor"
+  src="../images/Cursor-PtInsert.png"></p>
+  </td>
+  <td width=312 valign=top style='width:155.85pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>Insert point</p>
+  </td>
+ </tr>
+ <tr>
+  <td width=312 valign=top style='width:155.8pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p><img width=104 height=80 alt="Delete tool icon"
+  src="../images/Toolbar-PtDelete.png"></p>
+  </td>
+  <td width=312 valign=top style='width:155.85pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><img width=36 height=37 alt="Delete tool cursor"
+  src="../images/Cursor-PtDelete.png"></p>
+  </td>
+  <td width=312 valign=top style='width:155.85pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p>Delete point</p>
+  </td>
+ </tr>
+</table>
+
+<p>Edit the outline until you’re satisfied with the glyph. Then compile the
+font (see “Compiling Your Results”) and save your font file. </p>
+
+<p>A good time to edit the glyphs is while you’re reviewing them to determine
+the ‘cvt’ values. You can add, move, or delete control points. Make sure each
+glyph has a control point wherever the outline changes direction relative to
+the X or Y axis (extrema). Also make sure that features, such as shapes and
+stem thickness, are consistent from one glyph to another.</p>
+
+<p>As you hint a glyph, you may find that you want to change the control points
+again. By refining the outlines before you start, however, you may need to do
+less hinting overall. </p>
+
+<p>Usually, you refine the existing outline rather than create a glyph from
+scratch. However, sometimes you may need to create a new glyph—for example, a
+diacritical mark—or a composite glyph may need a control point for attaching
+another glyph. If you click with the right mouse button as you add the new
+point(s), they start a new contour that will not affect the outline of the
+current glyph.</p>
+
+<p>In general, working on a glyph with many control points will be easier if
+you:</p>
+
+<p class=MsoListBulletCxSpFirst><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Maximize
+the size of the main window.</p>
+
+<p class=MsoListBulletCxSpMiddle><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Work
+in one direction at a time: the Y direction only (in the Visual TrueType menu,
+click to select Show Y Direction and clear Show X Direction), or the X
+direction only (select Show X Direction and clear Show Y Direction)</p>
+
+<p class=MsoListBulletCxSpMiddle><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Show
+fewer points to hide the off-curve control points.</p>
+
+<p class=MsoListBulletCxSpLast><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Hide
+the control point numbers.</p>
+
+<p><b>Note</b> To change individual options for control points, choose commands
+from the Display menu. To change several options, use the Options command on
+the Display menu to open a dialog box where you can click to select and clear
+check boxes as needed, then click Set.</p>
+
+<p><b>To show or hide control points</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>On the Display Options dialog, set the Points option.</p>
+
+<p><b>To add a control point</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>If necessary, set the Show Fewer points option in the Display Options
+dialog.<br>
+Note: If the Show Fewer Points option is selected, all points you add will be
+on-curve points. Otherwise, all points you add will be off-curve points. Later,
+you can swap the point between on-curve and off-curve.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the Add point tool by clicking its icon in the toolbar.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>If the new point should be part of a new glyph, hold down the Shift key.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Click where you want the new point.</p>
+
+<p><b>To move a control point</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the Move point tool by clicking its icon in the toolbar.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the control point(s) you want to move:</p>
+
+<p class=MsoListBulletCxSpFirst style='margin-left:.5in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>To select a single point, click it.</p>
+
+<p class=MsoListBulletCxSpMiddle style='margin-left:.5in'><span
+style='font-family:Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>To select multiple points, select one point, then select
+additional points by clicking on them with the right mouse button. OR drag to
+form a marquee that encloses all the points you want to move. OR drag a marquee
+with the left mouse button to select a group of points, then drag additional
+marquees with the right mouse button to select additional groups of points.</p>
+
+<p class=MsoListBulletCxSpLast style='margin-left:.5in'><span style='font-family:
+Symbol'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>To select all points for the glyph, double-click any point.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Point on the selected point. OR if multiple points are selected, point
+on any selected point.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Drag the selected point(s) to a new location. <br>
+To move the selected point(s) one F-unit at a time, press the arrow key for the
+direction you want to move the point(s).<br>
+To move the selected point(s) 10 F-units at a time, hold down the Shift key as
+you press an arrow key.</p>
+
+<p><b>To delete a control point</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the Delete Point tool by clicking its icon in the toolbar.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Click the control point you want to delete.</p>
+
+
+</BODY>
+</HTML>

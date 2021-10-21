@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Example: Linking with Cvt Entries</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=xuhhgq></a>Example: Linking with ‘Cvt’ Entries:</h1>
+
+<p>The Times New Roman “O” seems an easy glyph to hint with links in from the
+side-bearings and across the two vertical round strokes, plus links across the
+two horizontal round strokes:</p>
+
+<p><img width=171 height=162 alt="Preliminary linking on a Times New Roman “O”" src="../images/bm102.gif"></p>
+
+<p><i>Preliminary linking on a Times New Roman “O”</i></p>
+
+<p>The computer picked pairs of ‘cvt’ values for the vertical and horizontal
+links. However, the question mark indicates that the computer wasn’t able to
+determine the ‘cvt’ value for the left side-bearing. In this case, the ‘cvt’
+table didn’t have an entry with the attribute “Uppercase White X LSB” (LSB for
+left side-bearing point).</p>
+
+<p>Correcting that problem still leaves others evident if you examine several
+sizes of the “O” along with an “H”:</p>
+
+<p><img width=279 height=153 alt="H and O at 15 point" src="../images/bm103.gif"><br>
+<img width=261 height=144 alt="H and O at 14 point" src="../images/bm104.gif"><br>
+<img width=276 height=152 alt="H and O at 13 point" src="../images/bm105.gif"></p>
+
+<p><i>“H” and “O” at 15, 14, and 13 points and 96 dpi</i></p>
+
+<p>This unacceptable variation is the result of how the strokes fall on the
+grid. The weights of the vertical strokes jump from 1 pixel to 2 pixels in both
+the “H” and the “O.” In addition, the left and the right “O” overshoots the
+“H,”, but not the middle one, yet no “O” undershoots the ‘“H.” Although the
+design of the “O” includes some undershoots and overshoots, none are as extreme
+as the left one nor that irregular.</p>
+
+<p>You can correct these problems by referring the links to ‘cvt’ values. The
+‘cvt’ table has values for several heights (descender, baseline, x-height, cap
+height, and ascender), as well as their overshoots. The heights specify real
+values. However, the overshoots specify the difference between the actual
+overshoot and the respective height. </p>
+
+<p>In this case, the ‘cvt’ table has these entries for the baseline and the cap
+height:</p>
+
+<p>/* CAP_HEIGHT */</p>
+
+<p>2: 1356</p>
+
+<p>3: 31</p>
+
+<p>/* UC_BASE_HEIGHT */</p>
+
+<p>8: 0</p>
+
+<p>9: -31</p>
+
+<p>So, the cap height is at 1356 while the caps height overshoot is 31 <i>above</i>
+1356. Likewise, the baseline is at 0 while the baseline undershoot is 31 below
+0. This assures that the bottom and the top round stroke have the same weight. </p>
+
+<p>Because an “O” usually has no control points that sit exactly on the cap
+height, you cannot link from the cap height to its overshoot. Instead, you tell
+the computer what that distance would be if you could link it. Then the
+computer will make that distance behave just like a link without minimum
+distance. </p>
+
+<p><b>Note</b> Not specifying a minimum distance avoids overshoots at small
+ppem sizes, because even a one-pixel overshoot will be too much at sufficiently
+small ppem sizes. Although no overshoot is wrong, it’s a better choice than a
+one-pixel overshoot.</p>
+
+</BODY>
+</HTML>

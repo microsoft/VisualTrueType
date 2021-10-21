@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Using the Control Value Table</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=8m3xr9></a>Using the Control Value Table</h1>
+
+<p>Every TrueType font uses a control value table (‘cvt’) of key values in the
+font. Each entry in the table gives the value for the dominant width, length,
+or angle of a group of features, such as the stem width or the serif length.
+Some control values are specific to certain glyphs, but others apply to the
+entire font.</p>
+
+<p>To ensure consistency, your hints—anchors, links, and strokes—can refer to
+these key values. If you later change a value entered in the ‘cvt’ table,
+Visual TrueType updates all anchors, links, and strokes that refer to that
+‘cvt’ entry.</p>
+
+<p>The text-based control value table displays in its own window. When you
+prepare the font, the window opens automatically (see “Preparing the Open
+Font”). Before hinting, you need to fill in a template provided by Visual
+TrueType, described next. </p>
+
+<p>After filling in the template, you may want to leave the window open.
+Otherwise, close it and open it again as needed. For example, you need to
+update a ‘cvt’ entry for italic glyphs (see the “Hinting diagonal strokes,” and
+“Hinting italic glyphs sections”). In addition, advanced users might want to
+review the ‘cvt’ entries to determine which values would be most appropriate
+for the anchors, links, and strokes. In addition, you might want to add other
+‘cvt’ entries (for details, see “Modifying the ‘Cvt’ Table”).</p>
+
+<p><b>To open the control value table</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>On the Views menu, click Control Values, or press Ctrl&nbsp;+&nbsp;4.</p>
+
+<p><b>To close the control value table</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the control value table by clicking on the window or pressing
+Ctrl&nbsp;+&nbsp;4. </p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>On the File menu, click Close. OR double-click the window’s close box.</p>
+
+
+</BODY>
+</HTML>

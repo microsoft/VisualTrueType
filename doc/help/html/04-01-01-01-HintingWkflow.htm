@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Hinting with Visual TrueType: A General Workflow</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=15rn3on></a>Hinting with Visual TrueType: A General Workflow</h1>
+
+<p>Hinting is a subjective and complex art. You’ve developed your own approach
+to hinting, work habits that you can continue with Visual TrueType. This user
+guide introduces hinting tasks in a typical order that you can follow or not,
+based on your experience and the font itself. In general, you should:</p>
+
+<p class=MsoListBulletCxSpFirst><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Review
+the glyph and, if necessary, add, remove, and adjust existing control points.
+Hinting is about controlling points on the glyph outline. You control points in
+relation to points already hinted or in relation to some absolute X or Y value
+from the origin. </p>
+
+<p class=MsoListBulletCxSpMiddle><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Hint
+in the Y direction, then hint in the X direction. The X and Y axes are
+independent for hinting except for diagonals and italics. Visual TrueType can
+limit its display to only Y hints or only X hints, so you don’t become
+confused.</p>
+
+<p class=MsoListBulletCxSpMiddle><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Link
+control points before you interpolate between them. Linking creates
+relationships between two or more points. Interpolating maintains the relative
+position of one or more linked points between the first and last points in the
+same link.</p>
+
+<p class=MsoListBulletCxSpLast><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Do
+all global hinting before adding local hints to create exceptions. These local
+hints fine-tune hinting on a glyph by moving a single control point by a
+specific distance at a single ppem size.</p>
+
+</BODY>
+</HTML>

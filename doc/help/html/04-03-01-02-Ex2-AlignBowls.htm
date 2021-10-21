@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Example 2: Interpolating to Align Bowls</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=1ni41qu></a>Example 2: Interpolating to Align Bowls</h1>
+
+<p>By design, the bottom bowl of a Times New Roman “B” is wider than the top
+bowl. With the previous interpolation, this design subtlety is apparent at 12
+points. However, the bowls appear equal at 10 points, staggered again at 8
+points, and aligned again at 6 points. </p>
+
+<p>Additional instructions can make the bowls fall on the grid properly. First,
+links from the side-bearing points control the placement of the left stroke and
+the bottom round stroke. Next, interpolating between those links places the top
+round stroke in proportion to the left (straight) stroke and the bottom round
+stroke, like this:</p>
+
+<p><img width=146 height=146 alt="Interpolating to align the bowls"
+src="../images/bm123.gif"></p>
+
+<p><i>Interpolating to align the bowls.</i></p>
+
+<p>These hints align the bowls at the three smaller sizes:</p>
+
+<p><img width=131 height=131 alt="Aligned bowls at 10 point"
+src="../images/bm124.gif"><img width=129
+height=131 alt="Aligned bowls at 8 point" src="../images/bm125.gif"><img
+width=131 height=131 alt="Aligned bowls at 6 point" src="../images/bm126.gif"></p>
+
+<p><i>Aligned bowls at 10, 8, and 6 points and 96 dpi.</i></p>
+
+<p>This example showed just one of many ways to align the bowls. Another
+approach might be to link the two round strokes. However, you cannot
+interpolate the bottom round stroke because it is not actually between
+“between” the left straight stroke and the top round stroke:</p>
+
+<p><img width=146 height=146 alt="Incorrect attempt to interpolate a child point not between the parent
+points"
+src="../images/bm127.gif"></p>
+
+<p><i>Incorrect attempt to interpolate a child point not between the parent
+points.</i></p>
+
+<p>Attempting this interpolation creates a circular dependency, which Visual
+TrueType won’t allow. A message will tell you what’s wrong, in this case
+interpolating <i>between</i> parent points:</p>
+
+<p><img width=723 height=240 alt="Interpolation error dialog"
+src="../images/Error-Extrapolation.png"></p>
+
+<p><i>Visual TrueType explains the interpolation error.</i></p>
+
+</BODY>
+</HTML>

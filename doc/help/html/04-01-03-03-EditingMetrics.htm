@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Editing Metrics</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=8p76xt></a>Editing Metrics</h1>
+
+<p>Each glyph has two side-bearing control points: one on the left and one on
+the right. The right side bearing point also determines the advance width of
+the glyph, measured from the left side bearing point. </p>
+
+<p>Links and other hints often start or end at side bearing points. By default,
+Visual TrueType rounds the side bearing points to the grid. You can’t change
+the rounding method.</p>
+
+<p>You usually don’t move the side bearing points either. However, sometimes
+you may need to adjust them. For example, the font might have some rounding
+errors incurred in the conversion from a Fontographer file (where the font
+height is 1,000 units) into a TrueType file (where font height is 2,048 units).</p>
+
+<p>Or the side-bearing points might be very close to other control points, so
+distinguishing the points becomes difficult, even at enlarged views. If that
+happens, you might move the problematic side-bearing point an easy-to-remember
+distance (say, 100 units), finish hinting the adjacent control points, and then
+restore the side-bearing point to its original location.</p>
+
+<p><img width=391 height=216 alt="Edit metrics dialog"
+src="../images/Edit-Metrics.png"></p>
+
+<p><i>Use the Edit Metrics command to move the left side-bearing point or the
+advance width, which moves the right side-bearing point.</i></p>
+
+<p>Editing the metrics of composite characters involves additional
+considerations. For details, see “Composite Characters: Using the ‘Glyf’
+Table”.</p>
+
+<p><b>To move a side-bearing point</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>On the Edit menu, click Edit Metrics.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>If you want, type a new value after Left Side Bearing.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>If you want, type a new value after Advance Width.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Click OK.</p>
+
+</BODY>
+</HTML>

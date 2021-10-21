@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Anchoring with Cvt Values</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=18hlz3c></a>Anchoring with ‘Cvt’ Values</h1>
+
+<p>By default, Visual TrueType assumes that every anchor should be rounded to
+the nearest grid line. However, a Y anchor can refer to a ‘cvt’ value to
+specify a height or overshoot shared by other glyphs in the font. Instead of
+rounding to the nearest grid line, the point goes to the grid line specified in
+the ‘cvt’ value. If the height later needs global adjustment or you need to
+suppress or equalize an overshoot, you just change the ‘cvt’ value. </p>
+
+<p><b>Note</b> X anchors don’t refer to ‘cvt’ values because X links typically
+start at side-bearing points, which don’t need global adjustments. The left
+side-bearing point always has an X coordinate of 0, and the advance width
+(which sets the right side-bearing point) varies from glyph to glyph.</p>
+
+<p>You assign a ‘cvt’ value after enabling VTT attributes on anchors in the
+options dialog (for details, see “Filling in the Control Value Table”. When you
+right-click the highway sign with a hinting tool, it displays a list of entries
+from the ‘cvt’ table:</p>
+
+<p><img width=460 height=274 src="../images/CVTlist.png"></p>
+
+<p>The selected entry is the one already associated with the anchor or, if none
+exists yet, Visual TrueType’s best guess, plus a dozen neighboring entries from
+the ‘cvt’ table. You can scroll this list to select another entry.</p>
+
+<p><b>To assign a ‘cvt’ entry to an anchor</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the Visual TrueType Options submenu of the Display menu.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Set the Cvts option and optionally set the Cvt Numbers to display the
+large highway signs with CVT numbers.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span> Select the appropriate hinting tool by clicking its icon in the toolbar
+or pressing the associated function key.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Point on the highway sign for the anchor you want to control.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>5.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Holding down the right mouse button, scroll to select an entry from the
+‘cvt’ table that corresponds to the desired height.</p>
+
+<p>OR</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Using the keyboard, edit the VTT Talk instruction for the link, shift,
+or interpolate in the VTT Talk window (Ctrl&nbsp;+&nbsp;5).</p>
+
+</BODY>
+</HTML>

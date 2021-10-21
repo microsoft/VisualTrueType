@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Example 2: Rounding Limitations</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=7tqma7></a>Example 2: Rounding Limitations</h1>
+
+<p>The following example illustrates the limitations of rounding by itself.
+Assume that the 12-point Times New Roman “m” shown earlier in this chapter has
+hints telling the rasterizer to position certain control points on the nearest
+grid line and to let the other points follow accordingly. A short bar marks
+each hinted point that controls vertical strokes:</p>
+
+<p><img width=162 height=140 alt="Rounding indicators for vertical control points"
+src="../images/RoundingEx2-1.gif"></p>
+
+<p><i>Short bars show rounding methods on vertical control points.</i></p>
+
+<p>For the horizontal strokes, a short bar marks each hinted control point:</p>
+
+<p><img width=168 height=138 alt="Rounding indicators for vertical control points"
+src="../images/RoundingEx2-2.gif"></p>
+
+<p><i>Short bars show rounding methods on horizontal control points.</i></p>
+
+<p>After Visual TrueType compiles the hints, the resulting glyph looks better.
+Even so, the left stem is still twice as wide as the other two, and the serifs
+are now missing altogether:</p>
+
+<p><img width=167 height=138 alt="Bitmap of 12-point Times New Roman m after rounding"
+src="../images/RoundingEx2-3.gif"></p>
+
+<p><i>The bitmap of a 12-point Times New Roman “m” after rounding.</i></p>
+
+<p>Hinting just the control points improved the appearance of the font, but the
+outline needs more hints to look good. Visual TrueType encourages you to go
+beyond this basic approach by making rounding part of the links that you create
+and interpolate to hint control points. For more information, see “Controlling
+Distances,” and “Controlling Proportions.”</p>
+
+</BODY>
+</HTML>

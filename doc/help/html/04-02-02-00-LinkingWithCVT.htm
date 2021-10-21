@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Linking with Cvt Values</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=hzc088></a>Linking with ‘Cvt’ Values</h1>
+
+<p>A font should have certain constant relationships between glyphs. For
+example, the dominant weight of the stems should apply to round stems, as well
+as straight stems, and certain control points should fall on the baseline. You can
+achieve this control over relationships by having links refer to entries in the
+control value table (‘cvt’).</p>
+
+<p>By default, Visual TrueType assumes that every link should refer to a ‘cvt’
+value. That value specifies how far, in whole pixels rounded to the grid at the
+current ppem size, the child point is from the parent point.</p>
+
+<p>Several links can refer to the same control value. This helps control
+consistency throughout the font at different point sizes and device
+resolutions.</p>
+
+<p>Only unique distances unrelated to any other distance don’t require a ‘cvt’
+value. A link without a ‘cvt’ value is called a distance.</p>
+
+</BODY>
+</HTML>

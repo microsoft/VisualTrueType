@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Visual Hinting at a Glance</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name="2f_gq55"></a>Visual Hinting at a Glance</h1>
+
+<p>The application used to create a TrueType font produces glyph outlines, as
+well as a ‘glyf’ table of binary TrueType data. Hinting with Visual TrueType
+basically replaces that ‘glyf’ table with one produced by Visual TrueType. All
+this happens behind the scenes as you drag and drop hints on screen.</p>
+
+<p>Visual TrueType includes Visual TrueType Talk (VTT), a program that produces
+source code from your on-screen hinting. Its own ‘glyf’ program turns that VTT
+source into TrueType source code. In turn, Visual TrueType converts that
+TrueType source code to TrueType binary data, which replaces the ‘glyf’ table
+that came with the font. Together, the new ‘glyf’ table from Visual TrueType
+and the glyph outline—as produced with the font program and possibly modified
+with Visual TrueType—result in a hinted TrueType font.</p>
+
+<p>To simplify hinting, Visual TrueType displays glyph characteristics and
+hinting in distinctive ways so you can easily identify all parts of the glyph
+and all its hints. What you see depends on which commands are selected in the
+Visual TrueType menu (these same choices are available as check boxes in the
+dialog box for the Display Options command, which is on the Display menu).
+Selecting a Visual TrueType command or option displays the corresponding
+feature in the main window. See the “Configuring Main window display options”
+section for details on these options.</p>
+
+
+</BODY>
+</HTML>

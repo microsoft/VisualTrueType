@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Export/import all hinting code</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1>Exporting and importing all hinting code</h1>
+
+<p>Visual TrueType 6.0 introduces the capability to export and import all
+hinting code to a separate XML file. There are a number of scenarios this
+enables:</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Moving
+hints to a different font: You can export the hints from one fully-hinted font
+and import them to another compatible font (i.e. it must have the same number
+of glyphs in the same order with the same number and order of points in each
+glyph). An example of this is moving the hints from a Regular weight to a
+Condensed weight. While this can save a lot of time creating hints, you still
+should proof all glyphs at all sizes in all weights of the typeface family.
+(You must copy the Control Program separately; see note, below).</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Bulk
+editing: You can export hints, then edit the XML in an external text editor,
+then re-import those hints back to your original font, with those
+modifications. For example, you might use the external editor to do a regular
+expression find &amp; replace. </p>
+
+<p style='margin-left:.5in;text-indent:-.25in'><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Regenerating
+a font: While hinting a font, designers sometimes need to go back and make
+outline modifications. While VTT does enable some point manipulation, it is
+sometimes better to go back and modify the original source in a font editor and
+regenerate the font. In this case, designers can export hints from their
+TrueType font to an XML file, edit the original source in the font editor,
+generate a new TrueType file, then import the XML file, and then carry on
+hinting. <br>
+<b>Note</b>: this technique only works if the glyph order and point order is
+preserved. If the glyph order changes, then the hints in the XML file will
+reference the wrong glyphs. Similarly, if the point order or number of points changes
+in a glyph, then the hints for that glyph will refer to the wrong points. </p>
+
+<p style='margin-left:.5in;text-indent:-.25in'><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Archival
+storage: The XML gives a plain text representation of all the hinting work in a
+font. </p>
+
+<p>Note: At this time, VTT does not export the Control Program to XML. The XML
+currently only contains the Font Program, Pre-Program, and all VTT Talk and
+Glyph programs.</p>
+
+<p><b>To export all hinting data:</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the Export submenu of the File menu and choose “All code to XML”.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Choose a location to save the file.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Type a filename.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Click Save.</p>
+
+<p><b>To export all hinting data:</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the Import submenu of the File menu and choose “All code to XML”.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the XML file to import.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Click Open.</p>
+
+</BODY>
+</HTML>
