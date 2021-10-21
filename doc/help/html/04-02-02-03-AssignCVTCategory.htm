@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Assigning a Cvt Category and Minimum Distance to a Link</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=1p27eri></a>Assigning a ‘Cvt’ Category and Minimum Distance to a Link</h1>
+
+<p>When you create a link, Visual TrueType assumes it will refer to a ‘cvt’
+value. Before Visual TrueType can select the best ‘cvt’ value for the link, you
+must provide more information. Visual TrueType knows that the link should refer
+to a ‘cvt’ value for a stroke. However, you must specify:</p>
+
+<p class=MsoListBulletCxSpFirst><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Which
+category of stroke to use: straight, round, or other.</p>
+
+<p class=MsoListBulletCxSpLast><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>The
+minimum distance Visual TrueType should maintain between the parent and child
+points in the link.</p>
+
+<p>While using either link tool, you can display a menu of options for the
+arrowheads on links. Your choice specifies both a control value category and
+the minimum distance between the parent and child points. Otherwise, you can
+change the link to a distance by telling Visual TrueType that the link does not
+require a ‘cvt’ value. </p>
+
+<p>Visual TrueType displays different menus, depending on the direction of the
+link:</p>
+
+<p><img width=188 height=131 alt="X direction category and minimum distance options" 
+    src="../images/bm91.gif">
+  <img width=164 height=149 alt="X direction category and minimum distance options" 
+    src="../images/bm92.gif"></p>
+
+<p><i>Control-value category and minimum distance options for the X and Y
+directions</i></p>
+
+<p>The first row of each menu offers the same four choices (shown below for the
+X direction only): </p>
+
+<table class=MsoNormalTable border=0 cellspacing=3 cellpadding=0 width=591
+ style='width:295.5pt'>
+ <tr>
+  <td width="12%" valign=top style='width:12.0%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><b>Option</b></p>
+  </td>
+  <td width="88%" valign=top style='width:88.0%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><b>What It Means</b></p>
+  </td>
+ </tr>
+ <tr>
+  <td width="12%" valign=top style='width:12.0%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><img width=47 height=44 alt="Control value category icon"
+  src="../images/bm93.gif"></p>
+  </td>
+  <td width="88%" valign=top style='width:88.0%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal>The link becomes a distance without a ‘cvt’ value because
+  it doesn’t relate to any other character in the font. When Cvts is selected on
+  the Visual TrueType menu, the link will not display a highway sign.</p>
+  </td>
+ </tr>
+ <tr>
+  <td width="12%" valign=top style='width:12.0%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><img width=47 height=44 alt="Control value category icon"
+  src="../images/bm94.gif"></p>
+  </td>
+  <td width="88%" valign=top style='width:88.0%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal>The link refers to a control value for a non-specific
+  distance, such as serif lengths. Use this category for strokes that are
+  neither straight nor rounded.</p>
+  </td>
+ </tr>
+ <tr>
+  <td width="12%" valign=top style='width:12.0%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><img width=47 height=44 alt="Control value category icon"
+  src="../images/bm95.gif"></p>
+  </td>
+  <td width="88%" valign=top style='width:88.0%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal>The link refers to a control value that indicates the
+  dominant width of a straight strokes (the arrowhead is straight, not
+  pointed).</p>
+  </td>
+ </tr>
+ <tr>
+  <td width="12%" valign=top style='width:12.0%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal><img width=47 height=44 alt="Control value category icon"
+  src="../images/bm96.gif"></p> 
+  </td>
+  <td width="88%" valign=top style='width:88.0%;padding:.75pt .75pt .75pt .75pt'>
+  <p class=MsoNormal>The link refers to a control value that indicates the
+  dominant width of a round stroke (the arrowhead is round, not pointed).</p>
+  </td>
+ </tr>
+</table>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p>The arrowheads shown on the links and distances correspond to your menu
+choices:</p>
+
+<p><img width=146 height=146 alt="The X links of a Times New Roman B" src="../images/bm90.gif"></p>
+
+<p><i>The X links of a Times New Roman “B” with arrowheads denoting ‘cvt’
+categories.</i></p>
+
+<p>This first row of link options instructs the rasterizer to maintain a
+minimum distance of one pixel for all thin black distances (but not white or
+gray distances) that are entirely “inside” the glyph. However, you may want to
+override this with choices from the second or third rows. </p>
+
+<p>For example, depending on the rounding method, both parent and child point
+are typically rounded to (the nearest) grid line. As a result, Visual TrueType
+rounds the distance between the parent and the child point (in the X or Y
+direction) to the whole pixel. This number may be 0 for small ppem sizes and
+short links, so a fairly thin stroke might vanish. You can override this result
+by choosing from the second row to maintain the minimum distance.</p>
+
+<p>The choices in the second row look like they repeat the choices of the first
+row, but they feature an extra symbol that looks like the “open the door”
+button in elevators:</p>
+
+<p><img width=183 height=44 alt="Choices from the second row of the menu" src="../images/bm98.gif"></p>
+
+<p>Each choice here tells the computer to maintain a minimum distance when the
+computer normally would not. In the example linking the Times New Roman “m”
+earlier in this chapter, links restored the serifs, even though the distance
+across them was less than half a pixel. The first option in the second row
+creates a distance (no ‘cvt’ value) that maintains a minimum distance of one
+pixel:</p>
+
+<p><img width=47 height=44 alt="Choice for distance with a one pixel minimum" src="../images/bm99.gif"></p>
+
+<p>Conversely, if Visual TrueType applies the minimum distance when you’d
+rather it didn’t, you can select options from the third row. These permit
+“closing” the distance to 0 pixels. The third row has an extra symbol that
+looks like the “close the door” button in elevators:</p>
+
+<p><img width=183 height=44 alt="Choices from the third row of the menu" src="../images/bm100.gif"></p>
+
+<p>Keeping track of overrides is important. Visual TrueType can display the
+“elevator door” symbols next to any highway sign with an override. </p>
+
+<p>By default, the minimum distance is 1 pixel. However, you can use any elevator
+door symbol to change the minimum to any distance between 0 and 8 pixels (in
+increments of 1/8 pixel). For example, increasing the minimum distance to 2
+pixels might make a bold font look darker than the “normal” font with the
+default minimum distance of 1 pixel. </p>
+
+<p><b>Note</b> By default, Visual TrueType applies the last-selected option for
+‘cvt’ category and minimum distance to each new link you create. To take
+advantage of this default behavior, create all links that use the same category
+and distance, then select another arrowhead from the pop-up menu, create all
+those links, and so on. </p>
+
+<p><b>To choose a control value category and minimum distance for a link</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the XLink or YLink tool by clicking the appropriate icon, or by
+pressing the F5 or F1 key, respectively.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Point to the arrowhead (not the child point) of the link.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Hold down the right mouse button, and select in the menu.</p>
+
+<p><b>To display override options on links</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>In the Visual TrueType Options submenu of the Display menu, select the
+Minimum Distances option.</p>
+
+<p>OR </p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Click Options on the Display menu.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Set the the Minimum Distances option.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Click OK.</p>
+
+<p><b>To change the minimum distance for a link</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>In the Visual TrueType Options submenu of the Display menu, ensure that
+the Minimum Distances option is enabled.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Point to the elevator sign of the link where you want to change the
+minimum distance.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Hold down the right mouse button.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>In the ruler, drag until the black bar reaches the distance you want. <br>
+When the pointer goes beyond the left or right edge, the ruler will start
+scrolling. The further you drag, the faster the scrolling.</p>
+
+</BODY>
+</HTML>

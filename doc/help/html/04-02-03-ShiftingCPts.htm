@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Shifting Control Points</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=4x2v6e></a>Shifting Control Points</h1>
+
+<p>The shift tool creates a rigid relationship between two points. It tells
+Visual TrueType to maintain the same relative distance between the parent and
+child points even if hinting has moved the parent point.</p>
+
+<p>A shift differs from a link in several ways. A shift doesn’t use control
+values, so you can’t alter multiple shifts by changing a single ‘cvt’ value. In
+addition, because the position of the child point depends on what happens to
+the parent point, you don’t have to apply rounding to the child point, and a
+shift doesn’t have to move the child in full pixels. In addition, a shift
+doesn’t default to the one-pixel minimum used by a link.</p>
+
+<p>Shifts are appropriate when:</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>The distance being controlled has no ‘cvt’ entry and doesn’t need one
+because the two points have a unique relationship.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>The distance is very small and will become full pixels only at large
+ppem sizes.</p>
+
+<p>Creating, changing, and deleting a shift works in much the same way as does
+a link. The main difference is that a shift doesn’t refer to ‘cvt’ values so
+you don’t have to apply a ‘cvt’ category and value or set a minimum distance.
+Like a link, a shift goes in one direction, so the toolbar has two shift tools:
+one for the X direction and one for the Y direction:</p>
+
+<p><img width=104 height=80 alt="X Shift tool icon"
+src="../images/Toolbar-XShift.png"><img width=104
+height=80 alt="Picture 6" alt="Y Shift tool icon"
+src="../images/Toolbar-YShift.png"></p>
+
+<p>The respective tool will be available only if Show X Direction or Show Y
+Direction is selected on the Display Options dialog available on the Display
+menu). Similarly, Visual TrueType displays shifts only for the selected
+direction(s).</p>
+
+<p>Selecting a shift tool changes the cursor into a horizontal or vertical
+arrow for the X or Y direction:</p>
+
+<p><img width=34
+height=37 alt="X Shift tool cursor"
+src="../images/Cursor-XShift.png"><img width=30
+height=37 alt="Y Shift tool cursor"
+src="../images/Cursor-YShift.png"></p>
+
+<p>To create the shift, you drag from one point to another. Even if the first
+point is controlled to a grid boundary, the second is not rounded to a grid
+boundary (at least not by default).</p>
+
+<p>Because the relationship is rigid, the shift forms a solid line with a short
+line at the parent point and an arrowhead at the child point. The arrowhead is
+parallel the X or Y direction of the shift. Horizontal and vertical shifts will
+be straight, but diagonal shifts will curve.</p>
+
+<p><b>Tip</b> When you’re not working with shifts, you can hide them to make
+more room on the screen for other visual hinting. In the Display Options
+dialog, you can set the Shifts option to show or hide Shift commands.</p>
+
+<p>To create Shift commands via the keyboard, you must type the appropriate VTT
+Talk commands into the VTT Talk window (Ctrl&nbsp;+&nbsp;5).</p>
+
+<p><b>To select the XShift tool</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>In the Visual TrueType Options submenu of the Display menu, ensure that
+the Show X Direction option is enabled.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the XShift tool by clicking its icon in the toolbar or by
+pressing the F6 key.</p>
+
+<p><b>To select the YShift tool</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>In the Visual TrueType Options submenu of the Display menu, ensure that
+the Show Y Direction option is enabled.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the YShift tool by clicking its icon in the toolbar, or by
+pressing the F2 key.</p>
+
+<p><b>To create a shift</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the XShift or YShift tool by clicking the appropriate icon, or by
+pressing the F6 or F2 key, respectively.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>If necessary, zoom in for a better view. (For details, see “Resizing the
+View”).</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Point on what you want as the “parent” point. Visual TrueType will
+display an arrow to indicate the start of the link.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Drag to the “child” point.</p>
+
+<p><b>To change the “parent” or “child” control point</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the XShift or YShift tool by clicking the appropriate icon, or by
+pressing the F6 or F2 key, respectively.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Point on the tail (parent) or head (child) of the arrow.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Drag to another control point.</p>
+
+<p><b>To display or hide existing shifts</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>In the Visual TrueType Options submenu of the Display menu, select the
+Shifts option.</p>
+
+<p><b>To delete a shift</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the XShift or YShift tool by clicking the appropriate icon, or by
+pressing the F6 or F2 key, respectively.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Point on the arrowhead of the shift you want to delete.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Drag the arrowhead off the “child” control point, and release the mouse
+button. Visual TrueType will delete the link.</p>
+
+</BODY>
+</HTML>

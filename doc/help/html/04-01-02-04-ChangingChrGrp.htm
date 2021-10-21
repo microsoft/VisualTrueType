@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Changing a Glyph’s Character Group</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=12ob0ab></a>Changing a Glyph’s Character Group </h1>
+
+<p>The CharGrp.txt file for the font assigns each glyph to a character group:
+uppercase, lowercase, figure, or other. The character group tells Visual
+TrueType which group of values to use from the control value table (‘cvt’) for
+the glyph.</p>
+
+<p>Occasionally, you might want to use the ‘cvt’ values from a different group.
+For example, the font designer may have classified a dollar sign ($) as a
+figure. However, while hinting it, you decide that the glyph looks more like an
+uppercase “S.” </p>
+
+<p>Changing the glyph’s character group won’t affect ‘cvt’ values already
+applied to the glyph. However for subsequent ‘cvt’ values you assign, Visual
+TrueType will use the new character group.</p>
+
+<p><b>Tip</b> Change the character group, if necessary, before assigning any
+‘cvt’ values.</p>
+
+<p>Sometimes<b> </b>typographers turn on the sample text at the top of the main
+window (on the Display menu, click Show Text String) and cycle through all the
+character groups to check glyph spacing. The first part of the sample text
+displays the current glyph between two glyphs typical for the current character
+group, followed by extra text (see “Setting Preferences”). </p>
+
+<p>For instance, if the current glyph is A, the text string starts with
+HHAHOHOAOOAAA. If you change the character group to lowercase, the text string
+starts with nnAnonoAooAA, which shows how the A spaces with those characters.</p>
+
+<p>You make this change with the Change Char Group command from the Edit menu.
+Each time you choose the command, Visual TrueType changes the character group
+displayed in the status bar. Just keep choosing the command until the status
+bar displays the character group you want for the glyph in the main window.</p>
+
+<p><b>To change the character group of the current glyph</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>On the Edit menu, click Change Char Group, or press Ctrl&nbsp;+&nbsp;U.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>If necessary, repeat until the status bar displays the correct character
+group. </p>
+
+</BODY>
+</HTML>

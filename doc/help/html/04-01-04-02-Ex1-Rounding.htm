@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Example 1: Rounding</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=6tqma7></a>Example 1: Rounding</h1>
+
+<p>The same point, rounded two different ways, shows how rounding can affect
+grid-fitting at different point sizes. The first example uses the
+round-to-half-grid method, and the second uses the round-to-double-grid method:
+</p>
+
+<table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0
+ style='border-collapse:collapse;border:none'>
+ <tr>
+  <td width=312 valign=top style='width:155.8pt;border:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><img width=194 height=95 alt="Half-grid rounding, outline"
+  src="../images/RoundingEx1-1.gif"></p>
+  </td>
+  <td width=312 valign=top style='width:155.85pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p><img width=189 height=95 alt="Half-grid rounding, size 1"
+  src="../images/RoundingEx1-2.gif"></p>
+  </td>
+  <td width=312 valign=top style='width:155.85pt;border:solid windowtext 1.0pt;
+  border-left:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p><img width=159 height=81 alt="Half-grid rounding, size 1"
+  src="../images/RoundingEx1-3.gif"></p>
+  </td>
+ </tr>
+ <tr>
+  <td width=312 valign=top style='width:155.8pt;border:solid windowtext 1.0pt;
+  border-top:none;padding:0in 5.4pt 0in 5.4pt'>
+  <p><img width=192 height=93 alt="Double-grid rounding, outline"
+  src="../images/RoundingEx1-4.gif"></p>
+  </td>
+  <td width=312 valign=top style='width:155.85pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><img width=189 height=95 alt="Double-grid rounding, size 1"
+  src="../images/RoundingEx1-5.gif"></p>
+  </td>
+  <td width=312 valign=top style='width:155.85pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+  padding:0in 5.4pt 0in 5.4pt'>
+  <p><img width=159 height=81 alt="Double-grid rounding, size 1"
+  src="../images/RoundingEx1-6.gif"></p>
+  </td>
+ </tr>
+</table>
+
+<p><i>Two point sizes using rounded to the half-grid (top) and double grid
+(bottom).</i></p>
+
+<p>In this example, the round-to-half-grid method always gets the control point
+at the crotch on the center of the pixel, but it doesn’t always get it in the
+middle of the stroke in-between. For a stroke that is one pixel wide, the exact
+middle is on the pixel center, while the center of a stroke that is two pixels
+wide falls between the two pixels. Conversely, round-to-double-grid always gets
+the control point at the crotch in the exact middle, but the pixel pattern
+might not be optimal. </p>
+
+</BODY>
+</HTML>

@@ -1,0 +1,49 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Introducing Visual TrueType</TITLE>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+
+<h1><a name=h1full></a>Control Program Only </h1>
+
+<h2><a name=h1full></a>About </h2>
+
+<p>TrueType allows control over the regularity of features through the use of values stored in the ‘CVT’ table. Control values are measurements of features, such as lowercase stem widths. These stems, although similar to one another, may have slightly different outline distances. With Cvt’s the distances can be controlled so they are the same pixel width at a low resolution. At a higher resolution the control value won't be used but the natural distance will display in the stems. The Control Value table doesn’t require these values to be glyph feature distances. The values are an integer and can be accessed from many TrueType instructions. The table also can be written to as well as read from other tables. Other examples of glyph and font features that can be stored in the control value table are: cap heights, x-heights, overshoot distances, ascender heights, baselines, figure heights, serif lengths and heights, italic angle, group (uppercase, lowercase, etc.) stem distances, group round distances. Other features might be: smaller group distances such as a math sign stem distance, braces, brackets, or parentheses distances. 
+ </p>
+
+<p> VTT can automatically generate a Control Value Table for Latin Fonts. The above mentioned measurements will be automatically generated, saving you time, so that you can begin adding Visual hints to your font straight away without the need to measure the font, and manually fill in the relevant CVT entries. Note: Selecting Tools> Autohint > Control Program Only, is similar to Tools > Prepare font > Import Templates method of generating tables in older versions of VTT. Selecting, Tools> Autohint > Control Program only, will automatically generate a compiled Control Program, Pre Program and Font Program.  
+ </p>
+
+<p><b>Follow these steps to Generate a Control Program</b></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><img width=436 height=267 alt="Control Program"
+src="../images/cvtonly.png"></p>
+
+<p class=Instructionsteps>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Start Visual True Type. </p>
+
+<p class=Instructionsteps>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>File > Open. Navigate to font file you would like to Generate a Control Program for</p>
+
+<p class=Instructionsteps>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select Font File and Open.</p>
+
+<p class=Instructionsteps>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>From the Tools menu, select Autohint > Control Program Only</p>
+
+<p class=Instructionsteps>5.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>	When complete choose Save from File Menu</p>
+
+<p>You can now begin hinting, either using the Graphical User Interface or by adding instructions in the VTT talk window and compiling. Please see the sample font VTTDemo.ttf, that ships with VTT as a reference on best practices for hinting.</p>
+
+
+
+</BODY>
+</HTML>

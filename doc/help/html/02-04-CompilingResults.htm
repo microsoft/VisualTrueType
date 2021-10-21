@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Compiling Your Results</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=0c1hsv></a>Compiling Your Results</h1>
+
+<p>As you hint, you should periodically compile the font file. (“Compile” is
+the term used by Visual TrueType Talk, and “assemble” is the equivalent term
+for TrueType. For simplicity, this discussion uses “compile” except when
+specific to a command name.)</p>
+
+<p>Compiling the main window tells Visual TrueType to (1) update the font
+information with all the hinting done since you last compiled and (2) update
+the on-screen glyph to reflect those changes. Compiling a font actually
+involves compiling various data tables in this order:</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Control Program. This generates the font’s ‘cvt’ table and part of the ‘prep’
+table.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Font program table (‘fpgm’).</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Pre-program. This appends to code to the ‘prep’ table generated in step
+1.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>VTT Talk, which creates source code using values from the ‘cvt,’ ‘fpgm,’
+and ‘prep’ tables.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>5.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Glyph instructions, which Visual TrueType creates from the VTT Talk
+source code.</p>
+
+<p>While working on the glyph, you can choose a single command, described below,
+which executes Steps 4 and 5. It also updates the main window so your glyph
+shows the results of all hinting applied since you last compiled.  Note that if
+you have set the option “Auto-compile main view” in the general options dialog
+(see above), then Visual TrueType will automatically execute Steps 4 and 5 each
+time you edit visual hints.</p>
+
+<p>When you go to another glyph, Visual TrueType checks the glyph you’re
+leaving. If you’ve added but not compiled any links or interpolations, Visual
+TrueType will automatically compile your latest changes to VTT Talk and private
+tables (the equivalent of Steps 4 and 5). This assures that you won’t lose
+those hints. (Note that this does not save the changes to the file. To save
+changes, select Save from the File menu, or type Ctrl&nbsp;+&nbsp;S).</p>
+
+<p>After entering values in the ‘cvt’ table, you should select the Control
+Values window and compile it with the Compile / Active Window command or type
+Ctrl&nbsp;+&nbsp;R. Then, save the file by selecting Save from the File menu,
+or typing Ctrl&nbsp;+&nbsp;R). Unless you’re an advanced user and made changes
+to the ‘fpgm’ and ‘prep’ tables, you don’t need to compile them.</p>
+
+<p>But if you want to make sure you’ve done all the necessary compiling or if
+you’re an advanced user who’s modified the ‘fpgm’ and ‘prep’ tables, you can
+compile the entire font (Steps 1 - 3). To simplify that process, Visual
+TrueType provides a single command: Compile Everything. The command does Steps
+1 through 3, then compiles the VTT Talk of the current glyph and the TrueType
+source (‘glyf’ program).<b> </b>Because it is a flexible tool, Visual TrueType
+also provides individual commands you can choose to compile in the sequence
+specified above.</p>
+
+<p style='margin-left:.5in'><b>Note</b> Advanced users can open the VTT Talk
+window and enter VTT Talk commands there. If the VTT Talk contains a command
+that cannot be displayed visually (for example, a function call), Visual
+TrueType will update the on-screen glyph, reflecting the combined effects of
+all the function calls the advanced user may have entered. However, Visual
+TrueType won’t display a graphical representation of the function calls, and
+all tools from the Angle tool through the Delta tool will be disabled. This
+assures that compiling does not negate the text-based hinting.</p>
+
+<p>Compiling is not the same as saving your changes to disk. You must still use
+the Save or Save As command on the File menu to update the disk version of the
+font (see “Saving the Font File” in this chapter). </p>
+
+<p><b>To compile the current glyph</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the Tools menu.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>On the Compiler submenu, click Active Window (Ctrl&nbsp;+&nbsp;R).</p>
+
+<p>OR</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>On the Compiler menu, click Compile VTT Talk.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>On the Compiler menu, click Assemble Glyph Instructions.</p>
+
+<p>OR</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Go to another glyph. </p>
+
+<p><b>To compile an individual table used by Visual TrueType</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>On the Compiler menu, click Assemble Pre-Program, Assemble Font Program,
+or Compile Control Value Table.</p>
+
+<p><b>To compile the entire font</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>On the Compiler menu, click Compile Everything.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>On the Compiler menu, click Compile VTT Talk of All Glyphs.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>On the Compiler menu, click Assemble All Glyph Instructions.</p>
+
+</BODY>
+</HTML>

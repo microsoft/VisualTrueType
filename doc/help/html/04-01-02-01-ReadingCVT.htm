@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Reading Cvt Entries</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=1b9r2da></a>Reading ‘Cvt’ Entries</h1>
+
+<p>All control values have an identification number, as well as a comment that
+provides information about the type of glyph or feature to which it applies. A
+typical entry in the ‘cvt’ table looks like this:</p>
+
+<p>66: 192 0xa41</p>
+
+<p>where</p>
+
+<p class=MsoListBulletCxSpFirst><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>The
+control value number (here, 66) is the sequential number identifying the entry
+in the table. Links, anchors, and strokes can refer to this number. Some of
+these are reserved. For example, line 36 always is the italic size run.</p>
+
+<p class=MsoListBulletCxSpMiddle><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>A
+colon separates the first two numbers.</p>
+
+<p class=MsoListBulletCxSpLast><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>A
+control value (here, 192) gives the dominant length or width of a feature,
+measured in font units (F-units) scaled to the ppem height of the device grid. </p>
+
+<p>Any feature that needs to be controlled can be assigned a value and
+reference number in the ‘cvt’ table. Typically, a ‘cvt’ table includes entries
+for common heights (for example, baseline, cap height, and x-height),
+representative side-bearing points, common uppercase and lowercase stem widths
+(both X and Y directions), uppercase and lowercase serif thickness and length,
+and any italic angle.</p>
+
+
+</BODY>
+</HTML>

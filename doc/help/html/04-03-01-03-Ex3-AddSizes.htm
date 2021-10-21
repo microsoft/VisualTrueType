@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Example 3: Interpolating at Additional Sizes</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=1nidvtn></a>Example 3: Interpolating at Additional Sizes</h1>
+
+<p>The interpolations in Example 1 and Example 2 have made a Times New Roman
+“B” that looks good at 12, 10, 8, and 6 points. However, you still must review
+the “B” at other sizes to see if the results are acceptable. In this case, the
+7-point “B” doesn’t look as good as the adjacent sizes:</p>
+
+<p><img width=129 height=131 alt="Times New Roman B at 8 point"
+src="../images/bm129.gif"><img width=132
+height=132 alt="Times New Roman B at 7 point" src="../images/bm129.gif"><img
+width=131 height=131 alt="Times New Roman B at 6 point"src="../images/bm129.gif"></p>
+
+<p><i>Times New Roman “B” at 8, 7, and 6 points and 96 dpi.</i></p>
+
+<p>Note the control point at the crotch of the two bowls. The interpolation
+moves the middle stroke up or down a little bit, and this point follows
+“accordingly.” At the even sizes (8 and 6 points), the control point hovers
+around the center of the pixel. At 7 points, however, “accordingly” positions
+the control point near the bottom of the pixel. </p>
+
+<p>Correcting this requires more hinting to define “accordingly.” You can do
+that by interpolating the control point between the top and the bottom edge of
+the middle stroke:</p>
+
+<p><img width=146 height=146 alt="Controlling more and more details"
+src="../images/bm132.gif"></p>
+
+<p><i>Controlling more and more details...</i></p>
+
+<p>For clarity, the above illustration shows the interpolations with pixels
+turned off, but grid-fitting still on. Turning the pixels back on shows that
+the new interpolation has produced the desired results:</p>
+
+<p><img width=129 height=131 alt="Revised B at 8 points"
+src="../images/bm133.gif"><img width=132
+height=132 alt="Revised B at 7 points" src="../images/bm133.gif"><img
+width=131 height=131 alt="Revised B at 6 points" src="../images/bm133.gif"></p>
+
+<p><i>...for increasingly better results.</i></p>
+
+</BODY>
+</HTML>

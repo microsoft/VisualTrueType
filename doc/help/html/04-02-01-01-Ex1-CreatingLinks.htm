@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Example 1: Creating Links</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=7z5f0c></a>Example 1: Creating Links</h1>
+
+<p>Just rounding control points fails to <i>preserve the weights</i> of the
+stems in a 12-point Times New Roman “m”:</p>
+
+<p><img width=167 height=138 alt="The bitmap of a 12-point Times New Roman “m” after rounding" 
+	src="../images/RoundingEx2-3.gif"></p>
+
+<p><i>The bitmap of a 12-point Times New Roman “m” after rounding.</i></p>
+
+<p>Linking control points, however, can add hints that tell the rasterizer to:</p>
+
+<p class=MsoListBulletCxSpFirst><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Fit
+one edge of the stem to the grid.</p>
+
+<p class=MsoListBulletCxSpMiddle><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Work
+out the number of pixels needed to represent the weight of the stem.</p>
+
+<p class=MsoListBulletCxSpMiddle><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Turn
+on that number of pixels, and fit the other edge of the stem to the grid.</p>
+
+<p class=MsoListBulletCxSpLast><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Let
+all the other control points following “accordingly.”</p>
+
+<p>That requires three X links, each starting on the left side of the stems.
+These short links may be easier to see if you choose Grid Fit on the Display
+menu:</p>
+
+<p><img width=165 height=104 alt="Linking across the three stems of the “m”..." 
+	src="../images/bm74.gif"></p>
+
+<p><i>Linking across the three stems of the “m”...</i></p>
+
+<p><img width=168 height=105 alt="Bitmap of m with stem weights preserved" src="../images/bm75.gif"></p>
+
+<p><i>...preserves the weights of the stems.</i></p>
+
+<p>However, the serifs still are missing because, as shown above, they are less
+than half a pixel high at 12 point and 96 dpi. Linking vertically across the
+serifs like this:</p>
+
+<p><img width=300 height=150 alt="Linking across the serifs" 
+	src="../images/bm76.gif"></p>
+
+<p><i>Linking across the serifs...</i></p>
+
+<p>restores the serifs because the link says any link entirely “inside” the
+outline should maintain a minimum distance of one pixel.</p>
+
+<p><img width=168 height=114 alt="Bitmap of m with serifs preserved" 
+	src="../images/bm77.gif"></p>
+
+<p><i>...not only preserves the weight of the serifs, but the serifs
+themselves.</i></p>
+
+<p>The serifs are back, yet several problems remain. The two arches fall on the
+grid but are disjoined. Joining them is just a matter of adding links, as done
+to restore the serifs: </p>
+
+<p><img width=218 height=135 alt="Linking across the arches and other parts to be preserved" 
+	src="../images/bm78.gif"></p>
+
+<p><i>Linking across the arches and other parts to be preserved.</i></p>
+
+<p>The left stem illustrates that:</p>
+
+<p class=MsoListBulletCxSpFirst><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>More
+than one link can start from the same point.</p>
+
+<p class=MsoListBulletCxSpLast><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>One
+link can entail another.</p>
+
+<p>Both features come in handy when instructing the computer how to fit the
+outlines of the “m” on the grid:</p>
+
+<p><img width=168 height=102 alt="The “m” linked to have serifs and joined arches" 
+	src="../images/bm79.gif"></p>
+
+<p><i>The “m” linked to have serifs and joined arches.</i></p>
+
+<p>By creating a chain of links, you can control the spacing of the three
+stems. The chain starts at the left side-bearing point and runs through the
+entire character to end at the right side-bearing point: </p>
+
+<p><img width=170 height=104 alt="A chain of X links" 
+	src="../images/bm80.gif"></p>
+
+<p><i>A chain of X links (Note: On the Visual TrueType menu, <br>
+Show Y Direction is not selected.)</i></p>
+
+<p>The “m” looks better, but it’s still not perfect:</p>
+
+<p><img width=170 height=102 alt="The improved “m”" 
+	src="../images/bm81.gif"></p>
+
+<p><i>The improved “m”</i></p>
+
+<p>You might do additional hinting to link the lengths of the serifs. Then you
+might use the size run to see if the “m” looks good at all sizes, and fix
+individual pixels with exceptions (for details about exception hinting, see
+“Refining Pixel Patterns”).</p>
+
+<p>The hinting done so far assumes that the glyph outline falls on the grid. As
+long as that happens, the hinting controls stem weights, the counterforms
+between the stems, even the spaces before and after the character. However, if
+the outline doesn’t fall on the grid, the pixels in the left-to-right chain of
+stem links may have to be rounded down by less than half a pixel. By the time
+the chain arrives at the right side-bearing point, the overall advance width
+will be off by more than 3 pixels (less than 0.5 pixels multiplied by 7
+occurrences).</p>
+
+</BODY>
+</HTML>

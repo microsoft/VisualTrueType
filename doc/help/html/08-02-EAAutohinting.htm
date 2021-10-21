@@ -1,0 +1,50 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Introducing Visual TrueType</TITLE>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+
+<h1><a name=h1full></a>East Asian Autohinter </h1>
+
+<h2><a name=h1full></a>About </h2>
+
+<p>VTT includes an Autohinter for East Asian fonts. This Autohinter makes use of a new lightweight hinting strategy that focuses on the horizontal strokes common in East Asian scripts. This strategy, takes advantage of Windows symmetric rendering modes and locks the bottom of strokes to the pixel grid while letting the top of strokes float, by using a ‘Shift’ command. This strategy balances edge contrast vs. blur and produces a good distribution of strokes with balanced counters.
+ </p>
+
+<p style='margin-left:.5in'><b>Note:</b> When the East Asian autohinter is run, on an EA font, the Latin portion of the font will be automatically hinted using the same hinting stragety as used by the Light Latin Autohinter.</p>
+<p><b>Follow these steps to Autohint an East Asian font:</b></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><img width=436 height=267 alt="Autohint Latin"
+src="../images/EAAutohinter.png"></p>
+
+<p class=Instructionsteps>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Start Visual True Type. </p>
+
+<p class=Instructionsteps>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>File > Open. Navigate to font file you would like to Autohint.</p>
+
+<p class=Instructionsteps>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select Font File and Open.</p>
+
+<p class=Instructionsteps>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>From the Tools menu, select Autohint > East Asian AutoHint.</p>
+
+<p class=Instructionsteps>5.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>	When Autohinting is complete choose Save from File Menu</p>
+
+
+<p style='margin-left:.5in'><b>Note:</b> This simpler automatically generated instruction set will allow for easier editing by a typographer. The intent is that the Autohinter works well enough for most glyphs, leaving a smaller percentage that will need manual touch-up. These fixes might include changes to fix symmetry or proportion issues. No Autohinter, method can produce perfect results. Extensive Proofing of the Automatically generated hints, is highly recommended before shipping a font file.</p>
+	
+<p style='margin-left:.5in'><b>Note:</b> On complex fonts, the progress indictor may stop updating and the Autohinter may appear to have hung. Generally, the Autohinter is still running and will complete in just a few moments. As a time reference, Autohinting a 28,000 glyph Asian font on an average laptop takes just under one minute.</p>
+
+
+
+</BODY>
+</HTML>

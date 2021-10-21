@@ -1,0 +1,432 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<!-- Sitemap 1.0 -->
+</HEAD><BODY>
+<UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Introducing Visual TrueType">
+		<param name="Local" value="html\01-01-IntroVTT.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Using Visual TrueType: The Basics">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Setting Preferences">
+			<param name="Local" value="html\02-01-SettingPrefs.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Opening and Closing a Font">
+			<param name="Local" value="html\02-02-OpenCloseFont.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Preparing a font for hinting">
+			<param name="Local" value="html\02-02-01-PreparingFont.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Setting the Device Resolution">
+			<param name="Local" value="html\02-03-SetDevResolution.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Compiling Your Results">
+			<param name="Local" value="html\02-04-CompilingResults.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Printing to Check Hinting Results">
+			<param name="Local" value="html\02-05-Printing.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Grid-fitting and Scan-conversion Procedure (gasp)">
+			<param name="Local" value="html\02-06-GASP.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Reducing Memory Requirements">
+			<param name="Local" value="html\02-07-MemoryReqts.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Saving the Font File">
+			<param name="Local" value="html\02-08-Saving.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Preparing to Ship Your Font">
+			<param name="Local" value="html\02-09-Prep4Ship.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Working in the Main Window">
+		<param name="Local" value="html\03-00-MainWindow.htm">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="What's in the Toolbar">
+			<param name="Local" value="html\03-01-Toolbar.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Moving Around in the Window">
+			<param name="Local" value="html\03-02-MovingAround.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Resizing the View">
+			<param name="Local" value="html\03-02-Resizing.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Changing the Point Size of the Glyph">
+			<param name="Local" value="html\03-04-ChgPointSize.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Working on a Different Glyph">
+			<param name="Local" value="html\03-05-DiffGlyph.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Measuring in the Main Window">
+			<param name="Local" value="html\03-06-Measuring.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Working with Other Windows">
+			<param name="Local" value="html\03-07-00-OtherWindows.htm">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Using the Character/Glyph Set Window">
+				<param name="Local" value="html\03-07-01-GlyphWindow.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Using the Snap Shot of Main Window">
+				<param name="Local" value="html\03-07-02-SnapShotWindow.htm">
+				</OBJECT>
+		</UL>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Hinting">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Hinting Basics">
+			<param name="Local" value="html\04-01-00-HintingBasics.htm">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Hinting: An Overview">
+				<param name="Local" value="html\04-01-01-00-HintingOverview.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="A General Hinting Workflow">
+					<param name="Local" value="html\04-01-01-01-HintingWkflow.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Hinting Strategies">
+					<param name="Local" value="html\04-01-01-02-HintingStrategies.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Visual Hinting at a Glance">
+					<param name="Local" value="html\04-01-01-03-VisualHinting.htm">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Using the Control Value Table">
+				<param name="Local" value="html\04-01-02-00-UsingCVT.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Reading Cvt Entries">
+					<param name="Local" value="html\04-01-02-01-ReadingCVT.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Setting Initial Control Values">
+					<param name="Local" value="html\04-01-02-02-SettingInitialCVT.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Hinting with Cvt Values">
+					<param name="Local" value="html\04-01-02-03-HintingWithCVTVals.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Changing a Glyph's Character Group">
+					<param name="Local" value="html\04-01-02-04-ChangingChrGrp.htm">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Refining the Glyph Outline">
+				<param name="Local" value="html\04-01-03-00-RefiningGlyphOutline.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Working with On-Curve and Off-Curve Points">
+					<param name="Local" value="html\04-01-03-01-OnOffCurvePts.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Numbering Control Points">
+					<param name="Local" value="html\04-01-03-02-NumberingCPts.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Editing Metrics">
+					<param name="Local" value="html\04-01-03-03-EditingMetrics.htm">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Rounding Control Points">
+				<param name="Local" value="html\04-01-04-00-RoundingCPts.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Six Rounding Methods">
+					<param name="Local" value="html\04-01-04-01-SixMethods.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Example 1: Rounding">
+					<param name="Local" value="html\04-01-04-02-Ex1-Rounding.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Example 2: Rounding Limitations">
+					<param name="Local" value="html\04-01-04-03-Ex2-Limitations.htm">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Working with Anchors">
+				<param name="Local" value="html\04-01-05-00-WorkingWithAnchors.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Anchoring with Cvt Values">
+					<param name="Local" value="html\04-01-05-01-AnchoringWithCVT.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Example: Anchoring a Height">
+					<param name="Local" value="html\04-01-05-02-Example.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Using the Font Error Window">
+					<param name="Local" value="html\04-01-05-03-FontErrorWindow.htm">
+					</OBJECT>
+			</UL>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Controlling Distances">
+			<param name="Local" value="html\04-02-00-ControllingDistances.htm">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Creating Links">
+				<param name="Local" value="html\04-02-01-00-CreatingLinks.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Example 1: Creating Links">
+					<param name="Local" value="html\04-02-01-01-Ex1-CreatingLinks.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Example 2: Creating Links">
+					<param name="Local" value="html\04-02-01-02-Ex2-CreatingLinks.htm">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Linking with 'Cvt' Values">
+				<param name="Local" value="html\04-02-02-00-LinkingWithCVT.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Strategy: Distance or Link">
+					<param name="Local" value="html\04-02-02-01-DistanceOrLink.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Review Cvt Values for Link">
+					<param name="Local" value="html\04-02-02-02-ReviewCVTs.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Assigning a Cvt Category and Minimum Distance">
+					<param name="Local" value="html\04-02-02-03-AssignCVTCategory.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Changing the Cvt Value for a Link">
+					<param name="Local" value="html\04-02-02-04-ChangingCVTVal.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Example: Linking with Cvt Entries">
+					<param name="Local" value="html\04-02-02-05-Example.htm">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Shifting Control Points">
+				<param name="Local" value="html\04-02-03-ShiftingCPts.htm">
+				</OBJECT>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Controlling Proportions">
+			<param name="Local" value="html\04-03-00-ControllingProportions.htm">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Creating Interpolations">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Example 1: Interpolating rather than Linking">
+					<param name="Local" value="html\04-03-01-01-Ex1-InterVsLink.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Example 2: Interpolating to Align Bowls">
+					<param name="Local" value="html\04-03-01-02-Ex2-AlignBowls.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Example 3: Interpolating at Additional Sizes">
+					<param name="Local" value="html\04-03-01-03-Ex3-AddSizes.htm">
+					</OBJECT>
+			</UL>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Controlling Diagonals and Italics">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Hinting Diagonal Strokes">
+				<param name="Local" value="html\04-04-01-00-HintingDiagonals.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Creating Strokes">
+					<param name="Local" value="html\04-04-01-01-CreatingStrokes.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Aligning Control Points">
+					<param name="Local" value="html\04-04-01-02-AligningCPts.htm">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Hinting Italic Glyphs">
+				<param name="Local" value="html\04-04-02-00-HintingItalics.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Setting the Angle">
+					<param name="Local" value="html\04-04-02-01-SettingAngle.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Rounding Control Points on Italics">
+					<param name="Local" value="html\04-04-02-02-RoundCPtsItalics.htm">
+					</OBJECT>
+			</UL>
+		</UL>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Refining Pixel Patterns">
+		<param name="Local" value="html\05-00-RefiningPixelPatterns.htm">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Preparing the Main Window">
+			<param name="Local" value="html\05-01-PreparingMainWindow.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Creating an Exception">
+			<param name="Local" value="html\05-02-CreatingException.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Example: Adding a Delta">
+			<param name="Local" value="html\05-03-Example.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Advanced Hinting">
+		<param name="Local" value="html\06-00-AdvancedHinting.htm">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Working with Text-Based Tables">
+			<param name="Local" value="html\06-01-00-TextBasedTables.htm">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Editing Text">
+				<param name="Local" value="html\06-01-01-EditingText.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Finding Text">
+				<param name="Local" value="html\06-01-02-FindingText.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Going to a Line">
+				<param name="Local" value="html\06-01-03-GotoLine.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Importing Text">
+				<param name="Local" value="html\06-01-04-ImportingText.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Exporting Text">
+				<param name="Local" value="html\06-01-05-ExportingText.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Exporting and importing all hinting code">
+				<param name="Local" value="html\06-01-06-ExportAll.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Modifying the Cvt Table">
+				<param name="Local" value="html\06-01-07-00-ModifyingCVT.htm">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Adding a New Cvt Entry">
+					<param name="Local" value="html\06-01-07-01-AddingNewCVT.htm">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Changing the Control Value Cut-In">
+					<param name="Local" value="html\06-01-07-02-ChangeCutIn.htm">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Composite Characters: Using the Glyf Table">
+				<param name="Local" value="html\06-01-08-Composites.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Importing a Glyph">
+				<param name="Local" value="html\06-01-09-ImportingGlyph.htm">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Hinting in the VTT Talk Window">
+				<param name="Local" value="html\06-01-10-VTTalkWindow.htm">
+				</OBJECT>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Keyboard Shortcuts">
+			<param name="Local" value="html\07-00-KeyboardShortcuts.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Autohinting">
+		<param name="Local" value="html\08-00-Autohinting.htm">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Autohinting overview">
+			<param name="Local" value="html\08-00-Autohinting.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Using the Latin Autohinter">
+			<param name="Local" value="html\08-01-Autohinting.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Using the East Asian Autohinter">
+			<param name="Local" value="html\08-02-EAAutohinting.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Using Control Program Only mode">
+			<param name="Local" value="html\08-03-CVTOnly.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Variable Fonts">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Overview">
+			<param name="Local" value="html\08-04-VariationFontEditingOverview.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Editing Variation CVTs">
+			<param name="Local" value="html\08-05-VariationCVTEditing.htm">
+			</OBJECT>
+	</UL>
+</UL>
+</BODY></HTML>

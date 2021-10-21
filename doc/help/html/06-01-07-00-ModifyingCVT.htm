@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Modifying the Cvt Table</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=1nb.lvh></a>Modifying the ‘Cvt’ Table</h1>
+
+<p>The control value table (‘cvt’) contains values defining lengths, widths,
+and angles of glyph features. Some values are specific to certain glyphs. Other
+values apply to the entire font or a group of glyphs, such as all uppercase
+characters. All control values have an identification (ID) number, as well as
+an attribute providing information about the type of glyph or feature to which
+it pertains (for details, see “Reading ‘Cvt’ Entries”).</p>
+
+<p>Visual TrueType imports a template for the ‘cvt’ table when you prepare the
+font (see “Preparing the Open Font”). At any time, you can choose Control
+Values on theViews menu and modify the contents of that table three ways:</p>
+
+<p>Fill in the control values indicated in the template, then add your own ‘cvt’
+entries starting with the next available ID number.</p>
+
+<p>Create the ‘cvt’ table from scratch by opening the Control Value window and
+replacing the template with entries you type (see “Editing Text”). </p>
+
+<p>Import a ‘cvt’ table from another font to replace the contents of the
+Control Value window (see “Importing Text”).</p>
+
+<p>All control values are in F-units scaled to the ppem height of the grid in
+use by the rasterizer.</p>
+
+</BODY>
+</HTML>

@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Example 1: Interpolating Rather Than Linking</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name="1gj_y3"></a>Example 1: Interpolating Rather Than Linking</h1>
+
+<p>Interpolating improves hinting on a Times New Roman “B” with its straight
+and round strokes, vertical and horizontal strokes, and pair of serifs. Start
+with these links:</p>
+
+<p><img width=150 height=152 alt="Times New Roman B with basic links"
+src="../images/bm114.gif"></p>
+
+<p><i>Basic links on a Times New Roman “B.”</i></p>
+
+<p>The result looks good at 12 points and a device resolution of 96 dpi:</p>
+
+<p><img width=146 height=146 alt="The resulting 12-point “B” at 96 dpi"
+src="../images/bm115.gif"></p>
+
+<p><i>The resulting 12-point “B” at 96 dpi.</i></p>
+
+<p>However, the results look less acceptable at 10, 8, and 6 points:</p>
+
+<p class=MsoListBulletCxSpFirst><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>At
+10 points, the two round strokes (bowls) align on top of each other, which may
+or may not be desirable. The pixel pattern of the bowls is a separate issue. </p>
+
+<p class=MsoListBulletCxSpMiddle><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>At
+8 points, the outlines don’t fall on the grid nearly as gracefully as at 12
+points. The middle (horizontal) stroke ends up disproportionately high relative
+to the bottom and top strokes. </p>
+
+<p class=MsoListBulletCxSpLast><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>At
+6 points, the top bowl collapses, although the cap height of 5 pixels should be
+enough to mimic three strokes and two counters between.</p>
+
+<p><img width=132 height=132 alt="B at 10 point at 96 dpi"
+src="../images/bm116.gif"><img width=132
+height=132 alt="B at 8 point at 96 dpi" src="../images/bm117.gif"><img
+width=132 height=134 alt="B at 6 point at 96 dpi" src="../images/bm118.gif"></p>
+
+<p><i>The same hinting at 10, 8, and 6 points and 96 dpi.</i></p>
+
+<p>The problems illustrated here relate to rounding. The fractional number
+representing the cap height was rounded down, while the number representing the
+placement of the middle stroke was rounded up. This changed the placement of
+the middle stroke relative to the baseline and cap height. </p>
+
+<p>To correct these problems, hints must instruct the computer to do three
+tasks:</p>
+
+<p class=MsoListBulletCxSpFirst><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Fit
+the cap height and base line to the grid.</p>
+
+<p class=MsoListBulletCxSpMiddle><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Determine
+the number of pixels needed to position the middle stroke in proportion to the
+newly fitted cap height and base line.</p>
+
+<p class=MsoListBulletCxSpLast><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>Fit
+the bottom edge of the middle stroke to the grid that many pixels away from the
+baseline (the bottom edge of the middle stroke, in turn, is linked to the top
+edge of the middle stroke).</p>
+
+<p>An interpolation can convey all these instructions. </p>
+
+<p><img width=147 height=146 alt="Interpolating the middle stroke of the “B.”"
+src="../images/bm119.gif"></p>
+
+<p><i>Interpolating the middle stroke of the “B.”</i></p>
+
+<p>This one interpolation improves the appearance of the Times New Roman “B” at
+10, 8, and 6 points:</p>
+
+<p><img width=132 height=132 alt="Interpolated results at 10 point"
+src="../images/bm120.gif"><img width=131
+height=132  alt="Interpolated results at 8 point" src="../images/bm121.gif"><img
+width=132 height=132  alt="Interpolated results at 6 point" src="../images/bm122.gif"></p>
+
+<p><i>Interpolated results for 10, 8, and 6 points at 96 dpi.</i></p>
+
+</BODY>
+</HTML>

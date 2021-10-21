@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Refining Pixel Patterns</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=11llsfv></a>Refining Pixel Patterns</h1>
+
+<p>Hinting by grid-fitting, which applies to all sizes of a glyph, is more
+efficient than manually editing bitmaps for every size of a glyph. However,
+grid-fitting does have limits because it neither relates to a particular point
+(or ppem) size nor specifies a particular number of pixels to be used. As a
+result, at some point sizes, the computer might choose the wrong pixels. Often
+you need to make an exception to the global hinting to improve the pixel
+pattern around the round parts of the glyph.</p>
+
+<p>With Visual TrueType, you can apply two kinds of exceptions to any control
+point:</p>
+
+<p class=MsoListBulletCxSpFirst><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>A
+“delta” moves the control point a set number (whole or fraction) of pixel(s),
+based on the ppem size. Each delta applies only to a particular size.</p>
+
+<p class=MsoListBulletCxSpLast><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>A
+“move” moves the control point a set number (whole or fraction) of pixel(s),
+too, but regardless of the ppem size. Each move applies to all sizes of the
+glyph, so typographers find moves useful for improving the step pattern of
+pixels on diagonals.</p>
+
+<p>After you finish hinting one size of a glyph, you review the glyph size by
+size. Your review should include all ppem sizes likely to be displayed on
+screen. If a particular size doesn’t look good, you may need to fix its pixel
+pattern by creating a delta or move. Either exception tells the computer to do
+an additional operation to correct the problem and ensure a high-quality font.</p>
+
+<p><b>Note</b> Each delta or move increases the disk space and amount of memory
+required for a font. Applying an exception to the same point at many different
+ppem sizes not only increases the font size for each ppem size, but also
+indicates a need to change how you’re grid-fitting. Don’t create an exception
+unless you’re sure it’s the best solution to a hinting problem.</p>
+
+<p>You can tell Visual TrueType to apply the exception before or after it
+applies the outgoing links and other hinting:</p>
+
+<p>An “inline” exception moves the point <i>after</i> the incoming hints have
+been applied, but <i>before</i> any outgoing hints have been applied. An inline
+exception affects all subsequent links, interpolations, and other hints. This
+approach works well for adjusting the position of entire features, such as the
+position of a crossbar.</p>
+
+<p>A “pre” exception moves the point <i>after</i> any incoming or outgoing
+hints have been applied, but <i>before</i> the computer automatically smoothes
+the outline. Links and interpolations significantly adjust the outline,
+introducing many irregularities. Smoothing instructs the unhinted control
+points to follow these dents and bumps “accordingly.” This approach works well
+for adjusting the weight of features without affecting subsequent hints.</p>
+
+<p>A “post” exception (the default) moves the point only <i>after</i> Visual
+TrueType has applied all other hints and smoothed the outline. This approach
+works well for adding or deleting individual pixels on the bitmap at the
+specified ppem size.</p>
+
+<p>Each time you create a delta or move, Visual TrueType automatically updates
+the size run and on-screen glyph because you need to see the results of this
+change immediately.</p>
+
+<p>After finishing the exception hinting on a font, consider reviewing the
+glyph at all sizes again, but with a different rasterizer. </p>
+
+
+</BODY>
+</HTML>

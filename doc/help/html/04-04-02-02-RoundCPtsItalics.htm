@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Rounding Control Points on Italics</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=xql54o></a><a name=19x3ztf></a>Rounding Control Points on Italics</h1>
+
+<p>When the control point has to give way (to comply with the rounding), you
+may want it to do so not in parallel to the grid line, but parallel (Y
+direction) or perpendicular (X direction) to the main stroke angle of the
+italic glyph you’re hinting. You can do so by changing the rounding methods on
+the control points of the italic glyphs.</p>
+
+<p>You can change the rounding method of any control point while linking, interpolating,
+or shifting it. Just hold down the Shift key as you click the control point
+with the hinting tool. Visual TrueType displays the menu for rounding methods
+(for details, see <a href="../../html_combined/vtt3faa.htm">Rounding Control
+Points</a>).</p>
+
+<p>For italics, you choose rounding methods from the middle and bottom rows of
+the menu: </p>
+
+<p class=MsoListBulletCxSpFirst><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>The
+middle row specifies rounding in relation to the main stroke angle you measured
+for the glyph: <br>
+<img border=0 width=195 height=39 alt="Middle row of rounding methods"
+src="../images/bm146.gif"></p>
+
+<p class=MsoListBulletCxSpLast><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>The
+bottom row specifies rounding in relation to the adjusted italic angle, which
+is the main stroke angle but adjusted to cross the baseline and the cap height
+at a pixel boundary:<br>
+<img border=0 width=195 height=39 alt="Middle row of rounding methods"
+src="../images/bm146.gif"></p>
+
+<p>Use this row when the diagonal strokes of the italic glyphs have an
+unattractive and distracting stair-step pattern.</p>
+
+<p>However, rounding may not offer the subtle adjustments you need to correct
+every stair-step pattern. Sometimes, you may want to use the XMove and YMove
+tools. Both tools can move control points slightly off the grid (for example,
+one-fourth pixel), which isn’t possible by simple rounding. For details about
+using the XMove and YMove tools, see “Refining Pixel Patterns.”</p>
+
+<p><b>Note</b> The move tools shift a control point a set number of pixels, and
+the adjustment applies to all sizes of the glyph.</p>
+
+</BODY>
+</HTML>

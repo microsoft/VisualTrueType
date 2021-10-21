@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Setting Initial Control Values</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name="2m1b_na"></a>Setting Initial Control Values</h1>
+
+<p>Preparing the font creates the template for the ‘cvt’ table. All the
+important control value numbers will be there, along with the hexadecimal number
+and other comments such as:</p>
+
+<p>/* STEMS: UC, STRAIGHT, X */</p>
+
+<p>However, the control values will be 0, to be supplied by you. Before hinting
+a font, you need to measure all the glyphs in the font and fill in the
+template.</p>
+
+<p>First, disable the Grid Fit and Pixel display so the control values will be
+in F-units. You can do this either by clicking these option on the General
+Options submenu of the Display menu, or by pressing Ctrl&nbsp;+&nbsp;G (to
+disable gridfit) and then Ctrl&nbsp;+&nbsp;B (to disable pixels). Next, open
+the ‘cvt’ table in its own text window. Based on what’s listed there, use the
+Measuring tool to measure all glyphs or representative glyphs (H, O, f, g h, o,
+x) in F-units one at time for standard heights and distances, such as the cap
+height for all uppercase glyphs. You’re measuring the outline, which shows the
+original design, because the bitmap version might not correspond exactly.
+Usually, the stroke weights and other spatial relationships vary slightly from
+glyph to glyph. </p>
+
+<p>As you measure a representative glyph, write down the result, which is the
+top-right value in the status bar. This can take some time for an entire font,
+but doing this accurately is very important. The Measuring tool ensures precise
+values and streamlines the repetitive measuring needed to determine ‘cvt’
+values.</p>
+
+<p>Finally, enter the dominant values in the ‘cvt’ table. When you finish,
+compile the cvt table (Ctrl&nbsp;+&nbsp;R), and save (Ctrl&nbsp;+&nbsp;S), so
+the TrueType rasterizer applies these new values to the font (see “Compiling
+Your Results”). </p>
+
+<p><b>To fill in the ‘cvt’ template</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>On the Views menu, click Control Values, or press Ctrl&nbsp;+&nbsp;4.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Resize and position the Control Value Table window so you can see it
+while working on a glyph in the main window.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Click in the main window (or press Ctrl&nbsp;+&nbsp;1).</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>If already selected in the General Options submenu of the Display menu,
+click to clear Grid Fit and Pixels, or press Ctrl&nbsp;+&nbsp;G then Ctrl&nbsp;+&nbsp;B</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>5.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the Measuring tool by either clicking its icon on the toolbar, or
+press F9. Referring to the values listed in the ‘cvt’ table, use the Measuring
+tool to measure all glyphs (or representative glyphs) in the font for a
+specified feature (say, dominant uppercase stem width in the X direction).</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>6.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>In the ‘cvt’ table, locate the appropriate comment for the feature
+measurement you have just taken, and replace the 0 value with the value you
+measured for the feature.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>7.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Repeat Steps 5 and 6 for each value in the ‘cvt’ template.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>8.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Compile the Control Values by selecting the Compile submenu of the Tools
+menu, then clicking Control Values, or by pressing Ctrl&nbsp;+&nbsp;R. </p>
+
+</BODY>
+</HTML>

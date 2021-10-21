@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Creating an Exception</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name="k6zb_s"></a>Creating an Exception</h1>
+
+<p>The toolbar has two delta tools, one for the X direction and one for the Y
+direction:</p>
+
+<p><img width=104 height=80 alt="X Delta tool icon"
+src="../images/Toolbar-XDelta.png"><img width=104
+height=80 alt="Y Delta tool icon"
+src="../images/Toolbar-YDelta.png"></p>
+
+<p>Similarly, the toolbar has a move tool for each direction:</p>
+
+<p><img width=104 height=80 alt="X Move tool icon"
+src="../images/Toolbar-XMove.png"><img width=104
+height=80 alt="X Move tool icon"
+src="../images/Toolbar-YMove.png"></p>
+
+<p>The respective tool will be available only if the Show X Direction or Show Y
+Direction options are selected on the Display Options dialog. Similarly, Visual
+TrueType displays exceptions only for the selected direction(s).</p>
+
+<p>Selecting the XDelta or YDelta tool changes the pointer into a horizontal or
+vertical double-headed arrow for the X or Y direction:</p>
+
+<p><img width=34 height=37 alt="X Delta tool cursor"
+src="../images/Cursor-XDelta.png"><img width=38
+height=37 alt="Y Delta tool cursor"
+src="../images/Cursor-YDelta.png"></p>
+
+<p>The pointer also changes when you select either the XMove or YMove tool:</p>
+
+<p><img width=38 height=37 alt="Y Move tool cursor"
+src="../images/Cursor-XMove.png"><img width=36
+height=37 alt="Y Move tool cursor"
+src="../images/Cursor-YMove.png"></p>
+
+<p>When you point on the control point you want to move, Visual TrueType
+displays a horizontal ruler (XDelta or XMove) or vertical ruler (YDelta or
+YMove) so you can measure exactly how far the point should move. The default
+rulers show a range of plus-or-minus one pixel, in fractions of 1/8 pixel:</p>
+
+<p><img width=209 height=50 alt="X direction delta ruler"
+src="../images/bm156.gif"><img width=80
+height=209 alt="X direction delta ruler" src="../images/bm157.gif"></p>
+
+<p><i>The delta rulers for the X and Y-directions.</i></p>
+
+<p>However, the ruler has a range of plus-or-minus eight pixels, and increments
+can be as fine as 1/64 pixel or as coarse as one pixel. You drag the mouse to
+the desired increment in the ruler:</p>
+
+<p>To apply a delta or move larger than one pixel, drag beyond the edge of the
+ruler, and the ruler will start scrolling. The further you drag, the faster the
+scrolling. </p>
+
+<p>To display different increments in the ruler, tap the Alt key (finer) or
+Control key (coarser) as you hold down the mouse button.</p>
+
+<p>As you drag in the ruler, the point moves accordingly on the screen. When
+you stop dragging, the resulting exception displays as white icon. Moves appear
+to the left or below the controlled point, and Deltas to the right or above it.
+The shape of the icon identifies the type of exception: triangular (post), flat
+(pre), or curved (inline). The direction of the triangle tells the direction of
+the exception and whether it is positive or negative: right (positive X delta
+or move), left (negative X delta or move), up (positive Y delta or move), or
+down (negative Y delta or move).</p>
+
+<p>When the Grid Fit, Pixels, or both options are checked on the Display
+Options dialog, the pointed or rounded-tip triangle indicates an exception at
+the current ppem size. If you disable the Grid Fit and Pixels options, the
+triangle remains, indicating that the point has an exception at one or more
+ppem sizes.</p>
+
+<p>At any time, you can select and delete an exception without affecting other
+hinting applied to the control point. Visual TrueType automatically recompiles
+the main window to show the effects of the change.</p>
+
+<p><b>Tip</b> When you’re not working with deltas and moves, you can hide them
+to make more room on the screen for other visual hinting. In the Display
+Options dialog, you can set the Links and Dists option to show or hide Link
+commands.</p>
+
+<p><b>To select the XDelta or XMove tool</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>In the Visual TrueType Options submenu of the Display menu, ensure that
+the Show X Direction, Gridfit, and Pixels options are enabled.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the XDelta or XMove tool by clicking its icon in the toolbar. You
+may also select the XDelta tool by pressing the F8 key.</p>
+
+<p><b>To select the YDelta or YMove tool</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>In the Visual TrueType Options submenu of the Display menu, ensure that
+the Show Y Direction, Gridfit, and Pixels options are enabled.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the YDelta or YMove tool by clicking its icon in the toolbar. You
+may also select the YDelta tool by pressing the F4 key.</p>
+
+<p><b>To create an exception</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select a delta or move tool (see above for details).</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Pointing to the point you want to control, hold down the mouse button.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Watching the on-screen ruler, drag until the pixel value you want is
+highlighted in the ruler or until the outline has extended over a pixel center.
+<br>
+You may change the ruler increments as necessary, by pressing the Alt or Ctrl
+keys while the rulers are visible. When you release the mouse button, Visual
+TrueType compiles the changes and updates the screen so you can see the results
+of the exception.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Press the Shift key, while holding the mouse button down, to toggle
+between inline, pre-, or post-instruction delta types.</p>
+
+<p><b>To display or hide exceptions</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>In the Visual TrueType Options submenu of the Display menu, select
+either the Deltas or Moves option.</p>
+
+</BODY>
+</HTML>

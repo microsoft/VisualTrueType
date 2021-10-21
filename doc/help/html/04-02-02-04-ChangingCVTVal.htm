@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<TITLE>Changing the Cvt Value for a Link</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=x.o5dr></a>Changing the ‘Cvt’ Value for a Link</h1>
+
+<p>To select the ‘cvt’ value for a link, Visual TrueType needs to know:</p>
+
+<p class=MsoListBulletCxSpFirst><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>The
+character group you’re working on (uppercase, lowercase, figure/numeral, or
+“other”). This information gets loaded into your font when you prepare it for
+hinting (see “Preparing the Open Font”).</p>
+
+<p class=MsoListBulletCxSpMiddle><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>The
+color of the link. Visual TrueType actually “looks” at the character and checks
+whether your link lies entirely within the black or the white part of the
+character (making it a black or white link, respectively). If the color is
+neither back nor white, Visual TrueType assumes a gray link.</p>
+
+<p class=MsoListBulletCxSpMiddle><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>The
+direction of the link. Visual TrueType determines this based on the direction
+of the link tool used to create the link.</p>
+
+<p class=MsoListBulletCxSpLast><span style='font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span>The
+‘cvt’ category the link relates to. This information comes from the arrowhead
+you select to specify the control value category and minimum distance for the
+link—because the current default category applies to each new link, make sure
+this is the category you intended (see “Assigning a ‘Cvt’ Category to a Link”).
+</p>
+
+<p>Once it has all this information, Visual TrueType searches the ‘cvt’ table
+and finds the entry that best matches the size and other attributes of the
+link. The search follows this order:</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>If several control value table entries have the same attribute, Visual
+TrueType picks the one whose control value is closest to the actual distance of
+the link.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>This would be the case, for example, for uppercase black strokes of
+Times New Roman in the X direction because they have a dominant thin stroke
+with a dominant thick stroke.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>If only one entry has that attribute, Visual TrueType picks that one, no
+matter how close or how far away it is from the actual distance of the link.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>If no entry has that attribute, Visual TrueType searches the table again
+using the ‘cvt’ category of “distance.”</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>5.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>If “distance” doesn’t have that attribute, Visual TrueType tries one
+last time with the link direction set to “any.”</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>6.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>If even that fails, then the link will not refer to a ‘cvt’ value. A
+question mark displays in the numbered highway sign, and you may have to add an
+entry to the ‘cvt’ table. </p>
+
+<p>Even if Visual TrueType finds a match, you may want to change it. For
+example, when you link to control stem thickness, Visual TrueType can pick the
+correct ‘cvt’ value only if the relevant ‘cvt’ entries have associated
+character groups and the correct character group is assigned to the current
+glyph. </p>
+
+<p>Or Visual TrueType might choose an entry that you don’t want to use. For
+example, you may want two round strokes to refer to the same ‘cvt’ entry.</p>
+
+<p>You can review and change the associated ‘cvt’ entry using the highway signs
+displayed on links. Choose between smaller, unnumbered highway signs or larger
+signs that include the number of the ‘cvt’ entry for each link. </p>
+
+<p>In either case, holding down the right mouse button as you click the highway
+sign displays a list of entries from the ‘cvt’ table:</p>
+
+<p><img width=460 height=274 alt="CVT table values menu" src="../images/CVTlist.png"></p>
+
+<p>The selected entry is the one already associated with the link or, if none
+exists yet, Visual TrueType’s best guess, plus a dozen neighboring entries from
+the ‘cvt’ table. You can scroll this list to select another entry.</p>
+
+<p><b>To change a ‘cvt’ entry for a link</b></p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>In the Visual TrueType Options submenu of the Display menu, ensure that
+the Cvts option is enabled. You can also enable the Cvt Numbers option to
+display CVT numbers inside the highway signs on links.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Select the XLink or YLink tool by clicking the appropriate icon, or by
+pressing the F5 or F1 key, respectively</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>3.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Point on the highway sign for the link you want to change.</p>
+
+<p style='margin-left:.5in;text-indent:-.25in'>4.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Holding down the right mouse button, and click a rounding method from
+the menu (for details, see “Rounding Control Points”).</p>
+
+</BODY>
+</HTML>

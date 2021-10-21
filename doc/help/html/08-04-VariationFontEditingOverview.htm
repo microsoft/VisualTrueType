@@ -1,0 +1,79 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Variation Fonts in VTT</TITLE>
+<META charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<h1><a name=h1full></a>Overview and setup for Hinting and Proofing Variation Fonts</h1>
+
+<p>TrueType variable fonts are the equivalent of many fonts, but only one set of outlines to be hinted.</p>
+
+<p>Fonts that use the Truetype outline format for glyphs and that have hinting instructions will typically also have a CVT table. The CVT table provides an indexed list of control values that can be referenced by instructions. Example values are the height of a serif, x-height, or the width of upper case stems. When glyph outline points are adjusted by instructions to improve rasterization at a particular PPEM size, the control values may be used by the instructions to provide design-distance values for those adjustments — typically, values that need to be kept constant across all glyphs in the font for a given PPEM size.</p>
+
+<p> Alignment zones and standard stem values or other distances related to the default instance outlines are stored, as with non-variable fonts, in the Control Value ‘cvt ’ table, while deltas to these values are stored in the CVT Variations ‘cvar’ table. As with other aspects of variations, the ‘cvar’ data interacts with the Font Variations data in the ‘fvar’ table. This model enables a set of stem hints linked to CVT values on glyphs in the outline set be adjusted to deltas and to interpolated instances.</p>
+
+<p>Within a variable font, the numeric value of particular control values may need to be adjusted for different variation instances, to match the changes to outlines for different instances. The CVT variations table provides variation data for that purpose. By using interpolation to derive adjusted CVT values for a particular instance, instructions can obtain instance-appropriate values, and the same instructions can be used for all variations.</p>
+
+
+<p>VTT supports hinting for variable fonts using the Variation CVT Table and Variation Windows, described below. </p>
+
+
+<p><B>Setting up for Hinting and proofing Variable fonts in VTT</B> </p>
+<p class=MsoNormal>&nbsp;</p>
+<p class=MsoNormal><img width=1183 height=740 alt="HintingandProofingSetup"
+src="../images/VFWindowSetup.png"></p>
+
+<p>Open a Variation font File > Open> or (ctrl O) … Browse to file</p>
+
+<p>On opening a Variation Font, arrange the Windows to suit your own workflow. See above illustration as an example</p>
+
+<p><B> Main Window (View Menu > Main View (Ctrl + 1)</B></p>
+<p><B>Variation Window (View Menu > Variation (Ctrl + Shift + 1)</B></p>
+<p><B>Variation CVT Window (View Menu > Variation CVT (Ctrl + Shift + 4)</B></p>
+
+<p>Make any edit, and save (ctrl s). This will save the VTT preferences. The next time a font file is opened in VTT you will see the same Window configuration.</p>
+
+<p><B> Main Window (Editing Hinting) </B></p>
+<p class=MsoNormal>&nbsp;</p>
+<p class=MsoNormal><img width=801 height=863 alt="VFMainWindow"
+src="../images/VFMainWindow.png"></p>
+
+<p>Hinting is done in the Main Window (in the same way as was done before for static fonts) on the default instance of the Variation font. With both the Main and Variation windows showing side by side, editing hints is done in in the Main window. The hinting will update live in the Variation window. Because hints in a variable font are associated with the default instance and merely follow interpolated CVT’s for other instances, you can only edit hints in the Main window. The Variation Window can be used for proofing the hinted results of the available instance in the font. see below for more information on Proofing</p>
+
+<p><B> Note:</B> The Move, Swap, Delete and Insert commands in the main Window UI are disabled when edit a Variation Font. Making any changes with these commands would break a Variation font.</p>
+
+<p><B>Proofing</B> </p>
+<p>Proofing the hints, can be done by looking at the visual size run in the main Window, as well as in the Variation Window. There are two ways to change the variation instance to preview and proof in the Variation window. 
+
+<p>(1) Choose from the Display Menu > Variation Instance > Choose Variation, Light, Bold, Semilight etc. </p>
+<p>(2) CTRL + Shift + up arrow / down arrow, on the keyboard, is a quick way to toggle through all of the variations in the font. </p>
+
+CTRL 8, displays the Waterfall window, which allows for a quick preview waterfall of the glyphs that are in the text sample. (To change the text sample see, Tools > Options > Extra Text. Glyphs added here will display in the text sample at the top, in the Main and Variation Windows, as well as in the Waterfall sample). Proofing can also be done on the entire glyph set, by choosing View > Character / glyph set. CTRL + Shift + up arrow / down arrow, on the keyboard, can be used in both the Waterfall view as well as the Glyph set view to toggle between all of the available font variations. Note: One set of hints covers all masters in the font. If there are problems with the hints, or you change you mind on the hinting strategy, select the Default master and edit the hints again in VTT’s main window. Remember, though, that any changes here effect all masters, so you’ll need to proof everything across all instances for the re-hinted glyphs again.</p>
+
+<p><B>Variation Window</B> </p>
+<p class=MsoNormal>&nbsp;</p>
+<p class=MsoNormal><img width=805 height=866 alt="VariationView"
+src="../images/VariationView.png"></p>
+
+<p>The Variation window shows you the current glyph outline and hints, just like the Main window, for the selected variable font instance. The choosen instance is displayed in the top left of the Variation Window. With both the Main and Variation windows up, you can edit hints in the Main window and see the impact on variations in the Variation window. Because hints in a variable font are associated with the default instance and merely follow interpolated CVTs for other instances, you can only edit hints in the Main window.</p>
+
+<p><B>Variation Cvt View. (View Menu > Variation CVT)</B></p> 
+
+<p>The Variation Cvt Window, allows for Adding, Editing, Deleting cvar variation data in a font for axis locations in variation space and for setting the current location in variation space in the VTT UI.  </p>
+
+<p>This window can be used to adjust the numeric value of particular control values for different variation instances. The Variation CVT View can also be used to select which variable font instance you would like to proof in the Variation Window, Waterfall and Text Sample. See the following section ‘Editing Variation CVT’S’, for more detailed instructions on Editing cvt's in the Variation CVT View </p>
+
+<p><B>Variation Coordinates Dialog. (View Menu > Variation CVT)</B></p> 
+
+Set the Variation Window to show Intermediate Start and End. Choose this option from the Tools Menu > Options > Variation Tab. 
+
+<p class=MsoNormal>&nbsp;</p>
+<p class=MsoNormal><img width=632 height=870 alt="Intermediate"
+src="../images/Intermediate.png"></p>
+
+</BODY>
+</HTML>
