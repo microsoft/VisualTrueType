@@ -675,7 +675,7 @@ bool TrueTypeFont::GetTalk(int32_t glyphIndex, TextBuffer *talkText, wchar_t err
 
 
 bool TrueTypeFont::GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t errMsg[]) {
-	short i,end;
+	short i,end = 0;
 	bool emptyGlyph,weHaveInstructions;
 	unsigned char *sp;
 	char signedByte;
@@ -702,15 +702,23 @@ bool TrueTypeFont::GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t er
 	glyph->componentSize = 0; 	
 	
 	if (emptyGlyph) { 
-		glyph->xx[PHANTOMPOINTS] -= glyph->xx[PHANTOMPOINTS-1]; 
-		glyph->xx[PHANTOMPOINTS-1] = glyph->xx[0] = 0;
-		glyph->yy[PHANTOMPOINTS] -= glyph->yy[PHANTOMPOINTS-1]; 
-		glyph->yy[PHANTOMPOINTS-1] = glyph->yy[0] = 0;
+		F26Dot6 fxXMinMinusLSB = 0 - lsb;
+
+		glyph->xx[LEFTSIDEBEARING] = fxXMinMinusLSB;
+		glyph->xx[RIGHTSIDEBEARING] = fxXMinMinusLSB + advWidth;
+		glyph->yy[LEFTSIDEBEARING] = 0;
+		glyph->yy[RIGHTSIDEBEARING] = 0;
 		glyph->onCurve[PHANTOMPOINTS] = glyph->onCurve[PHANTOMPOINTS-1] = true; 
 		glyph->onCurve[0] = false;
 	
 		glyph->startPoint[0] = glyph->endPoint[0] = 0;
 		glyph->numContoursInGlyph = 0;
+
+		for (i = 0; i <= end + PHANTOMPOINTS; i++)
+		{										 // lsb, rsb
+			glyph->x[i] = (short)(glyph->xx[i]); // >> places6);
+			glyph->y[i] = (short)(glyph->yy[i]); // >> places6);
+		}
 	}
 	
 	if (emptyGlyph) return true; // nothing else we could unpack
