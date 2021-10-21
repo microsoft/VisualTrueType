@@ -692,7 +692,7 @@ bool Scanner::GetSym(void) {
 			case L'~' : this->GetCh(); this->sym = relatesTo; break;
 		//	case L'\r': this->GetCh(); this->sym = eol; break;
 			case L'\0': this->sym = eot; break;
-			default  : this->GetCh(); swprintf(this->errMsg,L"Illegal character in control value table"); return false; break;
+			default  : this->GetCh(); swprintf(this->errMsg,L"Invalid character in control value table"); return false; break;
 		}
 	}
 	return true;

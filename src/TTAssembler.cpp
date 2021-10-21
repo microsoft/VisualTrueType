@@ -3398,10 +3398,10 @@ void TT_GetErrorString (short ErrorNb, wchar_t * ErrorString)
 			swprintf( ErrorString, L"DELTA with arguments in PUSHOFF mode");
 			break;
 		case tt_PUSHBWInPushON:
-			swprintf( ErrorString, L"Illegal use of PUSHB or PUSHW in PUSHON mode, use #PUSH instead");
+			swprintf( ErrorString, L"Invalid use of PUSHB or PUSHW in PUSHON mode, use #PUSH instead");
 			break;
 		case tt_WildCardInPush:
-			swprintf( ErrorString, L"Illegal use * in a PUSH instruction");
+			swprintf( ErrorString, L"Invalid use * in a PUSH instruction");
 			break;
 
 		case tt_NotImplemented:
