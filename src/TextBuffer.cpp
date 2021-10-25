@@ -1,20 +1,20 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
-#define _CRT_SECURE_NO_DEPRECATE 
+#define _CRT_SECURE_NO_DEPRECATE
 #define _CRT_NON_CONFORMING_SWPRINTFS
 #define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
 
-#include <assert.h> // assert
-#include <stdio.h> // swprintf
-#include <string.h> // strncpy etc.
-#include <string>
-#include <map>
 #include <algorithm>
-#include <vector>
+#include <cassert> // assert
 #include <climits>
 #include <codecvt>
+#include <cstdio>  // swprintf
+#include <cstring> // strncpy etc.
 #include <locale>
+#include <map>
+#include <string>
+#include <vector>
 
 #include "TextBuffer.h"
 #ifndef _WIN32

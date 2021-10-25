@@ -4,8 +4,8 @@
 #ifndef TTEngine_dot_h
 #define TTEngine_dot_h
 
-#include "MathUtils.h" // Vector etc.
 #include "GUIDecorations.h" // DeltaColor
+#include "MathUtils.h" // Vector etc.
 
 #define FIRSTTMPCVT 40
 #define SECONDTMPCVT (FIRSTTMPCVT + 1) // used by function 18 and TTSourceEngine::MIRP

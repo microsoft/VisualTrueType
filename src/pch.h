@@ -7,39 +7,38 @@
 
 #define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
 
-#include <assert.h>
-#include <stdint.h>
-
-#include <string>
-#include <map>
 #include <algorithm>
+#include <cassert>
+#include <climits>
+#include <cmath>
+#include <codecvt>
+#include <cstdint>
+#include <deque>
 #include <limits>
 #include <list>
+#include <map>
+#include <string>
 #include <vector>
-#include <deque>
-#include <climits>
-#include <codecvt>
-#include <cmath>
 
 #include "opentypedefs.h"
-#include "Platform.h"
-#include "FixedMath.h"
-#include "MathUtils.h"
-#include "List.h"
-#include "Memory.h"
+
+#include "CvtManager.h"
 #include "File.h"
-#include "TextBuffer.h"
-#include "Variation.h"
-#include "VariationModels.h"
-#include "VariationInstance.h"
-#include "TTFont.h"
+#include "FixedMath.h"
 #include "GUIDecorations.h"
+#include "List.h"
+#include "MathUtils.h"
+#include "Memory.h"
+#include "Platform.h"
+#include "TMTParser.h"
 #include "TTAssembler.h"
 #include "TTEngine.h"
+#include "TTFont.h"
 #include "TTGenerator.h"
-#include "CvtManager.h"
-#include "TMTParser.h"
-
+#include "TextBuffer.h"
+#include "Variation.h"
+#include "VariationInstance.h"
+#include "VariationModels.h"
 
 #define STRCPYW wcscpy
 #define STRCATW wcscat

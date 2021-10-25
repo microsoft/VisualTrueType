@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 #include "opentypedefs.h" // F26Dot6 etc.
+
 #include "MathUtils.h"
 
 Vector RoundFV(const F26Dot6Vector v) {

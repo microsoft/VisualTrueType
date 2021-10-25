@@ -8,13 +8,14 @@
 #define trialSfntSize	0x200000 // bytes
 
 #include <algorithm>
-#include <vector>
-#include <memory>
 #include <deque>
-#include <string>
 #include <limits>
+#include <memory>
+#include <string>
+#include <vector>
 
 #include "opentypedefs.h"
+
 #include "CvtManager.h"
 
 #define MAXCONTOURS 	0x2000

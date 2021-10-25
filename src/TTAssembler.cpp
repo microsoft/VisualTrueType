@@ -16,12 +16,13 @@
  * 200 (MAXJRPAIR) total PUSHs in a block
  *
  *****/
-#define _CRT_SECURE_NO_DEPRECATE 
+#define _CRT_SECURE_NO_DEPRECATE
 #define _CRT_NON_CONFORMING_SWPRINTFS
 
-#include <stdio.h> /* for swprintf  */
-#include <string.h> /* for  wcslen */
-#include <limits.h> /* for SHRT_MIN MAX */
+#include <climits> /* for SHRT_MIN MAX */
+#include <cstdio>  /* for swprintf  */
+#include <cstring> /* for  wcslen */
+
 #include "pch.h"
 
 #define SHORTMAX 32767
