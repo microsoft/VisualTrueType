@@ -52,6 +52,7 @@ set(Header_Files
     "../src/VariationInstance.h"
     "../src/VariationModels.h"
     "../src/vttcompile.h"
+    "../src/application.h"
 )
 source_group("Header Files" FILES ${Header_Files})
 
@@ -73,6 +74,7 @@ set(Source_Files
     "../src/VariationInstance.cpp"
     "../src/VariationModels.cpp"
     "../src/vttcompile.cpp"
+    "../src/application.cpp"
 )
 source_group("Source Files" FILES ${Source_Files})
 
