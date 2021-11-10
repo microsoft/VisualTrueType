@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Area.cpp" />
+    <ClCompile Include="..\src\application.cpp" />
     <ClCompile Include="..\src\CvtManager.cpp" />
     <ClCompile Include="..\src\File.cpp" />
     <ClCompile Include="..\src\List.cpp" />
