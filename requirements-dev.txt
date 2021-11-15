@@ -1,0 +1,6 @@
+cython>=0.29.1
+
+wheel>=0.31
+
+pytest
+
