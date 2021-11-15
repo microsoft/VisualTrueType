@@ -24,6 +24,7 @@
 		567685F62707D39F00391506 /* TTEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685E32707D39F00391506 /* TTEngine.cpp */; };
 		567685F72707D39F00391506 /* vttcompile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685E42707D39F00391506 /* vttcompile.cpp */; };
 		567685F82707D39F00391506 /* Variation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 567685E62707D39F00391506 /* Variation.cpp */; };
+		7A45EDB3274323060005BB8F /* application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A45EDB1274321BD0005BB8F /* application.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -79,6 +80,8 @@
 		567685E52707D39F00391506 /* Platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Platform.h; sourceTree = "<group>"; };
 		567685E62707D39F00391506 /* Variation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Variation.cpp; sourceTree = "<group>"; };
 		567685E72707D39F00391506 /* opentypedefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opentypedefs.h; sourceTree = "<group>"; };
+		7A45EDB1274321BD0005BB8F /* application.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = application.cpp; sourceTree = "<group>"; };
+		7A45EDB2274321BD0005BB8F /* application.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = application.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +116,8 @@
 			children = (
 				567685E22707D39F00391506 /* Area.cpp */,
 				567685D82707D39E00391506 /* Area.h */,
+				7A45EDB1274321BD0005BB8F /* application.cpp */,
+				7A45EDB2274321BD0005BB8F /* application.h */,
 				567685DE2707D39F00391506 /* CvtManager.cpp */,
 				567685E02707D39F00391506 /* CvtManager.h */,
 				567685D72707D39E00391506 /* File.cpp */,
@@ -226,6 +231,7 @@
 				567685EE2707D39F00391506 /* TextBuffer.cpp in Sources */,
 				567685EA2707D39F00391506 /* TTAssembler.cpp in Sources */,
 				567685F22707D39F00391506 /* Memory.cpp in Sources */,
+				7A45EDB3274323060005BB8F /* application.cpp in Sources */,
 				567685F42707D39F00391506 /* TMTParser.cpp in Sources */,
 				567685E82707D39F00391506 /* Platform.cpp in Sources */,
 				567685F32707D39F00391506 /* CvtManager.cpp in Sources */,
