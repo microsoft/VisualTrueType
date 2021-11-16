@@ -18,11 +18,11 @@ if int(os.environ.get('CYTHON_LINETRACE', '0')):
     linetrace = True
     define_macros.append(('CYTHON_TRACE_NOGIL', '1'))
 
-extra_compile_args = ['/Zc:wchar_t']
+extra_compile_args = ['']
 
 if platform.system() != 'Windows':
-    extra_compile_args.append('-std=c++11')
-
+     extra_compile_args.append('-std=c++1y')
+    
 extension = Extension(
     'vttcompilepy.vttcompilepy',
     define_macros=define_macros,
@@ -45,7 +45,6 @@ setup(
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
-        "Operating System :: Microsoft :: Windows :: Windows 10",
     ],
     package_dir={"": "."},
     packages=["vttcompilepy"],
