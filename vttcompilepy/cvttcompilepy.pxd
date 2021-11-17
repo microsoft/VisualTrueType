@@ -5,7 +5,6 @@ from libcpp cimport bool
 from libc.stddef cimport wchar_t
 from libcpp.string cimport string
 
-#cdef extern from "..\\src\\pch.h":
 cdef extern from "pch.h":
  
     ctypedef enum StripCommand:
@@ -15,7 +14,6 @@ cdef extern from "pch.h":
         stripBinary
         stripEverything
 
-#cdef extern from "..\\src\\application.h":
 cdef extern from "application.h":
 
     cdef cppclass Application:
