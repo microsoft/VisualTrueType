@@ -869,7 +869,7 @@ bool PrivateControlValueTable::SettingsDeclaration(void) {
 
 bool PrivateControlValueTable::CvtDeclaration(uint32_t *attribute) {
 	int32_t cvtNum;
-	ControlValue *cvt;
+	ControlValue *cvt = nullptr;
 
 	if (!(this->AttributeAssociation(attribute) && // this->InlineSttmt() && 
 		  this->ValueAssociation(*attribute,&cvtNum,&cvt) && this->InlineSttmt() && 
@@ -958,7 +958,7 @@ bool PrivateControlValueTable::InheritanceRelation(int32_t cvtNum, ControlValue 
 		if (!this->Parameter(&parentCvtNumParam)) return false;
 		if (!AssertNatural(&parentCvtNumParam,0,maxCvtNum-1,L"Parent cvt number",this->errMsg)) { this->scanner.ErrUnGetSym(); return false; }
 		parentCvt = &this->tempData[parentCvtNumParam.value];
-		if (!parentCvt->flags & cvtDefined) { swprintf(this->errMsg,L"Parent cvt not defined (must be completely defined prior to tying child cvts to it)"); this->scanner.ErrUnGetSym(); return false; }
+		if (!(parentCvt->flags & cvtDefined)) { swprintf(this->errMsg,L"Parent cvt not defined (must be completely defined prior to tying child cvts to it)"); this->scanner.ErrUnGetSym(); return false; }
 //		if (this->scanner.sym != at) { swprintf(this->errMsg,L"'@' expected"); return false; }
 //		if (!this->scanner.GetSym()) return false;
 		if (!this->legacyCompile) {
@@ -1217,7 +1217,7 @@ bool PrivateControlValueTable::Compile(TextBuffer*source, TextBuffer*prepText, b
 	int32_t i,firstAvailSubAttributeValue[numSubAttributes];
 	uint32_t currAttribute;
 	Attribute *sortedAttributes;
-	bool memError;
+	bool memError = false;
 	wchar_t comment[maxLineSize],dateTime[32];
 
 	this->legacyCompile = legacyCompile;

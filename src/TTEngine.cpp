@@ -1081,7 +1081,7 @@ void TTSourceEngine::ResIPMDAP(TTVDirection pvP, bool postRoundFlag, short paren
 	this->usedpv = false;
 	this->lastChild = invalidKnotNum;
 	this->rp[0] = this->rp[2] = child;
-	parent1;
+	// parent1;
 } // TTSourceEngine::ResIPMDAP
 
 void TTSourceEngine::ResMIRP(short parent, short child, short cvt, bool useMinDist) {

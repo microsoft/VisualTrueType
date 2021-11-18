@@ -481,9 +481,9 @@ void TTSourceGenerator::Link(bool y, bool dist, ProjFreeVector *projFreeVector, 
 	Vector link;
 	RVector linkDirection;
 	double vectProd,scalProd;
-	short distance,parentC,childC;
+    short distance = 0,parentC,childC;
 	LinkColor color;
-	Rounding deltaR,parentR,childR;
+	Rounding deltaR = rthg,parentR,childR;
 	bool italicLink,lsbLink,rsbLink,negativeDist,negativeMirp;
 	
 	linkDirection.x = 0;
@@ -1826,7 +1826,7 @@ void TTSourceGenerator::Serif(bool forward, short type, short knots, short knot[
 
 void TTSourceGenerator::Scoop(short parent0, short child, short parent1, wchar_t error[]) {
 	Vector base;
-	bool ok,y;
+    bool ok,y = false;
 	short dist,actualCvt;
 	
 	base = SubV(this->V[parent1],this->V[parent0]);
@@ -2217,8 +2217,8 @@ FVMTDirection TTSourceGenerator::CalcDiagonalFVMT(FVOverride fv, short parent0, 
 	AlignParam *alignParam = nullptr;
 	bool previousStroke,previousAlign;
 	short neighbour = this->Neighbour(parent0,parent1,child,true);
-	short deltaAngle = this->attrib[child].deltaAngle;
-	short diagChild,alignChild,otherChild;
+	// short deltaAngle = this->attrib[child].deltaAngle;
+    short diagChild = 0,alignChild,otherChild;
 	Vector D = SubV(this->V[neighbour],this->V[child]);
 	FVMTDirection fvmt;
 
@@ -2286,7 +2286,7 @@ FVMTDirection TTSourceGenerator::CalcAlignFVMT(FVOverride fv, short parent0, sho
 	bool previousStroke,previousAlign;
 	short neighbour = this->Neighbour(parent0,parent1,child,true);
 	short deltaAngle = attrib->deltaAngle;
-	short diagChild,alignChild,otherChild;
+    short diagChild = 0,alignChild,otherChild;
 	Vector D = SubV(this->V[neighbour],this->V[child]);
 	FVMTDirection fvmt;
 
@@ -2391,7 +2391,7 @@ short TTSourceGenerator::TheCvt(short parent, short child, LinkColor color, Link
 	   which function is to be called depending on what VacuFormRound type and configuration
 	   of knots... For the curious: cf. fdefs0.c *****/
 void TTSourceGenerator::DoVacuFormRound(void) {
-	short pass,labelNumber,labels,i,j,first,last,lo,hi,l,h,type,x1,x2,y1,y2,nextX1,nextX2,nextY1,nextY2,base1,n1,inc1,dec1,base2,n2,inc2,dec2,fun,knots,knot[maxVacuForms],next,dist;
+    short pass,labelNumber,labels = 0,i,j,first,last,lo,hi,l,h,type,x1,x2,y1,y2,nextX1,nextX2,nextY1,nextY2,base1,n1,inc1,dec1,base2,n2,inc2,dec2,fun,knots,knot[maxVacuForms],next,dist;
 	VacuFormParams *vacu;
 	wchar_t buf[32];
 	

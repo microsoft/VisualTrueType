@@ -490,7 +490,7 @@ private:
 	FontMetricProfile metricProfile;
 	FontMetricProfile newMetricProfile;			// used for 'maxp' computation
 	
-	bool useIntegerScaling;
+	//bool useIntegerScaling;
 	unsigned short macStyle;					// passed from ReadHeader to WriteHeader as is
 	
 	

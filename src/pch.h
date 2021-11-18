@@ -19,6 +19,7 @@
 #include <deque>
 #include <climits>
 #include <codecvt>
+#include <locale>
 #include <cmath>
 
 #include "opentypedefs.h"
