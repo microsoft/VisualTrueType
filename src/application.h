@@ -33,7 +33,6 @@ private:
 
 	wchar_t mainFont[maxLineSize], textFont[maxLineSize];
 
-	bool fontOpen = false;
 	std::unique_ptr<TrueTypeFont> font = nullptr;
 	std::unique_ptr<TrueTypeGlyph> glyph = nullptr;
 	std::string fileName;

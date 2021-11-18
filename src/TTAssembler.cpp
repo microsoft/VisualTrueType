@@ -1222,7 +1222,7 @@ wchar_t * TT_ReadInstructionBooleans (wchar_t * CurrentPtr, wchar_t * EOLPtr, sh
 				booleanCount++ )
 	{
 		booleanShift--;
-		for ( found = k = 0; k < NumberOfBooleanTranslations; k++ ) {
+		for ( found = k = 0; k < (short)NumberOfBooleanTranslations; k++ ) {
 			if ( asm_booleanTranslation1[k].type == tt_instruction[InstructionIndex].booleans[booleanCount] &&
 								 (asm_booleanTranslation1[k].code) == *CurrentPtr ) 
 			{
@@ -2635,8 +2635,8 @@ wchar_t *TT_InnerCompile(
 				}
 			} else {
 			/* this is a compiler switch */
-				short i, found, SwitchCode;
-				for ( found = i = 0; i < TOTALNUMBEROFSWITCH; i++ ) {		
+                short i, found, SwitchCode = 0;
+				for ( found = i = 0; i < (short)TOTALNUMBEROFSWITCH; i++ ) {
 					if ( StringLength == (short) STRLENW( tt_CompilerSwitch[i].name ) &&
 							wcsncmp( CurrentPtr+1, tt_CompilerSwitch[i].name, StringLength) == 0 ) {
 			     
@@ -2844,12 +2844,12 @@ wchar_t *TT_InnerCompile(
 			} else {
 				/* regular instruction */
 				short InstructionIndex, found;
-				unsigned short InstructionCode; /* unsigned short because of the fake code used to detect composite commands */
+                unsigned short InstructionCode = 0; /* unsigned short because of the fake code used to detect composite commands */
 				int32_t StringLength;
 			
 				StringLength = TT_GetStringLength (CurrentPtr, EndPtr);
 			
-				for ( found = InstructionIndex = 0; InstructionIndex < TOTALNUMBEROFINSTRUCTIONS; InstructionIndex++ ) {
+				for ( found = InstructionIndex = 0; InstructionIndex < (short)TOTALNUMBEROFINSTRUCTIONS; InstructionIndex++ ) {
 					if ( StringLength == (short) STRLENW( tt_instruction[InstructionIndex].name ) &&
 			     		wcsncmp(CurrentPtr, tt_instruction[InstructionIndex].name, StringLength) == 0 ) {
 						found = true;
@@ -3574,7 +3574,7 @@ wchar_t * CO_ReadInstructionParameters (wchar_t * CurrentPtr, wchar_t * EOLPtr, 
 {
 	short	argindex, argNb;
 	wchar_t * tempP;
-	const wchar_t * argTypeBuffer = co_instruction[InstructionIndex].pops;
+	// const wchar_t * argTypeBuffer = co_instruction[InstructionIndex].pops;
 	*argc = 0;
 	argindex = 0;
 	bool inRange;
@@ -3681,7 +3681,7 @@ wchar_t * CO_ReadInstructionBooleans (wchar_t * CurrentPtr, wchar_t * EOLPtr, sh
 				booleanCount++ )
 	{
 		booleanShift--;
-		for ( found = k = 0; k < co_NumberOfBooleanTranslations; k++ ) {
+		for ( found = k = 0; k < (short)co_NumberOfBooleanTranslations; k++ ) {
 			if ( co_booleanTranslation[k].type == co_instruction[InstructionIndex].booleans[booleanCount] &&
 								 (co_booleanTranslation[k].code) == *CurrentPtr ) 
 			{
@@ -3734,7 +3734,7 @@ wchar_t *CO_Compile(TrueTypeFont * font, TrueTypeGlyph * glyph, wchar_t *StartPt
 //	in a window that is being slided along the code. This appears to be used to determine, whether such instructions
 //	as USEMYMETRICS or OVERLAP and NONOVERLAP (the latter two being obsolete, as far as I understand the TT manual),
 //	are properly followed by further composite instructions...
-	short	LineNb,LastLineCompiled,RoundingCode,currInstrIndex,prevInstrIndex,args[256],argc;
+    short	LineNb,LastLineCompiled,RoundingCode = 0,currInstrIndex = 0,prevInstrIndex = 0,args[256],argc = 0;
 	bool currInstrIsCompInstr,prevInstrIsCompInstr;
 	int32_t	LineLength,StringLength;
 	wchar_t 	*CurrentPtr,*EOLPtr;
@@ -3781,8 +3781,8 @@ wchar_t *CO_Compile(TrueTypeFont * font, TrueTypeGlyph * glyph, wchar_t *StartPt
 		// regular instruction
 		StringLength = TT_GetStringLength (CurrentPtr, EndPtr);
 		currInstrIndex = 0;
-		while (currInstrIndex < CONUMBEROFINSTRUCTIONS && !(StringLength == (int32_t)STRLENW(co_instruction[currInstrIndex].name) && wcsncmp(CurrentPtr, co_instruction[currInstrIndex].name, StringLength) == 0)) currInstrIndex++;
-		currInstrIsCompInstr = currInstrIndex < CONUMBEROFINSTRUCTIONS;
+		while (currInstrIndex < (short)CONUMBEROFINSTRUCTIONS && !(StringLength == (int32_t)STRLENW(co_instruction[currInstrIndex].name) && wcsncmp(CurrentPtr, co_instruction[currInstrIndex].name, StringLength) == 0)) currInstrIndex++;
+		currInstrIsCompInstr = currInstrIndex < (short)CONUMBEROFINSTRUCTIONS;
 		
 		if (prevInstrIsCompInstr) {
 			font->UpdateCompositeProfile(glyph,&compositeProfile,currInstrIsCompInstr ? CO_CompInstrFollow : CO_StdInstrFollow, RoundingCode, prevInstrIndex, args, argc, &Newbbox, co_error);
@@ -3924,7 +3924,7 @@ void CO_GetErrorString (short ErrorNb, wchar_t * ErrorString)
 }
 
 bool DisassemComponent(TrueTypeGlyph *glyph, TextBuffer *src, wchar_t errMsg[]) {
-	short i,flags,glyphIndex,arg1,arg2,xscale,yscale,scale01,scale10;
+    short i,flags,glyphIndex,arg1,arg2,xscale = 0,yscale = 0,scale01 = 0,scale10 = 0;
 	wchar_t c,buf[maxLineSize];
 	
 	i = 0;

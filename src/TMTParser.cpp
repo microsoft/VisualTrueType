@@ -360,7 +360,7 @@ void AdjustFPs(short serifType, FormParam *formParams);
 void AdjustFPs(short serifType, FormParam *formParams) {
 	/* SERIF < (type, knot0, knot1, ... knotn-1)
 	   param 0     1,     2,     3,     param-1 */
-	short params,i;
+    short params = 0,i;
 	
 	switch (serifType) {
 		case 0: params = 9; break;
@@ -916,7 +916,7 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 		case xNoRound:
 		case yNoRound: {
 			short knot[maxParams];
-			Rounding r;
+			Rounding r = rnone;
 			
 			for (i = 0; i < params; i++) knot[i] = (short)(param[i].numValue/one6);
 			switch (cmd) {
@@ -1012,7 +1012,8 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 				bool y = cmd == resYIPAnchor,
 						haveFlag = param[0].type == angleFlag,
 						havePostRound = param[haveFlag].type == postRoundFlag;
-				ActParam *parent0Param = &param[haveFlag+havePostRound], *childParam = &param[haveFlag+havePostRound+1], *parent1Param = &param[haveFlag+havePostRound+2];
+                ActParam *parent0Param = &param[haveFlag+havePostRound], *childParam = &param[haveFlag+havePostRound+1];
+                // ActParam *parent1Param = &param[haveFlag+havePostRound+2];
 				short parent0 = (short)(parent0Param->numValue/one6),child = (short)(childParam->numValue/one6),parent1 = (short)(param[params-1].numValue/one6);
 				ProjFreeVector projFreeVector;
 
@@ -1091,8 +1092,8 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 						dist = cmd == resXIPDDist || cmd == resYIPDDist,
 						haveAngleFlag = false, // so far, TT fn not implemented orthogonally enough
 						haveStrokeFlag = false; // so far, TT fn not implemented orthogonally enough
-				short cvt0ParamOffs = haveAngleFlag+haveStrokeFlag+3,
-					  cvt1ParamOffs = haveAngleFlag+haveStrokeFlag+6;
+				//short cvt0ParamOffs = haveAngleFlag+haveStrokeFlag+3,
+				//	    cvt1ParamOffs = haveAngleFlag+haveStrokeFlag+6;
 				ActParam *grandParent0Param = &param[haveAngleFlag+haveStrokeFlag],
 						 *parent0Param      = &param[haveAngleFlag+haveStrokeFlag+1],
 						 *child0Param       = &param[haveAngleFlag+haveStrokeFlag+2],
@@ -1129,8 +1130,8 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 						dist = cmd == resXIPDDDist || cmd == resYIPDDDist,
 						haveAngleFlag = param[0].type == angleFlag,
 						haveStrokeFlag = false; // so far, TT fn not implemented orthogonally enough
-				short cvt0ParamOffs = haveAngleFlag+haveStrokeFlag+3,
-					  cvt1ParamOffs = haveAngleFlag+haveStrokeFlag+6;
+				// short cvt0ParamOffs = haveAngleFlag+haveStrokeFlag+3,
+				//	     cvt1ParamOffs = haveAngleFlag+haveStrokeFlag+6;
 				ActParam *grandParent0Param = &param[haveAngleFlag+haveStrokeFlag],
 						 *parent0Param      = &param[haveAngleFlag+haveStrokeFlag+1],
 						 *child0Param       = &param[haveAngleFlag+haveStrokeFlag+2],
@@ -1171,8 +1172,8 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 				short cvtParamOffs0 = 2;
 				bool haveCvt0 = !dist && params > cvtParamOffs0 && param[cvtParamOffs0].type == cvtN;
 				short cvtParamOffs1 = 2 + haveCvt0 + 2;
-				bool haveCvt1 = !dist && params > cvtParamOffs1 && param[cvtParamOffs1].type == cvtN,
-						haveMinDist = params > cvtParamOffs1+haveCvt1 && param[cvtParamOffs1+haveCvt1].type == minDistGeneral;
+                bool haveCvt1 = !dist && params > cvtParamOffs1 && param[cvtParamOffs1].type == cvtN;
+				// bool haveMinDist = params > cvtParamOffs1+haveCvt1 && param[cvtParamOffs1+haveCvt1].type == minDistGeneral;
 				ActParam *parent0Param = &param[0],*child0Param = &param[1],*parent1Param = &param[2+haveCvt0],*child1Param = &param[3+haveCvt0];
 				short parent0 = (short)(parent0Param->numValue/one6),
 					  child0 = (short)(child0Param->numValue/one6),
@@ -1197,13 +1198,13 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 			if (!this->legacyCompile)
 			{
 				bool dist = cmd == resIIPDDist;
-				short optParamOffs = cmd == resIIPDDist ? 6 : 8;
+				// short optParamOffs = cmd == resIIPDDist ? 6 : 8;
 
 				short cvtParamOffs0 = 3;
 				bool haveCvt0 = !dist && params > cvtParamOffs0 && param[cvtParamOffs0].type == cvtN;
 				short cvtParamOffs1 = 3 + haveCvt0 + 2;
-				bool haveCvt1 = !dist && params > cvtParamOffs1 && param[cvtParamOffs1].type == cvtN,
-						haveMinDist = params > cvtParamOffs1+haveCvt1 && param[cvtParamOffs1+haveCvt1].type == minDistGeneral;
+                bool haveCvt1 = !dist && params > cvtParamOffs1 && param[cvtParamOffs1].type == cvtN;
+				// bool	haveMinDist = params > cvtParamOffs1+haveCvt1 && param[cvtParamOffs1+haveCvt1].type == minDistGeneral;
 				ActParam *grandParent0Param = &param[0],*parent0Param = &param[1],*child0Param = &param[2],*parent1Param = &param[3+haveCvt0],*child1Param = &param[4+haveCvt0],*grandParent1Param = &param[5+haveCvt0+haveCvt1];
 				short grandParent0 = (short)(grandParent0Param->numValue/one6),
 					  parent0 = (short)(parent0Param->numValue/one6),
@@ -1242,7 +1243,7 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 
 void TMTSourceParser::XFormToNewSyntax(void) {
 /* this is a bit of a botched job, but I'd rather have the standard parameter checking mechanism do all the serious work */
-	int32_t savePos,flagPos,parmPos;
+    int32_t savePos,flagPos,parmPos = 0;
 	wchar_t old[32],neu[64];
 	short s,d,l;
 	
@@ -1445,7 +1446,7 @@ void TMTSourceParser::Parameter(ActParam *actParam) {
 	ActParam colorParam;
 	Symbol ttvSym;
 	ParamType paramType;
-	int32_t numValue,firstLocalParamStart;
+    int32_t numValue,firstLocalParamStart = 0;
 	bool gotKnot[2];
 	
 	paramStart = this->prevPos;
@@ -1973,7 +1974,7 @@ void TMTSourceParser::GetNumber(void) {
 
 Symbol Search(wchar_t *entry, short left, short right, short *matching);
 Symbol Search(wchar_t *entry, short left, short right, short *matching) {
-	short mid,diff,minMatch;
+    short mid,diff = 0,minMatch;
 	wchar_t *id,*en;
 	
 	while (left <= right) {

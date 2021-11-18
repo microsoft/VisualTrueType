@@ -1115,12 +1115,12 @@ bool TrueTypeFont::SetSfnt(short platformID, short encodingID, wchar_t errMsg[])
 		axisRecord.minValue.SetRawValue(minValue); 
 		packed1 += 2;
 
-		int32_t* pdefaultValue = reinterpret_cast<int32_t*>(packed1);
+		// int32_t* pdefaultValue = reinterpret_cast<int32_t*>(packed1);
 		int32_t defaultValue = SWAPL(*pminValue);
 		axisRecord.defaultValue.SetRawValue(defaultValue);
 		packed1 += 2;
 
-		int32_t* pmaxValue = reinterpret_cast<int32_t*>(packed1);
+		// int32_t* pmaxValue = reinterpret_cast<int32_t*>(packed1);
 		int32_t maxValue = SWAPL(*pminValue);
 		axisRecord.maxValue.SetRawValue(maxValue);
 		packed1 += 2;
@@ -2267,7 +2267,7 @@ bool  TrueTypeFont::MergePrivateCvarWithInstanceManager(const TSICHeader &header
 		return true;
 
 	auto instanceManager = this->GetInstanceManager();
-	auto axisCount = this->GetVariationAxisCount();
+	// auto axisCount = this->GetVariationAxisCount();
 
 	std::vector<bool> recordMerged;
 	recordMerged.resize(header.recordCount, false); 
@@ -2423,7 +2423,7 @@ int32_t TrueTypeFont::UpdateCvar(int32_t *size, unsigned char data[])
 	std::stable_sort(cvarTuples.begin(), cvarTuples.end(), Compare_Tuples_by_Order); 	
 
 	auto axisCount = this->GetVariationAxisCount();
-	auto tupleCount = cvarTuples.size();
+	// auto tupleCount = cvarTuples.size();
 	size_t numTuplesWithData = 0;
 	size_t numIntermediates = 0; // Among numTuplesWithData how many intermediates
 
@@ -3316,8 +3316,8 @@ bool TrueTypeFont::BuildNewSfnt(StripCommand strip, CharGroup group, int32_t gly
 								   wchar_t errMsg[]) {
 	unsigned char *sfnt,*tmpSfnt,*tmpSfntHandle;
 
-	int32_t headerSize,i,j,tag,numberOfGlyphs,numberOfHMetrics,zero = 0L,pad;
-	uint32_t sfntPos,tmpSfntSize,sizeOfTable,newSfntSizeEstimate;
+    int32_t headerSize,i,j,tag,numberOfGlyphs,numberOfHMetrics = 0,zero = 0L,pad;
+    uint32_t sfntPos = 0,tmpSfntSize,sizeOfTable,newSfntSizeEstimate;
 	sfnt_FontHeader *head;
 	sfnt_HorizontalHeader *hhea;
 	bool result = false;
@@ -3959,8 +3959,8 @@ bool TrueTypeFont::IncrBuildNewSfnt( wchar_t errMsg[]) {
 
 	unsigned char *sfnt, *tmpSfnt, *tmpSfntHandle;
 
-	int32_t headerSize, i, j, j2, tag, numberOfGlyphs, numberOfHMetrics, zero = 0L, pad;
-	uint32_t sfntPos, tmpSfntSize, sizeOfTable, newSfntSizeEstimate;
+    int32_t headerSize, i, j, j2, tag, numberOfGlyphs = 0, numberOfHMetrics = 0, zero = 0L, pad;
+    uint32_t sfntPos = 0, tmpSfntSize, sizeOfTable, newSfntSizeEstimate;
 	sfnt_FontHeader *head;
 	bool result = false;
 
@@ -5451,7 +5451,7 @@ uint32_t TrueTypeFont::PackGlyphs(StripCommand strip, TrueTypeGlyph *glyph, int3
 uint32_t TrueTypeFont::PackGlyph(unsigned char *dst, int32_t glyphIndex, TrueTypeGlyph *glyph, int32_t glyfBinSize, unsigned char *glyfInstruction, sfnt_HorizontalMetrics *hmtx) {
 	unsigned char *pStart;
 	uint32_t size;
-	short i, numberOfPoints, x, y, delta, j, whoseMetrics;
+	short i, numberOfPoints, x, y, delta, j, whoseMetrics = 0;
 	unsigned char bitFlags;
 	bool composite,useMyMetrics;
 	
