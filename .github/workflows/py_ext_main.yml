@@ -33,6 +33,8 @@ jobs:
         with:
           python-version: "3.x"
       - name: Install dependencies
+        run: pip install cibuildwheel
+      - name: Build Wheels
         run: python -m cibuildwheel --output-dir wheelhouse
       - uses: actions/upload-artifact@v2
         with:
