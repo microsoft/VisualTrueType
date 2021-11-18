@@ -118,7 +118,7 @@ int main(int argc, char* argv[])
 	{
 		try
 		{
-			g1 = g2 = std::stoul(sg1);
+			g1 = g2 = static_cast<uint32_t>(std::stoul(sg1));
 		}
 		catch (...)
 		{
@@ -132,7 +132,7 @@ int main(int argc, char* argv[])
 	{
 		try
 		{
-			g2 = std::stoul(sg2);
+			g2 = static_cast<uint32_t>(std::stoul(sg2));
 		}
 		catch (...)
 		{
