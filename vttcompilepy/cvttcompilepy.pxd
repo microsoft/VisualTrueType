@@ -19,13 +19,13 @@ cdef extern from "application.h":
     cdef cppclass Application:
         Application() except +
         bool Create()
-        bool OpenFont(string fileName, wchar_t* errMsg)
-        bool SaveFont(StripCommand strip, wchar_t* errMsg)
-        bool SaveFont(string fileName, StripCommand strip, wchar_t* errMsg)
+        bool OpenFont(string fileName, wchar_t* errMsg, size_t errMsgLen)
+        bool SaveFont(StripCommand strip, wchar_t* errMsg, size_t errMsgLen)
+        bool SaveFont(string fileName, StripCommand strip, wchar_t* errMsg, size_t errMsgLen)
 
-        bool GotoFont(wchar_t* errMsg)
+        bool GotoFont(wchar_t* errMsg, size_t errMsgLen)
 
-        bool CompileGlyphRange(uint16_t g1, uint16_t g2, bool quiet, wchar_t* errMsg)
-        bool CompileAll(bool quiet, wchar_t* errMsg)
+        bool CompileGlyphRange(uint16_t g1, uint16_t g2, bool quiet, wchar_t* errMsg, size_t errMsgLen)
+        bool CompileAll(bool quiet, wchar_t* errMsg, size_t errMsgLen)
 
         char* wCharToChar(char* out1, const wchar_t* in1)

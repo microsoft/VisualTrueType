@@ -4,6 +4,8 @@ from enum import IntEnum
 from .cvttcompilepy cimport *
 from pathlib import Path
 
+DEF ERR_BUF_SIZE = 1024
+
 class CompileError(Exception):
     pass
 
@@ -24,12 +26,12 @@ cdef class Compiler:
          self.app_ = new Application()
          self.app_.Create()    
          cdef string src = bytes(path)
-         cdef wchar_t werr[1024]
-         cdef char err[1024]
-         result = self.app_.OpenFont(src, werr)
+         cdef wchar_t werr[ERR_BUF_SIZE]
+         cdef char err[ERR_BUF_SIZE]
+         result = self.app_.OpenFont(src, werr, ERR_BUF_SIZE)
          if result != True:             
              raise FileNotFoundError(self.app_.wCharToChar(err, werr))
-         result = self.app_.GotoFont(werr)
+         result = self.app_.GotoFont(werr, ERR_BUF_SIZE)
          if result != True:
              raise FileNotFoundError(self.app_.wCharToChar(err, werr))     
 
@@ -37,31 +39,31 @@ cdef class Compiler:
          del self.app_
 
      def compile_all(self) -> None:
-         cdef wchar_t werr[1024]
-         cdef char err[1024]
-         result = self.app_.CompileAll(True, werr)
+         cdef wchar_t werr[ERR_BUF_SIZE]
+         cdef char err[ERR_BUF_SIZE]
+         result = self.app_.CompileAll(True, werr, ERR_BUF_SIZE)
          if(result != True):
              raise CompileError(self.app_.wCharToChar(err, werr))
 
      def compile_glyph_range(self, start: int = 0, end: int = 0) -> None:
-         cdef wchar_t werr[1024]
-         cdef char err[1024]
-         result = self.app_.CompileGlyphRange(start, end, True, werr)
+         cdef wchar_t werr[ERR_BUF_SIZE]
+         cdef char err[ERR_BUF_SIZE]
+         result = self.app_.CompileGlyphRange(start, end, True, werr, ERR_BUF_SIZE)
          if(result != True):
              raise CompileError(self.app_.wCharToChar(err, werr))
 
      def save_font(self, path: Path, level: StripLevel) -> None:
          cdef string dest = bytes(path)
-         cdef wchar_t werr[1024]
-         cdef char err[1024]
-         result = self.app_.SaveFont(dest, level, werr)
+         cdef wchar_t werr[ERR_BUF_SIZE]
+         cdef char err[ERR_BUF_SIZE]
+         result = self.app_.SaveFont(dest, level, werr, ERR_BUF_SIZE)
          if(result != True):
              raise FileNotFoundError(self.app_.wCharToChar(err, werr))
 
      def save_font(self, level: StripLevel) -> None:
-         cdef wchar_t werr[1024]
-         cdef char err[1024]
-         result = self.app_.SaveFont(level, werr)
+         cdef wchar_t werr[ERR_BUF_SIZE]
+         cdef char err[ERR_BUF_SIZE]
+         result = self.app_.SaveFont(level, werr, ERR_BUF_SIZE)
          if(result != True):
              raise FileNotFoundError(self.app_.wCharToChar(err, werr))
 
