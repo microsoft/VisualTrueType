@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 #define _CRT_SECURE_NO_DEPRECATE 
-#define _CRT_NON_CONFORMING_SWPRINTFS
 
 #include <stdio.h> // swprintf
 #include <stdlib.h>

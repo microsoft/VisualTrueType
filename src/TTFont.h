@@ -298,30 +298,30 @@ public:
 	virtual ~TrueTypeFont(void);
 	void AssertMaxSfntSize(uint32_t minSfntSize, bool assertMainHandle, bool assertTempHandle);
 	void AssertMaxGlyphs(int32_t minGlyphs);
-	bool Read(File *file, TrueTypeGlyph *glyph, short *platformID, short *encodingID, wchar_t errMsg[]);
-	bool Write(File *file, wchar_t errMsg[]);
+	bool Read(File *file, TrueTypeGlyph *glyph, short *platformID, short *encodingID, wchar_t errMsg[], size_t errMsgLen);
+	bool Write(File *file, wchar_t errMsg[], size_t errMsgLen);
 	ControlValueTable *TheCvt(void);
-	bool GetCvt (TextBuffer *cvtText,  wchar_t errMsg[]);
-	bool GetPrep(TextBuffer *prepText, wchar_t errMsg[]);
+	bool GetCvt (TextBuffer *cvtText,  wchar_t errMsg[], size_t errMsgLen);
+	bool GetPrep(TextBuffer *prepText, wchar_t errMsg[], size_t errMsgLen);
 	int32_t PrepBinSize(void);
-	bool GetFpgm(TextBuffer *fpgmText, wchar_t errMsg[]);
+	bool GetFpgm(TextBuffer *fpgmText, wchar_t errMsg[], size_t errMsgLen);
 	int32_t FpgmBinSize(void);
-	bool GetGlyf(int32_t glyphIndex, TextBuffer *glyfText, wchar_t errMsg[]);
-	bool GetTalk(int32_t glyphIndex, TextBuffer *talkText, wchar_t errMsg[]);		
-	bool GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t errMsg[]);
+	bool GetGlyf(int32_t glyphIndex, TextBuffer *glyfText, wchar_t errMsg[], size_t errMsgLen);
+	bool GetTalk(int32_t glyphIndex, TextBuffer *talkText, wchar_t errMsg[], size_t errMsgLen);		
+	bool GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t errMsg[], size_t errMsgLen);
 	int32_t GlyfBinSize(void);
 	unsigned char* GlyfBin(void); 
 	bool GetHMTXEntry(int32_t glyphIndex, int32_t *leftSideBearing, int32_t *advanceWidth);
 	int32_t NumberOfGlyphs(void);
 	int32_t GlyphIndexOf(uint32_t charCode);
-	bool GlyphIndecesOf(wchar_t textString[], int32_t maxNumGlyphIndeces, int32_t glyphIndeces[], int32_t *numGlyphIndeces, wchar_t errMsg[]);
+	bool GlyphIndecesOf(wchar_t textString[], int32_t maxNumGlyphIndeces, int32_t glyphIndeces[], int32_t *numGlyphIndeces, wchar_t errMsg[], size_t errMsgLen);
 	uint32_t CharCodeOf(int32_t glyphIndex);
 	uint32_t AdjacentChar(uint32_t charCode, bool forward);
 	uint32_t FirstChar(); 
 	CharGroup CharGroupOf(int32_t glyphIndex);
 	bool CMapExists(short platformID, short encodingID);
-	bool DefaultCMap(short *platformID, short *encodingID, wchar_t errMsg[]);
-	bool UnpackCMap(short platformID, short encodingID, wchar_t errMsg[]);
+	bool DefaultCMap(short *platformID, short *encodingID, wchar_t errMsg[], size_t errMsgLen);
+	bool UnpackCMap(short platformID, short encodingID, wchar_t errMsg[], size_t errMsgLen);
 	bool IsCvarTupleData();
 	int32_t EstimatePrivateCvar();
 	int32_t UpdatePrivateCvar(int32_t *size, unsigned char data[]);
@@ -334,12 +334,12 @@ public:
 	bool UpdateBinData(ASMType asmType, int32_t binSize, unsigned char *binData);
 	bool BuildNewSfnt(StripCommand strip, CharGroup group, int32_t glyphIndex, TrueTypeGlyph *glyph,
 					  TextBuffer *glyfText, TextBuffer *prepText, TextBuffer *cvtText,  TextBuffer *talkText, TextBuffer *fpgmText,
-					  wchar_t errMsg[]);
+					  wchar_t errMsg[], size_t errMsgLen);
 	
-	bool InitIncrBuildSfnt(bool binaryOnly, wchar_t errMsg[]);
-	bool AddGlyphToNewSfnt(CharGroup group, int32_t glyphIndex, TrueTypeGlyph *glyph, int32_t glyfBinSize, unsigned char *glyfBin, TextBuffer *glyfText, TextBuffer *talkText, wchar_t errMsg[]);
+	bool InitIncrBuildSfnt(bool binaryOnly, wchar_t errMsg[], size_t errMsgLen);
+	bool AddGlyphToNewSfnt(CharGroup group, int32_t glyphIndex, TrueTypeGlyph *glyph, int32_t glyfBinSize, unsigned char *glyfBin, TextBuffer *glyfText, TextBuffer *talkText, wchar_t errMsg[], size_t errMsgLen);
 
-	bool TermIncrBuildSfnt(bool disposeOnly, TextBuffer *prepText, TextBuffer *cvtText, TextBuffer *fpgmText, wchar_t errMsg[]);
+	bool TermIncrBuildSfnt(bool disposeOnly, TextBuffer *prepText, TextBuffer *cvtText, TextBuffer *fpgmText, wchar_t errMsg[], size_t errMsgLen);
 	
 	void InitNewProfiles(void);
 	void InheritProfiles(void); 
@@ -421,17 +421,17 @@ private:
 	int32_t GetTableOffset(sfnt_TableTag tag);
 	int32_t GetTableLength(sfnt_TableTag tag);
 	unsigned char *GetTablePointer(sfnt_TableTag tag);
-	bool UnpackHeadHheaMaxpHmtx(wchar_t errMsg[]);
-	bool UnpackGlitsLoca(wchar_t errMsg[]);
-	bool UpdateMaxPointsAndContours(wchar_t errMsg[]);	
+	bool UnpackHeadHheaMaxpHmtx(wchar_t errMsg[], size_t errMsgLen);
+	bool UnpackGlitsLoca(wchar_t errMsg[], size_t errMsgLen);
+	bool UpdateMaxPointsAndContours(wchar_t errMsg[], size_t errMsgLen);	
 	void EnterChar(int32_t glyphIndex, uint32_t charCode);
 	void SortGlyphMap(); 
 	void GetFmt0(sfnt_mappingTable *map);
 	void GetFmt4(sfnt_mappingTable *map);
 	void GetFmt6(sfnt_mappingTable *map);
 	void GetFmt12(sfnt_mappingTable *map);
-	bool UnpackCharGroup(wchar_t errMsg[]);
-	bool GetSource(bool lowLevel, int32_t glyphIndex, TextBuffer *source, wchar_t errMsg[]);
+	bool UnpackCharGroup(wchar_t errMsg[], size_t errMsgLen);
+	bool GetSource(bool lowLevel, int32_t glyphIndex, TextBuffer *source, wchar_t errMsg[], size_t errMsgLen);
 	bool GetTTOTable(sfnt_TableTag srcTag, TextBuffer *src, sfnt_TableTag binTag, ASMType asmType);
 	void CalculateNewCheckSums(void);
 	void CalculateCheckSumAdjustment(void);
@@ -453,8 +453,8 @@ private:
 							   short type, int32_t glyphIndex, sfnt_FileDataEntry *fileGlit, sfnt_MemDataEntry *memGlit,
 							   uint32_t *dstPos, unsigned char *dst);
 	bool GetNumPointsAndContours(int32_t glyphIndex, int32_t *numKnots, int32_t *numContours, int32_t *componentDepth);
-	bool IncrBuildNewSfnt(wchar_t errMsg[]);
-	bool SetSfnt(short platformID, short encodingID, wchar_t errMsg[]);
+	bool IncrBuildNewSfnt(wchar_t errMsg[], size_t errMsgLen);
+	bool SetSfnt(short platformID, short encodingID, wchar_t errMsg[], size_t errMsgLen);
 
 	void UnpackFvar(void);
 	void UnpackAvar(void);

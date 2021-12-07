@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 #define _CRT_SECURE_NO_DEPRECATE 
-#define _CRT_NON_CONFORMING_SWPRINTFS
 #define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
 
 #include <assert.h> // assert
@@ -235,7 +234,7 @@ void TextBuffer::AppendLine(const wchar_t strg[]) {
 	
 	indent = chars > 0 ? this->indent : 0;
 	
-	swprintf(eol,L"\r");
+	swprintf(eol,sizeof(eol)/sizeof(wchar_t),L"\r");
 	charsEol = wcslen(eol);
 
 	if (!this->AssertTextSize(indent + chars + charsEol + 1)) return;

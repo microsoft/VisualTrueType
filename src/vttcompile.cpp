@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 #define _CRT_SECURE_NO_DEPRECATE 
-#define _CRT_NON_CONFORMING_SWPRINTFS
 
 #include <iostream>
 
@@ -156,7 +155,7 @@ int main(int argc, char* argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	if (!application->OpenFont(inFile, errMsg))
+	if (!application->OpenFont(inFile, errMsg, sizeof(errMsg)/sizeof(wchar_t)))
 	{
 		fwprintf(stderr, errMsg);
 		fwprintf(stderr, L"\n");
@@ -164,7 +163,7 @@ int main(int argc, char* argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	if (!application->GotoFont(errMsg))
+	if (!application->GotoFont(errMsg, sizeof(errMsg) / sizeof(wchar_t)))
 	{
 		fwprintf(stderr, errMsg);
 		fwprintf(stderr, L"Can not initialize font file! \n");
@@ -174,7 +173,7 @@ int main(int argc, char* argv[])
 
 	if (bCompileAll)
 	{
-		if (!application->CompileAll(bQuiet, errMsg))
+		if (!application->CompileAll(bQuiet, errMsg, sizeof(errMsg) / sizeof(wchar_t)))
 		{
 			fwprintf(stderr, errMsg);
 			fwprintf(stderr, L"\n");
@@ -185,7 +184,7 @@ int main(int argc, char* argv[])
 	}
 	else if (haveGlyph)
 	{
-		if (!application->CompileGlyphRange((unsigned short)g1, (unsigned short)g2, bQuiet, errMsg))
+		if (!application->CompileGlyphRange((unsigned short)g1, (unsigned short)g2, bQuiet, errMsg, sizeof(errMsg) / sizeof(wchar_t)))
 		{
 			fwprintf(stderr, errMsg);
 			fwprintf(stderr, L"\n");
@@ -200,7 +199,7 @@ int main(int argc, char* argv[])
 	else if (bStripHints) strip = stripHints;
 	else if (bStripSource) strip = stripSource;
 
-	if (!application->SaveFont(outFile, strip, errMsg))
+	if (!application->SaveFont(outFile, strip, errMsg, sizeof(errMsg) / sizeof(wchar_t)))
 	{
 		fwprintf(stderr, errMsg);
 		fwprintf(stderr, L"\n");
