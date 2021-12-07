@@ -1672,10 +1672,10 @@ void PrivateControlValueTable::SortCvtKeys(int32_t low, int32_t high) { // quick
 
 bool PrivateControlValueTable::DumpControlValueTable(TextBuffer *text) {
 	int32_t cvtNum,pos;
-	bool newFormat;
+	//bool newFormat;
 	wchar_t dump[maxLineSize],groupStrg[32],colorStrg[32],directionStrg[32],categoryStrg[32],relativeStrg[32];
 
-	newFormat = this->IsControlProgramFormat();
+	//newFormat = this->IsControlProgramFormat();
 	for (cvtNum = this->LowestCvtNum(); cvtNum <= this->HighestCvtNum(); cvtNum++) {
 		short cvtValue; 
 		if (this->GetCvtValue(cvtNum,&cvtValue)) {

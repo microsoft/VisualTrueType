@@ -342,7 +342,7 @@ bool Application::CompileGlyphRange(unsigned short g1, unsigned short g2, bool q
 
 bool Application::CompileAll(bool quiet, wchar_t errMsg[], size_t errMsgLen)
 {
-	int32_t glyphIndex, binSize, fromGlyph, fromChar, numGlyphs = this->font->NumberOfGlyphs();
+	int32_t glyphIndex, binSize, numGlyphs = this->font->NumberOfGlyphs();
 	bool done;
 	unsigned char* binData;
 	wchar_t tempErrMsg[maxLineSize], compErrMsg[maxLineSize];
@@ -427,7 +427,6 @@ bool Application::CompileAll(bool quiet, wchar_t errMsg[], size_t errMsgLen)
 		}
 	}
 
-	fromGlyph = this->glyphIndex; fromChar = this->charCode;
 	for (glyphIndex = 0; glyphIndex < numGlyphs && done; glyphIndex++) {
 		if (!quiet && ((glyphIndex + 1) % 10 == 0)) wprintf_s(L".");
 		if (!quiet && ((glyphIndex + 1) % 200 == 0)) wprintf_s(L"\n");
