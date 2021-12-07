@@ -73,10 +73,11 @@ void File::ReadBytes(int32_t numBytes, void *buffer) {
 	//	DWORD cb = 0;
 	//	m_error = !ReadFile(m_hfile, buffer, numBytes, &cb, NULL);
 	//}
-	size_t size = 0; 
+	//size_t size = 0; 
 	if (m_hfile != nullptr)
 	{
-		size = fread(buffer, 1, numBytes, (FILE*)m_hfile); 
+		//size = 
+		fread(buffer, 1, numBytes, (FILE*)m_hfile); 
 	}
 } // File::ReadBytes
 
@@ -153,10 +154,11 @@ void File::WriteBytes(int32_t numBytes, void *buffer)
 	//	DWORD cb = 0;
 	//	m_error = !WriteFile(m_hfile, buffer, numBytes, &cb, NULL);
 	//}
-	size_t size = 0; 
+	//size_t size = 0; 
 	if (m_hfile != nullptr)
 	{
-		size = fwrite(buffer, 1, numBytes, (FILE*)m_hfile); 
+		//size = 
+		fwrite(buffer, 1, numBytes, (FILE*)m_hfile); 
 	}
 } // File::WriteBytes
 
