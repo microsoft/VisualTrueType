@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 
 #define _CRT_SECURE_NO_DEPRECATE 
+#pragma GCC diagnostic ignored "-Wmultichar" 
 
 #include <assert.h> // assert
 #include <string.h>
@@ -2024,7 +2025,7 @@ void PackMaxp(unsigned char *sfnt, sfnt_maxProfileTable *profile) {
 bool TrueTypeFont::UnpackHeadHheaMaxpHmtx(wchar_t errMsg[], size_t errMsgLen) {
 	sfnt_FontHeader *phead, head;
 	sfnt_HorizontalHeader *phhea, hhea;
-	unsigned short aw,lsb,*hmtx; // actually hhea->numberOf_LongHorMetrics of sfnt_HorizontalMetrics [aw,lsb] pairs the monospaced part where we have only lsb numbers 
+	unsigned short aw = 0,lsb,*hmtx; // actually hhea->numberOf_LongHorMetrics of sfnt_HorizontalMetrics [aw,lsb] pairs the monospaced part where we have only lsb numbers 
 	int32_t glitLen,numEntries,numGlyphs,i,k;
 
 	unsigned char* pmaxp = this->GetTablePointer(tag_MaxProfile);
@@ -2340,7 +2341,7 @@ typedef struct {
 void TrueTypeFont::GetFmt4(sfnt_mappingTable *map) { // I made no attempt to understand this
 	unsigned short j;
 	int16 i,segCount,*idDelta,delta;
-	uint16 gid, end, *endCount, start, *startCount, *idRangeOffset, offset, *glyphIdArray;
+	uint16 gid, end, *endCount, start, *startCount, *idRangeOffset, offset; //, *glyphIdArray;
 	sfnt_cmap4hdr *cmap4hdr = (sfnt_cmap4hdr*)(&map[1]);
 	
 	segCount = SWAPW(cmap4hdr->segCountX2) >> 1;
@@ -2348,7 +2349,7 @@ void TrueTypeFont::GetFmt4(sfnt_mappingTable *map) { // I made no attempt to und
 	startCount = endCount + (segCount + 1);
 	idDelta = (int16 *)&startCount[segCount];
 	idRangeOffset = (uint16 *)&idDelta[segCount];
-	glyphIdArray = &idRangeOffset[segCount];
+	//glyphIdArray = &idRangeOffset[segCount];
 
 
 	for (i = 0; i < segCount && endCount[i] != 0xFFFF; i++) {
@@ -4639,7 +4640,8 @@ uint32_t TrueTypeFont::PackGlyph(unsigned char *dst, int32_t glyphIndex, TrueTyp
 	uint32_t size;
 	short i, numberOfPoints, x, y, delta, j, whoseMetrics = 0;
 	unsigned char bitFlags;
-	bool composite,useMyMetrics;
+	//bool composite = false;
+	bool useMyMetrics = false;
 	
 	size = 0;
 	
@@ -4664,12 +4666,11 @@ uint32_t TrueTypeFont::PackGlyph(unsigned char *dst, int32_t glyphIndex, TrueTyp
 	
 	pStart = dst;
 	
-	composite = useMyMetrics = false;
 	if ( glyph->componentSize > 0 ) {
 		int32_t len = 0;
 		short * flags = nullptr;	
 
-		composite = true;
+		//composite = true;
 		
 		WRITEALIGNEDWORD( dst, SWAPW(glyph->ComponentVersionNumber) );
 		

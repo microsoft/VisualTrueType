@@ -881,7 +881,7 @@ void TTSourceEngine::DLT(bool cvt, DeltaColor color, short knot, F26Dot6 amount,
 	short amnt,sign,magnitude,shift,size,deltaSubBase,deltas;
 	bool singleStep;
 	wchar_t charFn,buf[128];
-	short singlePpemSizes,singlePpemSize[maxPpemSize],ppemRanges,ppemRangeLow[maxPpemSize],ppemRangeHigh[maxPpemSize],offsFn;
+	short singlePpemSizes,singlePpemSize[maxPpemSize],ppemRanges,ppemRangeLow[maxPpemSize],ppemRangeHigh[maxPpemSize]; //,offsFn;
 	
 //	with a maximum resolution of 1 and a minimum resolution of 1/64, we can delta in range -8..+8 in steps of 1/64.
 //	this means that upto 3 steps have to be performed: doing the entire pixels, doing the 1/8 pixels, and finally
@@ -909,7 +909,7 @@ void TTSourceEngine::DLT(bool cvt, DeltaColor color, short knot, F26Dot6 amount,
 	SplitPpemSize(singleStep && color == alwaysDelta ? threshold2UseDeltaFn : 1,ppemSize,&singlePpemSizes,singlePpemSize,&ppemRanges,ppemRangeLow,ppemRangeHigh);	
 	
 	if (ppemRanges > 0) {
-		offsFn = cvt ? offsetCvtFn : 0;
+		//offsFn = cvt ? offsetCvtFn : 0;
 		for (size = 0; size < ppemRanges; size++) {
 			if (ppemRangeLow[size] == ppemRangeHigh[size])
 				if (color == alwaysDelta)
