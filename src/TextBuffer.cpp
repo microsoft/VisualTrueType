@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 #define _CRT_SECURE_NO_DEPRECATE 
-#define _CRT_NON_CONFORMING_SWPRINTFS
 #define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
 
 #include <assert.h> // assert
@@ -17,9 +16,6 @@
 #include <locale>
 
 #include "TextBuffer.h"
-#ifndef _WIN32
-#define swprintf(wcs, ...) swprintf(wcs, 1024, __VA_ARGS__)
-#endif
 
 #ifndef	Min
 	#define Min(a,b)	((a) < (b) ? (a) : (b))

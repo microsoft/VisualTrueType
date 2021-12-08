@@ -1284,10 +1284,10 @@ short TT_DeltaLevel( unsigned short opCode )
 void TT_CompileDelta( tt_deltaPType dArr[], short count, unsigned short insCode, short args[], short *argCount);
 void TT_CompileDelta(  tt_deltaPType dArr[], short deltaCount, unsigned short insCode, short args[], short *argCount )
 {
-	short i, tmp, sCount, valid;
+	short i, tmp, sCount; //, valid;
 	unsigned char argCode;
 	
-	valid = 1;
+	//valid = 1;
 	sCount = 0;
 	
 	for ( i = 0; i < deltaCount; i++) {
@@ -2466,7 +2466,7 @@ wchar_t *TT_InnerCompile(
 	short				*argStore, *aPtr;
 	unsigned char	*insStore, *iPtr;
 	short	NeedTwoPass = false; /* used to be MyCode */
-	short 	ghtblock ;
+	//short 	ghtblock ;
 	short 	loop;
 	short	args[256], argc, argc2;
 	wchar_t	args2[256];
@@ -2563,7 +2563,7 @@ wchar_t *TT_InnerCompile(
 	
 	CurrentPtr = StartPtr;
 	LastLineCompiled = 0;
-	ghtblock = false;
+	//ghtblock = false;
 	loop = 1;
 	
 	for ( LineNb = 1; CurrentPtr <= EndPtr && *tt_error == tt_NoError; ) {

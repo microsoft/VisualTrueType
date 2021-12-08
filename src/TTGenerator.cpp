@@ -1826,15 +1826,25 @@ void TTSourceGenerator::Serif(bool forward, short type, short knots, short knot[
 void TTSourceGenerator::Scoop(short parent0, short child, short parent1, wchar_t error[], size_t errorLen) {
 	Vector base;
     bool ok,y = false;
-	short dist,actualCvt;
+	short actualCvt;
+	//short dist;
 	
 	base = SubV(this->V[parent1],this->V[parent0]);
 	base.x = Abs(base.x);
 	base.y = Abs(base.y);
 	ok = true;
-	if 		(base.y <= base.x*this->tanF) { dist = (short)base.y; y = true;  } // near horizontal
-	else if (base.x <= base.y*this->tanF) { dist = (short)base.x; y = false; } // near vertical
-	else {
+	if 		(base.y <= base.x*this->tanF) 
+	{ 
+		//dist = (short)base.y; 
+		y = true;  
+	} // near horizontal
+	else if (base.x <= base.y*this->tanF) 
+	{ 
+		//dist = (short)base.x; 
+		y = false; 
+	} // near vertical
+	else 
+	{
 		ok = false;
 		swprintf(error,errorLen,L"cannot accept SCOOP (base differs from horizontal or vertical by %f degrees or more)",(double)strokeFudge);
 	}
