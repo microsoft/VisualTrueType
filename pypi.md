@@ -3,7 +3,8 @@
 VTTCompilePy is a Python extension built using Cython. It provides streamlined bindings for
 various compilers from Visual TrueType. 
 
-DWriteShapePy was developed to support a Python based font development environment. 
+VTTCompilePy was developed to support a Python based font development environment. In addition to the Python interface,
+a command line interface is also installed. Usage is available with "vttcompilepy --help". 
 
 ### Example
 
