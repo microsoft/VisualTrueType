@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 #define _CRT_SECURE_NO_DEPRECATE 
-#pragma GCC diagnostic ignored "-Wmultichar" 
+//#pragma GCC diagnostic ignored "-Wmultichar" 
 
 #include <assert.h> // assert
 #include <string.h>
