@@ -375,6 +375,7 @@ void AdjustFPs(short serifType, FormParam *formParams) {
 void TMTSourceParser::Parse(bool *changedSrc, int32_t *errPos, int32_t *errLen, wchar_t errMsg[], size_t errMsgLen) {
 	Symbol cmd;
 	ActParam aParam;
+	memset(&aParam, 0, sizeof(ActParam)); 
 	short formParamNum;
 	FormParam formParams[maxFPs];
 	int32_t cmdStart,actParam;

@@ -240,30 +240,30 @@ public:
 	TrueTypeGlyph(void);
 	virtual ~TrueTypeGlyph(void);
 	LinkColor TheColor(short from, short to); // such that everybody can use this, not only the compiler
-	bool Misoriented(short contour);
+	// bool Misoriented(short contour);
 	
 	short xmin, ymin, xmax, ymax; 				// bounding box; xmin corresponds to left side bearing
 	short realLeftSideBearing, realRightSideBearing, blackBodyWidth; // as obtained from specifying left and right point by GrabHereInX, to do with auto-hinter???
 	
 	// contour, knot data
-	int32_t numContoursInGlyph;
-	short startPoint[MAXCONTOURS];
-	short endPoint[MAXCONTOURS];
+	int32_t numContoursInGlyph = 0;
+	short startPoint[MAXCONTOURS] = {0};
+	short endPoint[MAXCONTOURS] = {0};
 	
-	short x[MAXPOINTS];							// these seem to be the (coordinates of the) control points
-	short y[MAXPOINTS];							// Use start|endPoint arrays for contour identification
-	bool onCurve[MAXPOINTS];					// on curve?
-	F26Dot6 xx[MAXPOINTS];						// used to get coordinates back from the rasterizer
-	F26Dot6 yy[MAXPOINTS];
+	short x[MAXPOINTS] = {0};					// these seem to be the (coordinates of the) control points
+	short y[MAXPOINTS] = {0};					// Use start|endPoint arrays for contour identification
+	bool onCurve[MAXPOINTS] = {0};				// on curve?
+	F26Dot6 xx[MAXPOINTS] = {0};				// used to get coordinates back from the rasterizer
+	F26Dot6 yy[MAXPOINTS] = {0};
 	
 	// composite
-	bool composite,useMyMetrics;
-	short componentData[MAXCOMPONENTSIZE];				// binary of TT composite
-	short componentSize;								// size of above data
-	short ComponentVersionNumber;						// sort of a magic number, tends to be -1, I'd prefer this to disappear
+	bool composite = false,useMyMetrics = false;
+	short componentData[MAXCOMPONENTSIZE] = {0};		// binary of TT composite
+	short componentSize = 0;							// size of above data
+	short ComponentVersionNumber = 0;					// sort of a magic number, tends to be -1, I'd prefer this to disappear
 	TrueTypeBluePrint bluePrint;
 private:
-	short dirChange[MAXPOINTS];							// used during TheColor
+	short dirChange[MAXPOINTS] = {0};   // used during TheColor
 };
 
 #define CO_CompInstrFollow	1

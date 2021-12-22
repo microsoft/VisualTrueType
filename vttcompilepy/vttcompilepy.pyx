@@ -19,8 +19,8 @@ class StripLevel(IntEnum):
 cdef class Compiler:
      cdef Application* app_ # Hold C++ instance
 
-     def __cinit__(self):
-        self.app_ = new Application()
+     #def __cinit__(self):
+     #   self.app_ = new Application()
 
      def __cinit__(self, path: Path):
          self.app_ = new Application()
