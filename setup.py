@@ -22,7 +22,10 @@ extra_compile_args = []
 
 if platform.system() != 'Windows':
      extra_compile_args.append('-std=c++14')
-    
+
+if platform.system() == 'Windows':
+    extra_compile_args.append('-sdl')
+
 extension = Extension(
     'vttcompilepy.vttcompilepy',
     define_macros=define_macros,

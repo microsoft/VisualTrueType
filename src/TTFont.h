@@ -561,4 +561,5 @@ private:
 enum class CheckCompositeResult {Success, Tolerance, Fail};
 CheckCompositeResult CheckCompositeVariationCompatible(const short* pFirst, short firstSize, const short* pSecond, short secondSize);
 
+
 #endif // TTFont_dot_h
