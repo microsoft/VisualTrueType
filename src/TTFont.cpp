@@ -1047,6 +1047,11 @@ unsigned char* TrueTypeFont::GlyfBin(void) {
 	return this->binData[asmGLYF]; 
 }
 
+void TrueTypeFont::GetHeights(int32_t* emHeight)
+{
+	*emHeight = this->unitsPerEm;
+} // TrueTypeFont::GetHeights
+
 bool TrueTypeFont::GetHMTXEntry(int32_t glyphIndex, int32_t *leftSideBearing, int32_t *advanceWidth) {
 	sfnt_HorizontalMetrics *horMetric;
 

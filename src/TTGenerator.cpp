@@ -1997,6 +1997,8 @@ void TTSourceGenerator::InitTTGenerator(TrueTypeFont *font, TrueTypeGlyph *glyph
 	this->glyph = glyph;
 	this->glyphIndex = glyphIndex; this->charCode = this->font->CharCodeOf(this->glyphIndex);
 	
+	this->font->GetHeights(&this->emHeight);
+	
 	this->charGroup = this->font->CharGroupOf(this->glyphIndex);
 	
 	this->knots = (glyph->numContoursInGlyph ? glyph->endPoint[glyph->numContoursInGlyph - 1] + 1 : 0) + PHANTOMPOINTS;
