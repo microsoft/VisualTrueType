@@ -33,7 +33,10 @@ jobs:
           python-version: "3.x"
           
       - name: Install dependencies
-        run: pip install cibuildwheel
+        run: |
+             python -m pip install --upgrade pip
+             pip install cibuildwheel
+             pip install cython 
         
       - name: Build Wheels
         run: python -m cibuildwheel --output-dir wheelhouse
