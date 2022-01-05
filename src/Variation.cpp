@@ -117,7 +117,7 @@ bool CVTVariationInterpolator1::ReverseInterpolate(const std::vector<int16_t> &d
 		tuples[tupleIndex]->intermediateStartF2Dot14.clear();
 		tuples[tupleIndex]->intermediateEndF2Dot14.clear();
 
-		std::vector<float> &peak = sortedAxisLocations[i].peakFloat; 
+		// std::vector<float> &peak = sortedAxisLocations[i].peakFloat; 
 
 		// Determine the intermediate start/end if needed.		
 		bool intermediateNeeded = false; 

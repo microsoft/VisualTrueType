@@ -42,7 +42,7 @@ class ControlValueTable {
 public:
 	ControlValueTable(void) {}
 	virtual ~ControlValueTable(void) {}
-	virtual bool Compile(TextBuffer *source, TextBuffer *prepText, bool legacyCompile, int32_t *errPos, int32_t *errLen, wchar_t errMsg[]) = 0;
+	virtual bool Compile(TextBuffer *source, TextBuffer *prepText, bool legacyCompile, int32_t *errPos, int32_t *errLen, wchar_t errMsg[], size_t errMsgLen) = 0;
 	virtual bool IsControlProgramFormat(void) = 0;
 	virtual bool LinearAdvanceWidths(void) = 0;
 	virtual int32_t LowestCvtNum(void) = 0;
@@ -55,7 +55,7 @@ public:
 	virtual bool GetCvtValue(int32_t cvtNum, short *cvtValue) = 0;
 	virtual bool CvtAttributesExist(int32_t cvtNum) = 0;  // entered a cvt "comment"?
 	virtual bool GetCvtAttributes(int32_t cvtNum, CharGroup *charGroup, LinkColor *linkColor, LinkDirection *linkDirection, CvtCategory *cvtCategory, bool *relative) = 0;
-	virtual bool GetAttributeStrings(int32_t cvtNum, wchar_t charGroup[], wchar_t linkColor[], wchar_t linkDirection[], wchar_t cvtCategory[], wchar_t relative[]) = 0;
+	virtual bool GetAttributeStrings(int32_t cvtNum, wchar_t charGroup[], wchar_t linkColor[], wchar_t linkDirection[], wchar_t cvtCategory[], wchar_t relative[], size_t commonStrSize) = 0;
 	virtual int32_t NumCharGroups(void) = 0;
 	virtual bool GetCharGroupString(CharGroup charGroup, wchar_t string[]) = 0;
 	virtual bool GetSpacingText(CharGroup charGroup, wchar_t spacingText[]) = 0;
@@ -64,7 +64,7 @@ public:
 	virtual void GetCvtBinary(int32_t *size, unsigned char data[]) = 0;
 	virtual int32_t GetCvtBinarySize(void) = 0;
 	virtual bool DumpControlValueTable(TextBuffer *text) = 0;
-	virtual bool CompileCharGroup(File *from, short platformID, unsigned char toCharGroupOfCharCode[], wchar_t errMsg[]) = 0;
+	virtual bool CompileCharGroup(File *from, short platformID, unsigned char toCharGroupOfCharCode[], wchar_t errMsg[], size_t errMsgLen) = 0;
 private:
 };
 

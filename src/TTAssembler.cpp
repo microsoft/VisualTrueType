@@ -17,7 +17,6 @@
  *
  *****/
 #define _CRT_SECURE_NO_DEPRECATE 
-#define _CRT_NON_CONFORMING_SWPRINTFS
 
 #include <stdio.h> /* for swprintf  */
 #include <string.h> /* for  wcslen */
@@ -1222,7 +1221,7 @@ wchar_t * TT_ReadInstructionBooleans (wchar_t * CurrentPtr, wchar_t * EOLPtr, sh
 				booleanCount++ )
 	{
 		booleanShift--;
-		for ( found = k = 0; k < NumberOfBooleanTranslations; k++ ) {
+		for ( found = k = 0; k < (short)NumberOfBooleanTranslations; k++ ) {
 			if ( asm_booleanTranslation1[k].type == tt_instruction[InstructionIndex].booleans[booleanCount] &&
 								 (asm_booleanTranslation1[k].code) == *CurrentPtr ) 
 			{
@@ -1285,10 +1284,10 @@ short TT_DeltaLevel( unsigned short opCode )
 void TT_CompileDelta( tt_deltaPType dArr[], short count, unsigned short insCode, short args[], short *argCount);
 void TT_CompileDelta(  tt_deltaPType dArr[], short deltaCount, unsigned short insCode, short args[], short *argCount )
 {
-	short i, tmp, sCount, valid;
+	short i, tmp, sCount; //, valid;
 	unsigned char argCode;
 	
-	valid = 1;
+	//valid = 1;
 	sCount = 0;
 	
 	for ( i = 0; i < deltaCount; i++) {
@@ -2467,7 +2466,7 @@ wchar_t *TT_InnerCompile(
 	short				*argStore, *aPtr;
 	unsigned char	*insStore, *iPtr;
 	short	NeedTwoPass = false; /* used to be MyCode */
-	short 	ghtblock ;
+	//short 	ghtblock ;
 	short 	loop;
 	short	args[256], argc, argc2;
 	wchar_t	args2[256];
@@ -2564,7 +2563,7 @@ wchar_t *TT_InnerCompile(
 	
 	CurrentPtr = StartPtr;
 	LastLineCompiled = 0;
-	ghtblock = false;
+	//ghtblock = false;
 	loop = 1;
 	
 	for ( LineNb = 1; CurrentPtr <= EndPtr && *tt_error == tt_NoError; ) {
@@ -2635,8 +2634,8 @@ wchar_t *TT_InnerCompile(
 				}
 			} else {
 			/* this is a compiler switch */
-				short i, found, SwitchCode;
-				for ( found = i = 0; i < TOTALNUMBEROFSWITCH; i++ ) {		
+                short i, found, SwitchCode = 0;
+				for ( found = i = 0; i < (short)TOTALNUMBEROFSWITCH; i++ ) {
 					if ( StringLength == (short) STRLENW( tt_CompilerSwitch[i].name ) &&
 							wcsncmp( CurrentPtr+1, tt_CompilerSwitch[i].name, StringLength) == 0 ) {
 			     
@@ -2844,12 +2843,12 @@ wchar_t *TT_InnerCompile(
 			} else {
 				/* regular instruction */
 				short InstructionIndex, found;
-				unsigned short InstructionCode; /* unsigned short because of the fake code used to detect composite commands */
+                unsigned short InstructionCode = 0; /* unsigned short because of the fake code used to detect composite commands */
 				int32_t StringLength;
 			
 				StringLength = TT_GetStringLength (CurrentPtr, EndPtr);
 			
-				for ( found = InstructionIndex = 0; InstructionIndex < TOTALNUMBEROFINSTRUCTIONS; InstructionIndex++ ) {
+				for ( found = InstructionIndex = 0; InstructionIndex < (short)TOTALNUMBEROFINSTRUCTIONS; InstructionIndex++ ) {
 					if ( StringLength == (short) STRLENW( tt_instruction[InstructionIndex].name ) &&
 			     		wcsncmp(CurrentPtr, tt_instruction[InstructionIndex].name, StringLength) == 0 ) {
 						found = true;
@@ -3164,252 +3163,252 @@ wchar_t *TT_Compile(wchar_t *StartPtr, wchar_t * EndPtr, wchar_t * SelStartPtr, 
 	return Result;
 }
 
-void TT_GetErrorString (short ErrorNb, wchar_t * ErrorString);
-void TT_GetErrorString (short ErrorNb, wchar_t * ErrorString)
+void TT_GetErrorString (short ErrorNb, wchar_t * ErrorString, size_t errorStringLen);
+void TT_GetErrorString (short ErrorNb, wchar_t * ErrorString, size_t errorStringLen)
 {
 
 	switch (ErrorNb ) {
 		case tt_NoError:
-			swprintf( ErrorString, L"There is no Error");
+		swprintf(ErrorString, errorStringLen, L"There is no Error");
 			break;
 		case tt_EmbeddedComment:
-			swprintf( ErrorString, L"Nested comment");
+			swprintf(ErrorString, errorStringLen, L"Nested comment");
 			break;
 		case tt_UnterminatedComment:
-			swprintf( ErrorString, L"Unterminated comment");
+			swprintf(ErrorString, errorStringLen, L"Unterminated comment");
 			break;
 		case tt_UnknownSwitch:
-			swprintf( ErrorString, L"Unknown compiler switch");
+			swprintf(ErrorString, errorStringLen, L"Unknown compiler switch");
 			break;
 		case tt_UnknownInstruction:
-			swprintf( ErrorString, L"Unknown instruction");
+			swprintf(ErrorString, errorStringLen, L"Unknown instruction");
 			break;
 		case tt_TwoInstructionsInSameLine:
-			swprintf( ErrorString, L"End of line expected");
+			swprintf(ErrorString, errorStringLen, L"End of line expected");
 			break;
 		case tt_BooleanFlagsMissing:
-			swprintf( ErrorString, L"bool flags missing");
+			swprintf(ErrorString, errorStringLen, L"bool flags missing");
 			break;
 		case tt_WrongNumberOfBoolean:
-			swprintf( ErrorString, L"Wrong number of boolean flags");
+			swprintf(ErrorString, errorStringLen, L"Wrong number of boolean flags");
 			break;
 		case tt_TooManyBooleans:
-			swprintf( ErrorString, L"Too many booleans");
+			swprintf(ErrorString, errorStringLen, L"Too many booleans");
 			break;
 		case tt_UnrecognizedBoolean:
-			swprintf( ErrorString, L"Unrecognized boolean flag");
+			swprintf(ErrorString, errorStringLen, L"Unrecognized boolean flag");
 			break;
 		case tt_MissingClosingBracket:
-			swprintf( ErrorString, L"Missing closing bracket");
+			swprintf(ErrorString, errorStringLen, L"Missing closing bracket");
 			break;
 		case tt_SLOOPArgumentBufferTooSmall:
-			swprintf( ErrorString, L"SLOOP number too big, the compiler cannot handle such a big number");
+			swprintf(ErrorString, errorStringLen, L"SLOOP number too big, the compiler cannot handle such a big number");
 			break;
 		case tt_EmptyParameterList:
-			swprintf( ErrorString, L"Missing comma between parameters or empty parameter list");
+			swprintf(ErrorString, errorStringLen, L"Missing comma between parameters or empty parameter list");
 			break;
 		case tt_UnableToParseArgument:
-			swprintf( ErrorString, L"Unable to parse argument");
+			swprintf(ErrorString, errorStringLen, L"Unable to parse argument");
 			break;
 		case tt_MissingParameters:
-			swprintf( ErrorString, L"Missing parameters or missing comma between parameters ");
+			swprintf(ErrorString, errorStringLen, L"Missing parameters or missing comma between parameters ");
 			break;
 		case tt_PointNbOutOfRange:
-			swprintf( ErrorString, L"Point number out of range");
+			swprintf(ErrorString, errorStringLen, L"Point number out of range");
 			break;
 		case tt_CVTIndexOutOfRange:
-			swprintf( ErrorString, L"CVT index out of range");
+			swprintf(ErrorString, errorStringLen, L"CVT index out of range");
 			break;
 		case tt_StorageIndexOutOfRange:
-			swprintf( ErrorString, L"Storage number out of range");
+			swprintf(ErrorString, errorStringLen, L"Storage number out of range");
 			break;
 		case tt_ContourNbOutOfRange:
-			swprintf( ErrorString, L"Contour number out of range");
+			swprintf(ErrorString, errorStringLen, L"Contour number out of range");
 			break;
 		case tt_FunctionNbOutOfRange:
-			swprintf( ErrorString, L"Function number out of range");
+			swprintf(ErrorString, errorStringLen, L"Function number out of range");
 			break;
 		case tt_ArgumentOutOfRange:
-			swprintf( ErrorString, L"Argument number out of range");
+			swprintf(ErrorString, errorStringLen, L"Argument number out of range");
 			break;
 		case tt_ArgumentIndexOutOfRange:
-			swprintf( ErrorString, L"Compiler Error! Argument index out of range");
+			swprintf(ErrorString, errorStringLen, L"Compiler Error! Argument index out of range");
 			break;
 		case tt_NotEnoughMemory:
-			swprintf( ErrorString, L"Not enough memory");
+			swprintf(ErrorString, errorStringLen, L"Not enough memory");
 			break;
 		case tt_DeltaListMissing:
-			swprintf( ErrorString, L"Delta, parameter list missing");
+			swprintf(ErrorString, errorStringLen, L"Delta, parameter list missing");
 			break;
 		case tt_DeltaOpeningParenthesisMissing:
-			swprintf( ErrorString, L"Delta, opening parenthesis missing");
+			swprintf(ErrorString, errorStringLen, L"Delta, opening parenthesis missing");
 			break;
 		case tt_DeltaClosingParenthesisMissing:
-			swprintf( ErrorString, L"Delta, closing parenthesis missing");
+			swprintf(ErrorString, errorStringLen, L"Delta, closing parenthesis missing");
 			break;
 		case tt_PointSizeOutOfRange:
-			swprintf( ErrorString, L"Delta, point size out of range");
+			swprintf(ErrorString, errorStringLen, L"Delta, point size out of range");
 			break;
 		case tt_DeltaDenominatorMissing:
-			swprintf( ErrorString, L"Delta, denominator missing, format should be eg: (19 @12 3/8)");
+			swprintf(ErrorString, errorStringLen, L"Delta, denominator missing, format should be eg: (19 @12 3/8)");
 			break;
 		case tt_DeltaWrongDenominator:
-			swprintf( ErrorString, L"Delta, wrong denominator, format should be eg: (19 @12 3/8)");
+			swprintf(ErrorString, errorStringLen, L"Delta, wrong denominator, format should be eg: (19 @12 3/8)");
 			break;
 		case tt_DeltaAtSignMissing:
-			swprintf( ErrorString, L"Delta, @ sign missing, format should be eg: (19 @12 3/8)");
+			swprintf(ErrorString, errorStringLen, L"Delta, @ sign missing, format should be eg: (19 @12 3/8)");
 			break;
 		case tt_DeltaClosingBracketMissing:
-			swprintf( ErrorString, L"Delta, closing bracket missing");
+			swprintf(ErrorString, errorStringLen, L"Delta, closing bracket missing");
 			break;
 		case tt_TooManyDeltas:
-			swprintf( ErrorString, L"Delta, too many deltas in the same line");
+			swprintf(ErrorString, errorStringLen, L"Delta, too many deltas in the same line");
 			break;
 		case tt_DeltaOORangePpem:
-			swprintf( ErrorString, L"Delta, out of range ppem for Delta");
+			swprintf(ErrorString, errorStringLen, L"Delta, out of range ppem for Delta");
 			break;
 		case tt_TooManyLabels:
-			swprintf( ErrorString, L"Too many labels in the same block");
+			swprintf(ErrorString, errorStringLen, L"Too many labels in the same block");
 			break;
 		case tt_LabelTooLong:
-			swprintf( ErrorString, L"Label too long, limited to %hd character",(short) (MAXLABELLENGTH-1));
+			swprintf(ErrorString, errorStringLen, L"Label too long, limited to %hd character", (short)(MAXLABELLENGTH - 1));
 			break;
 		case tt_DuplicateLabel:
-			swprintf( ErrorString, L"Same label used twice");
+			swprintf(ErrorString, errorStringLen, L"Same label used twice");
 			break;
 		case tt_EndWithoutBegin:
-			swprintf( ErrorString, L"#END without corresponding #BEGIN");
+			swprintf(ErrorString, errorStringLen, L"#END without corresponding #BEGIN");
 			break;
 		case tt_MissingEndBlock:
-			swprintf( ErrorString, L"End(s) of block, #END, missing");
+			swprintf(ErrorString, errorStringLen, L"End(s) of block, #END, missing");
 			break;
 		case tt_TooManyEnbeddedBlocks:
-			swprintf( ErrorString, L"Too many levels of nested blocks, limit = %hd",(short) (MAXBLOCKEMBEDDING-1));
+			swprintf(ErrorString, errorStringLen, L"Too many levels of nested blocks, limit = %hd", (short)(MAXBLOCKEMBEDDING - 1));
 			break;
 		case tt_CompositeCode:
-			swprintf( ErrorString, L"Composite commands mixed into TrueType code");
+			swprintf(ErrorString, errorStringLen, L"Composite commands mixed into TrueType code");
 			break;
 		case tt_VoidLabel:
-			swprintf( ErrorString, L"NULL label, must have at least one character");
+			swprintf(ErrorString, errorStringLen, L"NULL label, must have at least one character");
 			break;
 		case tt_LabelNotFound:
-			swprintf( ErrorString, L"Corresponding label not found");
+			swprintf(ErrorString, errorStringLen, L"Corresponding label not found");
 			break;
 		case tt_ExpectingAComma:
-			swprintf( ErrorString, L"#PUSH argument list, missing arguments or missing comma");
+			swprintf(ErrorString, errorStringLen, L"#PUSH argument list, missing arguments or missing comma");
 			break;
 		case tt_TooManyPushArgs:
-			swprintf( ErrorString, L"#PUSH, too many arguments, limit = %hd", (short)(PUSH_ARG));
+			swprintf(ErrorString, errorStringLen, L"#PUSH, too many arguments, limit = %hd", (short)(PUSH_ARG));
 			break;
 		case tt_ParseOverflow:
-			swprintf( ErrorString, L"Number too large to be parsed, larger than 32,767");
+			swprintf(ErrorString, errorStringLen, L"Number too large to be parsed, larger than 32,767");
 			break;
 		case tt_JRExpectingABracket:
-			swprintf( ErrorString, L"JR instruction in PushOff mode, expecting an opening bracket");
+			swprintf(ErrorString, errorStringLen, L"JR instruction in PushOff mode, expecting an opening bracket");
 			break;
 		case tt_JRExpectingABWLabel:
-			swprintf( ErrorString, L"JR instruction in PushOff mode, expecting an Bn or a Wn label");
+			swprintf(ErrorString, errorStringLen, L"JR instruction in PushOff mode, expecting an Bn or a Wn label");
 			break;
 		case tt_JRExpectingAEqual:
-			swprintf( ErrorString, L"JR instruction in PushOff mode, expecting an equal between labels");
+			swprintf(ErrorString, errorStringLen, L"JR instruction in PushOff mode, expecting an equal between labels");
 			break;
 		case tt_JRExpectingALabel:
-			swprintf( ErrorString, L"JR instruction in PushOff mode, expecting a #label");
+			swprintf(ErrorString, errorStringLen, L"JR instruction in PushOff mode, expecting a #label");
 			break;
 		case tt_JumpTooBigForByte:
-			swprintf( ErrorString, L"#PUSH, Bn : jump too far to be a byte");
+			swprintf(ErrorString, errorStringLen, L"#PUSH, Bn : jump too far to be a byte");
 			break;
 		case tt_JumpNegativeForByte:
-			swprintf( ErrorString, L"#PUSH, Bn : negative jump cannot be a byte, use Wn");
+			swprintf(ErrorString, errorStringLen, L"#PUSH, Bn : negative jump cannot be a byte, use Wn");
 			break;
 		case tt_EIFwithoutIF:
-			swprintf( ErrorString, L"EIF without IF");
+			swprintf(ErrorString, errorStringLen, L"EIF without IF");
 			break;
 		case tt_ELSEwithoutIF:
-			swprintf( ErrorString, L"ELSE without IF");
+			swprintf(ErrorString, errorStringLen, L"ELSE without IF");
 			break;
 		case tt_ELSEwithinELSE:
-			swprintf( ErrorString, L"expecting a EIF");
+			swprintf(ErrorString, errorStringLen, L"expecting a EIF");
 			break;
 		case tt_TooManyEmbeddedIF:
-			swprintf( ErrorString, L"too many embedded IF");
+			swprintf(ErrorString, errorStringLen, L"too many embedded IF");
 			break;
 		case tt_ExpectingaBEGIN:
-			swprintf( ErrorString, L"expecting a #BEGIN after IF[], ELSE[], FDEF[] or IDEF[] in push on mode");
+			swprintf(ErrorString, errorStringLen, L"expecting a #BEGIN after IF[], ELSE[], FDEF[] or IDEF[] in push on mode");
 			break;
 		case tt_FDEFInsideFDEF:
-			swprintf( ErrorString, L"FDEF found within FDEF - ENDF pair");
+			swprintf(ErrorString, errorStringLen, L"FDEF found within FDEF - ENDF pair");
 			break;
 		case tt_FDEFInsideIDEF:
-			swprintf( ErrorString, L"FDEF found within IDEF - ENDF pair");
+			swprintf(ErrorString, errorStringLen, L"FDEF found within IDEF - ENDF pair");
 			break;
 		case tt_IDEFInsideFDEF:
-			swprintf( ErrorString, L"IDEF found within FDEF - ENDF pair");
+			swprintf(ErrorString, errorStringLen, L"IDEF found within FDEF - ENDF pair");
 			break;
 		case tt_IDEFInsideIDEF:
-			swprintf( ErrorString, L"IDEF found within IDEF - ENDF pair");
+			swprintf(ErrorString, errorStringLen, L"IDEF found within IDEF - ENDF pair");
 			break;
 		case tt_ENDFwithoutFDEF:
-			swprintf( ErrorString, L"ENDF found without corresponding FDEF or IDEF");
+			swprintf(ErrorString, errorStringLen, L"ENDF found without corresponding FDEF or IDEF");
 			break;
 		case tt_IFwithoutEIF:
-			swprintf( ErrorString, L"IF without corresponding EIF");
+			swprintf(ErrorString, errorStringLen, L"IF without corresponding EIF");
 			break;
 		case tt_FDEFwithoutENDF:
-			swprintf( ErrorString, L"FDEF without corresponding ENDF");
+			swprintf(ErrorString, errorStringLen, L"FDEF without corresponding ENDF");
 			break;
 		case tt_IDEFwithoutENDF:
-			swprintf( ErrorString, L"IDEF without corresponding ENDF");
+			swprintf(ErrorString, errorStringLen, L"IDEF without corresponding ENDF");
 			break;
 
 		case tt_PUSHONwhenAlreadyOn:
-			swprintf( ErrorString, L"#PUSHON when already in push on mode");
+			swprintf(ErrorString, errorStringLen, L"#PUSHON when already in push on mode");
 			break;
 		case tt_PUSHOFFwhenAlreadyOff:
-			swprintf( ErrorString, L"#PUSHOFF when already in push off mode");
+			swprintf(ErrorString, errorStringLen, L"#PUSHOFF when already in push off mode");
 			break;
 		case tt_IFgoingAcrossBlocks:
-			swprintf( ErrorString, L"IF statement going across block (#BEGIN #END) boundaries");
+			swprintf(ErrorString, errorStringLen, L"IF statement going across block (#BEGIN #END) boundaries");
 			break;
 		case tt_FDEFgoingAcrossBlocks:
-			swprintf( ErrorString, L"FDEF statement going across block (#BEGIN #END) boundaries");
+			swprintf(ErrorString, errorStringLen, L"FDEF statement going across block (#BEGIN #END) boundaries");
 			break;
 		case tt_IDEFgoingAcrossBlocks:
-			swprintf( ErrorString, L"IDEF statement going across block (#BEGIN #END) boundaries");
+			swprintf(ErrorString, errorStringLen, L"IDEF statement going across block (#BEGIN #END) boundaries");
 			break;
 
 		case tt_IDEF_FDEFinGlyphProgram:
-			swprintf( ErrorString, L"FDEF and IDEF can be called only from font program or the pre-program");
+			swprintf(ErrorString, errorStringLen, L"FDEF and IDEF can be called only from font program or the pre-program");
 			break;
 
 		case tt_INSTCTRLnotInPreProgram:
-			swprintf( ErrorString, L"INSTCTRL[] can only be called from the pre-program");
+			swprintf(ErrorString, errorStringLen, L"INSTCTRL[] can only be called from the pre-program");
 			break;
 		case tt_ProgramTooBig:
-			swprintf( ErrorString, L"Program too big, if you really need such a big program, call product support");
+			swprintf(ErrorString, errorStringLen, L"Program too big, if you really need such a big program, call product support");
 			break;
 		case tt_TooManyArguments:
-			swprintf( ErrorString, L"Program too big (too many arguments), if you really need such a big program, call product support");
+			swprintf(ErrorString, errorStringLen, L"Program too big (too many arguments), if you really need such a big program, call product support");
 			break;
 		case tt_DELTAWithoutArguments:
-			swprintf( ErrorString, L"DELTA without argument in PUSHON mode");
+			swprintf(ErrorString, errorStringLen, L"DELTA without argument in PUSHON mode");
 			break;
 		case tt_DELTAWithArguments:
-			swprintf( ErrorString, L"DELTA with arguments in PUSHOFF mode");
+			swprintf(ErrorString, errorStringLen, L"DELTA with arguments in PUSHOFF mode");
 			break;
 		case tt_PUSHBWInPushON:
-			swprintf( ErrorString, L"Invalid use of PUSHB or PUSHW in PUSHON mode, use #PUSH instead");
+			swprintf(ErrorString, errorStringLen, L"Invalid use of PUSHB or PUSHW in PUSHON mode, use #PUSH instead");
 			break;
 		case tt_WildCardInPush:
-			swprintf( ErrorString, L"Invalid use * in a PUSH instruction");
+			swprintf(ErrorString, errorStringLen, L"Invalid use * in a PUSH instruction");
 			break;
 
 		case tt_NotImplemented:
-			swprintf( ErrorString, L"Not implemented");
+			swprintf(ErrorString, errorStringLen, L"Not implemented");
 			break;
 			
 		default :
-			swprintf( ErrorString, L"Unknown error!");
+			swprintf(ErrorString, errorStringLen, L"Unknown error!");
 			break;
 	}
 
@@ -3574,7 +3573,7 @@ wchar_t * CO_ReadInstructionParameters (wchar_t * CurrentPtr, wchar_t * EOLPtr, 
 {
 	short	argindex, argNb;
 	wchar_t * tempP;
-	const wchar_t * argTypeBuffer = co_instruction[InstructionIndex].pops;
+	// const wchar_t * argTypeBuffer = co_instruction[InstructionIndex].pops;
 	*argc = 0;
 	argindex = 0;
 	bool inRange;
@@ -3681,7 +3680,7 @@ wchar_t * CO_ReadInstructionBooleans (wchar_t * CurrentPtr, wchar_t * EOLPtr, sh
 				booleanCount++ )
 	{
 		booleanShift--;
-		for ( found = k = 0; k < co_NumberOfBooleanTranslations; k++ ) {
+		for ( found = k = 0; k < (short)co_NumberOfBooleanTranslations; k++ ) {
 			if ( co_booleanTranslation[k].type == co_instruction[InstructionIndex].booleans[booleanCount] &&
 								 (co_booleanTranslation[k].code) == *CurrentPtr ) 
 			{
@@ -3734,7 +3733,7 @@ wchar_t *CO_Compile(TrueTypeFont * font, TrueTypeGlyph * glyph, wchar_t *StartPt
 //	in a window that is being slided along the code. This appears to be used to determine, whether such instructions
 //	as USEMYMETRICS or OVERLAP and NONOVERLAP (the latter two being obsolete, as far as I understand the TT manual),
 //	are properly followed by further composite instructions...
-	short	LineNb,LastLineCompiled,RoundingCode,currInstrIndex,prevInstrIndex,args[256],argc;
+    short	LineNb,LastLineCompiled,RoundingCode = 0,currInstrIndex = 0,prevInstrIndex = 0,args[256],argc = 0;
 	bool currInstrIsCompInstr,prevInstrIsCompInstr;
 	int32_t	LineLength,StringLength;
 	wchar_t 	*CurrentPtr,*EOLPtr;
@@ -3781,8 +3780,8 @@ wchar_t *CO_Compile(TrueTypeFont * font, TrueTypeGlyph * glyph, wchar_t *StartPt
 		// regular instruction
 		StringLength = TT_GetStringLength (CurrentPtr, EndPtr);
 		currInstrIndex = 0;
-		while (currInstrIndex < CONUMBEROFINSTRUCTIONS && !(StringLength == (int32_t)STRLENW(co_instruction[currInstrIndex].name) && wcsncmp(CurrentPtr, co_instruction[currInstrIndex].name, StringLength) == 0)) currInstrIndex++;
-		currInstrIsCompInstr = currInstrIndex < CONUMBEROFINSTRUCTIONS;
+		while (currInstrIndex < (short)CONUMBEROFINSTRUCTIONS && !(StringLength == (int32_t)STRLENW(co_instruction[currInstrIndex].name) && wcsncmp(CurrentPtr, co_instruction[currInstrIndex].name, StringLength) == 0)) currInstrIndex++;
+		currInstrIsCompInstr = currInstrIndex < (short)CONUMBEROFINSTRUCTIONS;
 		
 		if (prevInstrIsCompInstr) {
 			font->UpdateCompositeProfile(glyph,&compositeProfile,currInstrIsCompInstr ? CO_CompInstrFollow : CO_StdInstrFollow, RoundingCode, prevInstrIndex, args, argc, &Newbbox, co_error);
@@ -3825,106 +3824,106 @@ failure:
 } // CO_Compile
 
 	
-void CO_GetErrorString (short ErrorNb, wchar_t * ErrorString);
-void CO_GetErrorString (short ErrorNb, wchar_t * ErrorString)
+void CO_GetErrorString (short ErrorNb, wchar_t * ErrorString, size_t errorStringLen);
+void CO_GetErrorString (short ErrorNb, wchar_t * ErrorString, size_t errorStringLen)
 {
 
 	switch (ErrorNb ) {
 		case co_NoError:
-			swprintf( ErrorString, L"There is no Error");
+		swprintf(ErrorString, errorStringLen, L"There is no Error");
 			break;
 		case tt_EmbeddedComment:
-			swprintf( ErrorString, L"Embedded comment");
+			swprintf(ErrorString, errorStringLen, L"Embedded comment");
 			break;
 		case tt_UnterminatedComment:
-			swprintf( ErrorString, L"Unterminated comment");
+			swprintf(ErrorString, errorStringLen, L"Unterminated comment");
 			break;
 		case co_TwoInstructionsInSameLine:
-			swprintf( ErrorString, L"End of line expected");
+			swprintf(ErrorString, errorStringLen, L"End of line expected");
 			break;
 		case co_BooleanFlagsMissing:
-			swprintf( ErrorString, L"bool flags missing");
+			swprintf(ErrorString, errorStringLen, L"bool flags missing");
 			break;
 		case co_WrongNumberOfBoolean:
-			swprintf( ErrorString, L"Wrong number of boolean flags");
+			swprintf(ErrorString, errorStringLen, L"Wrong number of boolean flags");
 			break;
 		case co_TooManyBooleans:
-			swprintf( ErrorString, L"Too many booleans");
+			swprintf(ErrorString, errorStringLen, L"Too many booleans");
 			break;
 		case co_UnrecognizedBoolean:
-			swprintf( ErrorString, L"Unrecognized boolean flag");
+			swprintf(ErrorString, errorStringLen, L"Unrecognized boolean flag");
 			break;
 		case co_MissingClosingBracket:
-			swprintf( ErrorString, L"Missing closing bracket");
+			swprintf(ErrorString, errorStringLen, L"Missing closing bracket");
 			break;
 		case co_EmptyParameterList:
-			swprintf( ErrorString, L"Missing comma between parameters or empty parameter list");
+			swprintf(ErrorString, errorStringLen, L"Missing comma between parameters or empty parameter list");
 			break;
 		case co_MissingParameters:
-			swprintf( ErrorString, L"Missing parameters");
+			swprintf(ErrorString, errorStringLen, L"Missing parameters");
 			break;
 		case co_PointNbOutOfRange:
-			swprintf( ErrorString, L"Point number out of range");
+			swprintf(ErrorString, errorStringLen, L"Point number out of range");
 			break;
 		case co_GlyphIndexOutOfRange:
-			swprintf( ErrorString, L"Glyph index out of range");
+			swprintf(ErrorString, errorStringLen, L"Glyph index out of range");
 			break;
 		case co_ArgumentOutOfRange:
-			swprintf( ErrorString, L"Argument out of range");
+			swprintf(ErrorString, errorStringLen, L"Argument out of range");
 			break;
 		case tt_ParseOverflow:
-			swprintf( ErrorString, L"Number too big to be parsed, bigger than MaxShort");
+			swprintf(ErrorString, errorStringLen, L"Number too big to be parsed, bigger than MaxShort");
 			break;
 		case co_AnchorArgExceedMax:
-			swprintf( ErrorString, L"Anchor argument exceed maximum value");
+			swprintf(ErrorString, errorStringLen, L"Anchor argument exceed maximum value");
 			break;
 		case co_AnchorNothingAbove:
-			swprintf( ErrorString, L"Composite, no instruction in the line above");
+			swprintf(ErrorString, errorStringLen, L"Composite, no instruction in the line above");
 			break;
 		case co_2_14Overflow:
-			swprintf( ErrorString, L"Composite, number too big for 2.14 float");
+			swprintf(ErrorString, errorStringLen, L"Composite, number too big for 2.14 float");
 			break;
 		case co_ComponentSizeOverflow:
-			swprintf( ErrorString, L"Composite, too many components");
+			swprintf(ErrorString, errorStringLen, L"Composite, too many components");
 			break;
 
 		case co_OverlapLastInstruction:
-			swprintf( ErrorString, L"Composite, OVERLAP cannot be the last composite command");
+			swprintf(ErrorString, errorStringLen, L"Composite, OVERLAP cannot be the last composite command");
 			break;
 		case co_NonOverlapLastInstruction:
-			swprintf( ErrorString, L"Composite, NONOVERLAP cannot be the last composite command");
+			swprintf(ErrorString, errorStringLen, L"Composite, NONOVERLAP cannot be the last composite command");
 			break;
 		case co_UseMymetricsLastInstruction:
-			swprintf( ErrorString, L"Composite, USEMYMETRICS cannot be the last composite command");
+			swprintf(ErrorString, errorStringLen, L"Composite, USEMYMETRICS cannot be the last composite command");
 			break;
 		case co_ScaledComponentOffsetLastInstruction:
-			swprintf( ErrorString, L"Composite, SCALEDCOMPONENTOFFSET cannot be the last composite command");
+			swprintf(ErrorString, errorStringLen, L"Composite, SCALEDCOMPONENTOFFSET cannot be the last composite command");
 			break;
 		case co_UnscaledComponentOffsetLastInstruction:
-			swprintf( ErrorString, L"Composite, UNSCALEDCOMPONENTOFFSET cannot be the last composite command");
+			swprintf(ErrorString, errorStringLen, L"Composite, UNSCALEDCOMPONENTOFFSET cannot be the last composite command");
 			break;
 		case co_ScaledComponentOffsetAlreadySet:
-			swprintf( ErrorString, L"Composite, UNSCALEDCOMPONENTOFFSET (Microsoft compatible) cannot be the used when SCALEDCOMPONENTOFFSET (Apple compatible) is alread used. Only one can be used.");
+			swprintf(ErrorString, errorStringLen, L"Composite, UNSCALEDCOMPONENTOFFSET (Microsoft compatible) cannot be the used when SCALEDCOMPONENTOFFSET (Apple compatible) is alread used. Only one can be used.");
 			break;
 		case co_UnscaledComponentOffsetAlreadySet:
-			swprintf( ErrorString, L"Composite, SCALEDCOMPONENTOFFSET (Apple compatible) cannot be the used when UNSCALEDCOMPONENTOFFSET (Microsoft compatible) is alread used. Only one can be used.");
+			swprintf(ErrorString, errorStringLen, L"Composite, SCALEDCOMPONENTOFFSET (Apple compatible) cannot be the used when UNSCALEDCOMPONENTOFFSET (Microsoft compatible) is alread used. Only one can be used.");
 			break;
 		case co_ComponentChangeOnVariationFont:
-			swprintf(ErrorString, L"Composite definition has changed or is not present");
+			swprintf(ErrorString, errorStringLen, L"Composite definition has changed or is not present");
 			break; 
 
 		case co_NotImplemented:
-			swprintf( ErrorString, L"Not implemented");
+			swprintf(ErrorString, errorStringLen, L"Not implemented");
 			break;
 		default :
-			swprintf( ErrorString, L"Unknown error!");
+			swprintf(ErrorString, errorStringLen, L"Unknown error!");
 			break;
 	}
 
 }
 
-bool DisassemComponent(TrueTypeGlyph *glyph, TextBuffer *src, wchar_t errMsg[]) {
-	short i,flags,glyphIndex,arg1,arg2,xscale,yscale,scale01,scale10;
+bool DisassemComponent(TrueTypeGlyph *glyph, TextBuffer *src, wchar_t errMsg[], size_t errMsgLen) {
+    short i,flags,glyphIndex,arg1,arg2,xscale = 0,yscale = 0,scale01 = 0,scale10 = 0;
 	wchar_t c,buf[maxLineSize];
 	
 	i = 0;
@@ -3974,7 +3973,7 @@ bool DisassemComponent(TrueTypeGlyph *glyph, TextBuffer *src, wchar_t errMsg[]) 
  		} 
 		
 		if (i > glyph->componentSize) {
-			swprintf(errMsg,L"DisassemComponent: Component data size %hd does not match parsed %hd size", glyph->componentSize,i);
+			swprintf(errMsg,errMsgLen,L"DisassemComponent: Component data size %hd does not match parsed %hd size", glyph->componentSize,i);
 			return false;
 		}
 
@@ -3985,14 +3984,14 @@ bool DisassemComponent(TrueTypeGlyph *glyph, TextBuffer *src, wchar_t errMsg[]) 
 		c = flags & ROUND_XY_TO_GRID ? L'R' : L'r';
 	 	
 		if (flags & WE_HAVE_A_TWO_BY_TWO) {
-			if (flags & ARGS_ARE_XY_VALUES) swprintf(buf,L"SOFFSET[%c",c); else swprintf(buf,L"SANCHOR[");
-			swprintf(&buf[STRLENW(buf)],L"], %hu, %hd, %hd, %.4f, %.4f, %.4f, %.4f\r",
+			if (flags & ARGS_ARE_XY_VALUES) swprintf(buf,sizeof(buf)/sizeof(wchar_t),L"SOFFSET[%c",c); else swprintf(buf,sizeof(buf)/sizeof(wchar_t),L"SANCHOR[");
+			swprintf(&buf[STRLENW(buf)],sizeof(buf)/sizeof(wchar_t),L"], %hu, %hd, %hd, %.4f, %.4f, %.4f, %.4f\r",
 				glyphIndex,arg1,arg2,
 			 	(double)xscale /16384.0 + 0.000005, (double)scale01/16384.0 + 0.000005, 
 			 	(double)scale10/16384.0 + 0.000005, (double)yscale /16384.0 + 0.000005);	
 		} else {
-	 		if (flags & ARGS_ARE_XY_VALUES) swprintf(buf,L"OFFSET[%c",c); else swprintf(buf,L"ANCHOR[");
-			swprintf(&buf[STRLENW(buf)],L"], %hu, %hd, %hd\r",glyphIndex,arg1,arg2);	
+	 		if (flags & ARGS_ARE_XY_VALUES) swprintf(buf,sizeof(buf)/sizeof(wchar_t),L"OFFSET[%c",c); else swprintf(buf,sizeof(buf)/sizeof(wchar_t),L"ANCHOR[");
+			swprintf(&buf[STRLENW(buf)],sizeof(buf)/sizeof(wchar_t),L"], %hu, %hd, %hd\r",glyphIndex,arg1,arg2);	
 		}
 		src->Append(buf);
 	} while (flags & MORE_COMPONENTS);
@@ -4001,7 +4000,7 @@ bool DisassemComponent(TrueTypeGlyph *glyph, TextBuffer *src, wchar_t errMsg[]) 
 } // DisassemComponent
 
 bool TTAssemble(ASMType asmType, TextBuffer* src, TrueTypeFont* font, TrueTypeGlyph* glyph,
-	int32_t maxBinLen, unsigned char* bin, int32_t* actBinLen, bool variationCompositeGuard, int32_t* errPos, int32_t* errLen, wchar_t errMsg[]) {
+	int32_t maxBinLen, unsigned char* bin, int32_t* actBinLen, bool variationCompositeGuard, int32_t* errPos, int32_t* errLen, wchar_t errMsg[], size_t errMsgLen) {
 
 	wchar_t* startPtr, * endPtr, * SelStartPtr, * tempPtr;
 	short BinaryOffset, CompileError = co_NoError, StackNeed, MaxFunctionDefs, ErrorLineNb, componentSize, numCompositeContours, numCompositePoints, maxContourNumber, maxPointNumber;
@@ -4016,7 +4015,7 @@ bool TTAssemble(ASMType asmType, TextBuffer* src, TrueTypeFont* font, TrueTypeGl
 
 	*actBinLen = 0; *errPos = -1; *errLen = 0;
 
-	if (asmType == asmGLYF && glyph->composite && src->TheLength() == 0 && !DisassemComponent(glyph, src, errMsg)) return false;
+	if (asmType == asmGLYF && glyph->composite && src->TheLength() == 0 && !DisassemComponent(glyph, src, errMsg, errMsgLen)) return false;
 
 	srcLen = src->TheLength();
 	startPtr = (wchar_t*)NewP((srcLen + 1L) * sizeof(wchar_t)); // if lengths are zero, we are guaranteed a pointer if + 1L
@@ -4077,7 +4076,7 @@ bool TTAssemble(ASMType asmType, TextBuffer* src, TrueTypeFont* font, TrueTypeGl
 		else {
 			*errPos = (int32_t)(tempPtr - startPtr);
 			if (*errLen < 1) *errLen = 1; // it is easy to find a selection than a cursor <--- and difficult to get it right in the first place???
-			CO_GetErrorString(CompileError, errMsg);
+			CO_GetErrorString(CompileError, errMsg, errMsgLen);
 		}
 		break;
 	}
@@ -4096,7 +4095,7 @@ bool TTAssemble(ASMType asmType, TextBuffer* src, TrueTypeFont* font, TrueTypeGl
 		else {
 			*errPos = (int32_t)(tempPtr - startPtr);
 			if (*errLen < 1) *errLen = 1; // it is easy to find a selection than a cursor <--- and difficult to get it right in the first place???
-			TT_GetErrorString(CompileError, errMsg);
+			TT_GetErrorString(CompileError, errMsg, errMsgLen);
 
 			*actBinLen = 0;
 			if (asmType == asmGLYF) glyph->componentSize = 0;

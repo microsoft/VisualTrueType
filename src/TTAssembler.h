@@ -16,9 +16,9 @@
 #define co_UnscaledComponentOffsetAlreadySet	122
 #define co_ComponentChangeOnVariationFont	123
 
-bool DisassemComponent(TrueTypeGlyph *glyph, TextBuffer *src, wchar_t errMsg[]);
+bool DisassemComponent(TrueTypeGlyph *glyph, TextBuffer *src, wchar_t errMsg[], size_t errMsgLen);
 
 bool TTAssemble(ASMType asmType, TextBuffer* src, TrueTypeFont* font, TrueTypeGlyph* glyph,
-	int32_t maxBinLen, unsigned char* bin, int32_t* actBinLen, bool variationCompositeGuard, int32_t* errPos, int32_t* errLen, wchar_t errMsg[]);
+	int32_t maxBinLen, unsigned char* bin, int32_t* actBinLen, bool variationCompositeGuard, int32_t* errPos, int32_t* errLen, wchar_t errMsg[], size_t errMsgLen);
 
 #endif // GlyphStruct_dot_h

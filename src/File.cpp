@@ -54,7 +54,7 @@ int32_t File::Length(void) {
 	//return (m_hfile != INVALID_HANDLE_VALUE) ? GetFileSize(m_hfile, NULL) : 0;
 	struct stat st; 
 	stat(m_fileName.c_str(), &st); 
-	return st.st_size; 
+	return static_cast<int32_t>(st.st_size);
 } // File::Length
 
 void File::SetPos(int32_t pos, bool truncate) {
@@ -65,7 +65,7 @@ void File::SetPos(int32_t pos, bool truncate) {
 } // File::SetPos
 
 int32_t File::GetPos(void) {
-	return ftell((FILE*)m_hfile);
+	return static_cast<int32_t>(ftell((FILE*)m_hfile));
 } // File::GetPos
 
 void File::ReadBytes(int32_t numBytes, void *buffer) {
@@ -73,10 +73,11 @@ void File::ReadBytes(int32_t numBytes, void *buffer) {
 	//	DWORD cb = 0;
 	//	m_error = !ReadFile(m_hfile, buffer, numBytes, &cb, NULL);
 	//}
-	size_t size = 0; 
+	//size_t size = 0; 
 	if (m_hfile != nullptr)
 	{
-		size = fread(buffer, 1, numBytes, (FILE*)m_hfile); 
+		//size = 
+		fread(buffer, 1, numBytes, (FILE*)m_hfile); 
 	}
 } // File::ReadBytes
 
@@ -153,10 +154,11 @@ void File::WriteBytes(int32_t numBytes, void *buffer)
 	//	DWORD cb = 0;
 	//	m_error = !WriteFile(m_hfile, buffer, numBytes, &cb, NULL);
 	//}
-	size_t size = 0; 
+	//size_t size = 0; 
 	if (m_hfile != nullptr)
 	{
-		size = fwrite(buffer, 1, numBytes, (FILE*)m_hfile); 
+		//size = 
+		fwrite(buffer, 1, numBytes, (FILE*)m_hfile); 
 	}
 } // File::WriteBytes
 

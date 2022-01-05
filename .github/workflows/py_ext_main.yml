@@ -1,0 +1,88 @@
+name: Python Extension
+
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+    tags: ["v*.*.*"]
+  pull_request:
+    branches: [ main ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:  
+
+  build:
+    # The type of runner that the job will run on
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash 
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+          
+      - name: Install dependencies
+        run: |
+             python -m pip install --upgrade pip
+             pip install cibuildwheel
+             pip install cython 
+        
+      - name: Build Wheels
+        run: python -m cibuildwheel --output-dir wheelhouse
+        
+      - name: Upload Wheels
+        uses: actions/upload-artifact@v2
+        with:
+          name: vttcompilepy-${{ matrix.os }}
+          path: ./wheelhouse/*.whl
+          
+      - name: Build Source Distribution 
+        run: python setup.py sdist
+          
+      - name: Upload Source Distribution
+        uses: actions/upload-artifact@v2
+        with:
+          path: ./dist/*.zip
+          
+  deploy:
+  
+    needs: [build]
+    # only run if the commit is tagged...
+    if: startsWith(github.ref, 'refs/tags/v')
+    # ... and all build jobs completed successfully
+    runs-on: ubuntu-latest
+    steps:    
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.x"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install --upgrade setuptools cython wheel twine
+    - name: Download artifacts from build jobs
+      uses: actions/download-artifact@v2
+      with:
+        path: dist/
+        
+    - uses: pypa/gh-action-pypi-publish@master
+      with:
+        user: __token__
+        password: ${{ secrets.pypi_password }}
+      
+        
+

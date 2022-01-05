@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\application.cpp" />
     <ClCompile Include="..\src\CvtManager.cpp" />
     <ClCompile Include="..\src\File.cpp" />
     <ClCompile Include="..\src\List.cpp" />
@@ -181,7 +182,6 @@
     <ClInclude Include="..\src\Variation.h" />
     <ClInclude Include="..\src\VariationInstance.h" />
     <ClInclude Include="..\src\VariationModels.h" />
-    <ClInclude Include="..\src\vttcompile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

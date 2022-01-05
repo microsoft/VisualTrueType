@@ -8,7 +8,6 @@
 
 *****/
 #define _CRT_SECURE_NO_DEPRECATE 
-#define _CRT_NON_CONFORMING_SWPRINTFS
 
 #include <string.h> // wcslen
 #include <stdio.h> // printf
@@ -45,9 +44,9 @@
 #define InterpolateCmd(cmd) ((cmd) == xInterpolate || (cmd) == xInterpolate0 || (cmd) == xInterpolate1 || (cmd) == xIPAnchor || (cmd) == yInterpolate || (cmd) == yInterpolate0 || (cmd) == yInterpolate1 || (cmd) == yIPAnchor)
 #define maxGenerators 3
 
-void TMTParser::Parse(bool *changedSrc, int32_t *errPos, int32_t *errLen, wchar_t errMsg[]) { /* abstract */ }
+void TMTParser::Parse(bool *changedSrc, int32_t *errPos, int32_t *errLen, wchar_t errMsg[], size_t errMsgLen) { /* abstract */ }
 #if _DEBUG
-void TMTParser::RemoveAltCodePath(bool *changedSrc, int32_t *errPos, int32_t *errLen, wchar_t error[]) { /* abstract */ }
+void TMTParser::RemoveAltCodePath(bool *changedSrc, int32_t *errPos, int32_t *errLen, wchar_t error[], size_t errorLen) { /* abstract */ }
 #endif
 void TMTParser::InitTMTParser(TextBuffer *talkText, TrueTypeFont *font, TrueTypeGlyph *glyph, bool legacyCompile, short generators, TTGenerator *gen[]) { /* abstract */ }
 void TMTParser::TermTMTParser(void) { /* abstract */ }
@@ -155,9 +154,9 @@ Partner::~Partner(void) {
 
 class TMTSourceParser : public TMTParser {
 public:
-	virtual void Parse(bool *changedSrc, int32_t *errPos, int32_t *errLen, wchar_t errMsg[]);
+	virtual void Parse(bool *changedSrc, int32_t *errPos, int32_t *errLen, wchar_t errMsg[], size_t errMsgLen);
 #if _DEBUG
-	virtual void RemoveAltCodePath(bool *changedSrc, int32_t *errPos, int32_t *errLen, wchar_t error[]);
+	virtual void RemoveAltCodePath(bool *changedSrc, int32_t *errPos, int32_t *errLen, wchar_t error[], size_t errorLen);
 #endif
 	virtual void InitTMTParser(TextBuffer *talkText, TrueTypeFont *font, TrueTypeGlyph *glyph, bool legacyCompile, short generators, TTGenerator *gen[]);
 	virtual void TermTMTParser(void);
@@ -187,9 +186,9 @@ private:
 	ActParam actParam[maxParams];
 	int32_t paramPos[maxParams + 1]; // +1 needed to avoid out of bounds error if at max parameters
 	
-	bool MakeProjFreeVector(bool haveFlag, int32_t flagValue, bool y, ActParam *parent, ActParam child[], int32_t children, ProjFreeVector *projFreeVector, wchar_t errMsg[]);
+	bool MakeProjFreeVector(bool haveFlag, int32_t flagValue, bool y, ActParam *parent, ActParam child[], int32_t children, ProjFreeVector *projFreeVector, wchar_t errMsg[], size_t errMsgLen);
 	
-	virtual void Dispatch(Symbol cmd, short params, ActParam param[], wchar_t errMsg[]);
+	virtual void Dispatch(Symbol cmd, short params, ActParam param[], wchar_t errMsg[], size_t errMsgLen);
 	
 	Height *TheHeight(short at);
 	void RegisterHeight(short at, short cvt);
@@ -360,7 +359,7 @@ void AdjustFPs(short serifType, FormParam *formParams);
 void AdjustFPs(short serifType, FormParam *formParams) {
 	/* SERIF < (type, knot0, knot1, ... knotn-1)
 	   param 0     1,     2,     3,     param-1 */
-	short params,i;
+    short params = 0,i;
 	
 	switch (serifType) {
 		case 0: params = 9; break;
@@ -373,9 +372,10 @@ void AdjustFPs(short serifType, FormParam *formParams) {
 	for (i = params; i < maxFPs-1; i++) formParams[i] = formParams[maxFPs-1];
 } /* AdjustFPs */
 
-void TMTSourceParser::Parse(bool *changedSrc, int32_t *errPos, int32_t *errLen, wchar_t errMsg[]) {
+void TMTSourceParser::Parse(bool *changedSrc, int32_t *errPos, int32_t *errLen, wchar_t errMsg[], size_t errMsgLen) {
 	Symbol cmd;
 	ActParam aParam;
+	memset(&aParam, 0, sizeof(ActParam)); 
 	short formParamNum;
 	FormParam formParams[maxFPs];
 	int32_t cmdStart,actParam;
@@ -412,7 +412,7 @@ void TMTSourceParser::Parse(bool *changedSrc, int32_t *errPos, int32_t *errLen, 
 			if (this->actParams < maxParams)
 				this->actParam[this->actParams++] = aParam;
 			else {
-				swprintf(errMsg,L"too many actual parameters (cannot have more than %li parameters)",maxParams);
+				swprintf(errMsg,errMsgLen,L"too many actual parameters (cannot have more than %li parameters)",maxParams);
 				this->ErrorMsg(contextual,errMsg);
 			}
 		}
@@ -425,7 +425,7 @@ void TMTSourceParser::Parse(bool *changedSrc, int32_t *errPos, int32_t *errLen, 
 			if (this->actParams < maxParams)
 				this->actParam[this->actParams++] = aParam;
 			else {
-				swprintf(errMsg,L"too many actual parameters (cannot have more than %li parameters)",maxParams);
+				swprintf(errMsg,errMsgLen,L"too many actual parameters (cannot have more than %li parameters)",maxParams);
 				this->ErrorMsg(contextual,errMsg);
 			}
 			if (cmd == serif) AdjustFPs((short)(aParam.numValue/one6),formParams); // make the remaining formal parameters compatible with the actual serif type...
@@ -440,7 +440,7 @@ void TMTSourceParser::Parse(bool *changedSrc, int32_t *errPos, int32_t *errLen, 
 				if (this->actParams < maxParams)
 					this->actParam[this->actParams++] = aParam;
 				else {
-					swprintf(errMsg,L"too many actual parameters (cannot have more than %li parameters)",maxParams);
+					swprintf(errMsg,errMsgLen,L"too many actual parameters (cannot have more than %li parameters)",maxParams);
 					this->ErrorMsg(contextual,errMsg);
 				}
 			}
@@ -452,7 +452,7 @@ void TMTSourceParser::Parse(bool *changedSrc, int32_t *errPos, int32_t *errLen, 
             this->paramPos[actParam] = this->prevPrevPos;
 		if (this->generators > 0 && this->errPos < 0) {
 			this->prevPrevPos = cmdStart;
-			this->Dispatch(cmd,this->actParams,this->actParam,errMsg);
+			this->Dispatch(cmd,this->actParams,this->actParam,errMsg,errMsgLen);
 			if (errMsg[0]) this->ErrorMsg(contextual,errMsg);
 		}
 		if (cmd == quit) this->ErrorMsg(syntactical,L""); // generate dummy error to drop out of loop the same way as errors
@@ -465,7 +465,7 @@ void TMTSourceParser::Parse(bool *changedSrc, int32_t *errPos, int32_t *errLen, 
 } /* TMTSourceParser::Parse */
 
 #if _DEBUG
-void TMTSourceParser::RemoveAltCodePath(bool *changedSrc, int32_t *errPos, int32_t *errLen, wchar_t error[]) {
+void TMTSourceParser::RemoveAltCodePath(bool *changedSrc, int32_t *errPos, int32_t *errLen, wchar_t error[], size_t errorLen) {
 	int32_t beginPos,endPos;
 	
 	beginPos = endPos = -1; *changedSrc = false;
@@ -576,7 +576,7 @@ void TMTSourceParser::TermTMTParser(void) {
 	
 } /* TMTSourceParser::TermTMTParser */
 
-bool TMTSourceParser::MakeProjFreeVector(bool haveFlag, int32_t flagValue, bool y, ActParam *parent, ActParam child[], int32_t children, ProjFreeVector *projFreeVector, wchar_t errMsg[]) {
+bool TMTSourceParser::MakeProjFreeVector(bool haveFlag, int32_t flagValue, bool y, ActParam *parent, ActParam child[], int32_t children, ProjFreeVector *projFreeVector, wchar_t errMsg[], size_t errMsgLen) {
 	TTVDirection flagToDir[numTTVDirections] = {xRomanDir, yRomanDir, xItalDir, yItalDir, xAdjItalDir, yAdjItalDir, diagDir, perpDiagDir};
 	int32_t i,idx = 2*(haveFlag ? 1 + flagValue : 0) + (int32_t)y;
 	bool pvOverrideError = false,fvOverrideError = false;
@@ -600,12 +600,12 @@ bool TMTSourceParser::MakeProjFreeVector(bool haveFlag, int32_t flagValue, bool 
 			}
 		}
 		if (pvOverrideError || fvOverrideError)
-			swprintf(errMsg, L"cannot override " WIDE_STR_FORMAT L" direction when using the italic or adjusted italic angle / or //", pvOverrideError ? L"projection" : L"freedom");
+			swprintf(errMsg, errMsgLen, L"cannot override " WIDE_STR_FORMAT L" direction when using the italic or adjusted italic angle / or //", pvOverrideError ? L"projection" : L"freedom");
 	}
 	return !(pvOverrideError || fvOverrideError);
 } // TMTSourceParser::MakeProjFreeVector
 
-void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar_t errMsg[]) {
+void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar_t errMsg[], size_t errMsgLen) {
 	short i,j;
 	
 	errMsg[0] = L'\0';
@@ -620,12 +620,12 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 			FVOverride fvOverride = cmd == align ? fvOldMethod : (cmd == xAlign ? fvForceX : (cmd == yAlign ? fvForceY : fvStandard));
 
 			for (i = 0; i < children; i++) child[i] = (short)(param[1+i].numValue/one6);
-			for (i = 0; i < this->generators; i++) this->gen[i]->Align(fvOverride,parent0,children,child,parent1,ppem,errMsg);
+			for (i = 0; i < this->generators; i++) this->gen[i]->Align(fvOverride,parent0,children,child,parent1,ppem,errMsg,errMsgLen);
 			break;
 		}
 		case asM:
 		case InLine:
-			for (i = 0; i < this->generators; i++) this->gen[i]->Asm(cmd == InLine,param[0].litValue,errMsg);
+			for (i = 0; i < this->generators; i++) this->gen[i]->Asm(cmd == InLine,param[0].litValue,errMsg,errMsgLen);
 			break;
 		case autoHinter:
 			break;
@@ -646,9 +646,9 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 			for (i = 0; i < 2; i++) leftStationary[i] = param[i].numValue > 0;
 			for (i = 0; i < 4; i++) knot[i] = (short)(param[2+i].numValue/one6);
 			for (i = 0; i < this->generators; i++) {
-				this->gen[i]->DStroke(leftStationary,knot,cvt,&actualCvt,errMsg);
+				this->gen[i]->DStroke(leftStationary,knot,cvt,&actualCvt,errMsg,errMsgLen);
 				if (actualCvt != cvt) {
-					swprintf(buf,L",%hi",actualCvt); this->Insert(this->paramPos[6],buf);
+					swprintf(buf,sizeof(buf)/sizeof(wchar_t),L",%hi",actualCvt); this->Insert(this->paramPos[6],buf);
 				}
 			}
 			break;
@@ -657,12 +657,12 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 			for (i = 0; i < this->generators; i++) this->gen[i]->FixDStrokes();
 			break;
 		case grabHereInX:
-			for (i = 0; i < this->generators; i++) this->gen[i]->GrabHereInX((short)(param[0].numValue/one6),(short)(param[1].numValue/one6),errMsg);
+			for (i = 0; i < this->generators; i++) this->gen[i]->GrabHereInX((short)(param[0].numValue/one6),(short)(param[1].numValue/one6),errMsg,errMsgLen);
 			break;
 		case intersect: {
 			short ppem0 = params > 5 ? (short)(param[5].numValue/one6) : noPpemLimit,ppem1 = params > 6 ? (short)(param[6].numValue/one6) : noPpemLimit;
 
-			for (i = 0; i < this->generators; i++) this->gen[i]->Intersect((short)(param[0].numValue/one6),(short)(param[1].numValue/one6),(short)(param[2].numValue/one6),(short)(param[3].numValue/one6),(short)(param[4].numValue/one6),ppem0,ppem1,errMsg);
+			for (i = 0; i < this->generators; i++) this->gen[i]->Intersect((short)(param[0].numValue/one6),(short)(param[1].numValue/one6),(short)(param[2].numValue/one6),(short)(param[3].numValue/one6),(short)(param[4].numValue/one6),ppem0,ppem1,errMsg,errMsgLen);
 			break;
 		}
 		case iStroke: {
@@ -676,24 +676,24 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 			for (i = 0; i < 2; i++) height[i] = (short)(param[6+i].numValue/one6);
 			phase = (short)(param[8].numValue/one6);
 			for (i = 0; i < this->generators; i++) {
-				this->gen[i]->IStroke(leftStationary,knot,height,phase,cvt,&actualCvt,errMsg);
+				this->gen[i]->IStroke(leftStationary,knot,height,phase,cvt,&actualCvt,errMsg,errMsgLen);
 				if (actualCvt != cvt) {
-					swprintf(buf,L",%hi",actualCvt); this->Insert(this->paramPos[9],buf);
+					swprintf(buf,sizeof(buf)/sizeof(wchar_t),L",%hi",actualCvt); this->Insert(this->paramPos[9],buf);
 				}
 			}
 			break;
 		}
 		case ::mainStrokeAngle:
-			for (i = 0; i < this->generators; i++) this->gen[i]->MainStrokeAngle((short)(param[0].numValue/one6),errMsg);
+			for (i = 0; i < this->generators; i++) this->gen[i]->MainStrokeAngle((short)(param[0].numValue/one6),errMsg,errMsgLen);
 			break;
 		case ::glyphStrokeAngle:
-			for (i = 0; i < this->generators; i++) this->gen[i]->GlyphStrokeAngle((short)(param[0].numValue/one6),(short)(param[1].numValue/one6),errMsg);
+			for (i = 0; i < this->generators; i++) this->gen[i]->GlyphStrokeAngle((short)(param[0].numValue/one6),(short)(param[1].numValue/one6),errMsg,errMsgLen);
 			break;
 		case quit:
 			for (i = 0; i < this->generators; i++) this->gen[i]->Quit();
 			break;
 		case scoop:
-			for (i = 0; i < this->generators; i++) this->gen[i]->Scoop((short)(param[0].numValue/one6),(short)(param[1].numValue/one6),(short)(param[2].numValue/one6),errMsg);
+			for (i = 0; i < this->generators; i++) this->gen[i]->Scoop((short)(param[0].numValue/one6),(short)(param[1].numValue/one6),(short)(param[2].numValue/one6),errMsg,errMsgLen);
 			break;
 		case serif: {
 			bool forward = param[0].numValue > 0;
@@ -701,14 +701,14 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 			
 			knots = params-2; // direction flag and type
 			for (i = 0; i < knots; i++) knot[i] = (short)(param[2+i].numValue/one6);
-			for (i = 0; i < this->generators; i++) this->gen[i]->Serif(forward,type,knots,knot,errMsg);
+			for (i = 0; i < this->generators; i++) this->gen[i]->Serif(forward,type,knots,knot,errMsg,errMsgLen);
 			break;
 		}
 		case setItalicStrokeAngle:
-			for (i = 0; i < this->generators; i++) this->gen[i]->SetItalicStroke(false,errMsg);
+			for (i = 0; i < this->generators; i++) this->gen[i]->SetItalicStroke(false,errMsg,errMsgLen);
 			break;
 		case setItalicStrokePhase:
-			for (i = 0; i < this->generators; i++) this->gen[i]->SetItalicStroke(true,errMsg);
+			for (i = 0; i < this->generators; i++) this->gen[i]->SetItalicStroke(true,errMsg,errMsgLen);
 			break;
 		case smooth:
 		case xSmooth:
@@ -746,17 +746,18 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 			nearVert = leftEdge.x <= leftEdge.y*this->tanStraightAngle && rightEdge.x <= rightEdge.y*this->tanStraightAngle;
 			nearHorz = leftEdge.y <= leftEdge.x*this->tanStraightAngle && rightEdge.y <= rightEdge.x*this->tanStraightAngle;
 			if (cmd == xStroke && !nearVert)
-				swprintf(errMsg,L"cannot accept XSTROKE (edges differ from vertical axis by %f degrees or more)",(double)STRAIGHTANGLEFUDGE);
+				swprintf(errMsg,errMsgLen,L"cannot accept XSTROKE (edges differ from vertical axis by %f degrees or more)",(double)STRAIGHTANGLEFUDGE);
 			else if (cmd == yStroke && !nearHorz)
-				swprintf(errMsg,L"cannot accept YSTROKE (edges differ from horizontal axis by %f degrees or more)",(double)STRAIGHTANGLEFUDGE);
+				swprintf(errMsg,errMsgLen,L"cannot accept YSTROKE (edges differ from horizontal axis by %f degrees or more)",(double)STRAIGHTANGLEFUDGE);
 			else if ((cmd == stroke || cmd == xStroke || cmd == yStroke) && (nearHorz || nearVert)) { // either nearHorz or nearVert, hence "informative" command
 				for (i = 0; i < 4; i += 2) for (j = 0; j < 4; j += 2) this->RegisterPartner(knot[i],knot[j+1],nearHorz,false,cvt);
 			} else { // diagonalMT, xDiagonal, yDiagonal, or general stroke "action" command
 				for (i = 0; i < 2; i++) leftStationary[i] = param[i].numValue > 0;
 				for (i = 0; i < this->generators; i++) {
-					this->gen[i]->Stroke(fvOverride,leftStationary,knot,cvt,ppem,&actualCvt,errMsg);
+					this->gen[i]->Stroke(fvOverride,leftStationary,knot,cvt,ppem,&actualCvt,errMsg,errMsgLen);
 					if (actualCvt != cvt) {
-						swprintf(buf,L",%hi",actualCvt); this->Insert(this->paramPos[6],buf);
+						swprintf(buf, sizeof(buf) / sizeof(wchar_t), L",%hi", actualCvt);
+						this->Insert(this->paramPos[6], buf);
 					}
 				}
 			}
@@ -783,7 +784,7 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 			
 			for (i = 0; i < 2; i++) forward[i] = param[i].numValue > 0;
 			for (i = 0; i < 4; i++) knot[i] = (short)(param[4+i].numValue/one6);
-			for (i = 0; i < this->generators; i++) this->gen[i]->VacuFormRound((short)(param[2].numValue/one6),(short)(param[3].numValue/one6),forward,knot,errMsg);
+			for (i = 0; i < this->generators; i++) this->gen[i]->VacuFormRound((short)(param[2].numValue/one6),(short)(param[3].numValue/one6),forward,knot,errMsg,errMsgLen);
 			break;
 		}
 		case height:
@@ -800,15 +801,15 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 			ProjFreeVector projFreeVector;
 			
 			if (cvt >= 0 && cvtHint >= 0)
-				swprintf(errMsg,L"cannot override a cvt number specified by a HEIGHT command");
+				swprintf(errMsg,errMsgLen,L"cannot override a cvt number specified by a HEIGHT command");
 			else {
 				if (cvt < 0) cvt = cvtHint; // no cvt override => try previously specified cvt
 				// since MDAP, MIAP don't ever use the dual projection vector, we'll define the knot to be a child, hence it gets to override the fv
 				// this may change once I implement overrides for italic and adjusted italic angles, and this may turn out to be somewhat tricky:
 				// if we measure perpendicular to the italic angle, and move in x, then subsequent instructions on the same knot must move along the italic angle, and measure in y
 				// in other words, XAnchor/(knot) overrides the pv, while YAnchor/(knot) overrides the fv.
-				if (this->MakeProjFreeVector(haveFlag,param[0].numValue,y,NULL,knotParam,1,&projFreeVector,errMsg)) {
-					for (i = 0; i < this->generators; i++) this->gen[i]->Anchor(cmd == yAnchor,&projFreeVector,knot,cvt,true,errMsg);
+				if (this->MakeProjFreeVector(haveFlag,param[0].numValue,y,NULL,knotParam,1,&projFreeVector,errMsg,errMsgLen)) {
+					for (i = 0; i < this->generators; i++) this->gen[i]->Anchor(cmd == yAnchor,&projFreeVector,knot,cvt,true,errMsg,errMsgLen);
 				}
 			}
 			break;
@@ -842,11 +843,11 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 			ProjFreeVector projFreeVector;
 
 			if (cvt >= 0 && cvtHint >= 0)
-				swprintf(errMsg,L"cannot override a cvt number specified by an X|YSTROKE, an X|YSTEM, or an X|YROUND command");
+				swprintf(errMsg,errMsgLen,L"cannot override a cvt number specified by an X|YSTROKE, an X|YSTEM, or an X|YROUND command");
 			else if (dist && (cvtHint >= 0 || cvtCategory != cvtAnyCategory))
-				swprintf(errMsg,L"cannot use a X|YDIST command preceeded by X|YSTROKE, X|YSTEM, or X|YROUND");
+				swprintf(errMsg,errMsgLen,L"cannot use a X|YDIST command preceeded by X|YSTROKE, X|YSTEM, or X|YROUND");
 			else if (havePostRound && !haveFlag)
-				swprintf(errMsg,L"cannot use $ (post round flag) without using / (italic angle) or // (adjusted italic angle)");
+				swprintf(errMsg,errMsgLen,L"cannot use $ (post round flag) without using / (italic angle) or // (adjusted italic angle)");
 			else {
 				if (!dist) {
 					if (cvt < 0) cvt = cvtHint; // no cvt override => try previously specified cvt
@@ -860,12 +861,13 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 					}
 				}
 
-				if (this->MakeProjFreeVector(haveFlag,param[0].numValue,y,parentParam,childParam,1,&projFreeVector,errMsg)) {
+				if (this->MakeProjFreeVector(haveFlag,param[0].numValue,y,parentParam,childParam,1,&projFreeVector,errMsg,errMsgLen)) {
 					for (i = 0; i < minDists; i++) jumpPpemSize[i] = (short)(jSize[i]/one6);
 					for (i = 0; i < this->generators; i++) {
-						this->gen[i]->Link(y,dist,&projFreeVector,havePostRound,parent,child,cvtCategory,cvt,minDists,jumpPpemSize,param[base+haveCvt].pixelSize,&actualCvt,errMsg);
+						this->gen[i]->Link(y,dist,&projFreeVector,havePostRound,parent,child,cvtCategory,cvt,minDists,jumpPpemSize,param[base+haveCvt].pixelSize,&actualCvt,errMsg,errMsgLen);
 						if (actualCvt != cvt) {
-							swprintf(buf,L",%hi",actualCvt); this->Insert(this->paramPos[base],buf);
+							swprintf(buf, sizeof(buf) / sizeof(wchar_t), L",%hi", actualCvt);
+							this->Insert(this->paramPos[base], buf);
 						}
 					}
 				}
@@ -878,7 +880,7 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 			short knots = params-1,knot[maxParams];
 			
 			for (i = 0; i < knots; i++) knot[i] = (short)(param[1+i].numValue/one6);
-			for (i = 0; i < this->generators; i++) this->gen[i]->Move(cmd == yMove,amount,knots,knot,errMsg);
+			for (i = 0; i < this->generators; i++) this->gen[i]->Move(cmd == yMove,amount,knots,knot,errMsg,errMsgLen);
 			break;
 		}
 		case xBDelta:
@@ -896,11 +898,11 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 			for (j = 1; j < params; j++) {
 				paramColor = param[j].deltaColor;
 				if (cmdColor != alwaysDelta && paramColor != alwaysDelta){					
-					swprintf(errMsg,L"cannot override delta color specified by an X|YBDELTA or an X|YGDELTA or an X|YCDELTA command"); 
+					swprintf(errMsg,errMsgLen,L"cannot override delta color specified by an X|YBDELTA or an X|YGDELTA or an X|YCDELTA command"); 
                 }else{
 					if (paramColor == alwaysDelta) paramColor = cmdColor;
 					for (i = 0; i < this->generators; i++)
-						this->gen[i]->Delta(cmd >= yBDelta,paramColor,knot,param[j].numValue,param[j].deltaPpemSize,errMsg);
+						this->gen[i]->Delta(cmd >= yBDelta,paramColor,knot,param[j].numValue,param[j].deltaPpemSize,errMsg,errMsgLen);
 				}
 			}
 			break;
@@ -916,7 +918,7 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 		case xNoRound:
 		case yNoRound: {
 			short knot[maxParams];
-			Rounding r;
+			Rounding r = rnone;
 			
 			for (i = 0; i < params; i++) knot[i] = (short)(param[i].numValue/one6);
 			switch (cmd) {
@@ -947,12 +949,12 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 			ProjFreeVector projFreeVector;
 			
 			if (havePostRound && !haveFlag)
-				swprintf(errMsg,L"cannot use $ (post round flag) without using / (italic angle) or // (adjusted italic angle)");
+				swprintf(errMsg,errMsgLen,L"cannot use $ (post round flag) without using / (italic angle) or // (adjusted italic angle)");
 			else {
 				children = params-2-havePostRound-haveFlag; // 2 parents...
-				if (this->MakeProjFreeVector(haveFlag,param[0].numValue,y,parent0Param,childParam,children,&projFreeVector,errMsg)) {
+				if (this->MakeProjFreeVector(haveFlag,param[0].numValue,y,parent0Param,childParam,children,&projFreeVector,errMsg,errMsgLen)) {
 					for (i = 0; i < children; i++) child[i] = (short)(childParam[i].numValue/one6);
-					for (i = 0; i < this->generators; i++) this->gen[i]->Interpolate(y,&projFreeVector,havePostRound,parent0,children,child,parent1,cmd == xIPAnchor || cmd == yIPAnchor,errMsg);
+					for (i = 0; i < this->generators; i++) this->gen[i]->Interpolate(y,&projFreeVector,havePostRound,parent0,children,child,parent1,cmd == xIPAnchor || cmd == yIPAnchor,errMsg,errMsgLen);
 				}
 			}
 			break;
@@ -966,9 +968,9 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 			ProjFreeVector projFreeVector;
 			
 			children = params-1-haveFlag;
-			if (this->MakeProjFreeVector(haveFlag,param[0].numValue,y,parentParam,childParam,children,&projFreeVector,errMsg)) {
+			if (this->MakeProjFreeVector(haveFlag,param[0].numValue,y,parentParam,childParam,children,&projFreeVector,errMsg,errMsgLen)) {
 				for (i = 0; i < children; i++) child[i] = (short)(childParam[i].numValue/one6);
-				for (i = 0; i < this->generators; i++) this->gen[i]->Shift(y,&projFreeVector,parent,children,child,errMsg);
+				for (i = 0; i < this->generators; i++) this->gen[i]->Shift(y,&projFreeVector,parent,children,child,errMsg,errMsgLen);
 			}
 			break;
 		}
@@ -978,13 +980,13 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 			{
 				short fpgmBias = (short)(param[0].numValue/one6);
 
-				for (i = 0; i < this->generators; i++) this->gen[i]->BeginCodePath(fpgmBias,errMsg);				
+				for (i = 0; i < this->generators; i++) this->gen[i]->BeginCodePath(fpgmBias,errMsg,errMsgLen);				
 			}
 			break; 
 		case endCodePath: 
 			if (!this->legacyCompile)
 			{
-				for (i = 0; i < this->generators; i++) this->gen[i]->EndCodePath(errMsg);				
+				for (i = 0; i < this->generators; i++) this->gen[i]->EndCodePath(errMsg,errMsgLen);				
 			}
 			break; 
 		case resXAnchor:
@@ -1000,8 +1002,8 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 					  cvt = haveCvt ? (short)(param[optParamOffs].numValue/one6) : invalidCvtNum;
 				ProjFreeVector projFreeVector;
 
-				if (this->MakeProjFreeVector(haveFlag,param[0].numValue,y,NULL,childParam,1,&projFreeVector,errMsg)) {
-					for (i = 0; i < this->generators; i++) this->gen[i]->ResAnchor(cmd == resYAnchor,&projFreeVector,child,cvt,errMsg);
+				if (this->MakeProjFreeVector(haveFlag,param[0].numValue,y,NULL,childParam,1,&projFreeVector,errMsg, errMsgLen)) {
+					for (i = 0; i < this->generators; i++) this->gen[i]->ResAnchor(cmd == resYAnchor,&projFreeVector,child,cvt,errMsg,errMsgLen);
 				}			
 			}
 			break; 
@@ -1012,15 +1014,16 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 				bool y = cmd == resYIPAnchor,
 						haveFlag = param[0].type == angleFlag,
 						havePostRound = param[haveFlag].type == postRoundFlag;
-				ActParam *parent0Param = &param[haveFlag+havePostRound], *childParam = &param[haveFlag+havePostRound+1], *parent1Param = &param[haveFlag+havePostRound+2];
+                ActParam *parent0Param = &param[haveFlag+havePostRound], *childParam = &param[haveFlag+havePostRound+1];
+                // ActParam *parent1Param = &param[haveFlag+havePostRound+2];
 				short parent0 = (short)(parent0Param->numValue/one6),child = (short)(childParam->numValue/one6),parent1 = (short)(param[params-1].numValue/one6);
 				ProjFreeVector projFreeVector;
 
 				if (havePostRound && !haveFlag)
-					swprintf(errMsg,L"cannot use $ (post round flag) without using / (italic angle) or // (adjusted italic angle)");
+					swprintf(errMsg,errMsgLen,L"cannot use $ (post round flag) without using / (italic angle) or // (adjusted italic angle)");
 				else {
-					if (this->MakeProjFreeVector(haveFlag,param[0].numValue,y,parent0Param,childParam,1,&projFreeVector,errMsg)) {
-						for (i = 0; i < this->generators; i++) this->gen[i]->ResIPAnchor(y,&projFreeVector,havePostRound,parent0,child,parent1,errMsg);
+					if (this->MakeProjFreeVector(haveFlag,param[0].numValue,y,parent0Param,childParam,1,&projFreeVector,errMsg,errMsgLen)) {
+						for (i = 0; i < this->generators; i++) this->gen[i]->ResIPAnchor(y,&projFreeVector,havePostRound,parent0,child,parent1,errMsg,errMsgLen);
 					}
 				}				
 			}
@@ -1044,9 +1047,9 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 					  cvt = haveCvt ? (short)(param[optParamOffs].numValue/one6) : invalidCvtNum;
 				ProjFreeVector projFreeVector;
 
-				if (this->MakeProjFreeVector(haveFlag,param[0].numValue,y,parentParam,childParam,1,&projFreeVector,errMsg)) {
+				if (this->MakeProjFreeVector(haveFlag,param[0].numValue,y,parentParam,childParam,1,&projFreeVector,errMsg,errMsgLen)) {
 					for (i = 0; i < this->generators; i++) {
-						this->gen[i]->ResLink(y,dist,&projFreeVector,parent,child,cvt,minDists,errMsg);
+						this->gen[i]->ResLink(y,dist,&projFreeVector,parent,child,cvt,minDists,errMsg,errMsgLen);
 					}
 				}
 			}
@@ -1074,9 +1077,9 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 					  grandParent1 = (short)(grandParent1Param->numValue/one6);
 				ProjFreeVector projFreeVector;
 
-				if (this->MakeProjFreeVector(haveAngleFlag,param[0].numValue,y,grandParent0Param,parentParam,2,&projFreeVector,errMsg)) { // 2 children (?)
+				if (this->MakeProjFreeVector(haveAngleFlag,param[0].numValue,y,grandParent0Param,parentParam,2,&projFreeVector,errMsg,errMsgLen)) { // 2 children (?)
 					for (i = 0; i < this->generators; i++) {
-						this->gen[i]->ResIPLink(y,dist,&projFreeVector,strokeFlag,grandParent0,parent,child,cvt,grandParent1,errMsg);
+						this->gen[i]->ResIPLink(y,dist,&projFreeVector,strokeFlag,grandParent0,parent,child,cvt,grandParent1,errMsg,errMsgLen);
 					}
 				}
 			}
@@ -1091,8 +1094,8 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 						dist = cmd == resXIPDDist || cmd == resYIPDDist,
 						haveAngleFlag = false, // so far, TT fn not implemented orthogonally enough
 						haveStrokeFlag = false; // so far, TT fn not implemented orthogonally enough
-				short cvt0ParamOffs = haveAngleFlag+haveStrokeFlag+3,
-					  cvt1ParamOffs = haveAngleFlag+haveStrokeFlag+6;
+				//short cvt0ParamOffs = haveAngleFlag+haveStrokeFlag+3,
+				//	    cvt1ParamOffs = haveAngleFlag+haveStrokeFlag+6;
 				ActParam *grandParent0Param = &param[haveAngleFlag+haveStrokeFlag],
 						 *parent0Param      = &param[haveAngleFlag+haveStrokeFlag+1],
 						 *child0Param       = &param[haveAngleFlag+haveStrokeFlag+2],
@@ -1112,9 +1115,9 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 					  grandParent1 = (short)(grandParent1Param->numValue/one6);
 				ProjFreeVector projFreeVector;
 
-				if (this->MakeProjFreeVector(haveAngleFlag,param[0].numValue,y,grandParent0Param,parent0Param,4,&projFreeVector,errMsg)) { // 4 children (?)
+				if (this->MakeProjFreeVector(haveAngleFlag,param[0].numValue,y,grandParent0Param,parent0Param,4,&projFreeVector,errMsg,errMsgLen)) { // 4 children (?)
 					for (i = 0; i < this->generators; i++) {
-						this->gen[i]->ResIPDLink(y,dist,&projFreeVector,strokeFlag,grandParent0,parent0,child0,cvt0,parent1,child1,cvt1,grandParent1,errMsg);
+						this->gen[i]->ResIPDLink(y,dist,&projFreeVector,strokeFlag,grandParent0,parent0,child0,cvt0,parent1,child1,cvt1,grandParent1,errMsg,errMsgLen);
 					}
 				}
 			}
@@ -1129,8 +1132,8 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 						dist = cmd == resXIPDDDist || cmd == resYIPDDDist,
 						haveAngleFlag = param[0].type == angleFlag,
 						haveStrokeFlag = false; // so far, TT fn not implemented orthogonally enough
-				short cvt0ParamOffs = haveAngleFlag+haveStrokeFlag+3,
-					  cvt1ParamOffs = haveAngleFlag+haveStrokeFlag+6;
+				// short cvt0ParamOffs = haveAngleFlag+haveStrokeFlag+3,
+				//	     cvt1ParamOffs = haveAngleFlag+haveStrokeFlag+6;
 				ActParam *grandParent0Param = &param[haveAngleFlag+haveStrokeFlag],
 						 *parent0Param      = &param[haveAngleFlag+haveStrokeFlag+1],
 						 *child0Param       = &param[haveAngleFlag+haveStrokeFlag+2],
@@ -1150,12 +1153,12 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 					  grandParent1 = (short)(grandParent1Param->numValue/one6);
 				ProjFreeVector projFreeVector0,projFreeVector1;
 
-				if (this->MakeProjFreeVector(haveAngleFlag,param[0].numValue,y,parent0Param,child0Param,1,&projFreeVector0,errMsg) && 
-					this->MakeProjFreeVector(haveAngleFlag,param[0].numValue,y,parent1Param,child1Param,1,&projFreeVector1,errMsg)) {
+				if (this->MakeProjFreeVector(haveAngleFlag,param[0].numValue,y,parent0Param,child0Param,1,&projFreeVector0,errMsg,errMsgLen) && 
+					this->MakeProjFreeVector(haveAngleFlag,param[0].numValue,y,parent1Param,child1Param,1,&projFreeVector1,errMsg,errMsgLen)) {
 					// pv not allowed to override, only fv, hence copy into single projFreeVector parameter
 					projFreeVector0.fv[1] = projFreeVector1.fv[0];
 					for (i = 0; i < this->generators; i++) {
-						this->gen[i]->ResIPDDLink(y,dist,&projFreeVector0,strokeFlag,grandParent0,parent0,child0,cvt0,parent1,child1,cvt1,grandParent1,errMsg);
+						this->gen[i]->ResIPDDLink(y,dist,&projFreeVector0,strokeFlag,grandParent0,parent0,child0,cvt0,parent1,child1,cvt1,grandParent1,errMsg,errMsgLen);
 					}
 				}
 			}
@@ -1171,8 +1174,8 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 				short cvtParamOffs0 = 2;
 				bool haveCvt0 = !dist && params > cvtParamOffs0 && param[cvtParamOffs0].type == cvtN;
 				short cvtParamOffs1 = 2 + haveCvt0 + 2;
-				bool haveCvt1 = !dist && params > cvtParamOffs1 && param[cvtParamOffs1].type == cvtN,
-						haveMinDist = params > cvtParamOffs1+haveCvt1 && param[cvtParamOffs1+haveCvt1].type == minDistGeneral;
+                bool haveCvt1 = !dist && params > cvtParamOffs1 && param[cvtParamOffs1].type == cvtN;
+				// bool haveMinDist = params > cvtParamOffs1+haveCvt1 && param[cvtParamOffs1+haveCvt1].type == minDistGeneral;
 				ActParam *parent0Param = &param[0],*child0Param = &param[1],*parent1Param = &param[2+haveCvt0],*child1Param = &param[3+haveCvt0];
 				short parent0 = (short)(parent0Param->numValue/one6),
 					  child0 = (short)(child0Param->numValue/one6),
@@ -1182,12 +1185,12 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 					  cvt1 = haveCvt1 ? (short)(param[cvtParamOffs1].numValue/one6) : cvt0;
 				ProjFreeVector projFreeVector0,projFreeVector1;
 			
-				if (this->MakeProjFreeVector(false,0,y,parent0Param,child0Param,1,&projFreeVector0,errMsg) && 
-					this->MakeProjFreeVector(false,0,y,parent1Param,child1Param,1,&projFreeVector1,errMsg)) {
+				if (this->MakeProjFreeVector(false,0,y,parent0Param,child0Param,1,&projFreeVector0,errMsg,errMsgLen) && 
+					this->MakeProjFreeVector(false,0,y,parent1Param,child1Param,1,&projFreeVector1,errMsg,errMsgLen)) {
 					// pv not allowed to override, only fv, hence copy into single projFreeVector parameter
 					projFreeVector0.fv[1] = projFreeVector1.fv[0];
 					for (i = 0; i < this->generators; i++) {
-						this->gen[i]->ResDDLink(y,dist,&projFreeVector0,parent0,child0,cvt0,parent1,child1,cvt1,errMsg);
+						this->gen[i]->ResDDLink(y,dist,&projFreeVector0,parent0,child0,cvt0,parent1,child1,cvt1,errMsg,errMsgLen);
 					}
 				}
 			}
@@ -1197,13 +1200,13 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 			if (!this->legacyCompile)
 			{
 				bool dist = cmd == resIIPDDist;
-				short optParamOffs = cmd == resIIPDDist ? 6 : 8;
+				// short optParamOffs = cmd == resIIPDDist ? 6 : 8;
 
 				short cvtParamOffs0 = 3;
 				bool haveCvt0 = !dist && params > cvtParamOffs0 && param[cvtParamOffs0].type == cvtN;
 				short cvtParamOffs1 = 3 + haveCvt0 + 2;
-				bool haveCvt1 = !dist && params > cvtParamOffs1 && param[cvtParamOffs1].type == cvtN,
-						haveMinDist = params > cvtParamOffs1+haveCvt1 && param[cvtParamOffs1+haveCvt1].type == minDistGeneral;
+                bool haveCvt1 = !dist && params > cvtParamOffs1 && param[cvtParamOffs1].type == cvtN;
+				// bool	haveMinDist = params > cvtParamOffs1+haveCvt1 && param[cvtParamOffs1+haveCvt1].type == minDistGeneral;
 				ActParam *grandParent0Param = &param[0],*parent0Param = &param[1],*child0Param = &param[2],*parent1Param = &param[3+haveCvt0],*child1Param = &param[4+haveCvt0],*grandParent1Param = &param[5+haveCvt0+haveCvt1];
 				short grandParent0 = (short)(grandParent0Param->numValue/one6),
 					  parent0 = (short)(parent0Param->numValue/one6),
@@ -1215,12 +1218,12 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 					  cvt1 = haveCvt1 ? (short)(param[cvtParamOffs1].numValue/one6) : cvt0;
 				ProjFreeVector projFreeVector0,projFreeVector1;
 			
-				if (this->MakeProjFreeVector(true,0,false,parent0Param,child0Param,1,&projFreeVector0,errMsg) &&
-					this->MakeProjFreeVector(true,0,false,parent1Param,child1Param,1,&projFreeVector1,errMsg)) {
+				if (this->MakeProjFreeVector(true,0,false,parent0Param,child0Param,1,&projFreeVector0,errMsg,errMsgLen) &&
+					this->MakeProjFreeVector(true,0,false,parent1Param,child1Param,1,&projFreeVector1,errMsg,errMsgLen)) {
 					// pv not allowed to override, only fv, hence copy into single projFreeVector parameter
 					projFreeVector0.fv[1] = projFreeVector1.fv[0];
 					for (i = 0; i < this->generators; i++) {
-						this->gen[i]->ResIIPDLink(dist,&projFreeVector0,grandParent0,parent0,child0,cvt0,parent1,child1,cvt1,grandParent1,errMsg);
+						this->gen[i]->ResIIPDLink(dist,&projFreeVector0,grandParent0,parent0,child0,cvt0,parent1,child1,cvt1,grandParent1,errMsg,errMsgLen);
 					}
 				}
 			}
@@ -1235,14 +1238,14 @@ void TMTSourceParser::Dispatch(Symbol cmd, short params, ActParam param[], wchar
 		case tail:
 		case tweakMetrics:
 		default:
-			swprintf(errMsg,L"Sorry, this command is no longer supported");
+			swprintf(errMsg,errMsgLen,L"Sorry, this command is no longer supported");
 			break;
 	}
 } /* TMTSourceParser::Dispatch */
 
 void TMTSourceParser::XFormToNewSyntax(void) {
 /* this is a bit of a botched job, but I'd rather have the standard parameter checking mechanism do all the serious work */
-	int32_t savePos,flagPos,parmPos;
+    int32_t savePos,flagPos,parmPos = 0;
 	wchar_t old[32],neu[64];
 	short s,d,l;
 	
@@ -1445,7 +1448,7 @@ void TMTSourceParser::Parameter(ActParam *actParam) {
 	ActParam colorParam;
 	Symbol ttvSym;
 	ParamType paramType;
-	int32_t numValue,firstLocalParamStart;
+    int32_t numValue,firstLocalParamStart = 0;
 	bool gotKnot[2];
 	
 	paramStart = this->prevPos;
@@ -1606,20 +1609,46 @@ void TMTSourceParser::MatchParameter(FormParam *formParams, short *formParamNum,
 				case colorN:
 				case serifN:		
 				case curveN:		
-				case radiusN:       swprintf(errMsg,L"integer number expected (example: 1)"); break;
-				case rationalN:		swprintf(errMsg,L"rational number expected (example: 1/8 or -1.5)"); break;
-				case posRationalN:	swprintf(errMsg,L"positive rational number expected (example: 1/8 or 1.5)"); break;
-				case ppemSize:		swprintf(errMsg,L"ppem size expected (example: @12)"); break;
-				case ppemN:			swprintf(errMsg,L"ppem number expected (example: 12)"); break;
+				case radiusN:       
+					swprintf(errMsg,sizeof(errMsg)/sizeof(wchar_t),L"integer number expected (example: 1)"); 
+					break;
+				case rationalN:
+					swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"rational number expected (example: 1/8 or -1.5)");
+					break;
+				case posRationalN:
+					swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"positive rational number expected (example: 1/8 or 1.5)");
+					break;
+				case ppemSize:
+					swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"ppem size expected (example: @12)");
+					break;
+				case ppemN:
+					swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"ppem number expected (example: 12)");
+					break;
 				case rangeOfPpemNcolorOpt:
-				case rangeOfPpemN:	  swprintf(errMsg,L"ppem range expected (example: @8..13;21)"); break;
-				case anyS:			  swprintf(errMsg,L"quoted string expected (example: \x22V1.11\x22 or %cCALL[], 9\x22)",'\x22'); break; // %c or else compiler won't accept "escape sequence"...
-				case minDistFlagOnly: swprintf(errMsg,L"minimum distance flag expected (example: < or >= only)"); break;
-				case minDistGeneral:  swprintf(errMsg,L"minimum distance expected (example: < or >= or >=1.5 or >=(1.5,@12,2.5) )"); break;
-				case dirFlag:		  swprintf(errMsg,L"direction flag expected (example: either < or >)"); break;
-				case angleFlag:		  swprintf(errMsg,L"angle flag expected (example: either / or //)"); break;
-				case postRoundFlag:	  swprintf(errMsg,L"post round flag expected (example: $)"); break;
-				default:			  swprintf(errMsg,L"actual parameter does not match"); break;
+				case rangeOfPpemN:
+					swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"ppem range expected (example: @8..13;21)");
+					break;
+				case anyS:
+					swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"quoted string expected (example: \x22V1.11\x22 or %cCALL[], 9\x22)", '\x22');
+					break; // %c or else compiler won't accept "escape sequence"...
+				case minDistFlagOnly:
+					swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"minimum distance flag expected (example: < or >= only)");
+					break;
+				case minDistGeneral:
+					swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"minimum distance expected (example: < or >= or >=1.5 or >=(1.5,@12,2.5) )");
+					break;
+				case dirFlag:
+					swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"direction flag expected (example: either < or >)");
+					break;
+				case angleFlag:
+					swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"angle flag expected (example: either / or //)");
+					break;
+				case postRoundFlag:
+					swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"post round flag expected (example: $)");
+					break;
+				default:
+					swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"actual parameter does not match");
+					break;
 			}
 			this->ErrorMsg(contextual,errMsg);
 		}
@@ -1643,7 +1672,8 @@ void TMTSourceParser::ValidateParameter(ActParam *actParam) {
 			int32_t knot = actParam->numValue/one6;
 			
 			if (knot < 0 || knot >= this->knots) {
-				swprintf(errMsg,L"invalid knot number (can be in range 0 through %hi only)",this->knots-1); this->ErrorMsg(contextual,errMsg);
+				swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"invalid knot number (can be in range 0 through %hi only)", this->knots - 1);
+				this->ErrorMsg(contextual, errMsg);
 				actParam->numValue = 0;
 			}
 		//	for knotNttvOpt, ttvKnot[0], and ttvKnot[1] already validated against being in range
@@ -1667,25 +1697,29 @@ void TMTSourceParser::ValidateParameter(ActParam *actParam) {
 			break;
 		case phaseN:
 			if (actParam->numValue < 0 || actParam->numValue >= phases*one6) {
-				swprintf(errMsg,L"invalid phase type (can be in range 0 through %li only)",phases-1); this->ErrorMsg(contextual,errMsg);
+				swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"invalid phase type (can be in range 0 through %li only)", phases - 1);
+				this->ErrorMsg(contextual, errMsg);
 				actParam->numValue = 0;
 			}
 			break;
 		case angle100N:
 			if (actParam->numValue < 0 || actParam->numValue > maxAngle*one6) {
-				swprintf(errMsg,L"invalid angle x100 (can be in range 0 through %li only)",maxAngle); this->ErrorMsg(contextual,errMsg);
+				swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"invalid angle x100 (can be in range 0 through %li only)", maxAngle);
+				this->ErrorMsg(contextual, errMsg);
 				actParam->numValue = 0;
 			}
 			break;
 		case colorN:
 			if (DeltaColorOfByte((unsigned char)(actParam->numValue/one6)) == invalidDelta) {
-				swprintf(errMsg,L"invalid delta color flag (can be " NARROW_STR_FORMAT L" only)",AllDeltaColorBytes()); this->ErrorMsg(contextual,errMsg);
+				swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"invalid delta color flag (can be " NARROW_STR_FORMAT L" only)", AllDeltaColorBytes());
+				this->ErrorMsg(contextual, errMsg);
 				actParam->numValue = 0;
 			}
 			break;
 		case serifN:
 			if (actParam->numValue < 0 || actParam->numValue >= serifs*one6) {
-				swprintf(errMsg,L"invalid serif type (can be in range 0 through %li only)",serifs-1); this->ErrorMsg(contextual,errMsg);
+				swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"invalid serif type (can be in range 0 through %li only)", serifs - 1);
+				this->ErrorMsg(contextual, errMsg);
 				actParam->numValue = 0;
 			}
 			break;
@@ -1696,7 +1730,8 @@ void TMTSourceParser::ValidateParameter(ActParam *actParam) {
 		case rationalN:
 		case posRationalN:
 			if ((actParam->type == posRationalN && actParam->numValue < 0) || actParam->numValue < -maxPixelValue || actParam->numValue > maxPixelValue) {
-				swprintf(errMsg,L"invalid pixel size (can be in range %li through %li only)",actParam->type == posRationalN ? 0 : -maxPixelValue/one6,maxPixelValue/one6); this->ErrorMsg(contextual,errMsg);
+				swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"invalid pixel size (can be in range %li through %li only)", actParam->type == posRationalN ? 0 : -maxPixelValue / one6, maxPixelValue / one6);
+				this->ErrorMsg(contextual, errMsg);
 				actParam->numValue = one6;
 			}
 			if (actParam->numValue == 0) {
@@ -1707,7 +1742,8 @@ void TMTSourceParser::ValidateParameter(ActParam *actParam) {
 		case ppemSize:
 		case ppemN:
 			if (actParam->numValue < one6 || actParam->numValue >= maxPpemSize*one6) {
-				swprintf(errMsg,L"invalid ppem number (can be in range 1 through %li only)",maxPpemSize-1); this->ErrorMsg(contextual,errMsg);
+				swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"invalid ppem number (can be in range 1 through %li only)", maxPpemSize - 1);
+				this->ErrorMsg(contextual, errMsg);
 				actParam->numValue = one6;
 			}
 			break;
@@ -1747,9 +1783,9 @@ void TMTSourceParser::Expression(ActParam *actParam) {
 		if (op == plus) actParam->numValue += actParam2.numValue; else actParam->numValue -= actParam2.numValue; // assuming we have not more than 32 - 17 - 1 binary places
 		if (Abs(actParam->numValue) >= (shortMax+1)*one6) {
 			if (op == plus)
-				swprintf(errMsg,L"result of addition too large (cannot be %li or above)",shortMax+1);
+				swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"result of addition too large (cannot be %li or above)", shortMax + 1);
 			else
-				swprintf(errMsg,L"result of subtraction too large (cannot be -%li or below)",shortMax+1);
+				swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"result of subtraction too large (cannot be -%li or below)", shortMax + 1);
 			this->ErrorMsg(contextual,errMsg);
 		}
 		actParam->type = Max(actParam->type,actParam2.type);
@@ -1770,14 +1806,16 @@ void TMTSourceParser::Term(ActParam *actParam) {
 			if ((double)Abs(actParam->numValue)*(double)Abs(actParam2.numValue) < (double)((shortMax+1)*one6*one6))
 				actParam->numValue = (actParam->numValue*actParam2.numValue + half6)/one6;
 			else {
-				swprintf(errMsg,L"result of multiplication too large (cannot be %li or larger in magnitude)",shortMax+1); this->ErrorMsg(contextual,errMsg);
+				swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"result of multiplication too large (cannot be %li or larger in magnitude)", shortMax + 1);
+				this->ErrorMsg(contextual, errMsg);
 			}
 		} else { // op == italAngle, i.e. divide
 			if (actParam2.numValue != 0 && (double)Abs(actParam->numValue) < (double)(shortMax+1)*(double)Abs(actParam2.numValue)) {
 				if (actParam->type == anyN && actParam2.type == anyN && actParam->numValue%actParam2.numValue != 0) actParam->type = rationalN;
 				actParam->numValue = (2*actParam->numValue*one6 + actParam2.numValue)/(2*actParam2.numValue);
 			} else {
-				swprintf(errMsg,L"result of division too large (cannot be %li or larger in magnitude)",shortMax+1); this->ErrorMsg(contextual,errMsg);
+				swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"result of division too large (cannot be %li or larger in magnitude)", shortMax + 1);
+				this->ErrorMsg(contextual, errMsg);
 			}
 		}
 		actParam->type = Max(actParam->type,actParam2.type);
@@ -1844,7 +1882,8 @@ void TMTSourceParser::MinDist(ActParam *actParam) {
 					actParam->pixelSize[actParam->minDists] = pixel.numValue;
 					actParam->minDists++;
 				} else {
-					swprintf(errMsg,L"too many minimum distances (cannot have more than %li)",maxMinDist); this->ErrorMsg(contextual,errMsg);
+					swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"too many minimum distances (cannot have more than %li)", maxMinDist);
+					this->ErrorMsg(contextual, errMsg);
 				}
 			}
 		}
@@ -1881,7 +1920,7 @@ void TMTSourceParser::Range(ActParam *actParam) {
 		if (!actParam->deltaPpemSize[i])
 			actParam->deltaPpemSize[i] = true;
 		else {
-			swprintf(errMsg,L"ppem size %hi occurs more than once",i);
+			swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"ppem size %hi occurs more than once", i);
 			this->ErrorMsg(contextual,errMsg);
 		}
 	}
@@ -1967,13 +2006,14 @@ void TMTSourceParser::GetNumber(void) {
 		this->numValue += (decPlcs*one6 + pwrOf10/2)/pwrOf10;
 	}
 	if (overflow) {
-		swprintf(errMsg,L"number too large (cannot be %li or larger in magnitude)",shortMax+1); this->ErrorMsg(syntactical,errMsg);
+		swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"number too large (cannot be %li or larger in magnitude)", shortMax + 1);
+		this->ErrorMsg(syntactical, errMsg);
 	}
 } /* TMTSourceParser::GetNumber */
 
 Symbol Search(wchar_t *entry, short left, short right, short *matching);
 Symbol Search(wchar_t *entry, short left, short right, short *matching) {
-	short mid,diff,minMatch;
+    short mid,diff = 0,minMatch;
 	wchar_t *id,*en;
 	
 	while (left <= right) {
@@ -2031,7 +2071,8 @@ void TMTSourceParser::GetLiteral(void) {
 	if (!this->ch) this->ErrorMsg(special,L"string quoted but not unquoted");
 	this->GetCh();
 	if (overflow) {
-		swprintf(errMsg,L"string too long (cannot be longer than %li characters)",maxAsmSize-1); this->ErrorMsg(syntactical,errMsg);
+		swprintf(errMsg, sizeof(errMsg) / sizeof(wchar_t), L"string too long (cannot be longer than %li characters)", maxAsmSize - 1);
+		this->ErrorMsg(syntactical, errMsg);
 	}
 }
 
@@ -2177,7 +2218,7 @@ TMTParser *NewTMTSourceParser(void) {
 	return new TMTSourceParser;
 }
 
-bool TMTCompile(TextBuffer *talkText, TrueTypeFont *font, TrueTypeGlyph *glyph, int32_t glyphIndex, TextBuffer *glyfText, bool legacyCompile, int32_t *errPos, int32_t *errLen, wchar_t errMsg[]) {
+bool TMTCompile(TextBuffer *talkText, TrueTypeFont *font, TrueTypeGlyph *glyph, int32_t glyphIndex, TextBuffer *glyfText, bool legacyCompile, int32_t *errPos, int32_t *errLen, wchar_t errMsg[], size_t errMsgLen) {
 	TTEngine *ttengine; // should think of keeping these around somewhere w/o having to allocate over and over again...
 	short generators,i;
 	TTGenerator *ttgenerator[3];
@@ -2207,7 +2248,7 @@ bool TMTCompile(TextBuffer *talkText, TrueTypeFont *font, TrueTypeGlyph *glyph, 
 	for (i = 0; i < generators && !memError; i++) ttgenerator[i]->InitTTGenerator(font,glyph,glyphIndex,ttengine,legacyCompile,&memError);
 	if (!memError) {
 		tmtparser->InitTMTParser(talkText,font,glyph,legacyCompile,generators,ttgenerator);
-		tmtparser->Parse(&changedSrc,errPos,errLen,errMsg);
+		tmtparser->Parse(&changedSrc,errPos,errLen,errMsg,errMsgLen);
 		tmtparser->TermTMTParser();
 		for (i = 0; i < generators; i++) ttgenerator[i]->TermTTGenerator();
 		if (ttengine) ttengine->TermTTEngine(*errPos < 0 ? glyfText : NULL,&memError);
@@ -2216,13 +2257,14 @@ bool TMTCompile(TextBuffer *talkText, TrueTypeFont *font, TrueTypeGlyph *glyph, 
 	for (i = 0; i < generators; i++) delete ttgenerator[i];
 	if (tmtparser) delete tmtparser;
 	
-	if (memError) swprintf(errMsg,L"Insufficient memory for compilation");
+	if (memError)
+		swprintf(errMsg, errMsgLen, L"Insufficient memory for compilation");
 	else if (*errPos > 0) *errPos -= *errLen;
 	return !memError && *errPos + *errLen <= 0;
 } /* TMTCompile */
 
 #if _DEBUG
-bool TMTRemoveAltCodePath(TextBuffer *talkText, TrueTypeFont *font, TrueTypeGlyph *glyph, int32_t *errPos, int32_t *errLen, wchar_t errMsg[]) {
+bool TMTRemoveAltCodePath(TextBuffer *talkText, TrueTypeFont *font, TrueTypeGlyph *glyph, int32_t *errPos, int32_t *errLen, wchar_t errMsg[], size_t errMsgLen) {
 	TMTParser *tmtparser;
 	bool memError,changedSrc;
 	
@@ -2231,12 +2273,12 @@ bool TMTRemoveAltCodePath(TextBuffer *talkText, TrueTypeFont *font, TrueTypeGlyp
 	tmtparser = NewTMTSourceParser(); memError = !tmtparser;
 	if (!memError) {
 		tmtparser->InitTMTParser(talkText,font,glyph,false, 0,NULL);
-		tmtparser->RemoveAltCodePath(&changedSrc,errPos,errLen,errMsg);
+		tmtparser->RemoveAltCodePath(&changedSrc,errPos,errLen,errMsg,errMsgLen);
 		tmtparser->TermTMTParser();
 	}
 	if (tmtparser) delete tmtparser;
 	
-	if (memError) swprintf(errMsg,L"Insufficient memory for compilation");
+	if (memError) swprintf(errMsg,errMsgLen,L"Insufficient memory for compilation");
 	else if (*errPos > 0) *errPos -= *errLen;
 	return !memError && *errPos + *errLen <= 0;
 } // TMTRemoveAltCodePath
