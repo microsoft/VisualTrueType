@@ -4,14 +4,13 @@ on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches: [ main ]
+    tags: ["v*.*.*"]
   pull_request:
     branches: [ main ]
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:  
+
   build:
     # The type of runner that the job will run on
     runs-on: ${{ matrix.os }}
@@ -32,11 +31,59 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: "3.x"
+          
       - name: Install dependencies
-        run: pip install cibuildwheel
+        run: |
+             python -m pip install --upgrade pip
+             pip install cibuildwheel
+             pip install cython 
+        
       - name: Build Wheels
         run: python -m cibuildwheel --output-dir wheelhouse
-      - uses: actions/upload-artifact@v2
+        
+      - name: Upload Wheels
+        uses: actions/upload-artifact@v2
         with:
           name: vttcompilepy-${{ matrix.os }}
-          path: wheelhouse/*.whl
+          path: ./wheelhouse/*.whl
+          
+      - name: Build Source Distribution 
+        run: python setup.py sdist
+          
+      - name: Upload Source Distribution
+        uses: actions/upload-artifact@v2
+        with:
+          path: ./dist/*.zip
+          
+  deploy:
+  
+    needs: [build]
+    # only run if the commit is tagged...
+    if: startsWith(github.ref, 'refs/tags/v')
+    # ... and all build jobs completed successfully
+    runs-on: ubuntu-latest
+    steps:    
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.x"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install --upgrade setuptools cython wheel twine
+    - name: Download artifacts from build jobs
+      uses: actions/download-artifact@v2
+      with:
+        name: artifact
+        path: dist/
+        
+    - uses: pypa/gh-action-pypi-publish@master
+      with:
+        user: __token__
+        password: ${{ secrets.pypi_password }}
+      
+        
+

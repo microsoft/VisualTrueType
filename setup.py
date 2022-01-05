@@ -18,16 +18,19 @@ if int(os.environ.get('CYTHON_LINETRACE', '0')):
     linetrace = True
     define_macros.append(('CYTHON_TRACE_NOGIL', '1'))
 
-extra_compile_args = ['']
+extra_compile_args = []
 
 if platform.system() != 'Windows':
-     extra_compile_args.append('-std=c++1y')
-    
+     extra_compile_args.append('-std=c++14')
+
+if platform.system() == 'Windows':
+    extra_compile_args.append('-sdl')
+
 extension = Extension(
     'vttcompilepy.vttcompilepy',
     define_macros=define_macros,
     include_dirs=[".","src"],
-    sources=['vttcompilepy/vttcompilepy.pyx','src/application.cpp','src/CvtManager.cpp','src/File.cpp','src/List.cpp', 'src/mathutils.cpp', 'src/Memory.cpp','src/Platform.cpp','src/TextBuffer.cpp', 'src/TMTParser.cpp', 'src/TTAssembler.cpp', 'src/TTEngine.cpp', 'src/TTFont.cpp', 'src/TTGenerator.cpp', 'src/Variation.cpp', 'src/VariationInstance.cpp', 'src/VariationModels.cpp' ],
+    sources=['vttcompilepy/vttcompilepy.pyx','src/application.cpp','src/CvtManager.cpp','src/File.cpp','src/List.cpp', 'src/MathUtils.cpp', 'src/Memory.cpp','src/Platform.cpp','src/TextBuffer.cpp', 'src/TMTParser.cpp', 'src/TTAssembler.cpp', 'src/TTEngine.cpp', 'src/TTFont.cpp', 'src/TTGenerator.cpp', 'src/Variation.cpp', 'src/VariationInstance.cpp', 'src/VariationModels.cpp' ],
     language='c++',
     extra_compile_args=extra_compile_args,
 )

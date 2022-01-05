@@ -5,3 +5,9 @@ requires = [
     "cython",
 ]
 build-backend = "setuptools.build_meta"
+
+[tool.cibuildwheel]
+skip = ["*-manylinux_i686", "pp*"]
+
+test-requires = ["pytest", "fonttools"]
+test-command = "pytest {project}/tests"

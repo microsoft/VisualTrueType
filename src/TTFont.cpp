@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 #define _CRT_SECURE_NO_DEPRECATE 
-#define _CRT_NON_CONFORMING_SWPRINTFS
+//#pragma GCC diagnostic ignored "-Wmultichar" 
 
 #include <assert.h> // assert
 #include <string.h>
@@ -364,12 +364,12 @@ void TrueTypeFont::AssertMaxGlyphs(int32_t minGlyphs) {
 	this->maxGlitEntries = this->IndexToLoc && this->tmpIndexToLoc && this->glit1 && this->glit2 && this->charCodeOf && this->charGroupOf && this->horMetric ? minGlyphs : 0;
 } // TrueTypeFont::AssertMaxGlyphs
 
-void MaxSfntSizeError(const wchar_t from[], int32_t size, wchar_t errMsg[]);
-void MaxSfntSizeError(const wchar_t from[], int32_t size, wchar_t errMsg[]) {
-	swprintf(errMsg,WIDE_STR_FORMAT L", \r" BULLET L" Unable to allocate %li to work on this font.",from, size);
+void MaxSfntSizeError(const wchar_t from[], int32_t size, wchar_t errMsg[], size_t errMsgLen);
+void MaxSfntSizeError(const wchar_t from[], int32_t size, wchar_t errMsg[], size_t errMsgLen) {
+	swprintf(errMsg,errMsgLen,WIDE_STR_FORMAT L", \r" BULLET L" Unable to allocate %li to work on this font.",from, size);
 } // MaxSfntSizeError
 
-bool TrueTypeFont::SetSfnt(short platformID, short encodingID, wchar_t errMsg[])
+bool TrueTypeFont::SetSfnt(short platformID, short encodingID, wchar_t errMsg[], size_t errMsgLen)
 {
 	this->UnpackFvar();
 	this->UnpackAvar(); 
@@ -542,7 +542,7 @@ bool TrueTypeFont::IsMakeTupleName(const std::wstring &name) const
 	return false; 
 } // TrueTypeFont::IsMakeTupleName
 
-bool TrueTypeFont::Read(File *file, TrueTypeGlyph *glyph, short *platformID, short *encodingID, wchar_t errMsg[]) {
+bool TrueTypeFont::Read(File *file, TrueTypeGlyph *glyph, short *platformID, short *encodingID, wchar_t errMsg[], size_t errMsgLen) {
 	int32_t glyphIndex;
 
 	this->sfntSize = file->Length();
@@ -550,21 +550,22 @@ bool TrueTypeFont::Read(File *file, TrueTypeGlyph *glyph, short *platformID, sho
 	this->AssertMaxSfntSize(this->sfntSize,true,true);
 
 	if (this->sfntSize > this->maxSfntSize) {
-		MaxSfntSizeError(L"Read: This font is too large",this->sfntSize,errMsg); return false;
+		MaxSfntSizeError(L"Read: This font is too large",this->sfntSize,errMsg,errMsgLen); return false;
 	}
 	file->ReadBytes(this->sfntSize,	this->sfntHandle);
 	if (file->Error()) {
-		swprintf(errMsg,L"Read: I/O error reading this font"); return false;
+		swprintf(errMsg, errMsgLen, L"Read: I/O error reading this font"); return false;
 	}
 	
-	if (!this->UnpackHeadHheaMaxpHmtx(errMsg)) return false;
+	if (!this->UnpackHeadHheaMaxpHmtx(errMsg, errMsgLen)) return false;
 
 	if(*platformID == 3 && *encodingID == 1) 
 		*encodingID = 10; // lets first try 3,10 and default lower if not present
 	
-	if (!this->CMapExists(*platformID,*encodingID) && !this->DefaultCMap(platformID,encodingID,errMsg)) return false;
+	if (!this->CMapExists(*platformID,*encodingID) && !this->DefaultCMap(platformID,encodingID,errMsg, errMsgLen)) return false;
 	
-	if (!(this->UnpackGlitsLoca(errMsg) && this->UpdateMaxPointsAndContours(errMsg) && this->UnpackCMap(*platformID,*encodingID,errMsg) && this->UnpackCharGroup(errMsg))) return false;
+	if (!(this->UnpackGlitsLoca(errMsg, errMsgLen) && this->UpdateMaxPointsAndContours(errMsg, errMsgLen) && this->UnpackCMap(*platformID, *encodingID, errMsg, errMsgLen) && this->UnpackCharGroup(errMsg, errMsgLen)))
+		return false;
 	
 	// Clear for new font. 
 	if (instanceManager_ != nullptr)
@@ -572,17 +573,21 @@ bool TrueTypeFont::Read(File *file, TrueTypeGlyph *glyph, short *platformID, sho
 		instanceManager_->clear(); 
 	}
 
-	if (!this->SetSfnt(*platformID, *encodingID, errMsg)) return false;
+	if (!this->SetSfnt(*platformID, *encodingID, errMsg, errMsgLen))
+		return false;
 
 	// not the smartest way to get these numbers, another historical legacy
 	if ((glyphIndex = this->GlyphIndexOf(L'H')) == INVALID_GLYPH_INDEX) this->capHeight = this->unitsPerEm;
-	else if (this->GetGlyph(glyphIndex,glyph,errMsg)) this->capHeight = glyph->ymax;
+	else if (this->GetGlyph(glyphIndex, glyph, errMsg, errMsgLen))
+		this->capHeight = glyph->ymax;
 	else return false;
 	if ((glyphIndex = this->GlyphIndexOf(L'x')) == INVALID_GLYPH_INDEX) this->xHeight = this->unitsPerEm;
-	else if (this->GetGlyph(glyphIndex,glyph,errMsg)) this->xHeight = glyph->ymax;
+	else if (this->GetGlyph(glyphIndex, glyph, errMsg, errMsgLen))
+		this->xHeight = glyph->ymax;
 	else return false;
 	if ((glyphIndex = this->GlyphIndexOf(L'p')) == INVALID_GLYPH_INDEX) this->descenderHeight = 0;
-	else if (this->GetGlyph(glyphIndex,glyph,errMsg)) this->descenderHeight = glyph->ymin;
+	else if (this->GetGlyph(glyphIndex, glyph, errMsg, errMsgLen))
+		this->descenderHeight = glyph->ymin;
 	else return false;	
 
 	// Clear for new font.
@@ -594,11 +599,12 @@ bool TrueTypeFont::Read(File *file, TrueTypeGlyph *glyph, short *platformID, sho
 	return true; // by now
 } // TrueTypeFont::Read
 
-bool TrueTypeFont::Write(File *file, wchar_t errMsg[]) {
+bool TrueTypeFont::Write(File *file, wchar_t errMsg[], size_t errMsgLen) {
 	file->WriteBytes(this->sfntSize, this->sfntHandle);
 	//if (!file->Error()) file->SetPos(this->sfntSize,true); // truncate file to current size
 	if (file->Error()) {
-		swprintf(errMsg,L"I/O error writing this font"); return false;
+		swprintf(errMsg, errMsgLen, L"I/O error writing this font");
+		return false;
 	}
 	return true; // by now
 } // TrueTypeFont::Write
@@ -607,7 +613,7 @@ ControlValueTable *TrueTypeFont::TheCvt(void) {
 	return this->cvt;
 } // TrueTypeFont::TheCvt
 
-bool TrueTypeFont::GetCvt(TextBuffer *cvtText, wchar_t errMsg[]) {
+bool TrueTypeFont::GetCvt(TextBuffer *cvtText, wchar_t errMsg[], size_t errMsgLen) {
 	int32_t size,entries,i;
 	short *cvt;
 	wchar_t buffer[maxLineSize];
@@ -615,19 +621,19 @@ bool TrueTypeFont::GetCvt(TextBuffer *cvtText, wchar_t errMsg[]) {
 	cvt = (short*)this->GetTablePointer(tag_ControlValue);
 	size = this->GetTableLength(tag_ControlValue);
 	entries = size >> 1;
-	if (entries < 0 || MAXCVT < entries) { swprintf(errMsg,L"GetCvt: There are too many cvt entries %li",entries); return false; }
+	if (entries < 0 || MAXCVT < entries) { swprintf(errMsg, errMsgLen, L"GetCvt: There are too many cvt entries %li",entries); return false; }
 	
-	if (!this->GetSource(true,CVT_GLYPH_INDEX,cvtText,errMsg)) return false;
+	if (!this->GetSource(true,CVT_GLYPH_INDEX,cvtText,errMsg, errMsgLen)) return false;
 
 	if (cvtText->TheLength() == 0) { // decode binary cvt
-		for (i = 0; i < entries; i++) { swprintf(buffer,L"%i: %hi\r",i,SWAPW(cvt[i])); cvtText->Append(buffer); }
+		for (i = 0; i < entries; i++) { swprintf(buffer, errMsgLen, L"%i: %hi\r",i,SWAPW(cvt[i])); cvtText->Append(buffer); }
 		
 	}
 	this->cvt->PutCvtBinary(size,(unsigned char *)cvt);
 	return true; // by now
 } // TrueTypeFont::GetCvt
 
-bool TrueTypeFont::GetPrep(TextBuffer *prepText, wchar_t errMsg[]) {
+bool TrueTypeFont::GetPrep(TextBuffer *prepText, wchar_t errMsg[], size_t errMsgLen) {
 	unsigned char *data;
 	int32_t size;	
 
@@ -635,17 +641,17 @@ bool TrueTypeFont::GetPrep(TextBuffer *prepText, wchar_t errMsg[]) {
 	data = this->GetTablePointer(tag_PreProgram);
 	size = this->GetTableLength(tag_PreProgram);
 	if (size > MAXBINSIZE) {
-		swprintf(errMsg,L"GetPrep: pre-program is %li bytes long (cannot be longer than %li bytes)",size,MAXBINSIZE);
+		swprintf(errMsg,errMsgLen,L"GetPrep: pre-program is %li bytes long (cannot be longer than %li bytes)",size,MAXBINSIZE);
 		return false;
 	}	
-	return this->UpdateBinData(asmPREP,size,data) && this->GetSource(true,PRE_PGM_GLYPH_INDEX,prepText,errMsg); // get source after binary, in case binary exists but source doesn't...
+	return this->UpdateBinData(asmPREP,size,data) && this->GetSource(true,PRE_PGM_GLYPH_INDEX,prepText,errMsg, errMsgLen); // get source after binary, in case binary exists but source doesn't...
 } // TrueTypeFont::GetPrep
 
 int32_t TrueTypeFont::PrepBinSize(void) {
 	return this->binSize[asmPREP];
 } // TrueTypeFont::PrepBinSize
 
-bool TrueTypeFont::GetFpgm(TextBuffer *fpgmText, wchar_t errMsg[]) {
+bool TrueTypeFont::GetFpgm(TextBuffer *fpgmText, wchar_t errMsg[], size_t errMsgLen) {
 	unsigned char *data;
 	int32_t size;	
 	
@@ -653,28 +659,28 @@ bool TrueTypeFont::GetFpgm(TextBuffer *fpgmText, wchar_t errMsg[]) {
 	data = this->GetTablePointer(tag_FontProgram);
 	size = this->GetTableLength(tag_FontProgram);
 	if (size > MAXBINSIZE) {
-		swprintf(errMsg,L"GetFpgm: font program is %li bytes long (cannot be longer than %li bytes)",size,MAXBINSIZE);
+		swprintf(errMsg,errMsgLen, L"GetFpgm: font program is %li bytes long (cannot be longer than %li bytes)",size,MAXBINSIZE);
 		return false;
 	}
-	return this->UpdateBinData(asmFPGM,size,data) && this->GetSource(true,FONT_PGM_GLYPH_INDEX,fpgmText,errMsg); // get source after binary, in case binary exists but source doesn't...
+	return this->UpdateBinData(asmFPGM,size,data) && this->GetSource(true,FONT_PGM_GLYPH_INDEX,fpgmText,errMsg, errMsgLen); // get source after binary, in case binary exists but source doesn't...
 } // TrueTypeFont::GetFpgm
 
 int32_t TrueTypeFont::FpgmBinSize(void) {
 	return this->binSize[asmFPGM];
 } // TrueTypeFont::FpgmBinSize
 
-bool TrueTypeFont::GetGlyf(int32_t glyphIndex, TextBuffer *glyfText, wchar_t errMsg[]) {	
-	return this->GetSource(true,glyphIndex,glyfText,errMsg);		
+bool TrueTypeFont::GetGlyf(int32_t glyphIndex, TextBuffer *glyfText, wchar_t errMsg[], size_t errMsgLen) {	
+	return this->GetSource(true, glyphIndex, glyfText, errMsg, errMsgLen);		
 	// here we don't get any binary, this is done in GetGlyph, which also deals with the glyph's bounding box or composite information
 } // TrueTypeFont::GetGlyf
 
 
-bool TrueTypeFont::GetTalk(int32_t glyphIndex, TextBuffer *talkText, wchar_t errMsg[]) {
-	return this->GetSource(false,glyphIndex,talkText,errMsg);
+bool TrueTypeFont::GetTalk(int32_t glyphIndex, TextBuffer *talkText, wchar_t errMsg[], size_t errMsgLen) {
+	return this->GetSource(false, glyphIndex, talkText, errMsg, errMsgLen);
 } // TrueTypeFont::GetTalk
 
 
-bool TrueTypeFont::GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t errMsg[]) {
+bool TrueTypeFont::GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t errMsg[], size_t errMsgLen) {
 	short i,end = 0;
 	bool emptyGlyph,weHaveInstructions;
 	unsigned char *sp;
@@ -688,7 +694,7 @@ bool TrueTypeFont::GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t er
 	int32_t lsb = 0, advWidth = 0; 
 		
 	if (glyphIndex < 0 || this->numLocaEntries <= glyphIndex) {
-		swprintf(errMsg,L"TrueTypeFont::GetGlyph: glyphIndex %li is out of range",glyphIndex); return false;
+		swprintf(errMsg, errMsgLen, L"TrueTypeFont::GetGlyph: glyphIndex %li is out of range",glyphIndex); return false;
 	}
 
 	GetHMTXEntry(glyphIndex, &lsb, &advWidth);
@@ -727,7 +733,7 @@ bool TrueTypeFont::GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t er
 	numContoursInGlyph = SWAPW(signedWord);
 
 	if (numContoursInGlyph > MAXCONTOURS) {
-		swprintf(errMsg,L"GetGlyph: glyph %li has %hi contours (cannot have more than %hi)",glyphIndex,numContoursInGlyph,MAXCONTOURS); return false;
+		swprintf(errMsg, errMsgLen, L"GetGlyph: glyph %li has %hi contours (cannot have more than %hi)",glyphIndex,numContoursInGlyph,MAXCONTOURS); return false;
 	}
 
 	glyph->startPoint[0] = 0;
@@ -761,7 +767,7 @@ bool TrueTypeFont::GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t er
 		int32_t accumulatedContours = 0; 
  		do {
 			if (glyph->bluePrint.numComponents >= MAXNUMCOMPONENTS) {
-				swprintf(errMsg,L"GetGlyph: glyph %hu has more than %hu components ",glyphIndex,(unsigned short)MAXNUMCOMPONENTS); return false;
+				swprintf(errMsg, errMsgLen, L"GetGlyph: glyph %hu has more than %hu components ",glyphIndex,(unsigned short)MAXNUMCOMPONENTS); return false;
 			}
 
  			component = &glyph->bluePrint.component[glyph->bluePrint.numComponents];
@@ -793,7 +799,7 @@ bool TrueTypeFont::GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t er
 				glyph->numContoursInGlyph += numContours; 
 				component->numContours = (unsigned short)numContours;
 			} else {
-				swprintf(errMsg,L"GetGlyph: failed to obtain number of contours for component %i of glyph %i",(int32_t)cgIdx,glyphIndex); return false;
+				swprintf(errMsg, errMsgLen, L"GetGlyph: failed to obtain number of contours for component %i of glyph %i",(int32_t)cgIdx,glyphIndex); return false;
 			}
 
 			if (flags & USE_MY_METRICS) { 
@@ -843,7 +849,7 @@ bool TrueTypeFont::GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t er
 							   && component->transform[0][1] ==     0 && component->transform[1][0] ==     0;
  			
 			if ( glyph->componentSize > MAXCOMPONENTSIZE ) { // maybe too late already...
-				swprintf(errMsg,L"GetGlyph: glyph %li has %hi bytes of component data (cannot have more than %hi)",glyphIndex,glyph->componentSize,MAXCOMPONENTSIZE); return false;
+				swprintf(errMsg, errMsgLen, L"GetGlyph: glyph %li has %hi bytes of component data (cannot have more than %hi)",glyphIndex,glyph->componentSize,MAXCOMPONENTSIZE); return false;
  			}
 
 			glyph->bluePrint.numComponents++;
@@ -856,7 +862,7 @@ bool TrueTypeFont::GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t er
 
 			binSize = SWAPW(binSize);
 			if (binSize > MAXBINSIZE) {
-				swprintf(errMsg, L"GetGlyph: glyph %li has %li bytes of instruction (cannot have more than %li)", glyphIndex, binSize, MAXBINSIZE); return false;
+				swprintf(errMsg, errMsgLen, L"GetGlyph: glyph %li has %li bytes of instruction (cannot have more than %li)", glyphIndex, binSize, MAXBINSIZE); return false;
 			}
 
 			this->UpdateBinData(asmGLYF, binSize, sp);
@@ -896,7 +902,7 @@ bool TrueTypeFont::GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t er
 		binSize = SWAPW(unsignedWord);
 
 		if (binSize > MAXBINSIZE) {
-			swprintf(errMsg, L"GetGlyph: glyph %li has %li bytes of instruction (cannot have more than %li)", glyphIndex, binSize, MAXBINSIZE); return false;
+			swprintf(errMsg, errMsgLen, L"GetGlyph: glyph %li has %li bytes of instruction (cannot have more than %li)", glyphIndex, binSize, MAXBINSIZE); return false;
 		}
 
 		this->UpdateBinData(asmGLYF, binSize, sp);
@@ -1041,6 +1047,11 @@ unsigned char* TrueTypeFont::GlyfBin(void) {
 	return this->binData[asmGLYF]; 
 }
 
+void TrueTypeFont::GetHeights(int32_t* emHeight)
+{
+	*emHeight = this->unitsPerEm;
+} // TrueTypeFont::GetHeights
+
 bool TrueTypeFont::GetHMTXEntry(int32_t glyphIndex, int32_t *leftSideBearing, int32_t *advanceWidth) {
 	sfnt_HorizontalMetrics *horMetric;
 
@@ -1083,7 +1094,7 @@ int32_t TrueTypeFont::GlyphIndexOf(uint32_t charCode) {
 	return it->glyphIndex; 
 } // TrueTypeFont::GlyphIndexOf
 
-bool TrueTypeFont::GlyphIndecesOf(wchar_t textString[], int32_t maxNumGlyphIndeces, int32_t glyphIndeces[], int32_t *numGlyphIndeces, wchar_t errMsg[]) {
+bool TrueTypeFont::GlyphIndecesOf(wchar_t textString[], int32_t maxNumGlyphIndeces, int32_t glyphIndeces[], int32_t *numGlyphIndeces, wchar_t errMsg[], size_t errMsgLen) {
 	int32_t i,dec,hex;
 	wchar_t ch;
 
@@ -1094,22 +1105,38 @@ bool TrueTypeFont::GlyphIndecesOf(wchar_t textString[], int32_t maxNumGlyphIndec
 			ch = textString[i++]; dec = 0;
 			while (ch && ch != L'^') {
 				if (L'0' <= ch && ch <= L'9') dec = 10*dec + (int32_t)(ch - L'0');
-				else { swprintf(errMsg,L"invalid decimal digit in glyph index"); return false; }
+				else
+				{
+					swprintf(errMsg, errMsgLen, L"invalid decimal digit in glyph index");
+					return false;
+				}
 				ch = textString[i++];
 			}
 			if (ch == L'^') ch = textString[i++];
-			else { swprintf(errMsg,L"closing ^ missing"); return false; }
+			else
+			{
+				swprintf(errMsg, errMsgLen, L"closing ^ missing");
+				return false;
+			}
 		} else if (ch == L'~') { // (hexadecimal) charCode
 			ch = textString[i++]; hex = 0;
 			while (ch && ch != L'~') {
 				if (L'0' <= ch && ch <= L'9') hex = 16*hex + (int32_t)(ch - L'0');
 				else if (L'A' <= ch && ch <= L'F') hex = 16*hex + (int32_t)(ch - L'A' + 10);
 				else if (L'a' <= ch && ch <= L'f') hex = 16*hex + (int32_t)(ch - L'a' + 10);
-				else { swprintf(errMsg,L"invalid hexadecimal digit in glyph index"); return false; }
+				else
+				{
+					swprintf(errMsg, errMsgLen, L"invalid hexadecimal digit in glyph index");
+					return false;
+				}
 				ch = textString[i++];
 			}
 			if (ch == L'~') ch = textString[i++];
-			else { swprintf(errMsg,L"closing ~ missing"); return false; }
+			else
+			{
+				swprintf(errMsg, errMsgLen, L"closing ~ missing");
+				return false;
+			}
 			dec = this->GlyphIndexOf(hex);
 		} else {
 			dec = this->GlyphIndexOf(ch);
@@ -1166,11 +1193,15 @@ bool TrueTypeFont::CMapExists(short platformID, short encodingID) {
 	return i < num;
 } // TrueTypeFont::CMapExists
 
-bool TrueTypeFont::DefaultCMap(short *platformID, short *encodingID, wchar_t errMsg[]) {
+bool TrueTypeFont::DefaultCMap(short *platformID, short *encodingID, wchar_t errMsg[], size_t errMsgLen) {
 	sfnt_char2IndexDirectory *cmap = (sfnt_char2IndexDirectory *)this->GetTablePointer(tag_CharToIndexMap);
 	int32_t i,num = SWAPW(cmap->numTables);
 	
-	if (num <= 0) { swprintf(errMsg,L"There is no cmap in this font"); return false; }
+	if (num <= 0)
+	{
+		swprintf(errMsg, errMsgLen, L"There is no cmap in this font");
+		return false;
+	}
 	*platformID = CSWAPW(plat_MS); *encodingID = CSWAPW(10);
 	for (i = 0; i < num && (cmap->platform[i].platformID != *platformID || cmap->platform[i].specificID != *encodingID); i++);
 	if (i < num) goto found; // found preferred cmap...
@@ -1186,7 +1217,7 @@ found:
 	return true; // found any cmap at all
 } // TrueTypeFont::DefaultCMap
 
-bool TrueTypeFont::UnpackCMap(short platformID, short encodingID, wchar_t errMsg[]) {
+bool TrueTypeFont::UnpackCMap(short platformID, short encodingID, wchar_t errMsg[], size_t errMsgLen) {
 	int32_t i,num;
 	sfnt_char2IndexDirectory *cmap;
 	sfnt_mappingTable *map;
@@ -1203,7 +1234,11 @@ bool TrueTypeFont::UnpackCMap(short platformID, short encodingID, wchar_t errMsg
 	encodingID = SWAPW(encodingID);
 
 	for (i = 0; i < num && (cmap->platform[i].platformID != platformID || cmap->platform[i].specificID != encodingID); i++);
-	if (i == num) { swprintf(errMsg,L"Unpacking cmap: cmap for platform id %hi and encoding id %hi not found",platformID,encodingID); return false; }
+	if (i == num)
+	{
+		swprintf(errMsg, errMsgLen, L"Unpacking cmap: cmap for platform id %hi and encoding id %hi not found", platformID, encodingID);
+		return false;
+	}
 	
 	map = (sfnt_mappingTable*)(reinterpret_cast<unsigned char*>(cmap) + SWAPL(cmap->platform[i].offset));
 	uint16 format = SWAPW(map->format); 
@@ -1212,7 +1247,9 @@ bool TrueTypeFont::UnpackCMap(short platformID, short encodingID, wchar_t errMsg
 		case 4:  this->GetFmt4(map);  break;
 		case 6:  this->GetFmt6(map);  break;
 		case 12: this->GetFmt12(map); break; 
-		default: swprintf(errMsg,L"Unpacking cmap: cmap format %hi not implemented",map->format); return false;
+		default:
+			swprintf(errMsg, errMsgLen, L"Unpacking cmap: cmap format %hi not implemented", map->format);
+			return false;
 	}
 	return true; // by now
 } // TrueTypeFont::UnpackCMap
@@ -1990,16 +2027,16 @@ void PackMaxp(unsigned char *sfnt, sfnt_maxProfileTable *profile) {
 	maxp->maxComponentDepth     = SWAPW(profile->maxComponentDepth);
 } // PackMaxp
 
-bool TrueTypeFont::UnpackHeadHheaMaxpHmtx(wchar_t errMsg[]) {
+bool TrueTypeFont::UnpackHeadHheaMaxpHmtx(wchar_t errMsg[], size_t errMsgLen) {
 	sfnt_FontHeader *phead, head;
 	sfnt_HorizontalHeader *phhea, hhea;
-	unsigned short aw,lsb,*hmtx; // actually hhea->numberOf_LongHorMetrics of sfnt_HorizontalMetrics [aw,lsb] pairs the monospaced part where we have only lsb numbers 
+	unsigned short aw = 0,lsb,*hmtx; // actually hhea->numberOf_LongHorMetrics of sfnt_HorizontalMetrics [aw,lsb] pairs the monospaced part where we have only lsb numbers 
 	int32_t glitLen,numEntries,numGlyphs,i,k;
 
 	unsigned char* pmaxp = this->GetTablePointer(tag_MaxProfile);
 	if (pmaxp == nullptr)
 	{
-		swprintf(errMsg, L"Error fetching maxp table"); 
+		swprintf(errMsg, errMsgLen, L"Error fetching maxp table"); 
 		return false; 
 	}
 	UnpackMaxp(pmaxp ,&this->profile);
@@ -2007,7 +2044,7 @@ bool TrueTypeFont::UnpackHeadHheaMaxpHmtx(wchar_t errMsg[]) {
 	phead = (sfnt_FontHeader*)this->GetTablePointer(tag_FontHeader);
 	if (phead == nullptr)
 	{
-		swprintf(errMsg, L"Unpacking head: error fetching table");
+		swprintf(errMsg, errMsgLen, L"Unpacking head: error fetching table");
 		return false;
 	}
 	head.version = SWAPL(phead->version);
@@ -2035,7 +2072,8 @@ bool TrueTypeFont::UnpackHeadHheaMaxpHmtx(wchar_t errMsg[]) {
 	this->metricProfile.xMax = head.xMax;
 	this->metricProfile.yMax = head.yMax;
 	if (head.unitsPerEm < 64 || head.unitsPerEm > 16384) { // this used to have an upper range of 17686
-		swprintf(errMsg,L"Unpacking head: em-Height %hi not in range 64 through 16384",head.unitsPerEm); return false;
+		swprintf(errMsg, errMsgLen, L"Unpacking head: em-Height %hi not in range 64 through 16384", head.unitsPerEm);
+		return false;
 		// according to Greg, unitsPerEm > 16384 would cause overflow in the rasterizer, plus imho the number 17686 doesn't make any sense to me.
 	}
 	
@@ -2044,7 +2082,8 @@ bool TrueTypeFont::UnpackHeadHheaMaxpHmtx(wchar_t errMsg[]) {
 	} else if (head.indexToLocFormat == LONG_INDEX_TO_LOC_FORMAT) {
 		this->shortIndexToLocTable = false;
 	} else {
-		swprintf(errMsg,L"Unpacking head: Unknown indexToLocFormat %hi",head.indexToLocFormat); return false;
+		swprintf(errMsg, errMsgLen, L"Unpacking head: Unknown indexToLocFormat %hi", head.indexToLocFormat);
+		return false;
 	}
 	this->outShortIndexToLocTable = this->shortIndexToLocTable;
 	
@@ -2058,7 +2097,7 @@ bool TrueTypeFont::UnpackHeadHheaMaxpHmtx(wchar_t errMsg[]) {
 	this->AssertMaxGlyphs(this->maxGlyphs + GLIT_PAD);
 
 	if (this->maxGlyphs + GLIT_PAD > this->maxGlitEntries) {  
-		swprintf(errMsg,L"This font has too many glyphs, please\r" BULLET L" increase the amount of virtual memory in your system settings");  
+		swprintf(errMsg, errMsgLen, L"This font has too many glyphs, please\r" BULLET L" increase the amount of virtual memory in your system settings");  
 		return false;
 	}
 	
@@ -2103,7 +2142,7 @@ bool TrueTypeFont::UnpackHeadHheaMaxpHmtx(wchar_t errMsg[]) {
 	return true; // by now
 } // TrueTypeFont::UnpackHeadHheaMaxpHmtx
 
-bool TrueTypeFont::UnpackGlitsLoca(wchar_t errMsg[]) {
+bool TrueTypeFont::UnpackGlitsLoca(wchar_t errMsg[], size_t errMsgLen) {
 /*	the 'glit' tables are private tables to index the private tables that store the TMT and TT sources.
 	however, due to reasons that I don't remember, the (TT) sources for the prep and fpgm, as well as for
 	the cvt and the hinter parameters, are not stored in individual private tables, but as special glyphs
@@ -2191,7 +2230,7 @@ bool TrueTypeFont::UnpackGlitsLoca(wchar_t errMsg[]) {
 //	for (i = 0; i < Min(numberOfGlyphs,this->numLocaEntries); i++) // 2nd Ed Win98 fonts somehow got a loca table with one extra entry
 	for (i = 0; i < this->numLocaEntries; i++) // 2nd Ed Win98 fonts somehow got a loca table with one extra entry
 		if (this->IndexToLoc[i] > this->IndexToLoc[i+1]) {
-			swprintf(errMsg,L"Unpacking loca: loca table not in ascending order %i %i %i",i, this->IndexToLoc[i], this->IndexToLoc[i + 1]);
+			swprintf(errMsg,errMsgLen,L"Unpacking loca: loca table not in ascending order %i %i %i",i, this->IndexToLoc[i], this->IndexToLoc[i + 1]);
 			return false;
 		}
 	
@@ -2224,7 +2263,7 @@ bool TrueTypeFont::UnpackGlitsLoca(wchar_t errMsg[]) {
 	return true; // by now
 } // TrueTypeFont::UnpackGlitsLoca
 
-bool TrueTypeFont::UpdateMaxPointsAndContours(wchar_t errMsg[]) {
+bool TrueTypeFont::UpdateMaxPointsAndContours(wchar_t errMsg[], size_t errMsgLen) {
 	// fonts like the Trebuchet have insufficient values for maxPoints, maxContours, maxCompositePoints, and maxCompositeContours,
 	// which creates a bootstrapping problem, given that TrueTypeFont::GetGlyph expects a correct font to be installed in the rasterizer.
 	// If this fails, we never get a chance to update the above profile values, hence we do it in here for prophylactic reasons...
@@ -2269,7 +2308,7 @@ bool TrueTypeFont::UpdateMaxPointsAndContours(wchar_t errMsg[]) {
 
 	return true;
 failure:
-	swprintf(errMsg,L"Failed to update max points and contours due to " WIDE_STR_FORMAT L" table",failureMsg[failureCode]);
+	swprintf(errMsg,errMsgLen,L"Failed to update max points and contours due to " WIDE_STR_FORMAT L" table",failureMsg[failureCode]);
 	return false;
 } // TrueTypeFont::UpdateMaxPointsAndContours
 
@@ -2307,7 +2346,7 @@ typedef struct {
 void TrueTypeFont::GetFmt4(sfnt_mappingTable *map) { // I made no attempt to understand this
 	unsigned short j;
 	int16 i,segCount,*idDelta,delta;
-	uint16 gid, end, *endCount, start, *startCount, *idRangeOffset, offset, *glyphIdArray;
+	uint16 gid, end, *endCount, start, *startCount, *idRangeOffset, offset; //, *glyphIdArray;
 	sfnt_cmap4hdr *cmap4hdr = (sfnt_cmap4hdr*)(&map[1]);
 	
 	segCount = SWAPW(cmap4hdr->segCountX2) >> 1;
@@ -2315,7 +2354,7 @@ void TrueTypeFont::GetFmt4(sfnt_mappingTable *map) { // I made no attempt to und
 	startCount = endCount + (segCount + 1);
 	idDelta = (int16 *)&startCount[segCount];
 	idRangeOffset = (uint16 *)&idDelta[segCount];
-	glyphIdArray = &idRangeOffset[segCount];
+	//glyphIdArray = &idRangeOffset[segCount];
 
 
 	for (i = 0; i < segCount && endCount[i] != 0xFFFF; i++) {
@@ -2366,7 +2405,7 @@ void TrueTypeFont::GetFmt12(sfnt_mappingTable *map)
 	this->SortGlyphMap(); 
 }
 
-bool TrueTypeFont::UnpackCharGroup(wchar_t errMsg[]) {
+bool TrueTypeFont::UnpackCharGroup(wchar_t errMsg[], size_t errMsgLen) {
 	int32_t i,numberOfGlyph;
 	short *charGroup,tempGroup;
 	
@@ -2388,7 +2427,7 @@ bool TrueTypeFont::UnpackCharGroup(wchar_t errMsg[]) {
 	return true; // by now
 } // TrueTypeFont::UnpackCharGroup
 
-bool TrueTypeFont::GetSource(bool lowLevel, int32_t glyphIndex, TextBuffer *source, wchar_t errMsg[]) {
+bool TrueTypeFont::GetSource(bool lowLevel, int32_t glyphIndex, TextBuffer *source, wchar_t errMsg[], size_t errMsgLen) {
 	sfnt_MemDataEntry *glit;
 	int32_t len,glitEntries,glitIndex,pgmID;	
 	
@@ -2406,13 +2445,13 @@ bool TrueTypeFont::GetSource(bool lowLevel, int32_t glyphIndex, TextBuffer *sour
 	}
 	else 
 	{		
-		swprintf(errMsg,L"Unpacking source: ");
+		swprintf(errMsg, errMsgLen, L"Unpacking source: ");
 		if (len == 0)
-			swprintf(&errMsg[STRLENW(errMsg)],L"private " WIDE_STR_FORMAT L"level table empty",lowLevel ? L"low" : L"high");
+			swprintf(&errMsg[STRLENW(errMsg)], errMsgLen, L"private " WIDE_STR_FORMAT L"level table empty", lowLevel ? L"low" : L"high");
 		else if (glitIndex == glitEntries)
-			swprintf(&errMsg[STRLENW(errMsg)],L"glyph %li not in private glit",glyphIndex);
+			swprintf(&errMsg[STRLENW(errMsg)], errMsgLen, L"glyph %li not in private glit", glyphIndex);
 		else
-			swprintf(&errMsg[STRLENW(errMsg)],L"bad private stamp 1");
+			swprintf(&errMsg[STRLENW(errMsg)], errMsgLen, L"bad private stamp 1");
 		source->SetText(0,(wchar_t*)NULL);
 		return len == 0; // ok to have no sources
 	}
@@ -2570,7 +2609,7 @@ bool BuildOffsetTables(unsigned char *sfnt, uint32_t maxSfntSize, sfnt_OffsetTab
 
 bool TrueTypeFont::BuildNewSfnt(StripCommand strip, CharGroup group, int32_t glyphIndex, TrueTypeGlyph *glyph,
 								   TextBuffer *glyfText, TextBuffer *prepText, TextBuffer *cvtText,  TextBuffer *talkText, TextBuffer *fpgmText,
-								   wchar_t errMsg[]) {
+								   wchar_t errMsg[], size_t errMsgLen) {
 	unsigned char *sfnt,*tmpSfnt,*tmpSfntHandle;
 
     int32_t headerSize,i,j,tag,numberOfGlyphs,numberOfHMetrics = 0,zero = 0L,pad;
@@ -2614,12 +2653,12 @@ bool TrueTypeFont::BuildNewSfnt(StripCommand strip, CharGroup group, int32_t gly
 	
 	head = (sfnt_FontHeader *)this->GetTablePointer(tag_FontHeader);
 	if (SWAPL(head->magicNumber) != SFNT_MAGIC) {
-		swprintf(errMsg,L"BuildNewSfnt: Bad magic number in the head");
+		swprintf(errMsg, errMsgLen, L"BuildNewSfnt: Bad magic number in the head");
 		goto term;
 	}
 	
 	if (glyphIndex < 0 || this->profile.numGlyphs <= glyphIndex) {
-		swprintf(errMsg,L"BuildNewSfnt: invalid glyph index %li of current glyph",glyphIndex);
+		swprintf(errMsg, errMsgLen, L"BuildNewSfnt: invalid glyph index %li of current glyph", glyphIndex);
 		goto term;
 	}
 	
@@ -2639,7 +2678,7 @@ bool TrueTypeFont::BuildNewSfnt(StripCommand strip, CharGroup group, int32_t gly
 	sfnt = this->sfntHandle; // alias it
 	
 	if (!BuildOffsetTables(sfnt,this->sfntSize,this->offsetTable,this->tmpOffsetTable,variableTables,avail,strip,&headerSize)) {
-		swprintf(errMsg,L"BuildNewSfnt: offset is too large"); // claudebe, problem with a new font received from Sampo
+		swprintf(errMsg, errMsgLen, L"BuildNewSfnt: offset is too large"); // claudebe, problem with a new font received from Sampo
 		goto term;
 	}
 
@@ -2750,7 +2789,7 @@ bool TrueTypeFont::BuildNewSfnt(StripCommand strip, CharGroup group, int32_t gly
 	this->AssertMaxSfntSize(newSfntSizeEstimate,false,true); // make sure we have a large enough tmpSfnt
 
 	if (newSfntSizeEstimate > this->maxTmpSfntSize) {
-		MaxSfntSizeError(L"BuildNewSfnt: This font is getting too large",newSfntSizeEstimate,errMsg); goto term;
+		MaxSfntSizeError(L"BuildNewSfnt: This font is getting too large",newSfntSizeEstimate,errMsg,errMsgLen); goto term;
 	}
 	
 	// 2. pass: build the new sfnt into the tmpSfntHandle
@@ -3087,7 +3126,7 @@ term: // function termination code
 		this->glit1Entries = this->glit2Entries = 0;
 		this->shortIndexToLocTable = this->outShortIndexToLocTable;
 		
-		result = this->UnpackGlitsLoca(errMsg) && this->UpdateMaxPointsAndContours(errMsg) && this->UnpackCharGroup(errMsg) && this->SetSfnt( -1, -1, errMsg);
+		result = this->UnpackGlitsLoca(errMsg,errMsgLen) && this->UpdateMaxPointsAndContours(errMsg,errMsgLen) && this->UnpackCharGroup(errMsg,errMsgLen) && this->SetSfnt( -1, -1, errMsg,errMsgLen);
 	}
 	return result;
 } // TrueTypeFont::BuildNewSfnt
@@ -3203,13 +3242,17 @@ bool TrueTypeFont::GetNumPointsAndContours(int32_t glyphIndex, int32_t *numKnots
 	return true; // by now
 } // TrueTypeFont::GetNumPointsAndContours
 
-bool TrueTypeFont::IncrBuildNewSfnt( wchar_t errMsg[]) {
+bool TrueTypeFont::IncrBuildNewSfnt( wchar_t errMsg[], size_t errMsgLen) {
 #define variableTablesForIncrBuild 10
 	IncrBuildSfntData *iSfnt;
 
 	errMsg[0] = L'\0';
 
-	if (this->incrBuildSfntData == NULL) { swprintf(errMsg, L"this->incrBuildSfntData is NULL"); return false; }
+	if (this->incrBuildSfntData == NULL)
+	{
+		swprintf(errMsg, errMsgLen, L"this->incrBuildSfntData is NULL");
+		return false;
+	}
 	iSfnt = (IncrBuildSfntData *)this->incrBuildSfntData;
 
 	StripCommand strip = iSfnt->binaryOnly ? stripSource : stripNothing;
@@ -3236,7 +3279,7 @@ bool TrueTypeFont::IncrBuildNewSfnt( wchar_t errMsg[]) {
 	
 	head = (sfnt_FontHeader *)this->GetTablePointer(tag_FontHeader);
 	if (SWAPL(head->magicNumber) != SFNT_MAGIC) {
-		swprintf(errMsg,L"IncrBuildNewSfnt: Bad magic number in the head");
+		swprintf(errMsg, errMsgLen, L"IncrBuildNewSfnt: Bad magic number in the head");
 		goto term;
 	}
 	
@@ -3247,7 +3290,7 @@ bool TrueTypeFont::IncrBuildNewSfnt( wchar_t errMsg[]) {
 	sfnt = this->sfntHandle; // alias it
 	
 	if (!BuildOffsetTables(sfnt,this->sfntSize,this->offsetTable,this->tmpOffsetTable,variableTablesForIncrBuild,avail,strip,&headerSize)) {
-		swprintf(errMsg,L"IncrBuildNewSfnt: offset is too large"); // claudebe, problem with a new font received from Sampo
+		swprintf(errMsg, errMsgLen, L"IncrBuildNewSfnt: offset is too large"); // claudebe, problem with a new font received from Sampo
 		goto term;
 	}
 
@@ -3334,7 +3377,7 @@ bool TrueTypeFont::IncrBuildNewSfnt( wchar_t errMsg[]) {
 	this->AssertMaxSfntSize(newSfntSizeEstimate,false,true); // make sure we have a large enough tmpSfnt
 
 	if (newSfntSizeEstimate > this->maxTmpSfntSize) {
-		MaxSfntSizeError(L"IncrBuildNewSfnt: This font is getting too large",newSfntSizeEstimate,errMsg); goto term;
+		MaxSfntSizeError(L"IncrBuildNewSfnt: This font is getting too large",newSfntSizeEstimate,errMsg,errMsgLen); goto term;
 	}
 	
 	// 2. pass: build the new sfnt into the tmpSfntHandle
@@ -3582,20 +3625,24 @@ term: // function termination code
 		// adjust maxGlyphs to what we've stamped in PRIVATE_GLIT1 and PRIVATE_GLIT2 above
 		this->maxGlyphs = numberOfGlyphs;
 
-		result = this->UnpackGlitsLoca(errMsg) && this->UpdateMaxPointsAndContours(errMsg) && this->UnpackCharGroup(errMsg) && this->SetSfnt(-1,-1,errMsg);
+		result = this->UnpackGlitsLoca(errMsg,errMsgLen) && this->UpdateMaxPointsAndContours(errMsg,errMsgLen) && this->UnpackCharGroup(errMsg,errMsgLen) && this->SetSfnt(-1,-1,errMsg,errMsgLen);
 	}
 	return result;
 
 } // TrueTypeFont::IncrBuildNewSfnt
 
-bool TrueTypeFont::InitIncrBuildSfnt(bool binaryOnly, wchar_t errMsg[]) {
+bool TrueTypeFont::InitIncrBuildSfnt(bool binaryOnly, wchar_t errMsg[], size_t errMsgLen) {
 	IncrBuildSfntData *iSfnt;
 	bool allocated;
 
 	errMsg[0] = L'\0';
 
 	this->incrBuildSfntData = iSfnt = (IncrBuildSfntData *)NewP(sizeof(IncrBuildSfntData));
-	if (iSfnt == NULL) { swprintf(errMsg,L"Failed to allocate this->incrBuildSfntData"); return false; }
+	if (iSfnt == NULL)
+	{
+		swprintf(errMsg, errMsgLen, L"Failed to allocate this->incrBuildSfntData");
+		return false;
+	}
 
 	iSfnt->binaryOnly = binaryOnly;
 	iSfnt->numGlyphs = this->NumberOfGlyphs();
@@ -3604,7 +3651,11 @@ bool TrueTypeFont::InitIncrBuildSfnt(bool binaryOnly, wchar_t errMsg[]) {
 	allocated = InitDynamicArray(&iSfnt->binary);
 	if (allocated && !iSfnt->binaryOnly) allocated = InitDynamicArray(&iSfnt->asmSrc) && InitDynamicArray(&iSfnt->vttSrc);
 
-	if (!allocated) { swprintf(errMsg,L"Failed to allocate iSfnt dynamic arrays"); return false; }
+	if (!allocated)
+	{
+		swprintf(errMsg, errMsgLen, L"Failed to allocate iSfnt dynamic arrays");
+		return false;
+	}
 
 	this->InitNewProfiles(); // TrueTypeFont keeps two sets of profiles, both are updated after any assembly, but only one is reset here	
 	
@@ -3622,7 +3673,7 @@ void AddTextToDynArray(GlyphTableArray *dynArray, int32_t glyphIndex, TextBuffer
 	dynArray->used += (int32_t)packedSize;
 } // AddTextToDynArray
 
-bool TrueTypeFont::AddGlyphToNewSfnt(CharGroup group, int32_t glyphIndex, TrueTypeGlyph *glyph, int32_t glyfBinSize, unsigned char *glyfBin, TextBuffer *glyfText, TextBuffer *talkText, wchar_t errMsg[]) {
+bool TrueTypeFont::AddGlyphToNewSfnt(CharGroup group, int32_t glyphIndex, TrueTypeGlyph *glyph, int32_t glyfBinSize, unsigned char *glyfBin, TextBuffer *glyfText, TextBuffer *talkText, wchar_t errMsg[], size_t errMsgLen) {
 	IncrBuildSfntData *iSfnt;
 	bool allocated;
 	unsigned char *data;
@@ -3630,11 +3681,16 @@ bool TrueTypeFont::AddGlyphToNewSfnt(CharGroup group, int32_t glyphIndex, TrueTy
 
 	errMsg[0] = L'\0';
 
-	if (this->incrBuildSfntData == NULL) { swprintf(errMsg,L"this->incrBuildSfntData is NULL"); return false; }
+	if (this->incrBuildSfntData == NULL)
+	{
+		swprintf(errMsg, errMsgLen, L"this->incrBuildSfntData is NULL");
+		return false;
+	}
 	iSfnt = (IncrBuildSfntData *)this->incrBuildSfntData;
 
 	if (iSfnt->currGlyph != glyphIndex || glyphIndex < 0 || iSfnt->numGlyphs <= glyphIndex) {
-		swprintf(errMsg,L"Calling TrueTypeFont::AddGlyphToNewSfnt out of sequence: expected glyph %li, received glyph %li",iSfnt->currGlyph,glyphIndex); return false;
+		swprintf(errMsg, errMsgLen, L"Calling TrueTypeFont::AddGlyphToNewSfnt out of sequence: expected glyph %li, received glyph %li", iSfnt->currGlyph, glyphIndex);
+		return false;
 	}
 
 	iSfnt->glyfGroup[iSfnt->currGlyph] = (unsigned char)group;
@@ -3647,7 +3703,7 @@ bool TrueTypeFont::AddGlyphToNewSfnt(CharGroup group, int32_t glyphIndex, TrueTy
 
 	if (!allocated)
 	{ 
-		swprintf(errMsg,L"Failed to assert iSfnt dynamic array sizes"); 
+		swprintf(errMsg, errMsgLen, L"Failed to assert iSfnt dynamic array sizes"); 
 		return false; 
 	}
 
@@ -3669,7 +3725,7 @@ bool TrueTypeFont::AddGlyphToNewSfnt(CharGroup group, int32_t glyphIndex, TrueTy
 	return true; // by now
 } // TrueTypeFont::AddGlyphToNewSfnt
 
-bool TrueTypeFont::TermIncrBuildSfnt(bool disposeOnly, TextBuffer *prepText, TextBuffer *cvtText, TextBuffer *fpgmText, wchar_t errMsg[]) {
+bool TrueTypeFont::TermIncrBuildSfnt(bool disposeOnly, TextBuffer *prepText, TextBuffer *cvtText, TextBuffer *fpgmText, wchar_t errMsg[], size_t errMsgLen) {
 	// notice that it may seem inconsistent that in the above AddGlyphToNewSfnt we add both sources and binary data (of individual glyphs),
 	// while for TermIncrBuild we only add sources. This has to do with the weird architecture which, from the point of view of sources,
 	// understands prep, fpgm, and cvt as "special" glyphs at the end of the respective private table, while from the point of view of
@@ -3680,7 +3736,7 @@ bool TrueTypeFont::TermIncrBuildSfnt(bool disposeOnly, TextBuffer *prepText, Tex
 
 	if (this->incrBuildSfntData == NULL) {
 		// don't overwrite errMsg if we're merely called to "cleanup", see also calling pattern
-		if (!disposeOnly) swprintf(errMsg,L"this->incrBuildSfntData is NULL");
+		if (!disposeOnly) swprintf(errMsg,errMsgLen,L"this->incrBuildSfntData is NULL");
 		return false;
 	}
 
@@ -3708,14 +3764,14 @@ bool TrueTypeFont::TermIncrBuildSfnt(bool disposeOnly, TextBuffer *prepText, Tex
 				AddTextToDynArray(&iSfnt->vttSrc,iSfnt->currGlyph+3,NULL);
 				AddTextToDynArray(&iSfnt->vttSrc,iSfnt->currGlyph+4,NULL);
 			} else {
-				swprintf(errMsg,L"Failed to assert iSfnt dynamic array sizes");
+				swprintf(errMsg,errMsgLen,L"Failed to assert iSfnt dynamic array sizes");
 			}
 		}
 
 		
 		if (done) {
 			this->UseNewProfiles(); //  copy new profiles into current ones and pack into current sfnt
-			done = this->IncrBuildNewSfnt(errMsg);
+			done = this->IncrBuildNewSfnt(errMsg, errMsgLen);
 		}
 
 	}
@@ -4589,7 +4645,8 @@ uint32_t TrueTypeFont::PackGlyph(unsigned char *dst, int32_t glyphIndex, TrueTyp
 	uint32_t size;
 	short i, numberOfPoints, x, y, delta, j, whoseMetrics = 0;
 	unsigned char bitFlags;
-	bool composite,useMyMetrics;
+	//bool composite = false;
+	bool useMyMetrics = false;
 	
 	size = 0;
 	
@@ -4614,12 +4671,11 @@ uint32_t TrueTypeFont::PackGlyph(unsigned char *dst, int32_t glyphIndex, TrueTyp
 	
 	pStart = dst;
 	
-	composite = useMyMetrics = false;
 	if ( glyph->componentSize > 0 ) {
 		int32_t len = 0;
 		short * flags = nullptr;	
 
-		composite = true;
+		//composite = true;
 		
 		WRITEALIGNEDWORD( dst, SWAPW(glyph->ComponentVersionNumber) );
 		
