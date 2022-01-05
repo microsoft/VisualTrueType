@@ -77,7 +77,6 @@ jobs:
     - name: Download artifacts from build jobs
       uses: actions/download-artifact@v2
       with:
-        name: artifact
         path: dist/
         
     - uses: pypa/gh-action-pypi-publish@master
