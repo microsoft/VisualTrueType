@@ -85,8 +85,8 @@ jobs:
       run: |
         ls wheelhouse/*
         mkdir -p dist/
-        mv source-dist/*.zip dist/
-        for wheel_dir in wheelhouse/uharfbuzz*/; do
+        mv wheelhouse/source-dist/*.zip dist/
+        for wheel_dir in wheelhouse/vttcompilepy*/; do
           mv "${wheel_dir}"/*.whl dist/
         done       
     
