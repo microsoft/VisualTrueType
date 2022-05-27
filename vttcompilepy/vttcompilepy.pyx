@@ -38,17 +38,17 @@ cdef class Compiler:
      def __dealloc__(self):
          del self.app_
 
-     def compile_all(self) -> None:
+     def compile_all(self, legacy: bint = False, variationCompositeGuard: bint = True) -> None:
          cdef wchar_t werr[ERR_BUF_SIZE]
          cdef char err[ERR_BUF_SIZE]
-         result = self.app_.CompileAll(True, werr, ERR_BUF_SIZE)
+         result = self.app_.CompileAll(True, legacy, variationCompositeGuard, werr, ERR_BUF_SIZE)
          if(result != True):
              raise CompileError(self.app_.wCharToChar(err, werr))
 
-     def compile_glyph_range(self, start: int = 0, end: int = 0) -> None:
+     def compile_glyph_range(self, start: int = 0, end: int = 0, legacy: bint = False, variationCompositeGuard: bint = True) -> None:
          cdef wchar_t werr[ERR_BUF_SIZE]
          cdef char err[ERR_BUF_SIZE]
-         result = self.app_.CompileGlyphRange(start, end, True, werr, ERR_BUF_SIZE)
+         result = self.app_.CompileGlyphRange(start, end, True, legacy, variationCompositeGuard, werr, ERR_BUF_SIZE)
          if(result != True):
              raise CompileError(self.app_.wCharToChar(err, werr))
 

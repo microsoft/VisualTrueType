@@ -14,6 +14,8 @@ def main(args=None):
 
     cgroup = parser.add_argument_group("Compile options")
     cgroup.add_argument("-a", "--all", action="store_true", help ="Compile everything")
+    cgroup.add_argument("-l", "--legacy", action="store_true", help ="Rare cases for very old fonts")
+    cgroup.add_argument("-v", "--variationcompositeguard", action="store_true", help ="Disable variation composite guard (default: enabled)")
 
     sgroup = parser.add_argument_group("Strip options")
     sgroup.add_argument("-s", "--source", action="store_true", help="Strip source")
@@ -29,8 +31,17 @@ def main(args=None):
 
     compiler = vtt.Compiler(inpath)
 
+    legacy = False
+    variationCompositeGuard = True 
+
+    if args.legacy:
+        legacy = True
+
+    if args.variationcompositeguard:
+        variationCompositeGuard = False
+
     if args.all:
-        compiler.compile_all()
+        compiler.compile_all(legacy, variationCompositeGuard)
 
     #StripCommand strip = stripNothing;
 	#if (bStripCache) strip = stripBinary;
