@@ -23,6 +23,8 @@ int ShowUsage(wchar_t* strErr)
 	wprintf(L"\t-s strip source \n");
 	wprintf(L"\t-b strip source and hints \n");
 	wprintf(L"\t-c strip source, hints and cache tables \n");
+	wprintf(L"\t-l legacy compile \n");
+	wprintf(L"\t-v disable variation composite guard (default: enabled) \n"); 
 	wprintf(L"\t-q quiet mode \n");
 	wprintf(L"\t-? this help message \n\n");
 	wprintf(L"\n");
@@ -37,6 +39,8 @@ int main(int argc, char* argv[])
 	bool bStripCache = false;
 	bool bCompileAll = false;
 	bool bQuiet = false;
+	bool bLegacy = false; 
+	bool bVariationCompositeGuard = true; 
 	std::string sg1, sg2;
 	uint32_t g1 = 0, g2 = 0;
 	bool haveGlyph = false;
@@ -57,7 +61,7 @@ int main(int argc, char* argv[])
 
 	if (argc == 1) return ShowUsage(NULL);
 
-	CommandLineOptions cmd(argc, argv, "?HhAaBbSsCcqQg:G:r:R");
+	CommandLineOptions cmd(argc, argv, "?HhAaBbSsCcqQLlVvg:G:r:R");
 
 	while ((c = cmd.GetOption()) != END)
 	{
@@ -87,6 +91,16 @@ int main(int argc, char* argv[])
 		case 'Q':
 			bQuiet = true;
 			break;
+
+		case 'l':
+		case 'L':
+			bLegacy = true; 
+			break;
+
+		case 'v':
+		case 'V':
+			bVariationCompositeGuard = false;
+			break; 
 
 		case 'g':
 		case 'G':
@@ -173,7 +187,7 @@ int main(int argc, char* argv[])
 
 	if (bCompileAll)
 	{
-		if (!application->CompileAll(bQuiet, errMsg, sizeof(errMsg) / sizeof(wchar_t)))
+		if (!application->CompileAll(bQuiet, bLegacy, bVariationCompositeGuard, errMsg, sizeof(errMsg) / sizeof(wchar_t)))
 		{
 			fwprintf(stderr, errMsg);
 			fwprintf(stderr, L"\n");
@@ -184,7 +198,7 @@ int main(int argc, char* argv[])
 	}
 	else if (haveGlyph)
 	{
-		if (!application->CompileGlyphRange((unsigned short)g1, (unsigned short)g2, bQuiet, errMsg, sizeof(errMsg) / sizeof(wchar_t)))
+		if (!application->CompileGlyphRange((unsigned short)g1, (unsigned short)g2, bQuiet, bLegacy, bVariationCompositeGuard, errMsg, sizeof(errMsg) / sizeof(wchar_t)))
 		{
 			fwprintf(stderr, errMsg);
 			fwprintf(stderr, L"\n");

@@ -17,10 +17,10 @@ public:
 	bool GotoGlyph(int32_t code, bool isGlyphIndex);
 
 	bool CompileTalk(int32_t* errPos, int32_t* errLen, wchar_t errMsg[], size_t errMsgLen);
-	bool CompileCommon(int32_t* errPos, int32_t* errLen, wchar_t errMsg[], size_t errMsgLen);
+	bool CompileCommon(bool legacy, bool variationCompositeGuard, int32_t* errPos, int32_t* errLen, wchar_t errMsg[], size_t errMsgLen);
 
-	bool CompileGlyphRange(unsigned short g1, unsigned short g2, bool quiet, wchar_t errMsg[], size_t errMsgLen);
-	bool CompileAll(bool quiet, wchar_t errMsg[], size_t errMsgLen);
+	bool CompileGlyphRange(unsigned short g1, unsigned short g2, bool quiet, bool legacy, bool variationCompositeGuard, wchar_t errMsg[], size_t errMsgLen);
+	bool CompileAll(bool quiet, bool legacy, bool variationCompositeGuard, wchar_t errMsg[], size_t errMsgLen);
 
 	bool BuildFont(StripCommand strip, wchar_t errMsg[], size_t errMsgLen);
 
