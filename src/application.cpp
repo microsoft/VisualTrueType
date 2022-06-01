@@ -149,12 +149,10 @@ bool Application::CompileTalk(int32_t* errPos, int32_t* errLen, wchar_t errMsg[]
 	return done;
 }
 
-bool Application::CompileCommon(int32_t* errPos, int32_t* errLen, wchar_t errMsg[], size_t errMsgLen)
+bool Application::CompileCommon(bool legacy, bool variationCompositeGuard, int32_t* errPos, int32_t* errLen, wchar_t errMsg[], size_t errMsgLen)
 {
 	bool done = false;
-	bool legacy = false;
-	bool variationCompositeGuard = true;
-
+	
 	int32_t glyphIndex, binSize;
 	unsigned char* binData;
 	wchar_t tempErrMsg[maxLineSize], compErrMsg[maxLineSize];
@@ -251,15 +249,13 @@ bool Application::CompileCommon(int32_t* errPos, int32_t* errLen, wchar_t errMsg
 	return done;
 }
 
-bool Application::CompileGlyphRange(unsigned short g1, unsigned short g2, bool quiet, wchar_t errMsg[], size_t errMsgLen)
+bool Application::CompileGlyphRange(unsigned short g1, unsigned short g2, bool quiet, bool legacy, bool variationCompositeGuard, wchar_t errMsg[], size_t errMsgLen)
 {
 	int32_t glyphIndex, binSize, fromGlyph, toGlyph, numGlyphs = this->font->NumberOfGlyphs();
 	bool done = false;
 	unsigned char* binData;
 	wchar_t tempErrMsg[maxLineSize], compErrMsg[maxLineSize];
 	TextBuffer* errBuf = NULL;
-	bool legacyCompile = false;
-	bool variationCompositeGuard = true;
 	int32_t errPos = 0;	
     int32_t errLen = 0; 
 
@@ -270,7 +266,7 @@ bool Application::CompileGlyphRange(unsigned short g1, unsigned short g2, bool q
 	this->glyphIndex = glyphIndex;
 	this->charCode = this->font->CharCodeOf(glyphIndex);
 
-	done = this->CompileCommon(&errPos, &errLen, errMsg, errMsgLen);
+	done = this->CompileCommon(legacy, variationCompositeGuard, &errPos, &errLen, errMsg, errMsgLen);
 	if (!done)
 		return done;
 
@@ -292,7 +288,7 @@ bool Application::CompileGlyphRange(unsigned short g1, unsigned short g2, bool q
 		if (done) done = this->font->GetGlyf(glyphIndex, this->glyf.get(), errMsg, errMsgLen);
 
 		if (done) {
-			if (!TMTCompile(this->talk.get(), this->font.get(), this->glyph.get(), this->glyphIndex, this->glyf.get(), legacyCompile, &errPos, &errLen, compErrMsg, sizeof(compErrMsg)/sizeof(wchar_t))) {
+			if (!TMTCompile(this->talk.get(), this->font.get(), this->glyph.get(), this->glyphIndex, this->glyf.get(), legacy, &errPos, &errLen, compErrMsg, sizeof(compErrMsg)/sizeof(wchar_t))) {
 				swprintf(tempErrMsg, sizeof(tempErrMsg)/sizeof(wchar_t), L"VTT Talk, glyph %li (Unicode 0x%lx), line %li: " WIDE_STR_FORMAT, this->glyphIndex, this->charCode, this->talk->LineNumOf(errPos), compErrMsg);
 				errBuf->AppendLine(tempErrMsg);
 				swprintf(tempErrMsg, sizeof(tempErrMsg)/sizeof(wchar_t), L"/* Error in VTT Talk, line %li: " WIDE_STR_FORMAT L" */", this->talk->LineNumOf(errPos), compErrMsg);
@@ -340,15 +336,13 @@ bool Application::CompileGlyphRange(unsigned short g1, unsigned short g2, bool q
 	return done;
 }
 
-bool Application::CompileAll(bool quiet, wchar_t errMsg[], size_t errMsgLen)
+bool Application::CompileAll(bool quiet, bool legacy, bool variationCompositeGuard, wchar_t errMsg[], size_t errMsgLen)
 {
 	int32_t glyphIndex, binSize, numGlyphs = this->font->NumberOfGlyphs();
 	bool done;
 	unsigned char* binData;
 	wchar_t tempErrMsg[maxLineSize], compErrMsg[maxLineSize];
 	TextBuffer* errBuf = NULL;
-	bool legacyCompile = false;
-	bool variationCompositeGuard = true;
 	int32_t errPos = 0;
 	int32_t errLen = 0; 
 
@@ -373,7 +367,7 @@ bool Application::CompileAll(bool quiet, wchar_t errMsg[], size_t errMsgLen)
 	}
 
 	if (done) {
-		if (this->font->TheCvt()->Compile(this->cpgm.get(), this->prep.get(), legacyCompile, &errPos, &errLen, compErrMsg, sizeof(compErrMsg)/sizeof(wchar_t))) {
+		if (this->font->TheCvt()->Compile(this->cpgm.get(), this->prep.get(), legacy, &errPos, &errLen, compErrMsg, sizeof(compErrMsg)/sizeof(wchar_t))) {
 			// Compile updates cvt binary autonomously
 			this->font->UpdateAdvanceWidthFlag(this->font->TheCvt()->LinearAdvanceWidths());
 		}
@@ -438,7 +432,7 @@ bool Application::CompileAll(bool quiet, wchar_t errMsg[], size_t errMsgLen)
 		if (done) done = this->font->GetGlyf(glyphIndex, this->glyf.get(), errMsg, errMsgLen);
 
 		if (done) {
-			if (!TMTCompile(this->talk.get(), this->font.get(), this->glyph.get(), this->glyphIndex, this->glyf.get(), legacyCompile, &errPos, &errLen, compErrMsg, sizeof(compErrMsg)/sizeof(wchar_t))) {
+			if (!TMTCompile(this->talk.get(), this->font.get(), this->glyph.get(), this->glyphIndex, this->glyf.get(), legacy, &errPos, &errLen, compErrMsg, sizeof(compErrMsg)/sizeof(wchar_t))) {
 				swprintf(tempErrMsg, sizeof(tempErrMsg)/sizeof(wchar_t), L"VTT Talk, glyph %li (Unicode 0x%lx), line %li: " WIDE_STR_FORMAT, this->glyphIndex, this->charCode, this->talk->LineNumOf(errPos), compErrMsg);
 				errBuf->AppendLine(tempErrMsg);
 				swprintf(tempErrMsg, sizeof(tempErrMsg)/sizeof(wchar_t), L"/* Error in VTT Talk, line %li: " WIDE_STR_FORMAT L" */", this->talk->LineNumOf(errPos), compErrMsg);
