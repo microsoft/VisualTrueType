@@ -52,20 +52,23 @@ cdef class Compiler:
          if(result != True):
              raise CompileError(self.app_.wCharToChar(err, werr))
 
-     def save_font(self, path: Path, level: StripLevel) -> None:
-         cdef string dest = bytes(path)
-         cdef wchar_t werr[ERR_BUF_SIZE]
+     def save_font(self, path: Path = None, level: StripLevel = None) -> None:
          cdef char err[ERR_BUF_SIZE]
-         result = self.app_.SaveFont(dest, level, werr, ERR_BUF_SIZE)
-         if(result != True):
-             raise FileNotFoundError(self.app_.wCharToChar(err, werr))
+         cdef wchar_t werr[ERR_BUF_SIZE]
+         cdef string dest
 
-     def save_font(self, level: StripLevel) -> None:
-         cdef wchar_t werr[ERR_BUF_SIZE]
-         cdef char err[ERR_BUF_SIZE]
-         result = self.app_.SaveFont(level, werr, ERR_BUF_SIZE)
-         if(result != True):
-             raise FileNotFoundError(self.app_.wCharToChar(err, werr))
+         if(level is None):
+            level = StripLevel.STRIP_NOTHING
+
+         if(path is None):
+            result = self.app_.SaveFont(level, werr, ERR_BUF_SIZE)
+            if(result != True):
+                raise FileNotFoundError(self.app_.wCharToChar(err, werr))
+         else:
+            dest = bytes(path)
+            result = self.app_.SaveFont(dest, level, werr, ERR_BUF_SIZE)
+            if(result != True):
+                raise FileNotFoundError(self.app_.wCharToChar(err, werr))
 
 
          
