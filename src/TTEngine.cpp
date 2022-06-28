@@ -7,7 +7,6 @@
  
 *****/
 #define _CRT_SECURE_NO_DEPRECATE 
-#define _CRT_NON_CONFORMING_SWPRINTFS
 
 #include <string.h> // wcslen
 #include <stdio.h> // printf
@@ -373,25 +372,25 @@ void TTSourceEngine::AssertFreeProjVector(TTVDirection dir) {
 	if (fvDir != this->ttv[fv].dir || pvDir != this->ttv[pv].dir) {
 		switch (dir) {
 		case xRomanDir:
-			swprintf(code,L"SVTCA[X]");
+			swprintf(code,sizeof(code)/sizeof(wchar_t),L"SVTCA[X]");
 			break;
 		case yRomanDir:
-			swprintf(code,L"SVTCA[Y]");
+			swprintf(code,sizeof(code) / sizeof(wchar_t), L"SVTCA[Y]");
 			break;
 		case xItalDir:
-			swprintf(code,L"CALL[], %i",this->fnBias + setTTVtoXItalDirFn);
+			swprintf(code,sizeof(code) / sizeof(wchar_t), L"CALL[], %i", this->fnBias + setTTVtoXItalDirFn);
 			break;
 		case yItalDir:
-			swprintf(code,L"CALL[], %i",this->fnBias + setTTVtoYItalDirFn);
+			swprintf(code,sizeof(code) / sizeof(wchar_t), L"CALL[], %i", this->fnBias + setTTVtoYItalDirFn);
 			break;
 		case xAdjItalDir:
-			swprintf(code,L"CALL[], %i",this->fnBias + setTTVtoXAdjItalDirFn);
+			swprintf(code,sizeof(code) / sizeof(wchar_t), L"CALL[], %i", this->fnBias + setTTVtoXAdjItalDirFn);
 			break;
 		case yAdjItalDir:
-			swprintf(code,L"CALL[], %i",this->fnBias + setTTVtoYAdjItalDirFn);
+			swprintf(code,sizeof(code) / sizeof(wchar_t), L"CALL[], %i", this->fnBias + setTTVtoYAdjItalDirFn);
 			break;
 		default:
-			swprintf(code,L"/* invalid TT vector direction */");
+			swprintf(code, sizeof(code) / sizeof(wchar_t), L"/* invalid TT vector direction */");
 			break;
 		}
 		this->Emit(code);
@@ -411,7 +410,7 @@ void TTSourceEngine::AssertTTVonLine(TTVector ttv, short parent0, short parent1,
 	else                                   dir = (TTVDirection)((short)diagDir   + (short)rot);
 	if (dir < diagDir) {
 		if (dir != v->dir) {
-			swprintf(buf,L"S%cVTCA[%c]",ttv == fv ? L'F' : L'P',L'X' + (dir == yRomanDir)); this->Emit(buf);
+			swprintf(buf,sizeof(buf)/sizeof(wchar_t),L"S%cVTCA[%c]",ttv == fv ? L'F' : L'P',L'X' + (dir == yRomanDir)); this->Emit(buf);
 			v->dir = dir; v->from = v->to = invalidKnotNum;
 			if (ttv > fv) this->usedpv = ttv == dpv;
 		}
@@ -420,9 +419,9 @@ void TTSourceEngine::AssertTTVonLine(TTVector ttv, short parent0, short parent1,
 			
 			proj = &this->ttv[pv];
 			if (ttv == fv && ((proj->from == parent0 && proj->to == parent1) || (proj->from == parent1 && proj->to == parent0)) && proj->dir == dir) {
-				swprintf(buf,L"SFVTPV[]");
+				swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"SFVTPV[]");
 			} else {
-				swprintf(buf,L"S" WIDE_STR_FORMAT L"VTL[%c], %hi, %hi",ttv == fv ? L"F" : (ttv == pv ? L"P" : L"DP"),dir == perpDiagDir ? L'R' : L'r',parent0,parent1);
+				swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"S" WIDE_STR_FORMAT L"VTL[%c], %hi, %hi", ttv == fv ? L"F" : (ttv == pv ? L"P" : L"DP"), dir == perpDiagDir ? L'R' : L'r', parent0, parent1);
 			}
 			this->Emit(buf);
 			v->dir = dir; v->from = parent0; v->to = parent1;
@@ -467,7 +466,8 @@ void TTSourceEngine::AssertRefPoint(short rp, short knot) {
 		if (rp == 0 && this->lastChild == knot) { // set reference point by turning on the "move" flag
 			this->buf[this->lastChildPos] = this->mov[true]; // fixup
 		} else { // set reference point by the respective TT code...
-			swprintf(buf,L"SRP%hi[], %hi",rp,knot); this->Emit(buf);
+			swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"SRP%hi[], %hi", rp, knot);
+			this->Emit(buf);
 		}
 		this->rp[rp] = knot;
 	}
@@ -500,31 +500,39 @@ void TTSourceEngine::AssertMinDist(short minDists, short jumpPpemSize[], F26Dot6
 	switch (minDists) {
 		case 1:
 			if (this->minDist != pixelSize[0]) {
-				swprintf(buf,L"SMD[], %i",pixelSize[0]); this->Emit(buf);
+				swprintf(buf, sizeof(buf)/sizeof(wchar_t),L"SMD[], %i",pixelSize[0]); 
+				this->Emit(buf);
 				this->minDist = pixelSize[0];
 			}
 			break;
 		case 2:
 			this->Emit(		L"MPPEM[]");
 			if (this->minDist == pixelSize[1]) {
-				swprintf(buf,L"GT[], %hi, *",jumpPpemSize[1]); this->Emit(buf);	// [TOS](= jumpPpemSize[1]) > [TOS-1](= MPPEM[]) ?
+				swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"GT[], %hi, *", jumpPpemSize[1]);
+				this->Emit(buf);												// [TOS](= jumpPpemSize[1]) > [TOS-1](= MPPEM[]) ?
 				this->Emit( L"IF[], *");											// MPPEM[] < jumpPpemSize[1] ?
 				this->Emit( L"#BEGIN");											// but current minDist is pixelSize[1]
-				swprintf(buf,L"SMD[], %i",pixelSize[0]); this->Emit(buf);		// hence use pixelSize[0] instead
+				swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"SMD[], %i", pixelSize[0]);
+				this->Emit(buf); // hence use pixelSize[0] instead
 			} else if (this->minDist == pixelSize[0]) {
-				swprintf(buf,L"LTEQ[], %hi, *",jumpPpemSize[1]); this->Emit(buf);	// [TOS](= jumpPpemSize[1]) ≤ [TOS-1](= MPPEM[]) ?
+				swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"LTEQ[], %hi, *", jumpPpemSize[1]);
+				this->Emit(buf);												// [TOS](= jumpPpemSize[1]) ≤ [TOS-1](= MPPEM[]) ?
 				this->Emit( L"IF[], *");											// MPPEM[] ≥ jumpPpemSize[1]
 				this->Emit( L"#BEGIN");											// but current minDist is pixelSize[0]
-				swprintf(buf,L"SMD[], %i",pixelSize[1]); this->Emit(buf);		// use pixelSize[1] instead
+				swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"SMD[], %i", pixelSize[1]);
+				this->Emit(buf); // use pixelSize[1] instead
 			} else {
-				swprintf(buf,L"GT[], %hi, *",jumpPpemSize[1]); this->Emit(buf);
+				swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"GT[], %hi, *", jumpPpemSize[1]);
+				this->Emit(buf);
 				this->Emit( L"IF[], *");
 				this->Emit( L"#BEGIN");
-				swprintf(buf,L"SMD[], %i",pixelSize[0]); this->Emit(buf);
+				swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"SMD[], %i", pixelSize[0]);
+				this->Emit(buf);
 				this->Emit( L"#END");
 				this->Emit( L"ELSE[]");
 				this->Emit( L"#BEGIN");
-				swprintf(buf,L"SMD[], %i",pixelSize[1]); this->Emit(buf);
+				swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"SMD[], %i", pixelSize[1]);
+				this->Emit(buf);
 			}
 			this->Emit(		L"#END");
 			this->Emit(		L"EIF[]");
@@ -563,7 +571,8 @@ void TTSourceEngine::AssertRoundingBelowPpem(Rounding round, short ppem) {
 		this->AssertRounding(round);
 	else {
 		this->Emit( L"MPPEM[]");
-		swprintf(buf,L"GT[], *, %hi",ppem); this->Emit(buf);
+		swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"GT[], *, %hi", ppem);
+		this->Emit(buf);
 		this->Emit( L"IF[], *");
 		this->Emit( L"#BEGIN");
 		switch (round) {
@@ -588,7 +597,8 @@ void TTSourceEngine::AssertSuperRounding(short period, short phase, short thresH
 	wchar_t buf[32];
 	
 	if (!this->sRound || period != this->period || phase != this->phase || thresHold != this->thresHold) {
-		swprintf(buf,L"SROUND[], %hi",(period << 6) + (phase << 4) + (thresHold + 4)); this->Emit(buf); // CEILING_ROUND never used, use threshold == -4 instead...
+		swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"SROUND[], %hi", (period << 6) + (phase << 4) + (thresHold + 4));
+		this->Emit(buf); // CEILING_ROUND never used, use threshold == -4 instead...
 		this->sRound = true; this->period = period; this->phase = phase; this->thresHold = thresHold;
 	}
 } // TTSourceEngine::AssertSuperRounding
@@ -599,7 +609,8 @@ void TTSourceEngine::RoundDownToGridBelowPpem(short ppem) {
 	if (ppem < 0)
 		this->AssertRounding(rdtg);
 	else {
-		swprintf(buf,L"CALL[], %hi, %hi",ppem,this->fnBias + roundDownToGridBelowPpemFn); this->Emit(buf);
+		swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %hi", ppem, this->fnBias + roundDownToGridBelowPpemFn);
+		this->Emit(buf);
 		this->sRound = false; this->round = rnone;
 	}
 } // TTSourceEngine::RoundDownToGridBelowPpem
@@ -608,7 +619,8 @@ void TTSourceEngine::IfPpemBelow(short ppem) { // this is not nestable, nor gene
 	wchar_t buf[32];
 
 	this->Emit( L"MPPEM[]");
-	swprintf(buf,L"GT[], *, %hi",ppem); this->Emit(buf);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"GT[], *, %hi", ppem);
+	this->Emit(buf);
 	this->Emit( L"IF[], *");
 	this->Emit( L"#BEGIN");
 	this->Ttv[fv] = this->ttv[fv];
@@ -637,14 +649,16 @@ void TTSourceEngine::End(bool invalidateRefPoints) {
 void TTSourceEngine::MDAP(bool round, short knot) {
 	wchar_t buf[32];
 	
-	swprintf(buf,L"MDAP[%c], %hi",this->rnd[round],knot); this->Emit(buf);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"MDAP[%c], %hi", this->rnd[round], knot);
+	this->Emit(buf);
 	this->rp[0] = this->rp[1] = knot; this->lastChild = invalidKnotNum;
 } // TTSourceEngine::MDAP
 
 void TTSourceEngine::MIAP(bool round, short knot, short cvt) {
 	wchar_t buf[32];
 	
-	swprintf(buf,L"MIAP[%c], %hi, %hi",this->rnd[round],knot,cvt); this->Emit(buf);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"MIAP[%c], %hi, %hi", this->rnd[round], knot, cvt);
+	this->Emit(buf);
 	this->rp[0] = this->rp[1] = knot; this->lastChild = invalidKnotNum;
 } // TTSourceEngine::MIAP
 
@@ -653,7 +667,8 @@ void TTSourceEngine::MDRP(bool minDist, bool round, short color, short knot) {
 	
 	this->lastChild = knot;
 	this->lastChildPos = this->bufPos + 5; // a bit of a hack, but just a small one...
-	swprintf(buf,L"MDRP[%c%c%c%c%c], %hi",this->mov[false],this->min[minDist],this->rnd[round],this->col[color][0],this->col[color][1],knot); this->Emit(buf);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"MDRP[%c%c%c%c%c], %hi", this->mov[false], this->min[minDist], this->rnd[round], this->col[color][0], this->col[color][1], knot);
+	this->Emit(buf);
 	this->rp[1] = this->rp[0]; this->rp[2] = knot;
 } // TTSourceEngine::MDRP
 
@@ -661,21 +676,25 @@ void TTSourceEngine::MIRP(bool minDist, bool round, short color, short knot, sho
 	wchar_t buf[32];
 	
 	if (negative) {
-		swprintf(buf,L"RCVT[], %hi",cvt); this->Emit(buf);
+		swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"RCVT[], %hi", cvt);
+		this->Emit(buf);
 		this->Emit( L"NEG[], *");
 		cvt = SECONDTMPCVT;
-		swprintf(buf,L"WCVTP[], %hi, *",cvt); this->Emit(buf);
+		swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"WCVTP[], %hi, *", cvt);
+		this->Emit(buf);
 	}
 	this->lastChild = knot;
 	this->lastChildPos = this->bufPos + 5; // a bit of a hack, but just a small one...
-	swprintf(buf,L"MIRP[%c%c%c%c%c], %hi, %hi",this->mov[false],this->min[minDist],this->rnd[round],this->col[color][0],this->col[color][1],knot,cvt); this->Emit(buf);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"MIRP[%c%c%c%c%c], %hi, %hi", this->mov[false], this->min[minDist], this->rnd[round], this->col[color][0], this->col[color][1], knot, cvt);
+	this->Emit(buf);
 	this->rp[1] = this->rp[0]; this->rp[2] = knot;
 } // TTSourceEngine::MIRP
 
 void TTSourceEngine::DMIRP(short knot, short cvt, short pvFrom, short pvTo) {
 	wchar_t buf[64];
 	
-	swprintf(buf,L"CALL[], %hd, %hd, %hd, %hd, %hi",knot,cvt,pvFrom,pvTo,this->fnBias + oldDiagMirpFn); this->Emit(buf);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hd, %hd, %hd, %hd, %hi", knot, cvt, pvFrom, pvTo, this->fnBias + oldDiagMirpFn);
+	this->Emit(buf);
 	this->rp[1] = this->rp[0]; this->rp[2] = knot; this->lastChild = invalidKnotNum;
 	this->round = rtg;
 	this->ttv[pv].dir = perpDiagDir; this->ttv[pv].from = pvFrom; this->ttv[pv].to = pvTo;
@@ -685,15 +704,17 @@ void TTSourceEngine::DMIRP(short knot, short cvt, short pvFrom, short pvTo) {
 void TTSourceEngine::ALIGNRP(short knot) {
 	wchar_t buf[32];
 	
-	swprintf(buf,L"ALIGNRP[], %hi",knot); this->Emit(buf);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"ALIGNRP[], %hi", knot);
+	this->Emit(buf);
 } // TTSourceEngine::ALIGNRP
 	
 void TTSourceEngine::IP(short knots, short knot[]) {
 	wchar_t buf[8*maxParams];
 	short i;
 	
-	swprintf(buf,L"IP[]");
-	for (i = 0; i < knots; i++) swprintf(&buf[STRLENW(buf)],L", %hi",knot[i]);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"IP[]");
+	for (i = 0; i < knots; i++)
+		swprintf(&buf[STRLENW(buf)], sizeof(buf) / sizeof(wchar_t), L", %hi", knot[i]);
 	this->Emit(buf);
 } // TTSourceEngine::IP
 
@@ -701,8 +722,9 @@ void TTSourceEngine::SHP(short rp, short knots, short knot[]) {
 	wchar_t buf[8*maxParams];
 	short i;
 	
-	swprintf(buf,L"SHP[%hi]",rp);
-	for (i = 0; i < knots; i++) swprintf(&buf[STRLENW(buf)],L", %hi",knot[i]);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"SHP[%hi]", rp);
+	for (i = 0; i < knots; i++)
+		swprintf(&buf[STRLENW(buf)], sizeof(buf) / sizeof(wchar_t), L", %hi", knot[i]);
 	this->Emit(buf);
 } // TTSourceEngine::SHP
 
@@ -710,37 +732,43 @@ void TTSourceEngine::SHPIX(short knots, short knot[], F26Dot6 amount) {
 	wchar_t buf[8*maxParams];
 	short i;
 	
-	swprintf(buf,L"SHPIX[]");
-	for (i = 0; i < knots; i++) swprintf(&buf[STRLENW(buf)],L", %hi",knot[i]);
-	swprintf(&buf[STRLENW(buf)],L", %i",amount);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"SHPIX[]");
+	for (i = 0; i < knots; i++)
+		swprintf(&buf[STRLENW(buf)], sizeof(buf) / sizeof(wchar_t), L", %hi", knot[i]);
+	swprintf(&buf[STRLENW(buf)], sizeof(buf) / sizeof(wchar_t), L", %i", amount);
 	this->Emit(buf);
 } // TTSourceEngine::SHPIX
 
 void TTSourceEngine::SLOOP(short count) {
 	wchar_t buf[32];
 	
-	swprintf(buf,L"SLOOP[], %hi",count); this->Emit(buf);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"SLOOP[], %hi", count);
+	this->Emit(buf);
 } // TTSourceEngine::SLOOP
 
 void TTSourceEngine::ISECT(short intersection, short line0start, short line0end, short line1start, short line1end) {
 	wchar_t buf[48];
 	
-	swprintf(buf,L"ISECT[], %hi, %hi, %hi, %hi, %hi",intersection,line0start,line0end,line1start,line1end); this->Emit(buf);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"ISECT[], %hi, %hi, %hi, %hi, %hi", intersection, line0start, line0end, line1start, line1end);
+	this->Emit(buf);
 } // TTSourceEngine::ISECT
 
 void TTSourceEngine::IUP(bool y) {
 	wchar_t buf[8];
 	
-	swprintf(buf,L"IUP[%c]",L'X' + (y & 1)); this->Emit(buf);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"IUP[%c]", L'X' + (y & 1));
+	this->Emit(buf);
 } // TTSourceEngine::IUP
 
 void TTSourceEngine::IPRange(bool y, short parent0, short parent1, short start, short end) {
 	wchar_t buf[64];
 
 	if (parent0 <= parent1) {
-		swprintf(buf,L"CALL[], %hi, %hi, %hi",parent0,parent1,this->fnBias + iIUPSimpleFn); this->Emit(buf);
+		swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %hi, %hi", parent0, parent1, this->fnBias + iIUPSimpleFn);
+		this->Emit(buf);
 	} else {
-		swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi",parent0,end,start,parent1,this->fnBias + iIUPBoundaryFn); this->Emit(buf);
+		swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %hi, %hi, %hi, %hi", parent0, end, start, parent1, this->fnBias + iIUPBoundaryFn);
+		this->Emit(buf);
 	}
 } // TTSourceEngine::IPRange
 
@@ -886,25 +914,25 @@ void TTSourceEngine::DLT(bool cvt, DeltaColor color, short knot, F26Dot6 amount,
 			if (ppemRangeLow[size] == ppemRangeHigh[size])
 				if (color == alwaysDelta)
 					if (cvt)
-						swprintf(buf,L"CALL[], %i, %hi, %hi, %hi",amount,knot,ppemRangeLow[size],this->fnBias + deltaCvtSinglePpemFn);
+						swprintf(buf,sizeof(buf)/sizeof(wchar_t),L"CALL[], %i, %hi, %hi, %hi",amount,knot,ppemRangeLow[size],this->fnBias + deltaCvtSinglePpemFn);
 					else
-						swprintf(buf,L"CALL[], %hi, %i, %hi, %hi",knot,amount,ppemRangeLow[size],this->fnBias + deltaKnotSinglePpemFn);
+						swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %i, %hi, %hi", knot, amount, ppemRangeLow[size], this->fnBias + deltaKnotSinglePpemFn);
 				else
 					if (cvt)
-						swprintf(buf,L"CALL[], %i, %hi, %hi, %hi, %hi",amount,knot,ppemRangeLow[size],ByteOfDeltaColor(color),this->fnBias + colorDeltaCvtSinglePpemFn);
+						swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %i, %hi, %hi, %hi, %hi", amount, knot, ppemRangeLow[size], ByteOfDeltaColor(color), this->fnBias + colorDeltaCvtSinglePpemFn);
 					else
-						swprintf(buf,L"CALL[], %hi, %i, %hi, %hi, %hi",knot,amount,ppemRangeLow[size],ByteOfDeltaColor(color),this->fnBias + colorDeltaKnotSinglePpemFn);
+						swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %i, %hi, %hi, %hi", knot, amount, ppemRangeLow[size], ByteOfDeltaColor(color), this->fnBias + colorDeltaKnotSinglePpemFn);
 			else
 				if (color == alwaysDelta)
 					if (cvt)
-						swprintf(buf,L"CALL[], %i, %hi, %hi, %hi, %hi",amount,knot,ppemRangeLow[size],ppemRangeHigh[size],this->fnBias + deltaCvtPpemRangeFn);
+						swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %i, %hi, %hi, %hi, %hi", amount, knot, ppemRangeLow[size], ppemRangeHigh[size], this->fnBias + deltaCvtPpemRangeFn);
 					else
-						swprintf(buf,L"CALL[], %hi, %i, %hi, %hi, %hi",knot,amount,ppemRangeLow[size],ppemRangeHigh[size],this->fnBias + deltaKnotPpemRangeFn);
+						swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %i, %hi, %hi, %hi", knot, amount, ppemRangeLow[size], ppemRangeHigh[size], this->fnBias + deltaKnotPpemRangeFn);
 				else
 					if (cvt)
-						swprintf(buf,L"CALL[], %i, %hi, %hi, %hi, %hi, %hi",amount,knot,ppemRangeLow[size],ppemRangeHigh[size],ByteOfDeltaColor(color),this->fnBias + colorDeltaCvtPpemRangeFn);
+						swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %i, %hi, %hi, %hi, %hi, %hi", amount, knot, ppemRangeLow[size], ppemRangeHigh[size], ByteOfDeltaColor(color), this->fnBias + colorDeltaCvtPpemRangeFn);
 					else
-						swprintf(buf,L"CALL[], %hi, %i, %hi, %hi, %hi, %hi",knot,amount,ppemRangeLow[size],ppemRangeHigh[size],ByteOfDeltaColor(color),this->fnBias + colorDeltaKnotPpemRangeFn);
+						swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %i, %hi, %hi, %hi, %hi", knot, amount, ppemRangeLow[size], ppemRangeHigh[size], ByteOfDeltaColor(color), this->fnBias + colorDeltaKnotPpemRangeFn);
 			this->Emit(buf);
 		}
 	}
@@ -912,24 +940,32 @@ void TTSourceEngine::DLT(bool cvt, DeltaColor color, short knot, F26Dot6 amount,
 		charFn = cvt ? L'C' : L'P';
 		if (this->deltaShift != shift) { // resolution is not the right one for this step
 			this->deltaShift = shift;
-			swprintf(buf,L"SDS[], %hi",this->deltaShift); this->Emit(buf);
+			swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"SDS[], %hi", this->deltaShift);
+			this->Emit(buf);
 		}
 		size = 0;
 		while (size < singlePpemSizes) { // while there are ppems to do
 			if (singlePpemSize[size] < this->deltaBase || this->deltaBase + 47 < singlePpemSize[size]) { // ppem is outside range "addressable" by DLTP1, DLTP2, or DLTP3
 				this->deltaBase = singlePpemSize[size];
-				swprintf(buf,L"SDB[], %hi",this->deltaBase); this->Emit(buf);
+				swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"SDB[], %hi", this->deltaBase);
+				this->Emit(buf);
 			}
 			deltaSubBase = this->deltaBase;
 			while (size < singlePpemSizes && deltaSubBase <= this->deltaBase + 47) { // while there are ppems to do and they are "addressable" by DLTP1, DLTP2, or DLTP3
 				if (size < singlePpemSizes && singlePpemSize[size] <= deltaSubBase + 15) { // if there are ppems to do which are "addressable" by "current" DLTPi
-					swprintf(buf,L"DLT%c%hi[",charFn,((deltaSubBase-this->deltaBase) >> 4) + 1); deltas = 0;
+					swprintf(buf,sizeof(buf)/sizeof(wchar_t),L"DLT%c%hi[",charFn,((deltaSubBase-this->deltaBase) >> 4) + 1); deltas = 0;
 					do {
-						if (deltas == 4) { this->Emit(buf); swprintf(buf,L"      "); deltas = 0; }
-						swprintf(&buf[STRLENW(buf)],L"(%hi @%hi %hi)",knot,singlePpemSize[size]-deltaSubBase,magnitude); deltas++;
+						if (deltas == 4)
+						{
+							this->Emit(buf);
+							swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"      ");
+							deltas = 0;
+						}
+						swprintf(&buf[STRLENW(buf)], sizeof(buf) / sizeof(wchar_t), L"(%hi @%hi %hi)", knot, singlePpemSize[size] - deltaSubBase, magnitude);
+						deltas++;
 						size++;
 					} while (size < singlePpemSizes && singlePpemSize[size] <= deltaSubBase + 15); // while there are ppems to do which are "addressable" by "current" DLTPi
-					swprintf(&buf[STRLENW(buf)],L"]");
+					swprintf(&buf[STRLENW(buf)], sizeof(buf) / sizeof(wchar_t), L"]");
 					this->Emit(buf);
 				}
 				deltaSubBase += 16;
@@ -941,7 +977,8 @@ void TTSourceEngine::DLT(bool cvt, DeltaColor color, short knot, F26Dot6 amount,
 void TTSourceEngine::CALL24(short leftCvt, short rightCvt) {
 	wchar_t buf[32];
 	
-	swprintf(buf,L"CALL[], %hi, %hi, %hi",leftCvt,rightCvt,this->fnBias + 24); this->Emit(buf);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %hi, %hi", leftCvt, rightCvt, this->fnBias + 24);
+	this->Emit(buf);
 } // TTSourceEngine::CALL24
 
 void TTSourceEngine::CALL3456(short type, short knot3, short cvt3, short knot2, short cvt2, short knot1, short cvt1) {
@@ -950,10 +987,10 @@ void TTSourceEngine::CALL3456(short type, short knot3, short cvt3, short knot2, 
 	switch (type) {
 		case 34:
 		case 35:
-			swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi",knot3,cvt3,cvt2,knot1,cvt1,this->fnBias + type);
+			swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi", knot3, cvt3, cvt2, knot1, cvt1, this->fnBias + type);
 			break;
 		case 36:
-			swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi, %hi",knot3,cvt3,knot2,cvt2,knot1,cvt1,this->fnBias + type);
+			swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi, %hi", knot3, cvt3, knot2, cvt2, knot1, cvt1, this->fnBias + type);
 			break;
 	}
 	this->Emit(buf);
@@ -967,7 +1004,8 @@ void TTSourceEngine::CALL3456(short type, short knot3, short cvt3, short knot2, 
 void TTSourceEngine::CALL64(short parent, short child, short cvt, bool half, bool flip) {
 	wchar_t buf[64];
 	
- 	swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi",parent,child,cvt,half,flip,this->fnBias + 64); this->Emit(buf);
+ 	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi", parent, child, cvt, half, flip, this->fnBias + 64);
+	this->Emit(buf);
 	this->rp[0] = this->rp[1] = parent; this->lastChild = invalidKnotNum;
 	this->rp[2] = child;
 } // TTSourceEngine::CALL64
@@ -976,7 +1014,8 @@ void TTSourceEngine::CALL656(bool crissCrossLinks, short knot0, short knot1, sho
 	wchar_t buf[64];
 	TTVectorDesc *v;
 	
-	swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi",knot0,knot1,knot2,knot3,cvt,storage,(short)xLinks,(short)flip,this->fnBias + 65 + (short)crissCrossLinks); this->Emit(buf);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi", knot0, knot1, knot2, knot3, cvt, storage, (short)xLinks, (short)flip, this->fnBias + 65 + (short)crissCrossLinks);
+	this->Emit(buf);
 	this->rp[0] = this->rp[1] = this->rp[2] = invalidKnotNum; this->lastChild = invalidKnotNum;
 	v = &this->ttv[pv]; v->dir = diagDir; v->from = v->to = invalidKnotNum; // assume any kind of side-effect, cf. InitTTEngine(true)
 	this->ttv[fv] = this->ttv[pv];
@@ -986,8 +1025,10 @@ void TTSourceEngine::CALL678(bool back, short knot, short sameSide, short cvt, s
 	wchar_t buf[64];
 	TTVectorDesc *v;
 	
-	if (back) swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi",knot,sameSide,storage,this->fnBias + 68);
-	else swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi",knot,sameSide,cvt,storage,this->fnBias + 67);
+	if (back)
+		swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %hi, %hi, %hi", knot, sameSide, storage, this->fnBias + 68);
+	else
+		swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %hi, %hi, %hi, %hi", knot, sameSide, cvt, storage, this->fnBias + 67);
 	this->Emit(buf);
 	v = &this->ttv[pv]; v->dir = diagDir; v->from = v->to = invalidKnotNum; // assume any kind of side-effect, cf. InitTTEngine(true)
 	this->ttv[fv] = this->ttv[pv];
@@ -997,7 +1038,8 @@ void TTSourceEngine::CALL678(bool back, short knot, short sameSide, short cvt, s
 void TTSourceEngine::CALL012345(short type, short knot0, short knot1, short knot2, short cvt) {
 	wchar_t buf[64];
 	
-	swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi",knot0,knot1,knot2,cvt,this->fnBias + type); this->Emit(buf);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %hi, %hi, %hi, %hi", knot0, knot1, knot2, cvt, this->fnBias + type);
+	this->Emit(buf);
 	// no side-effects
 } // TTSourceEngine::CALL012345
 
@@ -1006,11 +1048,11 @@ void TTSourceEngine::CALL6(short knots, short knot[], short targetKnot) {
 	wchar_t buf[256];
 	
 	if (knots > 1) {
-		swprintf(buf,L"LOOPCALL[]");
-		for (i = 0; i < knots; i++) swprintf(&buf[STRLENW(buf)],L", %hi, %hi",knot[i],targetKnot);
-		swprintf(&buf[STRLENW(buf)],L", %hi, %hi",knots,this->fnBias + 6);
+		swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"LOOPCALL[]");
+		for (i = 0; i < knots; i++) swprintf(&buf[STRLENW(buf)],sizeof(buf)/sizeof(wchar_t),L", %hi, %hi",knot[i],targetKnot);
+		swprintf(&buf[STRLENW(buf)], sizeof(buf) / sizeof(wchar_t), L", %hi, %hi", knots, this->fnBias + 6);
 	} else if (knots == 1)
-		swprintf(buf,L"CALL[], %hi, %hi, %hi",knot[0],targetKnot,this->fnBias + 6);
+		swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %hi, %hi", knot[0], targetKnot, this->fnBias + 6);
 	if (knots > 0) {
 		this->rp[0] = targetKnot; this->lastChild = invalidKnotNum;
 		this->ttv[fv].dir = yRomanDir; this->ttv[fv].from = this->ttv[fv].to = invalidKnotNum;
@@ -1022,7 +1064,8 @@ void TTSourceEngine::CALL6(short knots, short knot[], short targetKnot) {
 void TTSourceEngine::CALL378(short type, short targetKnot) {
 	wchar_t buf[32];
 	
-	swprintf(buf,L"CALL[], %hi, %hi",targetKnot,this->fnBias + type); this->Emit(buf);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %hi", targetKnot, this->fnBias + type);
+	this->Emit(buf);
 	this->rp[0] = type == 37 ? targetKnot + 1 : targetKnot - 1; this->lastChild = invalidKnotNum;
 	this->ttv[fv].dir = yRomanDir; this->ttv[fv].from = this->ttv[fv].to = invalidKnotNum;
 	this->ttv[pv] = this->ttv[fv];
@@ -1032,9 +1075,10 @@ void TTSourceEngine::CALL(short actParams, short anyNum[], short functNum) {
 	wchar_t buf[8*maxParams];
 	short i;
 	
-	swprintf(buf,L"CALL[]");
-	for (i = 0; i < actParams; i++) swprintf(&buf[STRLENW(buf)],L", %hi",anyNum[i]);
-	swprintf(&buf[STRLENW(buf)],L", %hi",functNum); // here functNum is passed explicitly as a parameter, hence we expect caller to correctly bias function number
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[]");
+	for (i = 0; i < actParams; i++)
+		swprintf(&buf[STRLENW(buf)], sizeof(buf) / sizeof(wchar_t), L", %hi", anyNum[i]);
+	swprintf(&buf[STRLENW(buf)], sizeof(buf) / sizeof(wchar_t), L", %hi", functNum); // here functNum is passed explicitly as a parameter, hence we expect caller to correctly bias function number
 	this->Emit(buf);
 	this->InitTTEngineState(false);
 } // TTSourceEngine::CALL
@@ -1042,7 +1086,7 @@ void TTSourceEngine::CALL(short actParams, short anyNum[], short functNum) {
 void TTSourceEngine::CALL88(short riseCvt, short runCvt) {
 	wchar_t buf[32];
 	
-	swprintf(buf,L"CALL[], %hi, %hi, %hi",riseCvt,runCvt,this->fnBias + italicRiseRunFn);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %hi, %hi", riseCvt, runCvt, this->fnBias + italicRiseRunFn);
 	this->Emit(buf);
 	this->rp[0] = this->rp[1] = invalidKnotNum; this->lastChild = invalidKnotNum;
 	this->sRound = false; this->round = rtg;
@@ -1053,7 +1097,7 @@ void TTSourceEngine::CALL88(short riseCvt, short runCvt) {
 void TTSourceEngine::ResMIAP(short child, short cvt) {
 	wchar_t buf[64];
 	
-	swprintf(buf,L"CALL[], %hi, %hi, %hi",child,cvt,this->fnBias + resMIAPFn);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %hi, %hi", child, cvt, this->fnBias + resMIAPFn);
 	this->Emit(buf);
 	
 	this->lastChild = invalidKnotNum; // MSIRP in fpgm, cannot patch code in fpgm...
@@ -1065,7 +1109,7 @@ void TTSourceEngine::ResIPMDAP(TTVDirection pvP, bool postRoundFlag, short paren
 	short dirFlag;
 
 	dirFlag = ((short)postRoundFlag)*8 + (short)pvP;	
-	swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi",dirFlag,parent0,child,parent1,this->fnBias + resIPMDAPFn);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %hi, %hi, %hi, %hi", dirFlag, parent0, child, parent1, this->fnBias + resIPMDAPFn);
 	this->Emit(buf);
 	
 	// SO FAR, WILL NEED TO MAKE MORE GENERAL TO ACCOMODATE fvP and fvC
@@ -1090,9 +1134,10 @@ void TTSourceEngine::ResMIRP(short parent, short child, short cvt, bool useMinDi
 	wchar_t buf[64];
 	
 	useCvt = cvt != invalidCvtNum;
-	pos = swprintf(buf,L"CALL[], %hi, %hi",parent,child);
-	if (useCvt) pos += swprintf(&buf[pos],L", %hi",cvt);
-	pos += swprintf(&buf[pos],L", %hi",this->fnBias + resMIRPFn00 + 2*(int32_t)useCvt + (int32_t)useMinDist);
+	pos = swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %hi", parent, child);
+	if (useCvt)
+		pos += swprintf(&buf[pos], sizeof(buf) / sizeof(wchar_t), L", %hi", cvt);
+	pos += swprintf(&buf[pos], sizeof(buf) / sizeof(wchar_t), L", %hi", this->fnBias + resMIRPFn00 + 2 * (int32_t)useCvt + (int32_t)useMinDist);
 
 	this->Emit(buf);
 	
@@ -1104,7 +1149,7 @@ void TTSourceEngine::ResMIRP(short parent, short child, short cvt, bool useMinDi
 void TTSourceEngine::ResIPMIRP(TTVDirection pvGP, short strokeOptimizationFlag, short grandParent0, short parent, short child, short cvt, short grandParent1) {
 	wchar_t buf[64];
 	
-	swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi",pvGP,grandParent0,parent,child,cvt,grandParent1,strokeOptimizationFlag,this->fnBias + resIPMIRPFn);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi", pvGP, grandParent0, parent, child, cvt, grandParent1, strokeOptimizationFlag, this->fnBias + resIPMIRPFn);
 	this->Emit(buf);
 	
 	this->ttv[pv].dir = (TTVDirection)((int32_t)pvGP % 2); this->ttv[pv].from = this->ttv[pv].to = invalidKnotNum;
@@ -1119,15 +1164,15 @@ void TTSourceEngine::ResDDMIRP(short parent0, short child0, TTVectorDesc fv0, sh
 	int32_t pos;
 	
 	// CAUTION: this scheme doesn't support setting the fv PERPENDICULAR to a line (so far it doesn't need to)
-	pos = swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi, ",parent0,child0,parent1,child1,cvt0,cvt1);
+	pos = swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi, ", parent0, child0, parent1, child1, cvt0, cvt1);
 	if (fv0.dir <= yRomanDir && fv1.dir <= yRomanDir) // simple case
-		swprintf(&buf[pos],L"%hi, %hi, %hi",(short)fv0.dir,(short)fv1.dir,this->fnBias + resDDMIRP0Fn);
+		swprintf(&buf[pos], sizeof(buf) / sizeof(wchar_t), L"%hi, %hi, %hi", (short)fv0.dir, (short)fv1.dir, this->fnBias + resDDMIRP0Fn);
 	else if (fv0.dir <= yRomanDir) // fv1.type set to line
-		swprintf(&buf[pos],L"%hi, %hi, %hi, %hi",(short)fv0.dir,fv1.from,fv1.to,this->fnBias + resDDMIRP1Fn);
+		swprintf(&buf[pos], sizeof(buf) / sizeof(wchar_t), L"%hi, %hi, %hi, %hi", (short)fv0.dir, fv1.from, fv1.to, this->fnBias + resDDMIRP1Fn);
 	else if (fv1.dir <= yRomanDir) // fv0.type set to line
-		swprintf(&buf[pos],L"%hi, %hi, %hi, %hi",fv0.from,fv0.to,(short)fv1.dir,this->fnBias + resDDMIRP2Fn); 
+		swprintf(&buf[pos], sizeof(buf) / sizeof(wchar_t), L"%hi, %hi, %hi, %hi", fv0.from, fv0.to, (short)fv1.dir, this->fnBias + resDDMIRP2Fn); 
 	else // both fv0.type and fv1.type set to line
-		swprintf(&buf[pos],L"%hi, %hi, %hi, %hi, %hi",fv0.from,fv0.to,fv1.from,fv1.to,this->fnBias + resDDMIRP3Fn); 
+		swprintf(&buf[pos], sizeof(buf) / sizeof(wchar_t), L"%hi, %hi, %hi, %hi, %hi", fv0.from, fv0.to, fv1.from, fv1.to, this->fnBias + resDDMIRP3Fn); 
 	this->Emit(buf);
 
 	this->lastChild = invalidKnotNum;
@@ -1140,7 +1185,7 @@ void TTSourceEngine::ResDDMIRP(short parent0, short child0, TTVectorDesc fv0, sh
 void TTSourceEngine::ResIPDMIRP(TTVDirection pvGP, short grandParent0, short parent0, short child0, short cvt0, short parent1, short child1, short cvt1, short grandParent1) {
 	wchar_t buf[128];
 	
-	swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi",pvGP,grandParent0,parent0,child0,cvt0,parent1,child1,cvt1,grandParent1,this->fnBias + resIPDMIRPFn);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi", pvGP, grandParent0, parent0, child0, cvt0, parent1, child1, cvt1, grandParent1, this->fnBias + resIPDMIRPFn);
 	this->Emit(buf);
 
 	this->ttv[pv].dir = (TTVDirection)((int32_t)pvGP % 2); this->ttv[pv].from = this->ttv[pv].to = invalidKnotNum;
@@ -1155,15 +1200,15 @@ void TTSourceEngine::ResIPDDMIRP(TTVDirection pvGP, short grandParent0, short pa
 	int32_t pos;
 	
 	// CAUTION: this scheme doesn't support setting the fv PERPENDICULAR to a line (so far it doesn't need to)
-	pos = swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi, ",pvGP,grandParent0,parent0,child0,cvt0,parent1,child1,cvt1,grandParent1);
+	pos = swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi, ", pvGP, grandParent0, parent0, child0, cvt0, parent1, child1, cvt1, grandParent1);
 	if (fv0.dir < diagDir && fv1.dir < diagDir) // simple case
-		swprintf(&buf[pos],L"%hi, %hi, %hi",(int32_t)fv0.dir,(int32_t)fv1.dir,this->fnBias + resIPDDMIRPGlue0Fn);
+		swprintf(&buf[pos], sizeof(buf) / sizeof(wchar_t), L"%hi, %hi, %hi", (int32_t)fv0.dir, (int32_t)fv1.dir, this->fnBias + resIPDDMIRPGlue0Fn);
 	else if (fv1.dir < diagDir) // fv0.type set to line
-		swprintf(&buf[pos],L"%hi, %hi, %hi, %hi",fv0.from,fv0.to,(int32_t)fv1.dir,this->fnBias + resIPDDMIRPGlue1Fn);
+		swprintf(&buf[pos], sizeof(buf) / sizeof(wchar_t), L"%hi, %hi, %hi, %hi", fv0.from, fv0.to, (int32_t)fv1.dir, this->fnBias + resIPDDMIRPGlue1Fn);
 	else if (fv0.dir < diagDir) // fv1.type set to line
-		swprintf(&buf[pos],L"%hi, %hi, %hi, %hi",(int32_t)fv0.dir,fv1.from,fv1.to,this->fnBias + resIPDDMIRPGlue2Fn); 
+		swprintf(&buf[pos], sizeof(buf) / sizeof(wchar_t), L"%hi, %hi, %hi, %hi", (int32_t)fv0.dir, fv1.from, fv1.to, this->fnBias + resIPDDMIRPGlue2Fn); 
 	else // both fv0.type and fv1.type set to line
-		swprintf(&buf[pos],L"%hi, %hi, %hi, %hi, %hi",fv0.from,fv0.to,fv1.from,fv1.to,this->fnBias + resIPDDMIRPGlue3Fn); 
+		swprintf(&buf[pos], sizeof(buf) / sizeof(wchar_t), L"%hi, %hi, %hi, %hi, %hi", fv0.from, fv0.to, fv1.from, fv1.to, this->fnBias + resIPDDMIRPGlue3Fn); 
 	this->Emit(buf);
 
 	this->ttv[fv] = fv1;
@@ -1176,7 +1221,7 @@ void TTSourceEngine::ResIPDDMIRP(TTVDirection pvGP, short grandParent0, short pa
 void TTSourceEngine::ResIIPDMIRP(short grandParent0, short parent0, short child0, short cvt0, short parent1, short child1, short cvt1, short grandParent1) {
 	wchar_t buf[128];
 	
-	swprintf(buf,L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi",grandParent0,grandParent1,parent0,parent1,child0,child1,cvt0,cvt1,this->fnBias + resIIPDMIRPFn);
+	swprintf(buf, sizeof(buf) / sizeof(wchar_t), L"CALL[], %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi, %hi", grandParent0, grandParent1, parent0, parent1, child0, child1, cvt0, cvt1, this->fnBias + resIIPDMIRPFn);
 	this->Emit(buf);
 
 	this->lastChild = invalidKnotNum;
@@ -1199,7 +1244,8 @@ void TTSourceEngine::INSTCTRL(short fromPpem, short toPpem) {
 
 	// GETINFO 6 below corresponding to ROTATEDINTERPRETERQUERY | STRETCHEDINTERPRETERQUERY, cf. Interp.c
 	// turn off instructions if outside ppem range or rasterizer version >= 1.8 and (rotated or stretched)
-	swprintf(code,L"#PUSHOFF"        BRK
+	swprintf(code, sizeof(code) / sizeof(wchar_t), 
+				  L"#PUSHOFF" BRK
 				  L"MPPEM[]"         BRK
 				  L"#PUSH, %hi"      BRK
 				  L"GT[]"            BRK
@@ -1234,7 +1280,7 @@ void TTSourceEngine::INSTCTRL(short fromPpem, short toPpem) {
 void TTSourceEngine::SCANCTRL(short ctrl) {
 	wchar_t code[maxLineSize];
 
-	swprintf(code,L"SCANCTRL[], %hi" BRK,ctrl);
+	swprintf(code, sizeof(code) / sizeof(wchar_t), L"SCANCTRL[], %hi" BRK, ctrl);
 	this->Emit(code);
 } // TTSourceEngine::SCANCTRL
 
@@ -1242,8 +1288,8 @@ void TTSourceEngine::SCANTYPE(short type) {
 	int32_t pos;
 	wchar_t code[maxLineSize];
 
-	pos = type <= 4 ? 0 : swprintf(code,L"SCANTYPE[], %hi" BRK,type-4); // Mac rasterizer doesn't handle types > 4
-	swprintf(&code[pos],L"SCANTYPE[], %hi" BRK,type);
+	pos = type <= 4 ? 0 : swprintf(code, sizeof(code)/sizeof(wchar_t), L"SCANTYPE[], %hi" BRK,type-4); // Mac rasterizer doesn't handle types > 4
+	swprintf(&code[pos], sizeof(code) / sizeof(wchar_t), L"SCANTYPE[], %hi" BRK, type);
 	this->Emit(code);
 } // TTSourceEngine::SCANTYPE
 
@@ -1253,14 +1299,17 @@ void TTSourceEngine::SCVTCI(short numCvtCutIns, short cvtCutInPpemSize[], F26Dot
 
 	if(this->legacyCompile)
 	{
-		swprintf(code, L"WS[], 22, 1 /* s[22] = diagonal control: on (by default) */"); this->Emit(code);
+		swprintf(code, sizeof(code) / sizeof(wchar_t), L"WS[], 22, 1 /* s[22] = diagonal control: on (by default) */");
+		this->Emit(code);
 	}
 
 	if (numCvtCutIns > 0) {
-		swprintf(code,L"SCVTCI[], %i",cvtCutInValue[0]); this->Emit(code);
+		swprintf(code, sizeof(code) / sizeof(wchar_t), L"SCVTCI[], %i", cvtCutInValue[0]);
+		this->Emit(code);
 		if (!this->legacyCompile)
 		{
-			swprintf(code, L"WS[], %i, %i", cvtCutInStorage, cvtCutInValue[0]); this->Emit(code);
+			swprintf(code, sizeof(code) / sizeof(wchar_t), L"WS[], %i, %i", cvtCutInStorage, cvtCutInValue[0]);
+			this->Emit(code);
 		}
 	}
 	if (numCvtCutIns > 1) {
@@ -1271,7 +1320,8 @@ void TTSourceEngine::SCVTCI(short numCvtCutIns, short cvtCutInPpemSize[], F26Dot
 			if (!this->legacyCompile)
 			{
 
-				swprintf(code, L"MPPEM[]" BRK
+				swprintf(code, sizeof(code) / sizeof(wchar_t), 
+					L"MPPEM[]" BRK
 					L"#PUSH, %hi" BRK
 					L"GTEQ[]" BRK
 					L"IF[]" BRK
@@ -1281,7 +1331,8 @@ void TTSourceEngine::SCVTCI(short numCvtCutIns, short cvtCutInPpemSize[], F26Dot
 			}
 			else
 			{
-				swprintf(code,L"MPPEM[]" BRK
+				swprintf(code, sizeof(code) / sizeof(wchar_t),
+					L"MPPEM[]" BRK
 					L"#PUSH, %hi" BRK
 					L"GTEQ[]" BRK
 					L"IF[]" BRK
@@ -1292,7 +1343,8 @@ void TTSourceEngine::SCVTCI(short numCvtCutIns, short cvtCutInPpemSize[], F26Dot
 			this->Emit(code);
 			cvtCutIn++;
 			if (this->legacyCompile && cvtCutIn == numCvtCutIns) {
-				swprintf(code,L"#PUSH, 22, 0" BRK
+				swprintf(code, sizeof(code) / sizeof(wchar_t), 
+							  L"#PUSH, 22, 0" BRK
 							  L"WS[] /* s[22] = diagonal control: off (by now) */"); this->Emit(code);
 			}
 			this->Emit(	 L"EIF[]");
@@ -1306,7 +1358,8 @@ void TTSourceEngine::SetAspectRatioFlag(void) {
 	wchar_t code[maxLineSize];
 
 	this->Emit(L"/* Square aspect ratio? */");
-	swprintf(code,L"CALL[], %hi",this->fnBias + aspectRatioFn); this->Emit(code);
+	swprintf(code, sizeof(code) / sizeof(wchar_t), L"CALL[], %hi", this->fnBias + aspectRatioFn);
+	this->Emit(code);
 	this->Emit(L"");
 	this->ttv[fv].dir = xRomanDir; this->ttv[fv].from = this->ttv[fv].to = invalidKnotNum;
 	this->ttv[pv] = this->ttv[fv]; this->ttv[pv].dir = yRomanDir;
@@ -1317,7 +1370,8 @@ void TTSourceEngine::SetGreyScalingFlag(void) {
 	wchar_t code[maxLineSize];
 
 	this->Emit(L"/* Grey scaling? */");
-	swprintf(code,L"CALL[], %hi",this->fnBias + greyScalingFn); this->Emit(code);
+	swprintf(code, sizeof(code) / sizeof(wchar_t), L"CALL[], %hi", this->fnBias + greyScalingFn);
+	this->Emit(code);
 	this->Emit(L"");
 } // TTSourceEngine::SetGreyScalingFlag
 
@@ -1325,7 +1379,8 @@ void TTSourceEngine::SetClearTypeCtrl(short ctrl) {
 	wchar_t code[maxLineSize];
 
 	if (ctrl > 0) {
-		swprintf(code,L"#PUSHOFF"          BRK
+		swprintf(code, sizeof(code) / sizeof(wchar_t), 
+					  L"#PUSHOFF" BRK
 					  L"#PUSH, 2, 2"       BRK
 					  L"RS[]"              BRK
 					  L"LTEQ[]"            BRK
@@ -1335,7 +1390,7 @@ void TTSourceEngine::SetClearTypeCtrl(short ctrl) {
 					  L"EIF[]"             BRK
 					  L"#PUSHON"           BRK,4);
 	} else {
-		swprintf(code,L"/* (font not tuned for ClearType) */" BRK);
+		swprintf(code,sizeof(code)/sizeof(wchar_t), L"/* (font not tuned for ClearType) */" BRK);
 	}
 	this->Emit(code);
 } // TTSourceEngine::SetClearTypeCtrl
@@ -1344,10 +1399,10 @@ void TTSourceEngine::CvtRegularization(bool relative, short cvtNum, short breakP
 	wchar_t code[maxLineSize];
 
 	if (relative) {
-		swprintf(code,L"CALL[], %hi, %hi, %hi, %hi",cvtNum,breakPpemSize,parentCvtNum,this->fnBias + doubleHeightFn);
+		swprintf(code, sizeof(code) / sizeof(wchar_t), L"CALL[], %hi, %hi, %hi, %hi", cvtNum, breakPpemSize, parentCvtNum, this->fnBias + doubleHeightFn);
 		this->sRound = false; this->round = rnone; // don't know which branch was taken...
 	} else {
-		swprintf(code,L"CALL[], %hi, %hi, %hi, %hi",cvtNum,parentCvtNum,breakPpemSize,this->fnBias + singleWeightFn);
+		swprintf(code, sizeof(code) / sizeof(wchar_t), L"CALL[], %hi, %hi, %hi, %hi", cvtNum, parentCvtNum, breakPpemSize, this->fnBias + singleWeightFn);
 	}
 	this->Emit(code);
 } // TTSourceEngine::CvtRegularization
@@ -1361,11 +1416,13 @@ void TTSourceEngine::ResetPrepState(void) {
 	}
 	if (this->deltaShift != defaultDeltaShift) {
 		this->deltaShift = defaultDeltaShift;
-		swprintf(code,L"SDS[], %hi",this->deltaShift); this->Emit(code);
+		swprintf(code, sizeof(code) / sizeof(wchar_t), L"SDS[], %hi", this->deltaShift);
+		this->Emit(code);
 	}
 	if (this->deltaBase != defaultDeltaBase) {
 		this->deltaBase = defaultDeltaBase;
-		swprintf(code,L"SDB[], %hi",this->deltaBase); this->Emit(code);
+		swprintf(code, sizeof(code) / sizeof(wchar_t), L"SDB[], %hi", this->deltaBase);
+		this->Emit(code);
 	}
 } // TTSourceEngine::ResetPrepState
 
@@ -1439,9 +1496,10 @@ void GenGuardCond(TextBuffer *text, AltCodePath path) {
 
 	path = (AltCodePath)Min(Max(firstAltCodePath,path),lastAltCodePath);
 
-	swprintf(codePath,L"#PUSH, %i, 2",path); text->AppendLine(codePath);
+	swprintf(codePath, sizeof(codePath)/sizeof(wchar_t), L"#PUSH, %i, 2",path); text->AppendLine(codePath);
 	text->AppendLine(L"RS[]");
-	swprintf(codePath,WIDE_STR_FORMAT L"EQ[]",path < altCodePathMonochromeOnly ? L"N" : L"LT"); text->AppendLine(codePath);
+	swprintf(codePath, sizeof(codePath) / sizeof(wchar_t),WIDE_STR_FORMAT L"EQ[]", path < altCodePathMonochromeOnly ? L"N" : L"LT");
+	text->AppendLine(codePath);
 } // GenGuardCond
 
 void GenTalkIf(TextBuffer *talk, AltCodePath path, int32_t fpgmBias) {
@@ -1455,7 +1513,8 @@ void GenTalkIf(TextBuffer *talk, AltCodePath path, int32_t fpgmBias) {
 	talk->AppendLine(L"#BEGIN");
 	talk->AppendLine(L"\x22)");
 	talk->AppendLine(L"");
-	swprintf(codePath,L"BeginCodePath(%i)",fpgmBias); talk->AppendLine(codePath);
+	swprintf(codePath, sizeof(codePath) / sizeof(wchar_t), L"BeginCodePath(%i)", fpgmBias);
+	talk->AppendLine(codePath);
 	talk->AppendLine(L"");
 } // GenTalkIf
 
@@ -1471,7 +1530,8 @@ void GenTalkElse(TextBuffer *talk, int32_t fpgmBias) {
 	talk->AppendLine(L"#BEGIN");
 	talk->AppendLine(L"\x22)");
 	talk->AppendLine(L"");
-	swprintf(codePath,L"BeginCodePath(%i)",fpgmBias); talk->AppendLine(codePath);
+	swprintf(codePath, sizeof(codePath) / sizeof(wchar_t), L"BeginCodePath(%i)", fpgmBias);
+	talk->AppendLine(codePath);
 	talk->AppendLine(L"");
 } // GenTalkElse
 
@@ -1489,7 +1549,8 @@ void GenPrepIf(TextBuffer *prep, AltCodePath path) {
 	wchar_t codePath[32];
 
 	prep->AppendLine(L"#PUSHOFF");
-	swprintf(codePath,L"#PUSH, %i",greyScalingFn); prep->AppendLine(codePath);
+	swprintf(codePath, sizeof(codePath) / sizeof(wchar_t), L"#PUSH, %i", greyScalingFn);
+	prep->AppendLine(codePath);
 	prep->AppendLine(L"CALL[]");
 	GenGuardCond(prep,path);
 	prep->AppendLine(L"IF[]");

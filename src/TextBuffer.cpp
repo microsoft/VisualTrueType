@@ -235,11 +235,7 @@ void TextBuffer::AppendLine(const wchar_t strg[]) {
 	
 	indent = chars > 0 ? this->indent : 0;
 	
-#ifndef _WIN32
-	swprintf(eol,L"\n");
-#else
-	swprintf(eol,L"\r");
-#endif
+	swprintf(eol,sizeof(eol)/sizeof(wchar_t),L"\r");
 	charsEol = wcslen(eol);
 
 	if (!this->AssertTextSize(indent + chars + charsEol + 1)) return;

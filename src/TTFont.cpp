@@ -1025,12 +1025,12 @@ void TrueTypeFont::AssertMaxGlyphs(int32_t minGlyphs) {
 	this->maxGlitEntries = this->IndexToLoc && this->tmpIndexToLoc && this->glit1 && this->glit2 && this->charCodeOf && this->charGroupOf && this->horMetric ? minGlyphs : 0;
 } // TrueTypeFont::AssertMaxGlyphs
 
-void MaxSfntSizeError(const wchar_t from[], int32_t size, wchar_t errMsg[]);
-void MaxSfntSizeError(const wchar_t from[], int32_t size, wchar_t errMsg[]) {
-	swprintf(errMsg,WIDE_STR_FORMAT L", \r" BULLET L" Unable to allocate %li to work on this font.",from, size);
+void MaxSfntSizeError(const wchar_t from[], int32_t size, wchar_t errMsg[], size_t errMsgLen);
+void MaxSfntSizeError(const wchar_t from[], int32_t size, wchar_t errMsg[], size_t errMsgLen) {
+	swprintf(errMsg,errMsgLen,WIDE_STR_FORMAT L", \r" BULLET L" Unable to allocate %li to work on this font.",from, size);
 } // MaxSfntSizeError
 
-bool TrueTypeFont::SetSfnt(short platformID, short encodingID, wchar_t errMsg[])
+bool TrueTypeFont::SetSfnt(short platformID, short encodingID, wchar_t errMsg[], size_t errMsgLen)
 {
 	this->UnpackFvar();
 	this->UnpackAvar(); 
@@ -1203,7 +1203,7 @@ bool TrueTypeFont::IsMakeTupleName(const std::wstring &name) const
 	return false; 
 } // TrueTypeFont::IsMakeTupleName
 
-bool TrueTypeFont::Read(File *file, TrueTypeGlyph *glyph, short *platformID, short *encodingID, wchar_t errMsg[]) {
+bool TrueTypeFont::Read(File *file, TrueTypeGlyph *glyph, short *platformID, short *encodingID, wchar_t errMsg[], size_t errMsgLen) {
 	int32_t glyphIndex;
 
 	this->sfntSize = file->Length();
@@ -1211,21 +1211,22 @@ bool TrueTypeFont::Read(File *file, TrueTypeGlyph *glyph, short *platformID, sho
 	this->AssertMaxSfntSize(this->sfntSize,true,true);
 
 	if (this->sfntSize > this->maxSfntSize) {
-		MaxSfntSizeError(L"Read: This font is too large",this->sfntSize,errMsg); return false;
+		MaxSfntSizeError(L"Read: This font is too large",this->sfntSize,errMsg,errMsgLen); return false;
 	}
 	file->ReadBytes(this->sfntSize,	this->sfntHandle);
 	if (file->Error()) {
-		swprintf(errMsg,L"Read: I/O error reading this font"); return false;
+		swprintf(errMsg, errMsgLen, L"Read: I/O error reading this font"); return false;
 	}
 	
-	if (!this->UnpackHeadHheaMaxpHmtx(errMsg)) return false;
+	if (!this->UnpackHeadHheaMaxpHmtx(errMsg, errMsgLen)) return false;
 
 	if(*platformID == 3 && *encodingID == 1) 
 		*encodingID = 10; // lets first try 3,10 and default lower if not present
 	
-	if (!this->CMapExists(*platformID,*encodingID) && !this->DefaultCMap(platformID,encodingID,errMsg)) return false;
+	if (!this->CMapExists(*platformID,*encodingID) && !this->DefaultCMap(platformID,encodingID,errMsg, errMsgLen)) return false;
 	
-	if (!(this->UnpackGlitsLoca(errMsg) && this->UpdateMaxPointsAndContours(errMsg) && this->UnpackCMap(*platformID,*encodingID,errMsg) && this->UnpackCharGroup(errMsg))) return false;
+	if (!(this->UnpackGlitsLoca(errMsg, errMsgLen) && this->UpdateMaxPointsAndContours(errMsg, errMsgLen) && this->UnpackCMap(*platformID, *encodingID, errMsg, errMsgLen) && this->UnpackCharGroup(errMsg, errMsgLen)))
+		return false;
 	
 	// Clear for new font. 
 	if (instanceManager_ != nullptr)
@@ -1233,17 +1234,21 @@ bool TrueTypeFont::Read(File *file, TrueTypeGlyph *glyph, short *platformID, sho
 		instanceManager_->clear(); 
 	}
 
-	if (!this->SetSfnt(*platformID, *encodingID, errMsg)) return false;
+	if (!this->SetSfnt(*platformID, *encodingID, errMsg, errMsgLen))
+		return false;
 
 	// not the smartest way to get these numbers, another historical legacy
 	if ((glyphIndex = this->GlyphIndexOf(L'H')) == INVALID_GLYPH_INDEX) this->capHeight = this->unitsPerEm;
-	else if (this->GetGlyph(glyphIndex,glyph,errMsg)) this->capHeight = glyph->ymax;
+	else if (this->GetGlyph(glyphIndex, glyph, errMsg, errMsgLen))
+		this->capHeight = glyph->ymax;
 	else return false;
 	if ((glyphIndex = this->GlyphIndexOf(L'x')) == INVALID_GLYPH_INDEX) this->xHeight = this->unitsPerEm;
-	else if (this->GetGlyph(glyphIndex,glyph,errMsg)) this->xHeight = glyph->ymax;
+	else if (this->GetGlyph(glyphIndex, glyph, errMsg, errMsgLen))
+		this->xHeight = glyph->ymax;
 	else return false;
 	if ((glyphIndex = this->GlyphIndexOf(L'p')) == INVALID_GLYPH_INDEX) this->descenderHeight = 0;
-	else if (this->GetGlyph(glyphIndex,glyph,errMsg)) this->descenderHeight = glyph->ymin;
+	else if (this->GetGlyph(glyphIndex, glyph, errMsg, errMsgLen))
+		this->descenderHeight = glyph->ymin;
 	else return false;	
 
 	// Clear for new font.
@@ -1255,11 +1260,12 @@ bool TrueTypeFont::Read(File *file, TrueTypeGlyph *glyph, short *platformID, sho
 	return true; // by now
 } // TrueTypeFont::Read
 
-bool TrueTypeFont::Write(File *file, wchar_t errMsg[]) {
+bool TrueTypeFont::Write(File *file, wchar_t errMsg[], size_t errMsgLen) {
 	file->WriteBytes(this->sfntSize, this->sfntHandle);
 	//if (!file->Error()) file->SetPos(this->sfntSize,true); // truncate file to current size
 	if (file->Error()) {
-		swprintf(errMsg,L"I/O error writing this font"); return false;
+		swprintf(errMsg, errMsgLen, L"I/O error writing this font");
+		return false;
 	}
 	return true; // by now
 } // TrueTypeFont::Write
@@ -1268,7 +1274,7 @@ ControlValueTable *TrueTypeFont::TheCvt(void) {
 	return this->cvt;
 } // TrueTypeFont::TheCvt
 
-bool TrueTypeFont::GetCvt(TextBuffer *cvtText, wchar_t errMsg[]) {
+bool TrueTypeFont::GetCvt(TextBuffer *cvtText, wchar_t errMsg[], size_t errMsgLen) {
 	int32_t size,entries,i;
 	short *cvt;
 	wchar_t buffer[maxLineSize];
@@ -1276,19 +1282,19 @@ bool TrueTypeFont::GetCvt(TextBuffer *cvtText, wchar_t errMsg[]) {
 	cvt = (short*)this->GetTablePointer(tag_ControlValue);
 	size = this->GetTableLength(tag_ControlValue);
 	entries = size >> 1;
-	if (entries < 0 || MAXCVT < entries) { swprintf(errMsg,L"GetCvt: There are too many cvt entries %li",entries); return false; }
+	if (entries < 0 || MAXCVT < entries) { swprintf(errMsg, errMsgLen, L"GetCvt: There are too many cvt entries %li",entries); return false; }
 	
-	if (!this->GetSource(true,CVT_GLYPH_INDEX,cvtText,errMsg)) return false;
+	if (!this->GetSource(true,CVT_GLYPH_INDEX,cvtText,errMsg, errMsgLen)) return false;
 
 	if (cvtText->TheLength() == 0) { // decode binary cvt
-		for (i = 0; i < entries; i++) { swprintf(buffer,L"%i: %hi\r",i,SWAPW(cvt[i])); cvtText->Append(buffer); }
+		for (i = 0; i < entries; i++) { swprintf(buffer, errMsgLen, L"%i: %hi\r",i,SWAPW(cvt[i])); cvtText->Append(buffer); }
 		
 	}
 	this->cvt->PutCvtBinary(size,(unsigned char *)cvt);
 	return true; // by now
 } // TrueTypeFont::GetCvt
 
-bool TrueTypeFont::GetPrep(TextBuffer *prepText, wchar_t errMsg[]) {
+bool TrueTypeFont::GetPrep(TextBuffer *prepText, wchar_t errMsg[], size_t errMsgLen) {
 	unsigned char *data;
 	int32_t size;	
 
@@ -1296,10 +1302,10 @@ bool TrueTypeFont::GetPrep(TextBuffer *prepText, wchar_t errMsg[]) {
 	data = this->GetTablePointer(tag_PreProgram);
 	size = this->GetTableLength(tag_PreProgram);
 	if (size > MAXBINSIZE) {
-		swprintf(errMsg,L"GetPrep: pre-program is %li bytes long (cannot be longer than %li bytes)",size,MAXBINSIZE);
+		swprintf(errMsg,errMsgLen,L"GetPrep: pre-program is %li bytes long (cannot be longer than %li bytes)",size,MAXBINSIZE);
 		return false;
 	}	
-	return this->UpdateBinData(asmPREP,size,data) && this->GetSource(true,PRE_PGM_GLYPH_INDEX,prepText,errMsg); // get source after binary, in case binary exists but source doesn't...
+	return this->UpdateBinData(asmPREP,size,data) && this->GetSource(true,PRE_PGM_GLYPH_INDEX,prepText,errMsg, errMsgLen); // get source after binary, in case binary exists but source doesn't...
 } // TrueTypeFont::GetPrep
 
 int32_t TrueTypeFont::PrepBinSize(void) {

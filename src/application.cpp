@@ -2,7 +2,6 @@
 // Licensed under the MIT License.
 
 #define _CRT_SECURE_NO_DEPRECATE 
-#define _CRT_NON_CONFORMING_SWPRINTFS
 #define _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING
 
 #include <iostream>
@@ -60,7 +59,7 @@ Application::~Application(void)
 
 }
 
-bool Application::OpenFont(std::string fileName, wchar_t errMsg[]) {
+bool Application::OpenFont(std::string fileName, wchar_t errMsg[], size_t errMsgLen) {
 	auto file = std::make_unique<File>();
 
 	this->charCode = this->glyphIndex = INVALID_GLYPH_INDEX;
@@ -68,11 +67,11 @@ bool Application::OpenFont(std::string fileName, wchar_t errMsg[]) {
 	this->fileName = fileName;
 	file->OpenOld(this->fileName.c_str());
 	if (file->Error()){
-		swprintf(errMsg, L"OpenFont: File Not Found");
+		swprintf(errMsg, errMsgLen, L"OpenFont: File Not Found");
 		return false;
 	}
 
-	if (!this->font->Read(file.get(), this->glyph.get(), &this->platformID, &this->encodingID, errMsg))
+	if (!this->font->Read(file.get(), this->glyph.get(), &this->platformID, &this->encodingID, errMsg, errMsgLen))
 		return false;
 
 	file->Close(false);
@@ -80,24 +79,24 @@ bool Application::OpenFont(std::string fileName, wchar_t errMsg[]) {
 	return true;
 }
 
-bool Application::SaveFont(StripCommand strip, wchar_t errMsg[])
+bool Application::SaveFont(StripCommand strip, wchar_t errMsg[], size_t errMsgLen)
 {
-	return this->SaveFont(this->fileName, strip, errMsg);
+	return this->SaveFont(this->fileName, strip, errMsg, errMsgLen);
 }
 
-bool Application::SaveFont(std::string fileN, StripCommand strip, wchar_t errMsg[])
+bool Application::SaveFont(std::string fileN, StripCommand strip, wchar_t errMsg[], size_t errMsgLen)
 {
 	auto file = std::make_unique<File>();
 	errMsg[0] = 0;
 
-	if (!this->BuildFont(strip, errMsg))
+	if (!this->BuildFont(strip, errMsg, errMsgLen))
 		return false;
 
 	file->OpenNew(fileN.c_str());
 	if (file->Error())
 		return false;
 
-	if (!this->font->Write(file.get(), errMsg))
+	if (!this->font->Write(file.get(), errMsg, errMsgLen))
 		file->Close(true);
 
 	file->Close(true);
@@ -105,14 +104,14 @@ bool Application::SaveFont(std::string fileN, StripCommand strip, wchar_t errMsg
 	return true;
 }
 
-bool Application::GotoFont(wchar_t errMsg[]) {
+bool Application::GotoFont(wchar_t errMsg[], size_t errMsgLen) {
 	int32_t errPos, errLen;
 	bool legacy = false;
 
-	if (!this->font->GetCvt(this->cpgm.get(), errMsg)) return false;
-	this->font->TheCvt()->Compile(this->cpgm.get(), NULL, legacy, &errPos, &errLen, errMsg);
-	if (!this->font->GetPrep(this->prep.get(), errMsg)) return false;
-	if (!this->font->GetFpgm(this->fpgm.get(), errMsg)) return false;
+	if (!this->font->GetCvt(this->cpgm.get(), errMsg, errMsgLen)) return false;
+	this->font->TheCvt()->Compile(this->cpgm.get(), NULL, legacy, &errPos, &errLen, errMsg, errMsgLen);
+	if (!this->font->GetPrep(this->prep.get(), errMsg, errMsgLen)) return false;
+	if (!this->font->GetFpgm(this->fpgm.get(), errMsg, errMsgLen)) return false;
 
 	return true; // by now, ignoring the fact that a stripped font will not have any of the sources above
 } // Application::GotoFont
@@ -135,22 +134,22 @@ bool Application::GotoGlyph(int32_t code, bool isGlyphIndex) {
 
 		this->glyphIndex = glyphIndex;
 		this->charCode = charCode;
-		this->font->GetGlyf(glyphIndex, this->glyf.get(), errMsg);
-		this->font->GetTalk(glyphIndex, this->talk.get(), errMsg);
+		this->font->GetGlyf(glyphIndex, this->glyf.get(), errMsg, sizeof(errMsg)/sizeof(wchar_t));
+		this->font->GetTalk(glyphIndex, this->talk.get(), errMsg, sizeof(errMsg)/sizeof(wchar_t));
 	}
 	return true; // by now, ignoring the fact that a stripped font will not have any of the sources above
 } // Application::GotoGlyph
 
-bool Application::CompileTalk(int32_t* errPos, int32_t* errLen, wchar_t errMsg[])
+bool Application::CompileTalk(int32_t* errPos, int32_t* errLen, wchar_t errMsg[], size_t errMsgLen)
 {
 	bool legacy = false;
 
-	bool done = TMTCompile(this->talk.get(), this->font.get(), this->glyph.get(), this->glyphIndex, this->glyf.get(), legacy, errPos, errLen, errMsg);
+	bool done = TMTCompile(this->talk.get(), this->font.get(), this->glyph.get(), this->glyphIndex, this->glyf.get(), legacy, errPos, errLen, errMsg, errMsgLen);
 
 	return done;
 }
 
-bool Application::CompileCommon(int32_t* errPos, int32_t* errLen, wchar_t errMsg[])
+bool Application::CompileCommon(int32_t* errPos, int32_t* errLen, wchar_t errMsg[], size_t errMsgLen)
 {
 	bool done = false;
 	bool legacy = false;
@@ -168,9 +167,9 @@ bool Application::CompileCommon(int32_t* errPos, int32_t* errLen, wchar_t errMsg
 	this->glyphIndex = glyphIndex;
 	this->charCode = this->font->CharCodeOf(glyphIndex);
 	// Init the glyph structure to valid data needed by assembler when assembling fpgm and prep. 
-	if (done) done = this->font->GetGlyph(glyphIndex, this->glyph.get(), errMsg);
-	if (done) done = this->font->GetTalk(glyphIndex, this->talk.get(), errMsg);
-	if (done) done = this->font->GetGlyf(glyphIndex, this->glyf.get(), errMsg);
+	if (done) done = this->font->GetGlyph(glyphIndex, this->glyph.get(), errMsg, errMsgLen);
+	if (done) done = this->font->GetTalk(glyphIndex, this->talk.get(), errMsg, errMsgLen);
+	if (done) done = this->font->GetGlyf(glyphIndex, this->glyf.get(), errMsg, errMsgLen);
 
 	if (done) {
 		errBuf = new TextBuffer();
@@ -178,12 +177,12 @@ bool Application::CompileCommon(int32_t* errPos, int32_t* errLen, wchar_t errMsg
 	}
 
 	if (done) {
-		if (this->font->TheCvt()->Compile(this->cpgm.get(), this->prep.get(), legacy, errPos, errLen, compErrMsg)) {
+		if (this->font->TheCvt()->Compile(this->cpgm.get(), this->prep.get(), legacy, errPos, errLen, compErrMsg, sizeof(compErrMsg)/sizeof(wchar_t))) {
 			// Compile updates cvt binary autonomously
 			this->font->UpdateAdvanceWidthFlag(this->font->TheCvt()->LinearAdvanceWidths());
 		}
 		else {
-			swprintf(tempErrMsg, L"Ctrl Pgm, line %li: " WIDE_STR_FORMAT, this->cpgm->LineNumOf(*errPos), compErrMsg);
+			swprintf(tempErrMsg, sizeof(tempErrMsg)/sizeof(wchar_t), L"Ctrl Pgm, line %li: " WIDE_STR_FORMAT, this->cpgm->LineNumOf(*errPos), compErrMsg);
 			errBuf->AppendLine(tempErrMsg);
 		}
 	}
@@ -212,21 +211,21 @@ bool Application::CompileCommon(int32_t* errPos, int32_t* errLen, wchar_t errMsg
 	}
 
 	if (done) {
-		if (TTAssemble(asmFPGM, this->fpgm.get(), this->font.get(), this->glyph.get(), MAXBINSIZE, binData, &binSize, variationCompositeGuard, errPos, errLen, compErrMsg))
+		if (TTAssemble(asmFPGM, this->fpgm.get(), this->font.get(), this->glyph.get(), MAXBINSIZE, binData, &binSize, variationCompositeGuard, errPos, errLen, compErrMsg, sizeof(compErrMsg)/sizeof(wchar_t)))
 			done = this->font->UpdateBinData(asmFPGM, binSize, binData);
 		else {
 			done = this->font->UpdateBinData(asmFPGM, 0, NULL);
-			swprintf(tempErrMsg, L"Font Pgm, line %li: " WIDE_STR_FORMAT, this->fpgm->LineNumOf(*errPos), compErrMsg);
+			swprintf(tempErrMsg, sizeof(tempErrMsg)/sizeof(wchar_t),L"Font Pgm, line %li: " WIDE_STR_FORMAT, this->fpgm->LineNumOf(*errPos), compErrMsg);
 			errBuf->AppendLine(tempErrMsg);
 		}
 	}
 
 	if (done) {
-		if (TTAssemble(asmPREP, this->prep.get(), this->font.get(), this->glyph.get(), MAXBINSIZE, binData, &binSize, variationCompositeGuard, errPos, errLen, compErrMsg))
+		if (TTAssemble(asmPREP, this->prep.get(), this->font.get(), this->glyph.get(), MAXBINSIZE, binData, &binSize, variationCompositeGuard, errPos, errLen, compErrMsg, sizeof(compErrMsg)/sizeof(wchar_t)))
 			done = this->font->UpdateBinData(asmPREP, binSize, binData);
 		else {
 			done = this->font->UpdateBinData(asmPREP, 0, NULL);
-			swprintf(tempErrMsg, L"Pre Pgm, line %li: " WIDE_STR_FORMAT, this->prep->LineNumOf(*errPos), compErrMsg);
+			swprintf(tempErrMsg, sizeof(tempErrMsg)/sizeof(wchar_t), L"Pre Pgm, line %li: " WIDE_STR_FORMAT, this->prep->LineNumOf(*errPos), compErrMsg);
 			errBuf->AppendLine(tempErrMsg);
 		}
 	}
@@ -252,7 +251,7 @@ bool Application::CompileCommon(int32_t* errPos, int32_t* errLen, wchar_t errMsg
 	return done;
 }
 
-bool Application::CompileGlyphRange(unsigned short g1, unsigned short g2, bool quiet, wchar_t errMsg[])
+bool Application::CompileGlyphRange(unsigned short g1, unsigned short g2, bool quiet, wchar_t errMsg[], size_t errMsgLen)
 {
 	int32_t glyphIndex, binSize, fromGlyph, toGlyph, numGlyphs = this->font->NumberOfGlyphs();
 	bool done = false;
@@ -271,7 +270,7 @@ bool Application::CompileGlyphRange(unsigned short g1, unsigned short g2, bool q
 	this->glyphIndex = glyphIndex;
 	this->charCode = this->font->CharCodeOf(glyphIndex);
 
-	done = this->CompileCommon(&errPos, &errLen, errMsg);
+	done = this->CompileCommon(&errPos, &errLen, errMsg, errMsgLen);
 	if (!done)
 		return done;
 
@@ -288,35 +287,35 @@ bool Application::CompileGlyphRange(unsigned short g1, unsigned short g2, bool q
 
 		this->glyphIndex = glyphIndex;
 		this->charCode = this->font->CharCodeOf(glyphIndex);
-		done = this->font->GetGlyph(glyphIndex, this->glyph.get(), errMsg);
-		if (done) done = this->font->GetTalk(glyphIndex, this->talk.get(), errMsg);
-		if (done) done = this->font->GetGlyf(glyphIndex, this->glyf.get(), errMsg);
+		done = this->font->GetGlyph(glyphIndex, this->glyph.get(), errMsg, errMsgLen);
+		if (done) done = this->font->GetTalk(glyphIndex, this->talk.get(), errMsg, errMsgLen);
+		if (done) done = this->font->GetGlyf(glyphIndex, this->glyf.get(), errMsg, errMsgLen);
 
 		if (done) {
-			if (!TMTCompile(this->talk.get(), this->font.get(), this->glyph.get(), this->glyphIndex, this->glyf.get(), legacyCompile, &errPos, &errLen, compErrMsg)) {
-				swprintf(tempErrMsg, L"VTT Talk, glyph %li (Unicode 0x%lx), line %li: " WIDE_STR_FORMAT, this->glyphIndex, this->charCode, this->talk->LineNumOf(errPos), compErrMsg);
+			if (!TMTCompile(this->talk.get(), this->font.get(), this->glyph.get(), this->glyphIndex, this->glyf.get(), legacyCompile, &errPos, &errLen, compErrMsg, sizeof(compErrMsg)/sizeof(wchar_t))) {
+				swprintf(tempErrMsg, sizeof(tempErrMsg)/sizeof(wchar_t), L"VTT Talk, glyph %li (Unicode 0x%lx), line %li: " WIDE_STR_FORMAT, this->glyphIndex, this->charCode, this->talk->LineNumOf(errPos), compErrMsg);
 				errBuf->AppendLine(tempErrMsg);
-				swprintf(tempErrMsg, L"/* Error in VTT Talk, line %li: " WIDE_STR_FORMAT L" */", this->talk->LineNumOf(errPos), compErrMsg);
+				swprintf(tempErrMsg, sizeof(tempErrMsg)/sizeof(wchar_t), L"/* Error in VTT Talk, line %li: " WIDE_STR_FORMAT L" */", this->talk->LineNumOf(errPos), compErrMsg);
 				this->glyf->SetText((int32_t)STRLENW(tempErrMsg), tempErrMsg); // prevent follow-up errors
 			}
 		}
 
 		binSize = 0;
 		if (done) {
-			if (TTAssemble(asmGLYF, this->glyf.get(), this->font.get(), this->glyph.get(), MAXBINSIZE, binData, &binSize, variationCompositeGuard, &errPos, &errLen, compErrMsg)) {
+			if (TTAssemble(asmGLYF, this->glyf.get(), this->font.get(), this->glyph.get(), MAXBINSIZE, binData, &binSize, variationCompositeGuard, &errPos, &errLen, compErrMsg, sizeof(compErrMsg)/sizeof(wchar_t))) {
 				done = this->font->UpdateBinData(asmGLYF, binSize, binData);
 			}
 			else
 			{
 				done = this->font->UpdateBinData(asmGLYF, 0, NULL);
-				swprintf(tempErrMsg, L"Glyf Pgm, glyph %li (Unicode 0x%lx), line %li: " WIDE_STR_FORMAT, this->glyphIndex, this->charCode, this->glyf->LineNumOf(errPos), compErrMsg);
+				swprintf(tempErrMsg, sizeof(tempErrMsg)/sizeof(wchar_t), L"Glyf Pgm, glyph %li (Unicode 0x%lx), line %li: " WIDE_STR_FORMAT, this->glyphIndex, this->charCode, this->glyf->LineNumOf(errPos), compErrMsg);
 				errBuf->AppendLine(tempErrMsg);
 			}
 		}
 
 		if (done)
 		{
-			done = this->BuildFont(stripNothing, compErrMsg);
+			done = this->BuildFont(stripNothing, compErrMsg, sizeof(compErrMsg)/sizeof(wchar_t));
 		}
 	}
 	if (!quiet && (glyphIndex % 100 != 0)) wprintf_s(L"\n");
@@ -341,7 +340,7 @@ bool Application::CompileGlyphRange(unsigned short g1, unsigned short g2, bool q
 	return done;
 }
 
-bool Application::CompileAll(bool quiet, wchar_t errMsg[])
+bool Application::CompileAll(bool quiet, wchar_t errMsg[], size_t errMsgLen)
 {
 	int32_t glyphIndex, binSize, fromGlyph, fromChar, numGlyphs = this->font->NumberOfGlyphs();
 	bool done;
@@ -360,12 +359,12 @@ bool Application::CompileAll(bool quiet, wchar_t errMsg[])
 	this->glyphIndex = glyphIndex;
 	this->charCode = this->font->CharCodeOf(glyphIndex);
 	// Init the glyph structure to valid data needed by assembler when assembling fpgm and prep. 
-	if (done) done = this->font->GetGlyph(glyphIndex, this->glyph.get(), errMsg);
-	if (done) done = this->font->GetTalk(glyphIndex, this->talk.get(), errMsg);
-	if (done) done = this->font->GetGlyf(glyphIndex, this->glyf.get(), errMsg);
+	if (done) done = this->font->GetGlyph(glyphIndex, this->glyph.get(), errMsg, errMsgLen);
+	if (done) done = this->font->GetTalk(glyphIndex, this->talk.get(), errMsg, errMsgLen);
+	if (done) done = this->font->GetGlyf(glyphIndex, this->glyf.get(), errMsg, errMsgLen);
 
 	if (done) {
-		done = this->font->InitIncrBuildSfnt(false, errMsg);
+		done = this->font->InitIncrBuildSfnt(false, errMsg, errMsgLen);
 	}
 
 	if (done) {
@@ -374,12 +373,12 @@ bool Application::CompileAll(bool quiet, wchar_t errMsg[])
 	}
 
 	if (done) {
-		if (this->font->TheCvt()->Compile(this->cpgm.get(), this->prep.get(), legacyCompile, &errPos, &errLen, compErrMsg)) {
+		if (this->font->TheCvt()->Compile(this->cpgm.get(), this->prep.get(), legacyCompile, &errPos, &errLen, compErrMsg, sizeof(compErrMsg)/sizeof(wchar_t))) {
 			// Compile updates cvt binary autonomously
 			this->font->UpdateAdvanceWidthFlag(this->font->TheCvt()->LinearAdvanceWidths());
 		}
 		else {
-			swprintf(tempErrMsg, L"Ctrl Pgm, line %li: " WIDE_STR_FORMAT, this->cpgm->LineNumOf(errPos), compErrMsg);
+			swprintf(tempErrMsg, sizeof(tempErrMsg)/sizeof(wchar_t), L"Ctrl Pgm, line %li: " WIDE_STR_FORMAT, this->cpgm->LineNumOf(errPos), compErrMsg);
 			errBuf->AppendLine(tempErrMsg);
 		}
 	}
@@ -409,21 +408,21 @@ bool Application::CompileAll(bool quiet, wchar_t errMsg[])
 	}
 
 	if (done) {
-		if (TTAssemble(asmFPGM, this->fpgm.get(), this->font.get(), this->glyph.get(), MAXBINSIZE, binData, &binSize, variationCompositeGuard, &errPos, &errLen, compErrMsg))
+		if (TTAssemble(asmFPGM, this->fpgm.get(), this->font.get(), this->glyph.get(), MAXBINSIZE, binData, &binSize, variationCompositeGuard, &errPos, &errLen, compErrMsg, sizeof(compErrMsg)/sizeof(wchar_t)))
 			done = this->font->UpdateBinData(asmFPGM, binSize, binData);
 		else {
 			done = this->font->UpdateBinData(asmFPGM, 0, NULL);
-			swprintf(tempErrMsg, L"Font Pgm, line %li: " WIDE_STR_FORMAT, this->fpgm->LineNumOf(errPos), compErrMsg);
+			swprintf(tempErrMsg, sizeof(tempErrMsg)/sizeof(tempErrMsg), L"Font Pgm, line %li: " WIDE_STR_FORMAT, this->fpgm->LineNumOf(errPos), compErrMsg);
 			errBuf->AppendLine(tempErrMsg);
 		}
 	}
 
 	if (done) {
-		if (TTAssemble(asmPREP, this->prep.get(), this->font.get(), this->glyph.get(), MAXBINSIZE, binData, &binSize, variationCompositeGuard, &errPos, &errLen, compErrMsg))
+		if (TTAssemble(asmPREP, this->prep.get(), this->font.get(), this->glyph.get(), MAXBINSIZE, binData, &binSize, variationCompositeGuard, &errPos, &errLen, compErrMsg, sizeof(compErrMsg)/sizeof(wchar_t)))
 			done = this->font->UpdateBinData(asmPREP, binSize, binData);
 		else {
 			done = this->font->UpdateBinData(asmPREP, 0, NULL);
-			swprintf(tempErrMsg, L"Pre Pgm, line %li: " WIDE_STR_FORMAT, this->prep->LineNumOf(errPos), compErrMsg);
+			swprintf(tempErrMsg, sizeof(tempErrMsg)/sizeof(wchar_t), L"Pre Pgm, line %li: " WIDE_STR_FORMAT, this->prep->LineNumOf(errPos), compErrMsg);
 			errBuf->AppendLine(tempErrMsg);
 		}
 	}
@@ -435,32 +434,32 @@ bool Application::CompileAll(bool quiet, wchar_t errMsg[])
 		//this->MakeProgress(glyphIndex, glyphIndex);
 		this->glyphIndex = glyphIndex;
 		this->charCode = this->font->CharCodeOf(glyphIndex);
-		done = this->font->GetGlyph(glyphIndex, this->glyph.get(), errMsg);
-		if (done) done = this->font->GetTalk(glyphIndex, this->talk.get(), errMsg);
-		if (done) done = this->font->GetGlyf(glyphIndex, this->glyf.get(), errMsg);
+		done = this->font->GetGlyph(glyphIndex, this->glyph.get(), errMsg, errMsgLen);
+		if (done) done = this->font->GetTalk(glyphIndex, this->talk.get(), errMsg, errMsgLen);
+		if (done) done = this->font->GetGlyf(glyphIndex, this->glyf.get(), errMsg, errMsgLen);
 
 		if (done) {
-			if (!TMTCompile(this->talk.get(), this->font.get(), this->glyph.get(), this->glyphIndex, this->glyf.get(), legacyCompile, &errPos, &errLen, compErrMsg)) {
-				swprintf(tempErrMsg, L"VTT Talk, glyph %li (Unicode 0x%lx), line %li: " WIDE_STR_FORMAT, this->glyphIndex, this->charCode, this->talk->LineNumOf(errPos), compErrMsg);
+			if (!TMTCompile(this->talk.get(), this->font.get(), this->glyph.get(), this->glyphIndex, this->glyf.get(), legacyCompile, &errPos, &errLen, compErrMsg, sizeof(compErrMsg)/sizeof(wchar_t))) {
+				swprintf(tempErrMsg, sizeof(tempErrMsg)/sizeof(wchar_t), L"VTT Talk, glyph %li (Unicode 0x%lx), line %li: " WIDE_STR_FORMAT, this->glyphIndex, this->charCode, this->talk->LineNumOf(errPos), compErrMsg);
 				errBuf->AppendLine(tempErrMsg);
-				swprintf(tempErrMsg, L"/* Error in VTT Talk, line %li: " WIDE_STR_FORMAT L" */", this->talk->LineNumOf(errPos), compErrMsg);
+				swprintf(tempErrMsg, sizeof(tempErrMsg)/sizeof(wchar_t), L"/* Error in VTT Talk, line %li: " WIDE_STR_FORMAT L" */", this->talk->LineNumOf(errPos), compErrMsg);
 				this->glyf->SetText((int32_t)STRLENW(tempErrMsg), tempErrMsg); // prevent follow-up errors
 			}
 		}
 
 		binSize = 0;
 		if (done) {
-			if (!TTAssemble(asmGLYF, this->glyf.get(), this->font.get(), this->glyph.get(), MAXBINSIZE, binData, &binSize, variationCompositeGuard, &errPos, &errLen, compErrMsg)) {
-				swprintf(tempErrMsg, L"Glyf Pgm, glyph %li (Unicode 0x%lx), line %li: " WIDE_STR_FORMAT, this->glyphIndex, this->charCode, this->glyf->LineNumOf(errPos), compErrMsg);
+			if (!TTAssemble(asmGLYF, this->glyf.get(), this->font.get(), this->glyph.get(), MAXBINSIZE, binData, &binSize, variationCompositeGuard, &errPos, &errLen, compErrMsg, sizeof(compErrMsg)/sizeof(wchar_t))) {
+				swprintf(tempErrMsg, sizeof(tempErrMsg)/sizeof(wchar_t), L"Glyf Pgm, glyph %li (Unicode 0x%lx), line %li: " WIDE_STR_FORMAT, this->glyphIndex, this->charCode, this->glyf->LineNumOf(errPos), compErrMsg);
 				errBuf->AppendLine(tempErrMsg);
 			}
 		}
 
-		if (done) done = this->font->AddGlyphToNewSfnt(this->font->CharGroupOf(glyphIndex), glyphIndex, this->glyph.get(), binSize, binData, this->glyf.get(), this->talk.get(), errMsg);
+		if (done) done = this->font->AddGlyphToNewSfnt(this->font->CharGroupOf(glyphIndex), glyphIndex, this->glyph.get(), binSize, binData, this->glyf.get(), this->talk.get(), errMsg, errMsgLen);
 	}
 	if (!quiet && (glyphIndex % 100 != 0)) wprintf_s(L"\n");
 
-	done = this->font->TermIncrBuildSfnt(!done, this->prep.get(), this->cpgm.get(), this->fpgm.get(), errMsg);
+	done = this->font->TermIncrBuildSfnt(!done, this->prep.get(), this->cpgm.get(), this->fpgm.get(), errMsg, errMsgLen);
 
 	if (binData != NULL) DisposeP((void**)&binData);
 
@@ -474,7 +473,7 @@ bool Application::CompileAll(bool quiet, wchar_t errMsg[])
 		if (errBuf->Length() > 0) {
 			std::wstring errStr;
 			errBuf->GetText(errStr);
-			swprintf(errMsg, L"Compile Error: " WIDE_STR_FORMAT, errStr.c_str());
+			swprintf(errMsg, errMsgLen, L"Compile Error: " WIDE_STR_FORMAT, errStr.c_str());
 		}
 	}
 
@@ -483,7 +482,7 @@ bool Application::CompileAll(bool quiet, wchar_t errMsg[])
 	return done;
 }
 
-bool Application::BuildFont(StripCommand strip, wchar_t errMsg[]) {
+bool Application::BuildFont(StripCommand strip, wchar_t errMsg[], size_t errMsgLen) {
 
 	// If we did not compile and are just here to strip data then perform lazy initialization.
 	if (this->glyphIndex == INVALID_GLYPH_INDEX)
@@ -494,12 +493,12 @@ bool Application::BuildFont(StripCommand strip, wchar_t errMsg[]) {
 
 	// Init the glyph structure to valid data needed by assembler when assembling fpgm and prep. 
 	bool done = true;
-	if (done) done = this->font->GetGlyph(this->glyphIndex, this->glyph.get(), errMsg);
-	if (done) done = this->font->GetTalk(this->glyphIndex, this->talk.get(), errMsg);
-	if (done) done = this->font->GetGlyf(this->glyphIndex, this->glyf.get(), errMsg);
+	if (done) done = this->font->GetGlyph(this->glyphIndex, this->glyph.get(), errMsg, errMsgLen);
+	if (done) done = this->font->GetTalk(this->glyphIndex, this->talk.get(), errMsg, errMsgLen);
+	if (done) done = this->font->GetGlyf(this->glyphIndex, this->glyf.get(), errMsg, errMsgLen);
 
 	return this->font->BuildNewSfnt(strip, anyGroup, this->glyphIndex, this->glyph.get(), this->glyf.get(),
-		this->prep.get(), this->cpgm.get(), this->talk.get(), this->fpgm.get(), errMsg);
+		this->prep.get(), this->cpgm.get(), this->talk.get(), this->fpgm.get(), errMsg, errMsgLen);
 }
 
 char* Application::wCharToChar(char out[], const wchar_t in[])
