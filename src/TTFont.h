@@ -311,6 +311,7 @@ public:
 	bool GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t errMsg[], size_t errMsgLen);
 	int32_t GlyfBinSize(void);
 	unsigned char* GlyfBin(void);
+	void GetHeights(int32_t* emHeight);
 	bool GetHMTXEntry(int32_t glyphIndex, int32_t *leftSideBearing, int32_t *advanceWidth);
 	int32_t NumberOfGlyphs(void);
 	int32_t GlyphIndexOf(uint32_t charCode);

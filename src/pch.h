@@ -52,7 +52,7 @@
 #define STRCMPW wcscmp
 
 #ifndef _WIN32
-#define swprintf(wcs, ...) swprintf(wcs, 1024, __VA_ARGS__)
+// #define swprintf(wcs, ...) swprintf(wcs, 1024, __VA_ARGS__)
 #define wprintf_s wprintf
 #endif
 
