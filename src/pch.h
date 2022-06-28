@@ -22,6 +22,7 @@
 #include <locale>
 #include <cmath>
 
+#include "Area.h"
 #include "opentypedefs.h"
 #include "Platform.h"
 #include "FixedMath.h"

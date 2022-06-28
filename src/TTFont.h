@@ -20,8 +20,8 @@
 #define MAXCONTOURS 	0x2000
 #define MAXPOINTS 		0x4000	// rasterizer limit, needs extra two bits for line transition information in drop-out control algorithm
 
- //#define PHANTOMPOINTS 4		
-#define PHANTOMPOINTS 2		
+ //#define PHANTOMPOINTS 4
+#define PHANTOMPOINTS 2
 
 #define LEFTSIDEBEARING     0
 #define RIGHTSIDEBEARING    1
@@ -95,7 +95,7 @@ typedef struct {
 	short advanceWidthMax;
 	short minLeftSideBearing;
 	short minRightSideBearing;
-	short xMaxExtent; 
+	short xMaxExtent;
 } FontMetricProfile;
 
 struct VariationAxisRecord
@@ -112,8 +112,8 @@ struct VariationInstanceRecord
 {
 	uint16_t nameID;
 	uint16_t flags;
-	std::vector< Fixed16_16> coordinates; 
-	//uint16_t postScriptNameID; 
+	std::vector< Fixed16_16> coordinates;
+	//uint16_t postScriptNameID;
 };
 
 struct FVarTableHeader
@@ -156,22 +156,22 @@ typedef struct {
 	uint16_t minorVersion;
 	uint16_t tupleVariationCount;
 	uint16_t offsetToData;
-} CvarHeader; 
+} CvarHeader;
 
 struct TSICRecord {
 	uint16_t flags = 0;
 	uint16_t numCVTEntries = 0;
-	uint16_t nameLength = 0; 
+	uint16_t nameLength = 0;
 	std::wstring name; // uint16_t NameArray[nameLength];
 	std::vector<uint16_t> cvts; // uint16_t CVTArray[numCVTEntries];
-	std::vector<int16_t> cvtValues; // FWORD CVTValueArray[numCVTEntries]; 
+	std::vector<int16_t> cvtValues; // FWORD CVTValueArray[numCVTEntries];
 };
 
 struct TSICHeader {
 	uint16_t majorVersion = 0;
 	uint16_t minorVersion = 0;
 	uint16_t flags = 0;
-	uint16_t axisCount = 0; 
+	uint16_t axisCount = 0;
 	uint16_t recordCount = 0;
 	uint16_t reserved = 0;
 	std::vector<uint32_t> axes; //uint32_t AxisArray[axisCount];
@@ -181,7 +181,7 @@ struct TSICHeader {
 
 typedef struct {
 	uint16_t cvt;
-	int16_t delta; 
+	int16_t delta;
 } CvtElement;
 
 #define MAXCVT maxCvtNum
@@ -201,8 +201,8 @@ typedef struct {
 
 typedef struct {
 	uint32_t unicode;
-	unsigned short glyphIndex; 
-} UniGlyphMap; 
+	unsigned short glyphIndex;
+} UniGlyphMap;
 
 typedef struct {
 	uint32_t unicode;
@@ -230,7 +230,7 @@ struct TrueTypeCompositeComponent {
 	ShortFract xscale = 0; // or scale
 	ShortFract yscale = 0;
 	ShortFract scale01 = 0;
-	ShortFract scale10 = 0; 
+	ShortFract scale10 = 0;
 };
 
 #define ONCURVE             0x01
@@ -240,30 +240,30 @@ public:
 	TrueTypeGlyph(void);
 	virtual ~TrueTypeGlyph(void);
 	LinkColor TheColor(short from, short to); // such that everybody can use this, not only the compiler
-	// bool Misoriented(short contour);
-	
+	bool Misoriented(short contour);
+
 	short xmin, ymin, xmax, ymax; 				// bounding box; xmin corresponds to left side bearing
 	short realLeftSideBearing, realRightSideBearing, blackBodyWidth; // as obtained from specifying left and right point by GrabHereInX, to do with auto-hinter???
-	
+
 	// contour, knot data
-	int32_t numContoursInGlyph = 0;
-	short startPoint[MAXCONTOURS] = {0};
-	short endPoint[MAXCONTOURS] = {0};
-	
-	short x[MAXPOINTS] = {0};					// these seem to be the (coordinates of the) control points
-	short y[MAXPOINTS] = {0};					// Use start|endPoint arrays for contour identification
-	bool onCurve[MAXPOINTS] = {0};				// on curve?
-	F26Dot6 xx[MAXPOINTS] = {0};				// used to get coordinates back from the rasterizer
-	F26Dot6 yy[MAXPOINTS] = {0};
-	
+	int32_t numContoursInGlyph;
+	short startPoint[MAXCONTOURS];
+	short endPoint[MAXCONTOURS];
+
+	short x[MAXPOINTS];							// these seem to be the (coordinates of the) control points
+	short y[MAXPOINTS];							// Use start|endPoint arrays for contour identification
+	bool onCurve[MAXPOINTS];					// on curve?
+	F26Dot6 xx[MAXPOINTS];						// used to get coordinates back from the rasterizer
+	F26Dot6 yy[MAXPOINTS];
+
 	// composite
-	bool composite = false,useMyMetrics = false;
-	short componentData[MAXCOMPONENTSIZE] = {0};		// binary of TT composite
-	short componentSize = 0;							// size of above data
-	short ComponentVersionNumber = 0;					// sort of a magic number, tends to be -1, I'd prefer this to disappear
+	bool composite,useMyMetrics;
+	short componentData[MAXCOMPONENTSIZE];				// binary of TT composite
+	short componentSize;								// size of above data
+	short ComponentVersionNumber;						// sort of a magic number, tends to be -1, I'd prefer this to disappear
 	TrueTypeBluePrint bluePrint;
 private:
-	short dirChange[MAXPOINTS] = {0};   // used during TheColor
+	short dirChange[MAXPOINTS];							// used during TheColor
 };
 
 #define CO_CompInstrFollow	1
@@ -292,7 +292,7 @@ typedef enum { asmGLYF = 0, asmPREP, asmFPGM } ASMType;
 
 
 class TrueTypeFont {
-public:	
+public:
 	TrueTypeFont(void);
 	bool Create();
 	virtual ~TrueTypeFont(void);
@@ -307,10 +307,10 @@ public:
 	bool GetFpgm(TextBuffer *fpgmText, wchar_t errMsg[], size_t errMsgLen);
 	int32_t FpgmBinSize(void);
 	bool GetGlyf(int32_t glyphIndex, TextBuffer *glyfText, wchar_t errMsg[], size_t errMsgLen);
-	bool GetTalk(int32_t glyphIndex, TextBuffer *talkText, wchar_t errMsg[], size_t errMsgLen);		
+	bool GetTalk(int32_t glyphIndex, TextBuffer *talkText, wchar_t errMsg[], size_t errMsgLen);
 	bool GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t errMsg[], size_t errMsgLen);
 	int32_t GlyfBinSize(void);
-	unsigned char* GlyfBin(void); 
+	unsigned char* GlyfBin(void);
 	void GetHeights(int32_t* emHeight);
 	bool GetHMTXEntry(int32_t glyphIndex, int32_t *leftSideBearing, int32_t *advanceWidth);
 	int32_t NumberOfGlyphs(void);
@@ -318,7 +318,7 @@ public:
 	bool GlyphIndecesOf(wchar_t textString[], int32_t maxNumGlyphIndeces, int32_t glyphIndeces[], int32_t *numGlyphIndeces, wchar_t errMsg[], size_t errMsgLen);
 	uint32_t CharCodeOf(int32_t glyphIndex);
 	uint32_t AdjacentChar(uint32_t charCode, bool forward);
-	uint32_t FirstChar(); 
+	uint32_t FirstChar();
 	CharGroup CharGroupOf(int32_t glyphIndex);
 	bool CMapExists(short platformID, short encodingID);
 	bool DefaultCMap(short *platformID, short *encodingID, wchar_t errMsg[], size_t errMsgLen);
@@ -326,11 +326,11 @@ public:
 	bool IsCvarTupleData();
 	int32_t EstimatePrivateCvar();
 	int32_t UpdatePrivateCvar(int32_t *size, unsigned char data[]);
-	bool HasPrivateCvar(); 
+	bool HasPrivateCvar();
 	bool GetPrivateCvar(TSICHeader &header);
-	bool MergePrivateCvarWithInstanceManager(const TSICHeader &header); 
-	int32_t EstimateCvar(); 
-	int32_t UpdateCvar(int32_t *size, unsigned char data[]);	
+	bool MergePrivateCvarWithInstanceManager(const TSICHeader &header);
+	int32_t EstimateCvar();
+	int32_t UpdateCvar(int32_t *size, unsigned char data[]);
 	void UpdateAdvanceWidthFlag(bool linear);
 	bool UpdateBinData(ASMType asmType, int32_t binSize, unsigned char *binData);
 	bool BuildNewSfnt(StripCommand strip, CharGroup group, int32_t glyphIndex, TrueTypeGlyph *glyph,
@@ -343,7 +343,7 @@ public:
 	bool TermIncrBuildSfnt(bool disposeOnly, TextBuffer *prepText, TextBuffer *cvtText, TextBuffer *fpgmText, wchar_t errMsg[], size_t errMsgLen);
 	
 	void InitNewProfiles(void);
-	void InheritProfiles(void); 
+	void InheritProfiles(void);
 	void UseNewProfiles(void);
 	sfnt_maxProfileTable GetProfile(void);
 	void UpdateGlyphProfile(TrueTypeGlyph *glyph); // used not only in BuildNewSfnt, but also in calculation of maxp and other odd places...
@@ -352,32 +352,32 @@ public:
 	bool GetNumberOfPointsAndContours(int32_t glyphIndex, short *contours, short *points, short *ComponentDepth, sfnt_glyphbbox *bbox);
 	int32_t GetUnitsPerEm(void);							// FUnits Per EM (2048 is typical)
 	void UpdateAutohinterProfile(short maxElements, short maxTwilightPoints, short maxStorage);
-	bool HasSource(); 
-	bool IsMakeTupleName(const std::wstring &name) const; 
+	bool HasSource();
+	bool IsMakeTupleName(const std::wstring &name) const;
 
 	unsigned char* GetSfntPtr(int32_t offset)
 	{
 		return (sfntHandle + offset);
 	}
-		
+
 	std::shared_ptr<Variation::InstanceManager> GetInstanceManager()
 	{
-		return instanceManager_; 
-	}	
+		return instanceManager_;
+	}
 
 	std::shared_ptr<Variation::CVTVariationInterpolator1> GetCvtVariationInterpolator()
 	{
-		return cvtVariationInterpolator_; 
-	}	
+		return cvtVariationInterpolator_;
+	}
 
 	template <typename T>
-	bool GetDefaultCvts(std::vector<T> & defaultCvts) 
+	bool GetDefaultCvts(std::vector<T> & defaultCvts)
 	{
 		ControlValueTable *cvt = this->TheCvt();
 		int32_t highestCvtNum = cvt->HighestCvtNum();
 		defaultCvts.resize(highestCvtNum + 1, 0);
 
-		// Get the default cvts. 
+		// Get the default cvts.
 		for (int32_t i = 0; i <= highestCvtNum; i++)
 		{
 			short cvtValue;
@@ -387,17 +387,17 @@ public:
 
 		return true;
 	}
-	
+
 	bool ReverseInterpolateCvarTuples();
 
 	bool HasFvar() const
 	{
-		return fvar_.axisRecords.size() > 0; 
+		return fvar_.axisRecords.size() > 0;
 	}
 
 	bool HasAvar() const
 	{
-		return avar_.axisSegmentMaps.size() > 0; 
+		return avar_.axisSegmentMaps.size() > 0;
 	}
 
 	bool IsVariationFont() const
@@ -412,9 +412,9 @@ public:
 
 	std::shared_ptr <std::vector<uint32_t>> GetVariationAxisTags()
 	{
-		return variationAxisTags_; 
+		return variationAxisTags_;
 	}
-		
+
 private:
 	void UpdateMetricProfile(TrueTypeGlyph *glyph);
 	bool SubGetNumberOfPointsAndContours(int32_t glyphIndex, short *contours, short *points, short *ComponentDepth, sfnt_glyphbbox *bbox);
@@ -426,7 +426,7 @@ private:
 	bool UnpackGlitsLoca(wchar_t errMsg[], size_t errMsgLen);
 	bool UpdateMaxPointsAndContours(wchar_t errMsg[], size_t errMsgLen);	
 	void EnterChar(int32_t glyphIndex, uint32_t charCode);
-	void SortGlyphMap(); 
+	void SortGlyphMap();
 	void GetFmt0(sfnt_mappingTable *map);
 	void GetFmt4(sfnt_mappingTable *map);
 	void GetFmt6(sfnt_mappingTable *map);
@@ -437,7 +437,7 @@ private:
 	void CalculateNewCheckSums(void);
 	void CalculateCheckSumAdjustment(void);
 	void SortTableDirectory(void);
-	void PackMaxpHeadHhea(void);	
+	void PackMaxpHeadHhea(void);
 	uint32_t GetPackedGlyphsSizeEstimate(TrueTypeGlyph *glyph, int32_t glyphIndex, uint32_t *oldIndexToLoc);
 	uint32_t GetPackedGlyphSize(int32_t glyphIndex, TrueTypeGlyph *glyph, int32_t glyfBinSize);
 	uint32_t PackGlyphs(StripCommand strip, TrueTypeGlyph *glyph, int32_t glyphIndex, uint32_t *oldIndexToLoc, uint32_t *newIndexToLoc, unsigned char *dst);
@@ -459,42 +459,42 @@ private:
 
 	void UnpackFvar(void);
 	void UnpackAvar(void);
-			
-	// sfnt	
+
+	// sfnt
 	unsigned char *sfntHandle = nullptr; 		// handle to the sfnt file layout
 	uint32_t sfntSize = 0;				    // actual sfnt data size (in bytes)
 	uint32_t maxSfntSize = 0;				// memory (in bytes) allocated for above handle
 	unsigned char *sfntTmpHandle = nullptr;		// claudebe 1/26/94 temp sfnt Handle for use in BuildNewSfnt to avoid memory fragmentation
-	uint32_t maxTmpSfntSize = 0;			// memory (in bytes) allocated for above handle	
-	
+	uint32_t maxTmpSfntSize = 0;			// memory (in bytes) allocated for above handle
+
 	sfnt_OffsetTable *offsetTable;				// tmp for use in BuildNewSfnt to avoid memory fragmentation
 	sfnt_OffsetTable *tmpOffsetTable;			// tmp for use in BuildNewSfnt to avoid memory fragmentation
-	
+
 	void *incrBuildSfntData;
-		
+
 	// 'cvt'
 	ControlValueTable *cvt = nullptr;
-	
+
 	// 'maxp' (maximum profile) table
 	sfnt_maxProfileTable profile;
 	sfnt_maxProfileTable newProfile; 			// used for 'maxp' computation
 	uint16 maxStackElements[numTTASMTypes];		// used for new heuristic in computing newProfile.maxStackElements
-	
+
 	// 'loca' (index to location) table
 	bool shortIndexToLocTable;				// short or long loca table
 	bool outShortIndexToLocTable;			// indicate if we want to write in long or short format
 	uint32_t *IndexToLoc;					// modif to be able to convert the format loca table store in long format in the glyph informations rather than recomputing all the time
 	uint32_t *tmpIndexToLoc;				// tmp for use in BuildNewSfnt to avoid memory fragmentation
 	int32_t numLocaEntries;
-	
+
 	// 'head', 'hhea' tables
 	FontMetricProfile metricProfile;
 	FontMetricProfile newMetricProfile;			// used for 'maxp' computation
 	
 	//bool useIntegerScaling;
 	unsigned short macStyle;					// passed from ReadHeader to WriteHeader as is
-	
-	
+
+
 	// 'GLIT' (glyph index) table
 	int32_t maxGlitEntries;
 	int32_t maxGlyphs;
@@ -502,19 +502,19 @@ private:
 	int32_t glit1Entries;
 	sfnt_MemDataEntry *glit2;
 	int32_t glit2Entries;
-	
+
 	int32_t numberOfChars, numberOfGlyphs;			// numberOfChars in *currently* unpacked cmap
 	uint32_t *charCodeOf;					// glyph index
 	unsigned char *charGroupOf;					// glyph index
 
 	std::vector<UniGlyphMap> *glyphIndexMap;
-		
+
 	//	TT Asm Tables
 	int32_t binSize[numASMTypes];
 	unsigned char *binData[numASMTypes];
-	
+
 	unsigned char *tmpFlags;					// tmp for use in BuildNewSfnt to avoid memory fragmentation
-	
+
 	char *devMetricsPtr;
 	int32_t hdmxBinSize;
 
@@ -527,13 +527,13 @@ private:
 	// 'gasp' table
 	TtFont::GaspTable gaspTable;
     int32_t gaspBinSize;
-	bool gaspLoaded = false; 
+	bool gaspLoaded = false;
 
-	// 'TSIC' table 
-	int32_t tsicBinSize; 
+	// 'TSIC' table
+	int32_t tsicBinSize;
     // 'cvar' table
-    int32_t cvarBinSize; 
-	bool tsicError = false; 
+    int32_t cvarBinSize;
+	bool tsicError = false;
 
     // vertical metrics: Quick & dirty "guess" for drawing the height lines in the main window.
     int32_t unitsPerEm,                            // FUnits Per EM (2048 is typical)
@@ -547,14 +547,14 @@ private:
     std::vector<std::string> *postScriptNames = nullptr;
 
     std::shared_ptr<Variation::CVTVariationInterpolator1> cvtVariationInterpolator_ = nullptr;
-	
+
     bool bVariationTypeface_ = false;
     uint16_t axisCount_ = 0;
 
-	FVarTableHeader fvar_; 
-	AxisVariationHeader avar_; 
+	FVarTableHeader fvar_;
+	AxisVariationHeader avar_;
 
-	std::shared_ptr<Variation::InstanceManager> instanceManager_ = nullptr; 
+	std::shared_ptr<Variation::InstanceManager> instanceManager_ = nullptr;
 
 	std::shared_ptr<std::vector<uint32_t>> variationAxisTags_ = nullptr; // cache the axis tags
 };

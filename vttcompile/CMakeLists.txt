@@ -30,6 +30,7 @@ set(PROJECT_NAME vttcompile)
 # Source groups
 ################################################################################
 set(Header_Files
+    "../src/Area.h"
     "../src/CvtManager.h"
     "../src/File.h"
     "../src/FixedMath.h"
@@ -56,6 +57,7 @@ set(Header_Files
 source_group("Header Files" FILES ${Header_Files})
 
 set(Source_Files
+    "../src/Area.cpp"
     "../src/CvtManager.cpp"
     "../src/File.cpp"
     "../src/List.cpp"

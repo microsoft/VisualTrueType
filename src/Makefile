@@ -1,5 +1,5 @@
 OBJS = \
-CvtManager.o File.o List.o MathUtils.o Memory.o Platform.o TextBuffer.o \
+Area.o CvtManager.o File.o List.o MathUtils.o Memory.o Platform.o TextBuffer.o \
 TMTParser.o TTAssembler.o TTEngine.o TTFont.o TTGenerator.o Variation.o \
 VariationInstance.o VariationModels.o vttcompile.o application.o 
 
@@ -7,10 +7,12 @@ VariationInstance.o VariationModels.o vttcompile.o application.o
 
 .PHONY : clean
 
+CXXFLAGS = -g -O3 -Wno-multichar -fPIC -std=c++17
+
 default: vttcompile
 
 vttcompile: $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 clean :
-	$(RM) $(OBJS) vttcompile vttcompile.exe
+	$(RM) *.o vttcompile vttcompile.exe

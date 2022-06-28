@@ -41,6 +41,12 @@
 #define tag_VertHeader          0x76686561        /* 'vhea' */
 #define tag_VerticalMetrics     0x766d7478        /* 'vmtx' */
 
+#define tag_TTO_GSUB             0x47535542          /* 'GSUB' */
+#define tag_TTO_GPOS             0x47504F53          /* 'GPOS' */
+#define tag_TTO_GDEF             0x47444546          /* 'GDEF' */
+#define tag_TTO_BASE             0x42415345          /* 'BASE' */
+#define tag_TTO_JSTF             0x4A535446          /* 'JSTF' */
+
 #define PHANTOMPOINTS 2	
 
 typedef signed char int8;
@@ -365,6 +371,37 @@ struct sfnt_PostScriptInfo
     } postScriptNameIndices;
 };
 
+typedef struct {
+    uint16  Version;
+    int16   xAvgCharWidth;
+    uint16  usWeightClass;
+    uint16  usWidthClass;
+    int16   fsType;
+    int16   ySubscriptXSize;
+    int16   ySubscriptYSize;
+    int16   ySubscriptXOffset;
+    int16   ySubscriptYOffset;
+    int16   ySuperScriptXSize;
+    int16   ySuperScriptYSize;
+    int16   ySuperScriptXOffset;
+    int16   ySuperScriptYOffset;
+    int16   yStrikeOutSize;
+    int16   yStrikeOutPosition;
+    int16   sFamilyClass;
+    uint8   Panose[10];
+    uint32  ulCharRange[4];
+    char    achVendID[4];
+    uint16  usSelection;
+    uint16  usFirstChar;
+    uint16  usLastChar;
+    int16   sTypoAscender;
+    int16  sTypoDescender;
+    int16   sTypoLineGap;
+    int16   sWinAscent;
+    int16   sWinDescent;
+    uint32  ulCodePageRange[2];
+} sfnt_OS2;
+
 typedef struct
 {
     uint8   bEmY;
@@ -412,6 +449,7 @@ typedef sfnt_HorizontalMetrics* sfnt_HorizontalMetricsPtr;
 typedef sfnt_VerticalMetrics* sfnt_VerticalMetricsPtr;
 typedef sfnt_platformEntry* sfnt_platformEntryPtr;
 typedef sfnt_NamingTable* sfnt_NamingTablePtr;
+typedef sfnt_OS2* sfnt_OS2Ptr;
 typedef sfnt_DirectoryEntry* sfnt_DirectoryEntryPtr;
 typedef sfnt_gasp* sfnt_gaspPtr;
 
