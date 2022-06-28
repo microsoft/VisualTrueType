@@ -21,7 +21,8 @@ if int(os.environ.get('CYTHON_LINETRACE', '0')):
 extra_compile_args = []
 
 if platform.system() != 'Windows':
-     extra_compile_args.append('-std=c++14')
+    with open("CXXFLAGS") as f:
+        extra_compile_args.append(f.read().strip().split())
 
 if platform.system() == 'Windows':
     extra_compile_args.append('-sdl')

@@ -7,7 +7,7 @@ VariationInstance.o VariationModels.o vttcompile.o application.o
 
 .PHONY : clean
 
-CXXFLAGS = -g -O3 -Wno-multichar -fPIC -std=c++17
+CXXFLAGS := $(shell cat ../CXXFLAGS)
 
 default: vttcompile
 

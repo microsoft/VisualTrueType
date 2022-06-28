@@ -1,0 +1,1 @@
+-g -O3 -Wno-multichar -fPIC -std=c++17
