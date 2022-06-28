@@ -105,7 +105,7 @@ void ListStruct::Delete(ListStruct **list) {
 		if ((*list)->elems > 1) // silence BC
 			prev = curr->prev;
 
-		delete& curr;
+		std::destroy_at(curr);
 #
 		if ((*list)->elems > 1) // silence BC
 			curr = prev;

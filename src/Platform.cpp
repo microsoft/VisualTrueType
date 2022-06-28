@@ -5,21 +5,21 @@
 
 #include "pch.h"
 
-#include <time.h>
-#include <sys/timeb.h> // _timeb, _ftime
 #include <cstdlib> // mbstowcs
 #include <cstring> // strlen
+#include <chrono>
 
 #define TIME_FIX 2082844800ll // pc time 1970 - mac time 1904
 
-long long DateTime(void) {
-	struct timeb  tstruct;
+using namespace std::chrono;
 
-	//	_tzset();
-	ftime(&tstruct);
+long long DateTime(void) {
+	auto timepoint = std::chrono::system_clock::now();
+	auto since_epoch =  timepoint.time_since_epoch();
+	auto secs = std::chrono::duration_cast<std::chrono::seconds>(since_epoch);
 
 	//	it seems that we don't have to worry about the time zone, _ftime does that for us	
-	return (long long)tstruct.time + TIME_FIX /* 60*(long)(tstruct.timezone) */;
+	return secs.count() + TIME_FIX /* 60*(long)(tstruct.timezone) */;
 } // DateTime
 
 void DateTimeStrg(wchar_t strg[]) {

@@ -7,10 +7,12 @@ VariationInstance.o VariationModels.o vttcompile.o application.o
 
 .PHONY : clean
 
+CXXFLAGS = -g -O3 -Wno-multichar -fPIC -std=c++17
+
 default: vttcompile
 
 vttcompile: $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 clean :
-	$(RM) $(OBJS) vttcompile vttcompile.exe
+	$(RM) *.o vttcompile vttcompile.exe
