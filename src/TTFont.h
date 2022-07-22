@@ -177,6 +177,27 @@ struct TSICHeader {
 	std::vector<uint32_t> axes; //uint32_t AxisArray[axisCount];
 	std::vector<std::vector<Fixed2_14>> locations; //uint16_t RecordLocations[recordCount][axisCount];
 	std::vector<TSICRecord> tsicRecords; //TSICRecord TSICRecord[recordCount];
+
+	const size_t AxisNotFound = 65535; 
+	size_t AxisIndex(uint32_t axis)
+	{
+		for (size_t i = 0; i < axes.size(); i++)
+		{
+			uint32_t tag = axes.at(i);
+			// work around bug in first TSIC spec
+			if (majorVersion == 1 && minorVersion == 0)
+			{
+				uint32_t swapTag = SWAPL(tag);
+				if (tag == axis || swapTag == axis)
+					return i;
+			}else
+			{
+				if (tag == axis)
+					return i;
+			}
+		}
+		return AxisNotFound; 
+	}
 };
 
 typedef struct {
@@ -328,6 +349,7 @@ public:
 	int32_t UpdatePrivateCvar(int32_t *size, unsigned char data[]);
 	bool HasPrivateCvar(); 
 	bool GetPrivateCvar(TSICHeader &header);
+	bool AssertAxisAlignment(TSICHeader& header); 
 	bool MergePrivateCvarWithInstanceManager(const TSICHeader &header); 
 	int32_t EstimateCvar(); 
 	int32_t UpdateCvar(int32_t *size, unsigned char data[]);	

@@ -408,6 +408,11 @@ bool TrueTypeFont::SetSfnt(short platformID, short encodingID, wchar_t errMsg[],
 			}
 			else
 			{
+				if (!this->AssertAxisAlignment(tsic))
+				{
+					std::wstring str = L"Error: Unable to load TSIC table!" BRK;
+					return false; 					
+				}
 				this->MergePrivateCvarWithInstanceManager(tsic);
 			}
 		}
@@ -1478,6 +1483,8 @@ bool TrueTypeFont::HasPrivateCvar()
 
 bool TrueTypeFont::GetPrivateCvar(TSICHeader &header)
 {
+	// Just get the private cvar, don't try to validate against fvar just yet.
+
 	int32_t tableLength = this->GetTableLength(PRIVATE_CVAR);
 
 	if (tableLength == 0 || !this->IsVariationFont())
@@ -1486,32 +1493,21 @@ bool TrueTypeFont::GetPrivateCvar(TSICHeader &header)
 	unsigned short *packed = reinterpret_cast<unsigned short*>(this->GetTablePointer(PRIVATE_CVAR));
 	if (packed == nullptr)
 		return true;
-
-	auto tags = this->GetVariationAxisTags(); 
-	if (tags == nullptr)
-		return true; 
-	
+		
 	header.majorVersion = SWAPWINC(packed); 
 	header.minorVersion = SWAPWINC(packed);
 	header.flags = SWAPWINC(packed);
 	header.axisCount = SWAPWINC(packed);
 	header.recordCount = SWAPWINC(packed);
 	header.reserved = SWAPWINC(packed);
-
-	if (header.axisCount != this->GetVariationAxisCount())
-		return false; 
-
+		
 	// AxisArray
-	assert(tags->size() == header.axisCount); 
 	for (uint16_t axisIndex = 0; axisIndex < header.axisCount; axisIndex++)
 	{
 		uint32_t* ptag = reinterpret_cast<uint32_t*>(packed); 
 		uint32_t tag = *ptag; 
-		uint32_t swapTag = SWAPL(*ptag);
 		header.axes.push_back(tag); 
-		if (tag != tags->at(axisIndex) && swapTag != tags->at(axisIndex))
-			return false; 
-
+		
 		packed += 2; 
 	}
 
@@ -1563,6 +1559,80 @@ bool TrueTypeFont::GetPrivateCvar(TSICHeader &header)
 	}
 
 	return true;
+}
+
+bool TrueTypeFont::AssertAxisAlignment(TSICHeader& header)
+{
+	bool match = true; 
+
+	if (!this->IsVariationFont())
+		return true;
+
+	// Get the fvar tags
+	auto tags = this->GetVariationAxisTags();
+	if (tags == nullptr)
+		return false; 
+
+	assert(tags->size() == this->GetVariationAxisCount());
+
+	// Do tags from fvar match tags from Private cvar?
+	if (header.axisCount != tags->size())
+		match = false;  
+	
+	for (uint16_t axisIndex = 0; match && axisIndex < header.axisCount; axisIndex++)
+	{
+		if (header.majorVersion == 1 && header.minorVersion == 0)
+		{
+			uint32_t swapTag = SWAPL(header.axes.at(axisIndex));
+			if (header.axes.at(axisIndex) != tags->at(axisIndex) && swapTag != tags->at(axisIndex))
+				match = false;
+		}
+		else
+		{
+			if (header.axes.at(axisIndex) != tags->at(axisIndex))
+				match = false;
+		}
+	}
+	// If yes, cool, we are done here!
+
+	// If no then make them match favoring fvar. 
+	if (!match)
+	{
+		std::vector<size_t> fvarMap; 
+		
+		// for each tag in fvar find that tag in private cvar if present
+		for (uint16_t i = 0; i < tags->size(); i++)
+		{
+			fvarMap.push_back(header.AxisIndex(tags->at(i))); 
+		}
+		assert(fvarMap.size() == tags->size()); 
+
+		auto prevLocations = header.locations; 
+		// rebuild header structure 
+		header.axisCount = static_cast<uint16_t>(tags->size());
+		header.axes.clear();
+		header.axes = *tags;
+
+		header.locations.clear();
+		for (uint16_t i = 0; i < header.recordCount; i++)
+		{
+			std::vector<Fixed2_14> coords;
+			for (uint16_t axisIndex = 0; axisIndex < header.axisCount; axisIndex++)
+			{
+				Fixed2_14 coord(0);
+				if (fvarMap[axisIndex] != header.AxisNotFound)
+				{
+					auto prevLocation = prevLocations[i]; 
+					coord.SetRawValue(prevLocation[fvarMap[axisIndex]].GetRawValue());
+				}
+
+				coords.push_back(coord);
+			}
+			header.locations.push_back(coords);
+		}
+	}
+
+	return true; 
 }
 
 bool  TrueTypeFont::MergePrivateCvarWithInstanceManager(const TSICHeader &header)
