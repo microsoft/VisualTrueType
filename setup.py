@@ -52,6 +52,9 @@ setup(
     package_dir={"": "."},
     packages=["vttcompilepy"],
     zip_safe=False,
+    install_requires=[
+        "fonttools>=4.33.0",
+    ],
     python_requires=">=3.7",
     ext_modules = cythonize(
         extension,
