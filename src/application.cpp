@@ -79,15 +79,27 @@ bool Application::OpenFont(std::string fileName, wchar_t errMsg[], size_t errMsg
 	return true;
 }
 
-bool Application::SaveFont(StripCommand strip, wchar_t errMsg[], size_t errMsgLen)
+bool Application::OpenMemFont(void* font, uint32_t fontLen, wchar_t errMsg[], size_t errMsgLen)
 {
-	return this->SaveFont(this->fileName, strip, errMsg, errMsgLen);
+	this->charCode = this->glyphIndex = INVALID_GLYPH_INDEX;
+
+	if (!this->font->Read(font, fontLen, this->glyph.get(), &this->platformID, &this->encodingID, errMsg, errMsgLen))
+		return false;
+
+	return true; 
 }
 
 bool Application::SaveFont(std::string fileN, StripCommand strip, wchar_t errMsg[], size_t errMsgLen)
 {
 	auto file = std::make_unique<File>();
 	errMsg[0] = 0;
+
+	if (fileN.empty())
+	{
+		fileN = this->fileName; 
+		if (fileN.empty())
+			return false;
+	}
 
 	if (!this->BuildFont(strip, errMsg, errMsgLen))
 		return false;
@@ -102,6 +114,28 @@ bool Application::SaveFont(std::string fileN, StripCommand strip, wchar_t errMsg
 	file->Close(true);
 
 	return true;
+}
+
+bool Application::SaveMemFont(void* font, uint32_t fontLen, StripCommand strip, wchar_t errMsg[], size_t errMsgLen)
+{
+	errMsg[0] = 0;
+
+	if (!this->BuildFont(strip, errMsg, errMsgLen))
+		return false;
+
+	return this->font->Write(font, fontLen, errMsg, errMsgLen); 	
+}
+
+bool Application::GetMemFont(void* font, uint32_t fontLen, wchar_t errMsg[], size_t errMsgLen)
+{
+	errMsg[0] = 0;
+
+	return this->font->Write(font, fontLen, errMsg, errMsgLen);
+}
+
+uint32_t Application::GetFontSize()
+{
+	return this->font->Size();
 }
 
 bool Application::GotoFont(wchar_t errMsg[], size_t errMsgLen) {

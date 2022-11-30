@@ -8,30 +8,69 @@ import pytest
 
 TESTDATA = Path(__file__).parent / "data"
 IN_SELAWIK = TESTDATA / "Selawik-variable.ttf"
-OUT_COMPILED = TESTDATA / "out_c.ttf"
-OUT_COMPILED_STRIPPED = TESTDATA / "out_c_s.ttf"
-
-compiler = vtt.Compiler(IN_SELAWIK)
-compiler.compile_all()
-compiler.save_font(OUT_COMPILED, vtt.StripLevel.STRIP_NOTHING)
-compiler.save_font(OUT_COMPILED_STRIPPED, vtt.StripLevel.STRIP_SOURCE)
 
 @pytest.fixture
 def original_font():
     return TTFont(IN_SELAWIK)
 
 @pytest.fixture
-def compiled_font():
-    return TTFont(OUT_COMPILED)
+def compiled_font_file():
+    compiler = vtt.Compiler(IN_SELAWIK)
+    compiler.compile_all()
+    out_compiled = TESTDATA / "out_c1.ttf"
+    compiler.save_font(out_compiled, vtt.StripLevel.STRIP_NOTHING)
+    return TTFont(out_compiled)
 
 @pytest.fixture
-def compiled_stripped_font():
-    return TTFont(OUT_COMPILED_STRIPPED)
+def compiled_font_file_str():
+    in_selawik_str = str(IN_SELAWIK)
+    compiler = vtt.Compiler(in_selawik_str)
+    compiler.compile_all()
+    out_compiled_str = str(TESTDATA / "out_c2.ttf")
+    compiler.save_font(out_compiled_str, vtt.StripLevel.STRIP_NOTHING)
+    return TTFont(out_compiled_str)
 
-def test_compiled(original_font, tmp_path: Path, compiled_font):
-   ttorig = original_font
-   ttcomp = compiled_font
+@pytest.fixture
+def compiled_font_mem():
+    tt = TTFont(IN_SELAWIK)
+    compiler = vtt.Compiler(tt)
+    compiler.compile_all()
+    tt1 = compiler.get_ttfont(vtt.StripLevel.STRIP_NOTHING)
+    return tt1
 
+@pytest.fixture
+def compiled_font_file_mem():
+    compiler = vtt.Compiler(IN_SELAWIK)
+    compiler.compile_all()
+    tt1 = compiler.get_ttfont(vtt.StripLevel.STRIP_NOTHING)
+    return tt1
+
+@pytest.fixture
+def compiled_font_mem_file():
+    tt = TTFont(IN_SELAWIK)
+    compiler = vtt.Compiler(tt)
+    compiler.compile_all()
+    out_compiled = TESTDATA / "out_c3.ttf"
+    compiler.save_font(out_compiled, vtt.StripLevel.STRIP_NOTHING)
+    return TTFont(out_compiled)
+
+@pytest.fixture
+def compiled_stripped_font_file():
+    compiler = vtt.Compiler(IN_SELAWIK)
+    compiler.compile_all()
+    out_compiled_stripped = TESTDATA / "out_c_s1.ttf"
+    compiler.save_font(out_compiled_stripped, vtt.StripLevel.STRIP_SOURCE)
+    return TTFont(out_compiled_stripped)
+
+@pytest.fixture
+def compiled_stripped_font_mem():
+    tt = TTFont(IN_SELAWIK)
+    compiler = vtt.Compiler(tt)
+    compiler.compile_all()
+    tt1 = compiler.get_ttfont(vtt.StripLevel.STRIP_SOURCE)
+    return tt1
+
+def compare_fonts(ttorig, ttcomp) -> None:
    assert ttorig['maxp'].numGlyphs == ttcomp['maxp'].numGlyphs
    assert ttorig['maxp'] == ttcomp['maxp']
    assert ttorig['fpgm'] == ttcomp['fpgm']
@@ -56,11 +95,7 @@ def test_compiled(original_font, tmp_path: Path, compiled_font):
            print(comp_assembly)
            assert orig_assembly == comp_assembly
 
-
-def test_stripped(original_font, tmp_path: Path, compiled_stripped_font):
-    ttorig = original_font
-    ttstrip = compiled_stripped_font
-
+def check_stripped(ttorig, ttstrip) -> None:
     assert("TSI0" in ttorig)
     assert("TSI0" not in ttstrip)
 
@@ -76,10 +111,25 @@ def test_stripped(original_font, tmp_path: Path, compiled_stripped_font):
     assert("TSI5" in ttorig)
     assert("TSI5" not in ttstrip)
 
+
+def test_compiled_file_file_path(original_font, tmp_path: Path, compiled_font_file):
+   compare_fonts(original_font, compiled_font_file)  
+
+def test_compiled_file_file_str(original_font, tmp_path: Path, compiled_font_file_str):
+   compare_fonts(original_font, compiled_font_file_str)  
+
+def test_stripped_file_file(original_font, tmp_path: Path, compiled_stripped_font_file):
+    check_stripped(original_font, compiled_stripped_font_file)
+
+def test_compiled_file_mem(original_font, compiled_font_file_mem):
+   compare_fonts(original_font, compiled_font_file_mem)  
+
+def test_compiled_mem_file(original_font, compiled_font_mem_file):
+   compare_fonts(original_font, compiled_font_mem_file)  
+
+def test_compile_mem_mem(original_font, compiled_font_mem):
+    compare_fonts(original_font, compiled_font_mem)
+
+def test_stripped_mem_mem(original_font, compiled_stripped_font_mem):
+    check_stripped(original_font, compiled_stripped_font_mem)
     
-
-
-
-
-
-

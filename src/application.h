@@ -10,8 +10,12 @@ public:
 	virtual ~Application(void);
 
 	bool OpenFont(std::string fileName, wchar_t errMsg[], size_t errMsgLen);
-	bool SaveFont(StripCommand strip, wchar_t errMsg[], size_t errMsgLen);
+	bool OpenMemFont(void* font, uint32_t fontLen, wchar_t errMsg[], size_t errMsgLen); 
+	
 	bool SaveFont(std::string fileName, StripCommand strip, wchar_t errMsg[], size_t errMsgLen);
+	bool SaveMemFont(void* font, uint32_t fontLen, StripCommand strip, wchar_t errMsg[], size_t errMsgLen);
+	bool GetMemFont(void* font, uint32_t fontLen, wchar_t errMsg[], size_t errMsgLen);
+	uint32_t GetFontSize();
 
 	bool GotoFont(wchar_t errMsg[], size_t errMsgLen);
 	bool GotoGlyph(int32_t code, bool isGlyphIndex);

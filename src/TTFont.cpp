@@ -547,9 +547,26 @@ bool TrueTypeFont::IsMakeTupleName(const std::wstring &name) const
 	return false; 
 } // TrueTypeFont::IsMakeTupleName
 
-bool TrueTypeFont::Read(File *file, TrueTypeGlyph *glyph, short *platformID, short *encodingID, wchar_t errMsg[], size_t errMsgLen) {
-	int32_t glyphIndex;
+bool TrueTypeFont::Read(void* font, uint32_t fontLen, TrueTypeGlyph* glyph, short* platformID, short* encodingID, wchar_t errMsg[], size_t errMsgLen)
+{
+	int32_t glyphIndex = 0;
 
+	this->sfntSize = fontLen; 
+
+	this->AssertMaxSfntSize(this->sfntSize, true, true);
+
+	if (this->sfntSize > this->maxSfntSize)
+	{
+		MaxSfntSizeError(L"Read: This font is too large", this->sfntSize, errMsg, errMsgLen); return false;
+	}
+
+	memcpy(this->sfntHandle, font, this->sfntSize);
+
+	return this->Read(glyph, platformID, encodingID, errMsg, errMsgLen); 	
+}
+
+bool TrueTypeFont::Read(File *file, TrueTypeGlyph *glyph, short *platformID, short *encodingID, wchar_t errMsg[], size_t errMsgLen) {
+	
 	this->sfntSize = file->Length();
 
 	this->AssertMaxSfntSize(this->sfntSize,true,true);
@@ -561,48 +578,76 @@ bool TrueTypeFont::Read(File *file, TrueTypeGlyph *glyph, short *platformID, sho
 	if (file->Error()) {
 		swprintf(errMsg, errMsgLen, L"Read: I/O error reading this font"); return false;
 	}
-	
-	if (!this->UnpackHeadHheaMaxpHmtx(errMsg, errMsgLen)) return false;
 
-	if(*platformID == 3 && *encodingID == 1) 
+	return this->Read(glyph, platformID, encodingID, errMsg, errMsgLen); 	
+} // TrueTypeFont::Read
+
+bool TrueTypeFont::Read(TrueTypeGlyph* glyph, short* platformID, short* encodingID, wchar_t errMsg[], size_t errMsgLen){
+	int32_t glyphIndex = 0; 
+
+	if (!this->UnpackHeadHheaMaxpHmtx(errMsg, errMsgLen))
+		return false;
+
+	if (*platformID == 3 && *encodingID == 1)
 		*encodingID = 10; // lets first try 3,10 and default lower if not present
-	
-	if (!this->CMapExists(*platformID,*encodingID) && !this->DefaultCMap(platformID,encodingID,errMsg, errMsgLen)) return false;
-	
+
+	if (!this->CMapExists(*platformID, *encodingID) && !this->DefaultCMap(platformID, encodingID, errMsg, errMsgLen))
+		return false;
+
 	if (!(this->UnpackGlitsLoca(errMsg, errMsgLen) && this->UpdateMaxPointsAndContours(errMsg, errMsgLen) && this->UnpackCMap(*platformID, *encodingID, errMsg, errMsgLen) && this->UnpackCharGroup(errMsg, errMsgLen)))
 		return false;
-	
-	// Clear for new font. 
+
+	// Clear for new font.
 	if (instanceManager_ != nullptr)
 	{
-		instanceManager_->clear(); 
+		instanceManager_->clear();
 	}
 
 	if (!this->SetSfnt(*platformID, *encodingID, errMsg, errMsgLen))
 		return false;
 
 	// not the smartest way to get these numbers, another historical legacy
-	if ((glyphIndex = this->GlyphIndexOf(L'H')) == INVALID_GLYPH_INDEX) this->capHeight = this->unitsPerEm;
+	if ((glyphIndex = this->GlyphIndexOf(L'H')) == INVALID_GLYPH_INDEX)
+		this->capHeight = this->unitsPerEm;
 	else if (this->GetGlyph(glyphIndex, glyph, errMsg, errMsgLen))
 		this->capHeight = glyph->ymax;
-	else return false;
-	if ((glyphIndex = this->GlyphIndexOf(L'x')) == INVALID_GLYPH_INDEX) this->xHeight = this->unitsPerEm;
+	else
+		return false;
+	if ((glyphIndex = this->GlyphIndexOf(L'x')) == INVALID_GLYPH_INDEX)
+		this->xHeight = this->unitsPerEm;
 	else if (this->GetGlyph(glyphIndex, glyph, errMsg, errMsgLen))
 		this->xHeight = glyph->ymax;
-	else return false;
-	if ((glyphIndex = this->GlyphIndexOf(L'p')) == INVALID_GLYPH_INDEX) this->descenderHeight = 0;
+	else
+		return false;
+	if ((glyphIndex = this->GlyphIndexOf(L'p')) == INVALID_GLYPH_INDEX)
+		this->descenderHeight = 0;
 	else if (this->GetGlyph(glyphIndex, glyph, errMsg, errMsgLen))
 		this->descenderHeight = glyph->ymin;
-	else return false;	
+	else
+		return false;
 
 	// Clear for new font.
-	if (this->postScriptNames) {
+	if (this->postScriptNames)
+	{
 		delete this->postScriptNames;
 		this->postScriptNames = NULL;
 	}
-		
+
 	return true; // by now
-} // TrueTypeFont::Read
+}
+
+bool TrueTypeFont::Write(void* font, uint32_t fontLen, wchar_t errMsg[], size_t errMsgLen)
+{
+	if (this->sfntSize > fontLen)
+	{
+		swprintf(errMsg, errMsgLen, L"Not enough memory");
+		return false;
+	}
+
+	memcpy(font, this->sfntHandle, this->sfntSize);
+
+	return true; 
+}
 
 bool TrueTypeFont::Write(File *file, wchar_t errMsg[], size_t errMsgLen) {
 	file->WriteBytes(this->sfntSize, this->sfntHandle);

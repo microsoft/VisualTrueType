@@ -319,7 +319,9 @@ public:
 	virtual ~TrueTypeFont(void);
 	void AssertMaxSfntSize(uint32_t minSfntSize, bool assertMainHandle, bool assertTempHandle);
 	void AssertMaxGlyphs(int32_t minGlyphs);
+	bool Read(void* font, uint32_t fontLen, TrueTypeGlyph* glyph, short* platformID, short* encodingID, wchar_t errMsg[], size_t errMsgLen); 
 	bool Read(File *file, TrueTypeGlyph *glyph, short *platformID, short *encodingID, wchar_t errMsg[], size_t errMsgLen);
+	bool Write(void* font, uint32_t fontLen, wchar_t errMsg[], size_t errMsgLen); 
 	bool Write(File *file, wchar_t errMsg[], size_t errMsgLen);
 	ControlValueTable *TheCvt(void);
 	bool GetCvt (TextBuffer *cvtText,  wchar_t errMsg[], size_t errMsgLen);
@@ -436,8 +438,14 @@ public:
 	{
 		return variationAxisTags_; 
 	}
+
+	uint32_t Size()	
+	{
+		return this->sfntSize; 
+	}
 		
 private:
+	bool Read(TrueTypeGlyph* glyph, short* platformID, short* encodingID, wchar_t errMsg[], size_t errMsgLen); 
 	void UpdateMetricProfile(TrueTypeGlyph *glyph);
 	bool SubGetNumberOfPointsAndContours(int32_t glyphIndex, short *contours, short *points, short *ComponentDepth, sfnt_glyphbbox *bbox);
 	bool TableExists(sfnt_TableTag tag);
