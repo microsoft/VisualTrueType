@@ -3,11 +3,14 @@ import vttcompilepy as vtt
 import argparse
 import sys
 from pathlib import Path
+from . import __version__ as vtt_version
 
 def main(args=None):
     if args is None:
         args = sys.argv[1:]
     parser = argparse.ArgumentParser()
+
+    parser.add_argument('--version', action='version', version='%(prog)s {version}'.format(version=vtt_version))
 
     parser.add_argument("input", help="Input file")
     parser.add_argument("output", help="Output file")
