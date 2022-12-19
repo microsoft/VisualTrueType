@@ -70,6 +70,16 @@ def compiled_stripped_font_mem():
     tt1 = compiler.get_ttfont(vtt.StripLevel.STRIP_SOURCE)
     return tt1
 
+@pytest.fixture
+def compiled_source_from_bin_font_mem():
+    tt = TTFont(IN_SELAWIK)
+    compiler = vtt.Compiler(tt)
+    compiler.import_source_from_binary()
+    compiler.compile_all()
+    tt1 = compiler.get_ttfont(vtt.StripLevel.STRIP_NOTHING)
+    return tt1
+
+
 def compare_fonts(ttorig, ttcomp) -> None:
    assert ttorig['maxp'].numGlyphs == ttcomp['maxp'].numGlyphs
    assert ttorig['maxp'] == ttcomp['maxp']
@@ -132,4 +142,7 @@ def test_compile_mem_mem(original_font, compiled_font_mem):
 
 def test_stripped_mem_mem(original_font, compiled_stripped_font_mem):
     check_stripped(original_font, compiled_stripped_font_mem)
+
+def test_import_source_from_binary_mem(original_font, compiled_source_from_bin_font_mem):
+    compare_fonts(original_font, compiled_source_from_bin_font_mem)
     

@@ -17,6 +17,8 @@ public:
 	bool GetMemFont(void* font, uint32_t fontLen, wchar_t errMsg[], size_t errMsgLen);
 	uint32_t GetFontSize();
 
+	bool ImportSourceFromBinary(wchar_t errMsg[], size_t errMsgLen); 
+
 	bool GotoFont(wchar_t errMsg[], size_t errMsgLen);
 	bool GotoGlyph(int32_t code, bool isGlyphIndex);
 

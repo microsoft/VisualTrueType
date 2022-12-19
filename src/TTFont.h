@@ -326,10 +326,13 @@ public:
 	ControlValueTable *TheCvt(void);
 	bool GetCvt (TextBuffer *cvtText,  wchar_t errMsg[], size_t errMsgLen);
 	bool GetPrep(TextBuffer *prepText, wchar_t errMsg[], size_t errMsgLen);
+	bool GetPrepFromBin(TextBuffer* prepText, wchar_t errMsg[], size_t errMsgLen); 
 	int32_t PrepBinSize(void);
 	bool GetFpgm(TextBuffer *fpgmText, wchar_t errMsg[], size_t errMsgLen);
+	bool GetFpgmFromBin(TextBuffer* fpgmText, wchar_t errMsg[], size_t errMsgLen); 
 	int32_t FpgmBinSize(void);
 	bool GetGlyf(int32_t glyphIndex, TextBuffer *glyfText, wchar_t errMsg[], size_t errMsgLen);
+	bool GetGlyfFromBin(long glyphIndex, TextBuffer* talkText, TextBuffer* glyfText, TrueTypeGlyph* glyph, wchar_t errMsg[], size_t errMsgLen);
 	bool GetTalk(int32_t glyphIndex, TextBuffer *talkText, wchar_t errMsg[], size_t errMsgLen);		
 	bool GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t errMsg[], size_t errMsgLen);
 	int32_t GlyfBinSize(void);
@@ -371,7 +374,7 @@ public:
 	void UseNewProfiles(void);
 	sfnt_maxProfileTable GetProfile(void);
 	void UpdateGlyphProfile(TrueTypeGlyph *glyph); // used not only in BuildNewSfnt, but also in calculation of maxp and other odd places...
-	void UpdateAssemblerProfile(ASMType asmType, short maxFunctionDefs, short maxStackElements, short maxSizeOfInstructions);
+	void UpdateAssemblerProfile(ASMType asmType, short maxFunctionDefs, short maxStackElements, short explicitMaxStackElements, short maxSizeOfInstructions);
 	void UpdateCompositeProfile(TrueTypeGlyph *glyph, TTCompositeProfile *compositeProfile, short context, short RoundingCode, short InstructionIndex, short *args, short argc, sfnt_glyphbbox *Newbbox, short *error);
 	bool GetNumberOfPointsAndContours(int32_t glyphIndex, short *contours, short *points, short *ComponentDepth, sfnt_glyphbbox *bbox);
 	int32_t GetUnitsPerEm(void);							// FUnits Per EM (2048 is typical)
@@ -508,6 +511,7 @@ private:
 	// 'maxp' (maximum profile) table
 	sfnt_maxProfileTable profile;
 	sfnt_maxProfileTable newProfile; 			// used for 'maxp' computation
+	uint16 explicitMaxStackElements; 
 	uint16 maxStackElements[numTTASMTypes];		// used for new heuristic in computing newProfile.maxStackElements
 	
 	// 'loca' (index to location) table

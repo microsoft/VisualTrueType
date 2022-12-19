@@ -17,6 +17,7 @@ int ShowUsage(wchar_t* strErr)
 		wprintf(L"ERROR: " WIDE_STR_FORMAT L"\n\n", strErr);
 	}
 	wprintf(L"USAGE: vttcompile [options] <in.ttf> [out.ttf] \n");
+	wprintf(L"\t-i import source from binary \n");
 	wprintf(L"\t-a compile everything \n");
 	wprintf(L"\t-gXXXX compile everything for glyph id (base 10) \n");
 	wprintf(L"\t-rXXXX compile everything for glyph range starting with glyph specified  \n\t       with -g up to and including glyph specified with -r \n ");
@@ -45,6 +46,7 @@ int main(int argc, char* argv[])
 	uint32_t g1 = 0, g2 = 0;
 	bool haveGlyph = false;
 	bool haveRange = false;
+	bool bSourceFromBinary = false; 
 
 	int argOffset = 0;
 
@@ -61,7 +63,7 @@ int main(int argc, char* argv[])
 
 	if (argc == 1) return ShowUsage(NULL);
 
-	CommandLineOptions cmd(argc, argv, "?HhAaBbSsCcqQLlVvg:G:r:R");
+	CommandLineOptions cmd(argc, argv, "?HhAaBbSsCcqQIiLlVvg:G:r:R");
 
 	while ((c = cmd.GetOption()) != END)
 	{
@@ -100,6 +102,11 @@ int main(int argc, char* argv[])
 		case 'v':
 		case 'V':
 			bVariationCompositeGuard = false;
+			break; 
+
+		case 'I':
+		case 'i':
+			bSourceFromBinary = true; 
 			break; 
 
 		case 'g':
@@ -183,6 +190,18 @@ int main(int argc, char* argv[])
 		fwprintf(stderr, L"Can not initialize font file! \n");
 		fwprintf(stderr, L"\n");
 		exit(EXIT_FAILURE);
+	}
+
+	if (bSourceFromBinary)
+	{
+		if (!application->ImportSourceFromBinary(errMsg, sizeof(errMsg) / sizeof(wchar_t)))
+		{
+			fwprintf(stderr, errMsg);
+			fwprintf(stderr, L"\n");
+			fwprintf(stderr, L"Can not complete import operation! \n");
+			fwprintf(stderr, L"\n");
+			exit(EXIT_FAILURE);		
+		}	
 	}
 
 	if (bCompileAll)

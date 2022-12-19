@@ -263,6 +263,7 @@ bool TrueTypeFont::Create() {
     this->cvarBinSize                   = 0; 
 	this->horMetric                     = (sfnt_HorizontalMetrics *)NewP(sizeof(sfnt_HorizontalMetrics)*this->maxGlitEntries);	
 	this->gaspLoaded					= false; 
+	this->explicitMaxStackElements = 0;
 	
 	return this->sfntHandle && this->sfntTmpHandle && this->offsetTable && this->tmpOffsetTable && this->cvt && this->IndexToLoc && this->tmpIndexToLoc &&
 		   this->glit1 && this->glit2 && this->charCodeOf && this->charGroupOf && this->horMetric && this->glyphIndexMap; 
@@ -701,6 +702,28 @@ int32_t TrueTypeFont::PrepBinSize(void) {
 	return this->binSize[asmPREP];
 } // TrueTypeFont::PrepBinSize
 
+bool TrueTypeFont::GetPrepFromBin(TextBuffer* prepText, wchar_t errMsg[], size_t errMsgLen)
+{
+	unsigned char* data;
+	long size;
+
+	errMsg[0] = L'\0';
+	data = this->GetTablePointer(tag_PreProgram);
+	size = this->GetTableLength(tag_PreProgram);
+	if (size > MAXBINSIZE)
+	{
+		swprintf(errMsg, errMsgLen, L"GetPrep: pre-program is %li bytes long (cannot be longer than %li bytes)", size, MAXBINSIZE);
+		return false;
+	}
+
+	if (!this->UpdateBinData(asmPREP, size, data)) // !!! may not be necessary?
+		return false;
+
+	TTIUnAsm(data, (unsigned short)size, prepText, true, false);
+
+	return true;
+}
+
 bool TrueTypeFont::GetFpgm(TextBuffer *fpgmText, wchar_t errMsg[], size_t errMsgLen) {
 	unsigned char *data;
 	int32_t size;	
@@ -719,11 +742,64 @@ int32_t TrueTypeFont::FpgmBinSize(void) {
 	return this->binSize[asmFPGM];
 } // TrueTypeFont::FpgmBinSize
 
+bool TrueTypeFont::GetFpgmFromBin(TextBuffer* fpgmText, wchar_t errMsg[], size_t errMsgLen)
+{
+	unsigned char* data;
+	long size;
+	wchar_t buffer[maxLineSize];
+
+	errMsg[0] = L'\0';
+	data = this->GetTablePointer(tag_FontProgram);
+	size = this->GetTableLength(tag_FontProgram);
+	if (size > MAXBINSIZE)
+	{
+		swprintf(errMsg, errMsgLen, L"GetFpgm: font program is %li bytes long (cannot be longer than %li bytes)", size, MAXBINSIZE);
+		return false;
+	}
+
+	if (!this->UpdateBinData(asmFPGM, size, data)) // !!! may not be necessary?
+		return false;
+
+	fpgmText->SetText(0, L"");
+	swprintf(buffer, errMsgLen, L"#MAXSTACK, %i" BRK, this->profile.maxStackElements);
+	fpgmText->Append(buffer);
+
+	TTIUnAsm(data, (unsigned short)size, fpgmText, false, false); 
+
+	return true;
+}
+
 bool TrueTypeFont::GetGlyf(int32_t glyphIndex, TextBuffer *glyfText, wchar_t errMsg[], size_t errMsgLen) {	
 	return this->GetSource(true, glyphIndex, glyfText, errMsg, errMsgLen);		
 	// here we don't get any binary, this is done in GetGlyph, which also deals with the glyph's bounding box or composite information
 } // TrueTypeFont::GetGlyf
 
+bool TrueTypeFont::GetGlyfFromBin(long glyphIndex, TextBuffer* talkText, TextBuffer* glyfText, TrueTypeGlyph* glyph, wchar_t errMsg[], size_t errMsgLen)
+{
+	bool result;
+	wchar_t dateTime[32], buf[128];
+
+	DateTimeStrg(dateTime);
+	swprintf(buf, errMsgLen, L"/* TT glyph %li */" BRK L"/* Imported from binary %s*/" BRK, glyphIndex, dateTime);
+
+	result = this->GetGlyph(glyphIndex, glyph, errMsg, errMsgLen);
+	if (result)
+	{
+		if (glyph->composite)
+		{
+			glyfText->SetText((long)wcslen(buf), (wchar_t*)buf);
+			DisassemComponent(glyph, glyfText, errMsg, errMsgLen);
+			TTIUnAsm(this->binData[asmGLYF], (unsigned short)this->binSize[asmGLYF], glyfText, false, false);
+		}
+		else
+		{
+			talkText->SetText((long)wcslen(buf), (wchar_t*)buf);
+			TTIUnAsm(this->binData[asmGLYF], (unsigned short)this->binSize[asmGLYF], talkText, false, true);
+		}
+	}
+
+	return result;
+}
 
 bool TrueTypeFont::GetTalk(int32_t glyphIndex, TextBuffer *talkText, wchar_t errMsg[], size_t errMsgLen) {
 	return this->GetSource(false, glyphIndex, talkText, errMsg, errMsgLen);
@@ -3995,13 +4071,25 @@ void TrueTypeFont::UpdateMetricProfile(TrueTypeGlyph *glyph) {
 	this->newMetricProfile.xMaxExtent		   = Max(this->newMetricProfile.xMaxExtent,			glyph->xmax);
 } // TrueTypeFont::UpdateMetricProfile
 
-void TrueTypeFont::UpdateAssemblerProfile(ASMType asmType, short maxFunctionDefs, short maxStackElements, short maxSizeOfInstructions) {
+void TrueTypeFont::UpdateAssemblerProfile(ASMType asmType, short maxFunctionDefs, short maxStackElements, short explicitMaxStackElements, short maxSizeOfInstructions){
 	uint16 maxStackElementsPrepFpgm,maxStackElementsGlyfFpgm;
 
 	this->profile.maxFunctionDefs = Max(this->profile.maxFunctionDefs,maxFunctionDefs);
 	this->newProfile.maxFunctionDefs = Max(this->newProfile.maxFunctionDefs,maxFunctionDefs);
 	
-	this->profile.maxStackElements = Max(this->profile.maxStackElements,maxStackElements); // <--- relevant during individual assembly
+	if (asmType == ASMType::asmFPGM)
+	{
+		this->explicitMaxStackElements = explicitMaxStackElements;
+	}
+
+	if (this->explicitMaxStackElements)
+	{
+		this->profile.maxStackElements = this->explicitMaxStackElements; // <--- relevant during individual assembly
+	}
+	else
+	{
+		this->profile.maxStackElements = Max(this->profile.maxStackElements, maxStackElements); // <--- relevant during individual assembly
+	}	
 
 	// Coming up with a good max value for the number of stack elements used at any one time
 	// is a bit of a heuristic, because we cannot possibly test all glyphs against all sizes
@@ -4046,6 +4134,12 @@ void TrueTypeFont::UpdateAssemblerProfile(ASMType asmType, short maxFunctionDefs
 	maxStackElementsGlyfFpgm = this->maxStackElements[asmGLYF] + this->maxStackElements[asmFPGM];
 	// the max stack depth then becomes the maximum of the two intermediate maxima above
 	this->newProfile.maxStackElements = Max(maxStackElementsPrepFpgm,maxStackElementsGlyfFpgm); // <--- relevant during complete assembly/re-calc maxp
+	
+	if (this->explicitMaxStackElements) {
+		this->newProfile.maxStackElements = this->explicitMaxStackElements; // <--- relevant during complete assembly/re-calc maxp
+	} else {
+		this->newProfile.maxStackElements = Max(maxStackElementsPrepFpgm, maxStackElementsGlyfFpgm); // <--- relevant during complete assembly/re-calc maxp
+	}
 	
 	this->profile.maxSizeOfInstructions = Max(this->profile.maxSizeOfInstructions,maxSizeOfInstructions);
 	this->newProfile.maxSizeOfInstructions = Max(this->newProfile.maxSizeOfInstructions,maxSizeOfInstructions);

@@ -27,6 +27,8 @@ cdef extern from "application.h":
         bool GetMemFont(void* font, uint32_t fontLen, wchar_t* errMsg, size_t errMsgLen)
         uint32_t GetFontSize()
 
+        bool ImportSourceFromBinary(wchar_t* errMsg, size_t errMsgLen)
+
         bool GotoFont(wchar_t* errMsg, size_t errMsgLen)
 
         bool CompileGlyphRange(uint16_t g1, uint16_t g2, bool quiet, bool legacy, bool variationCompositeGuard, wchar_t* errMsg, size_t errMsgLen)

@@ -9,6 +9,8 @@
 
 #include <assert.h>
 #include <stdint.h>
+#include <string.h>
+#include <stdio.h>
 
 #include <string>
 #include <map>
@@ -40,6 +42,7 @@
 #include "TTGenerator.h"
 #include "CvtManager.h"
 #include "TMTParser.h"
+#include "ttiua.h"
 
 
 #define STRCPYW wcscpy

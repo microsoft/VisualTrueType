@@ -138,6 +138,43 @@ uint32_t Application::GetFontSize()
 	return this->font->Size();
 }
 
+bool Application::ImportSourceFromBinary(wchar_t errMsg[], size_t errMsgLen)
+{
+	bool done = true, error = false;
+	long savedGlyph = this->glyphIndex;
+	errMsg[0] = 0;
+
+	long numGlyphs = this->font->NumberOfGlyphs();
+
+	done = this->font->InitIncrBuildSfnt(false, errMsg, errMsgLen);
+	this->font->InheritProfiles();
+
+	done = done && this->font->GetPrepFromBin(this->prep.get(), errMsg, errMsgLen);
+	done = done && this->font->GetFpgmFromBin(this->fpgm.get(), errMsg, errMsgLen);
+	
+	for (long glyphID = 0; glyphID < numGlyphs && done; glyphID++)
+	{
+		this->glyphIndex = glyphID;
+
+		done = done && this->font->GetGlyph(glyphID, this->glyph.get(), errMsg, errMsgLen);
+
+		done = done && this->font->GetGlyf(glyphID, this->glyf.get(), errMsg, errMsgLen);
+		done = done && this->font->GetTalk(glyphID, this->talk.get(), errMsg, errMsgLen);
+
+		done = done && this->font->GetGlyfFromBin(glyphID, this->talk.get(), this->glyf.get(), this->glyph.get(), errMsg, errMsgLen);
+
+		if (done)
+			done = this->font->AddGlyphToNewSfnt(this->font->CharGroupOf(glyphID), glyphID, this->glyph.get(), this->font->GlyfBinSize(), this->font->GlyfBin(), this->glyf.get(), this->talk.get(), errMsg, errMsgLen);
+		
+	}
+
+	done = this->font->TermIncrBuildSfnt(!done, this->prep.get(), this->cpgm.get(), this->fpgm.get(), errMsg, errMsgLen);
+	
+	this->GotoGlyph(savedGlyph, true);
+	
+	return done;
+}
+
 bool Application::GotoFont(wchar_t errMsg[], size_t errMsgLen) {
 	int32_t errPos, errLen;
 	bool legacy = false;

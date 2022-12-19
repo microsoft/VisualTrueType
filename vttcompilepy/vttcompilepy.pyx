@@ -71,6 +71,13 @@ cdef class Compiler:
      def __dealloc__(self):         
          del self.app_
 
+     def import_source_from_binary(self) -> None:
+         cdef wchar_t werr[ERR_BUF_SIZE]
+         cdef char err[ERR_BUF_SIZE]
+         result = self.app_.ImportSourceFromBinary(werr, ERR_BUF_SIZE)
+         if(result != True):
+             raise ImportError(self.app_.wCharToChar(err, werr))
+
      def compile_all(self, legacy: bint = False, variationCompositeGuard: bint = True) -> None:
          cdef wchar_t werr[ERR_BUF_SIZE]
          cdef char err[ERR_BUF_SIZE]
