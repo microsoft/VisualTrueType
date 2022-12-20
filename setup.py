@@ -5,7 +5,7 @@ import sys
 import platform
 from setuptools import Extension, setup
 from Cython.Build import cythonize
-from _version import __version__ as vttpy_version
+#from _version import __version__ as vttpy_version
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -38,7 +38,8 @@ extension = Extension(
 
 setup(
     name="vttcompilepy", 
-    version= vttpy_version,
+    #version= vttpy_version,
+    version= '0.0.1.6',
     description="Python extension for Visual TrueType font compile. ",
     long_description=long_description,
     long_description_content_type='text/markdown',
