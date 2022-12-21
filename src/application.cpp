@@ -140,8 +140,8 @@ uint32_t Application::GetFontSize()
 
 bool Application::ImportSourceFromBinary(wchar_t errMsg[], size_t errMsgLen)
 {
-	bool done = true, error = false;
-	long savedGlyph = this->glyphIndex;
+	bool done = true;
+	int32_t savedGlyph = this->glyphIndex;
 	errMsg[0] = 0;
 
 	long numGlyphs = this->font->NumberOfGlyphs();
@@ -152,7 +152,7 @@ bool Application::ImportSourceFromBinary(wchar_t errMsg[], size_t errMsgLen)
 	done = done && this->font->GetPrepFromBin(this->prep.get(), errMsg, errMsgLen);
 	done = done && this->font->GetFpgmFromBin(this->fpgm.get(), errMsg, errMsgLen);
 	
-	for (long glyphID = 0; glyphID < numGlyphs && done; glyphID++)
+	for (int32_t glyphID = 0; glyphID < numGlyphs && done; glyphID++)
 	{
 		this->glyphIndex = glyphID;
 
@@ -477,7 +477,7 @@ bool Application::CompileAll(bool quiet, bool legacy, bool variationCompositeGua
 			done = this->font->UpdateBinData(asmFPGM, binSize, binData);
 		else {
 			done = this->font->UpdateBinData(asmFPGM, 0, NULL);
-			swprintf(tempErrMsg, sizeof(tempErrMsg)/sizeof(tempErrMsg), L"Font Pgm, line %li: " WIDE_STR_FORMAT, this->fpgm->LineNumOf(errPos), compErrMsg);
+			swprintf(tempErrMsg, sizeof(tempErrMsg)/sizeof(wchar_t), L"Font Pgm, line %li: " WIDE_STR_FORMAT, this->fpgm->LineNumOf(errPos), compErrMsg);
 			errBuf->AppendLine(tempErrMsg);
 		}
 	}

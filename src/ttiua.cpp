@@ -328,7 +328,7 @@ void TTIUnAsm(unsigned char* pbyInst, unsigned short uIlen, TextBuffer* dest, bo
 		byInst = *pbyIP++;
 
 		/* format and print instruction */		
-		swprintf(szOutBuffer,sizeof(szOutBuffer)/sizeof(wchar_t), L"%s", gszVTTInstructionStr[byInst] );
+		swprintf(szOutBuffer,sizeof(szOutBuffer)/sizeof(wchar_t), WIDE_STR_FORMAT, gszVTTInstructionStr[byInst] );
 
 		dest->Append(szOutBuffer);		
 		

@@ -550,9 +550,7 @@ bool TrueTypeFont::IsMakeTupleName(const std::wstring &name) const
 
 bool TrueTypeFont::Read(void* font, uint32_t fontLen, TrueTypeGlyph* glyph, short* platformID, short* encodingID, wchar_t errMsg[], size_t errMsgLen)
 {
-	int32_t glyphIndex = 0;
-
-	this->sfntSize = fontLen; 
+	this->sfntSize = fontLen;
 
 	this->AssertMaxSfntSize(this->sfntSize, true, true);
 
@@ -705,7 +703,7 @@ int32_t TrueTypeFont::PrepBinSize(void) {
 bool TrueTypeFont::GetPrepFromBin(TextBuffer* prepText, wchar_t errMsg[], size_t errMsgLen)
 {
 	unsigned char* data;
-	long size;
+	int32_t size;
 
 	errMsg[0] = L'\0';
 	data = this->GetTablePointer(tag_PreProgram);
@@ -745,7 +743,7 @@ int32_t TrueTypeFont::FpgmBinSize(void) {
 bool TrueTypeFont::GetFpgmFromBin(TextBuffer* fpgmText, wchar_t errMsg[], size_t errMsgLen)
 {
 	unsigned char* data;
-	long size;
+	int32_t size;
 	wchar_t buffer[maxLineSize];
 
 	errMsg[0] = L'\0';
@@ -774,13 +772,13 @@ bool TrueTypeFont::GetGlyf(int32_t glyphIndex, TextBuffer *glyfText, wchar_t err
 	// here we don't get any binary, this is done in GetGlyph, which also deals with the glyph's bounding box or composite information
 } // TrueTypeFont::GetGlyf
 
-bool TrueTypeFont::GetGlyfFromBin(long glyphIndex, TextBuffer* talkText, TextBuffer* glyfText, TrueTypeGlyph* glyph, wchar_t errMsg[], size_t errMsgLen)
+bool TrueTypeFont::GetGlyfFromBin(int32_t glyphIndex, TextBuffer* talkText, TextBuffer* glyfText, TrueTypeGlyph* glyph, wchar_t errMsg[], size_t errMsgLen)
 {
 	bool result;
 	wchar_t dateTime[32], buf[128];
 
 	DateTimeStrg(dateTime);
-	swprintf(buf, errMsgLen, L"/* TT glyph %li */" BRK L"/* Imported from binary %s*/" BRK, glyphIndex, dateTime);
+	swprintf(buf, errMsgLen, L"/* TT glyph %li */" BRK L"/* Imported from binary" WIDE_STR_FORMAT "*/" BRK, glyphIndex, dateTime);
 
 	result = this->GetGlyph(glyphIndex, glyph, errMsg, errMsgLen);
 	if (result)

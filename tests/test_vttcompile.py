@@ -71,6 +71,18 @@ def compiled_stripped_font_mem():
     return tt1
 
 @pytest.fixture
+def compiled_source_from_bin_font_file():
+    compiler = vtt.Compiler(IN_SELAWIK)
+    compiler.import_source_from_binary()
+    out_import = TESTDATA / "out_c_c4i.ttf"
+    compiler.save_font(out_import, vtt.StripLevel.STRIP_NOTHING)
+    compiler.compile_all()
+    out_import_compiled = TESTDATA / "out_c_c4.ttf"
+    compiler.save_font(out_import_compiled, vtt.StripLevel.STRIP_NOTHING)
+    return TTFont(out_import_compiled)
+
+
+@pytest.fixture
 def compiled_source_from_bin_font_mem():
     tt = TTFont(IN_SELAWIK)
     compiler = vtt.Compiler(tt)
@@ -142,6 +154,9 @@ def test_compile_mem_mem(original_font, compiled_font_mem):
 
 def test_stripped_mem_mem(original_font, compiled_stripped_font_mem):
     check_stripped(original_font, compiled_stripped_font_mem)
+
+def test_import_source_from_binary_file(original_font, compiled_source_from_bin_font_file):
+    compare_fonts(original_font, compiled_source_from_bin_font_file)
 
 def test_import_source_from_binary_mem(original_font, compiled_source_from_bin_font_mem):
     compare_fonts(original_font, compiled_source_from_bin_font_mem)

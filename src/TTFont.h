@@ -332,7 +332,7 @@ public:
 	bool GetFpgmFromBin(TextBuffer* fpgmText, wchar_t errMsg[], size_t errMsgLen); 
 	int32_t FpgmBinSize(void);
 	bool GetGlyf(int32_t glyphIndex, TextBuffer *glyfText, wchar_t errMsg[], size_t errMsgLen);
-	bool GetGlyfFromBin(long glyphIndex, TextBuffer* talkText, TextBuffer* glyfText, TrueTypeGlyph* glyph, wchar_t errMsg[], size_t errMsgLen);
+	bool GetGlyfFromBin(int32_t glyphIndex, TextBuffer* talkText, TextBuffer* glyfText, TrueTypeGlyph* glyph, wchar_t errMsg[], size_t errMsgLen);
 	bool GetTalk(int32_t glyphIndex, TextBuffer *talkText, wchar_t errMsg[], size_t errMsgLen);		
 	bool GetGlyph(int32_t glyphIndex, TrueTypeGlyph *glyph, wchar_t errMsg[], size_t errMsgLen);
 	int32_t GlyfBinSize(void);
