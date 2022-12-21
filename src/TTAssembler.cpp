@@ -141,6 +141,8 @@ typedef struct {
 #define tt_WildCardInPush	76
 #define tt_JumpNegativeForByte	77
 
+#define tt_ExpectingAValue 78
+
 #define tt_NotImplemented	9999
 #define tt_Push_Switch			1
 #define tt_PushOn_Switch		2
@@ -149,6 +151,7 @@ typedef struct {
 #define tt_End_Switch			5
 #define tt_GHTBlockBegin_Switch	6
 #define tt_GHTBlockEnd_Switch	7
+#define tt_MaxStack_Switch 8
 
 #define co_NoError				0
 
@@ -187,7 +190,8 @@ typedef struct {
 	short	LastCommandWasAnEND; /* to check if the ENDF, ELSE  or EIF is preceeded by #END (end of block) */
 	short	ELSEStatus[MAXIFRECURSION];	/* to keep track in embedded IF statement
 									if we are already in the ELSE clause */		
-} tt_CompilationStatus;
+	short	ExplicitMaxStack;
+ } tt_CompilationStatus;
 
 
 void TT_memSwap( char *a,char *b,char *tmp,int32_t len );
@@ -261,7 +265,8 @@ tt_CompilerSwitchType tt_CompilerSwitch[] = {
 	{ L"END",		L"End of a block", 					tt_End_Switch },
 	{ L"GHTBLOCK",	L"Beginning of a new Sampo block", 	tt_GHTBlockBegin_Switch },
 	{ L"GHTB",		L"Beginning of a new Sampo block", 	tt_GHTBlockBegin_Switch },
-	{ L"GHTE",		L"End of a new Sampo block", 		tt_GHTBlockEnd_Switch }
+	{ L"GHTE",		L"End of a new Sampo block", 		tt_GHTBlockEnd_Switch },
+	{L"MAXSTACK", L"Max Stack", tt_MaxStack_Switch }
 };
 
 #define asm_SLOOP 0x17
@@ -1381,6 +1386,12 @@ short TT_IsDelta( unsigned short opCode )
 
 short TT_IsPushBW( unsigned short opCode );
 short TT_IsPushBW( unsigned short opCode )
+{
+	return (opCode >= 0xB0 && opCode <= 0xBF);
+}
+
+short TT_Is_PushBW_or_NPushBW(unsigned short opCode);
+short TT_Is_PushBW_or_NPushBW(unsigned short opCode)
 // register unsigned char opCode;
 {
 	return ( ( opCode >= 0xB0 && opCode <= 0xBF) ||  opCode == 0x40 ||  opCode == 0x41 );
@@ -1657,7 +1668,7 @@ wchar_t * TT_ReadInstructionParameters (wchar_t * CurrentPtr, wchar_t * EOLPtr, 
 		flashingPoints->NumberOfFlashingPoint = 0;
 	}
 	
-	if (pushOn || TT_IsPushBW(InstructionCode)) 
+	if (pushOn || TT_Is_PushBW_or_NPushBW(InstructionCode)) 
 	{
 		argNb = (short)STRLENW(ArgTypeBuffer);
 
@@ -1666,7 +1677,7 @@ wchar_t * TT_ReadInstructionParameters (wchar_t * CurrentPtr, wchar_t * EOLPtr, 
 			argNb = 255;
 		};
 		
-		if (TT_IsPushBW(InstructionCode))
+		if (TT_Is_PushBW_or_NPushBW(InstructionCode))
 		{
 			if (TT_IsNPushBW(InstructionCode))
 			{
@@ -1721,7 +1732,7 @@ wchar_t * TT_ReadInstructionParameters (wchar_t * CurrentPtr, wchar_t * EOLPtr, 
 
 			if ( *CurrentPtr == L'*' )
 			{
-				if (TT_IsPushBW(InstructionCode))
+				if (TT_Is_PushBW_or_NPushBW(InstructionCode))
 				{
 					*tt_error = tt_WildCardInPush;
 					return (CurrentPtr);
@@ -1761,6 +1772,14 @@ wchar_t * TT_ReadInstructionParameters (wchar_t * CurrentPtr, wchar_t * EOLPtr, 
 				/* function definition, we need to update MaxFunctionDefs */
 				if (args[argindex] > *MaxFunctionDefs) *MaxFunctionDefs = args[argindex] ;
 				*argc = *argc + 1;
+
+			} else if ((argNb != 255) && TT_IsPushBW(InstructionCode))
+			{
+				CurrentPtr = TT_ParseNumber(CurrentPtr, EOLPtr, &args[argindex], SelectionLength, tt_error);
+				if (*tt_error != tt_NoError)
+					return CurrentPtr;
+
+				*argc = *argc + 1;	
 			} else {
 				short foundPP, PPindex;
 
@@ -1882,104 +1901,105 @@ wchar_t * TT_ReadInstructionParameters (wchar_t * CurrentPtr, wchar_t * EOLPtr, 
 			while ( *CurrentPtr == L' ' && CurrentPtr <= EOLPtr)
 				CurrentPtr++;
 
-			if ( *CurrentPtr++ != L',' || CurrentPtr >= EOLPtr )
+			// process parameters to the jump if present
+			if (!(CurrentPtr >= EOLPtr) && (*CurrentPtr == L','))
 			{
-				*tt_error = tt_EmptyParameterList;
-				return (CurrentPtr-1);
-			}
-			
-			/* skip extra spaces */
-			while ( *CurrentPtr == L' ' && CurrentPtr <= EOLPtr)
+				if (*CurrentPtr++ != L',' || CurrentPtr >= EOLPtr)
+				{
+					*tt_error = tt_EmptyParameterList;
+					return (CurrentPtr - 1);
+				}
+
+				/* skip extra spaces */
+				while (*CurrentPtr == L' ' && CurrentPtr <= EOLPtr)
+					CurrentPtr++;
+
+				if (*CurrentPtr++ != L'(' || (CurrentPtr >= EOLPtr))
+				{
+					*tt_error = tt_JRExpectingABracket;
+					return (CurrentPtr - 1);
+				}
+
+				/* skip extra spaces */
+				while (*CurrentPtr == L' ' && CurrentPtr <= EOLPtr)
+					CurrentPtr++;
+
+				/* parse the Bn or Wn label */
+				if ((*CurrentPtr != L'B' && *CurrentPtr != L'W') || (CurrentPtr >= EOLPtr))
+				{
+					*tt_error = tt_JRExpectingABWLabel;
+					return (CurrentPtr);
+				}
+
+				StringLength = TT_GetStringLength(CurrentPtr, EOLPtr);
+				if (StringLength < 2)
+				{
+					*tt_error = tt_VoidLabel;
+					return (CurrentPtr);
+				}
+
+				if (StringLength >= MAXLABELLENGTH)
+				{
+					*tt_error = tt_LabelTooLong;
+					return (CurrentPtr);
+				}
+
+				*BWLabelLength = (short)StringLength;
+				*BWLabelHandle = CurrentPtr;
+
+				CurrentPtr = CurrentPtr + StringLength;
+
+				/* skip extra spaces */
+				while (*CurrentPtr == L' ' && CurrentPtr <= EOLPtr)
+					CurrentPtr++;
+
+				if (*CurrentPtr++ != L'=' || (CurrentPtr >= EOLPtr))
+				{
+					*tt_error = tt_JRExpectingAEqual;
+					return (CurrentPtr - 1);
+				}
+
+				/* skip extra spaces */
+				while (*CurrentPtr == L' ' && CurrentPtr <= EOLPtr)
+					CurrentPtr++;
+
+				if (*CurrentPtr++ != L'#' || (CurrentPtr >= EOLPtr))
+				{
+					*tt_error = tt_JRExpectingALabel;
+					return (CurrentPtr - 1);
+				}
+
+				StringLength = TT_GetStringLength(CurrentPtr, EOLPtr);
+				if (StringLength >= MAXLABELLENGTH)
+				{
+					*tt_error = tt_LabelTooLong;
+					*SelectionLength = StringLength;
+					return (CurrentPtr);
+				}
+
+				if (StringLength == 0)
+				{
+					*tt_error = tt_VoidLabel;
+					*SelectionLength = StringLength;
+					return (CurrentPtr);
+				}
+
+				*LabelLength = (short)StringLength;
+				*LabelHandle = CurrentPtr;
+
+				CurrentPtr = CurrentPtr + StringLength;
+
+				/* skip extra spaces */
+				while (*CurrentPtr == L' ' && CurrentPtr <= EOLPtr)
+					CurrentPtr++;
+
+				if (*CurrentPtr != L')' || (CurrentPtr >= EOLPtr))
+				{
+					*tt_error = tt_JRExpectingABracket;
+					return (CurrentPtr - 1);
+				}
 				CurrentPtr++;
-
-			if ( *CurrentPtr++ != L'(' || (CurrentPtr >= EOLPtr) )
-			{
-				*tt_error = tt_JRExpectingABracket;
-				return (CurrentPtr-1);
 			}
-
-			/* skip extra spaces */
-			while ( *CurrentPtr == L' ' && CurrentPtr <= EOLPtr)
-				CurrentPtr++;
-
-			/* parse the Bn or Wn label */
-			if ( (*CurrentPtr != L'B' && *CurrentPtr != L'W') || (CurrentPtr >= EOLPtr) )
-			{
-				*tt_error = tt_JRExpectingABWLabel;
-				return (CurrentPtr);
-			}
-			
-			StringLength = TT_GetStringLength (CurrentPtr, EOLPtr);
-			if (StringLength < 2)
-			{
-				*tt_error = tt_VoidLabel;
-				return (CurrentPtr);
-			}
-				
-			if (StringLength >= MAXLABELLENGTH)
-			{
-				*tt_error = tt_LabelTooLong;
-				return (CurrentPtr);
-			}
-
-
-			*BWLabelLength = (short)StringLength;
-			*BWLabelHandle = CurrentPtr;
-
-			CurrentPtr = CurrentPtr + StringLength;
-
-			/* skip extra spaces */
-			while ( *CurrentPtr == L' ' && CurrentPtr <= EOLPtr)
-				CurrentPtr++;
-
-			if ( *CurrentPtr++ != L'=' || (CurrentPtr >= EOLPtr) )
-			{
-				*tt_error = tt_JRExpectingAEqual;
-				return (CurrentPtr-1);
-			}
-
-			/* skip extra spaces */
-			while ( *CurrentPtr == L' ' && CurrentPtr <= EOLPtr)
-				CurrentPtr++;
-
-			if ( *CurrentPtr++ != L'#' || (CurrentPtr >= EOLPtr) )
-			{
-				*tt_error = tt_JRExpectingALabel;
-				return (CurrentPtr-1);
-			}
-
-
-			StringLength = TT_GetStringLength (CurrentPtr, EOLPtr);
-			if (StringLength >= MAXLABELLENGTH)
-			{
-				*tt_error = tt_LabelTooLong;
-				*SelectionLength = StringLength;
-				return (CurrentPtr);
-			}
-
-			if ( StringLength == 0 )
-			{
-				*tt_error = tt_VoidLabel;
-				*SelectionLength = StringLength;
-				return (CurrentPtr);
-			}
-
-			*LabelLength = (short)StringLength;
-			*LabelHandle = CurrentPtr;
-
-			CurrentPtr = CurrentPtr + StringLength;
-
-			/* skip extra spaces */
-			while ( *CurrentPtr == L' ' && CurrentPtr <= EOLPtr)
-				CurrentPtr++;
-
-			if  ( *CurrentPtr != L')' || (CurrentPtr >= EOLPtr) )
-			{
-				*tt_error = tt_JRExpectingABracket;
-				return (CurrentPtr-1);
-			}
-			CurrentPtr++;
-
 		}
 		return CurrentPtr;
 	}
@@ -1998,7 +2018,7 @@ void TT_StoreArgumentsAndInstruction (unsigned char InstructionCode, short ** aH
 	**iHandle = InstructionCode;
 	*iHandle = *iHandle +1;
 
-	if (TT_IsPushBW(InstructionCode))
+	if (TT_Is_PushBW_or_NPushBW(InstructionCode))
 	{
 	/* PUSH arguments goes to the instruction stream */
 		short index = 0;
@@ -2833,6 +2853,44 @@ wchar_t *TT_InnerCompile(
 						CompilationStatus->WeAreInsideGHBlock = false;
 						CurrentPtr = CurrentPtr + LineLength;
 						break;
+					case tt_MaxStack_Switch:
+						if (CompilationStatus->WeAreInsideGHBlock)
+						{
+							CurrentPtr = CurrentPtr + LineLength;
+						}
+						else
+						{
+							wchar_t* EOLPtr;
+							EOLPtr = CurrentPtr + LineLength;
+							short maxStack = 0;
+
+							CurrentPtr = CurrentPtr + StringLength + 1;
+
+							/* skip spaces */
+							while (*CurrentPtr == L' ' && CurrentPtr <= EOLPtr)
+								CurrentPtr++;
+
+							if (CurrentPtr >= EOLPtr)
+								*tt_error = tt_ExpectingAValue;
+
+							/* look for the comma */
+							if (*CurrentPtr != L',')
+							{
+								break; /* it could be a comment */
+							}
+							CurrentPtr = CurrentPtr + 1;
+
+							/* skip extra spaces */
+							while (*CurrentPtr == L' ' && CurrentPtr <= EOLPtr)
+								CurrentPtr++;
+
+							if (CurrentPtr >= EOLPtr)
+								*tt_error = tt_ExpectingAValue;
+
+							CurrentPtr = TT_ParseNumber(CurrentPtr, EOLPtr, &maxStack, SelectionLength, tt_error);
+							CompilationStatus->ExplicitMaxStack = maxStack;
+						}
+						break;						
 					}
 				}
 			}
@@ -2932,7 +2990,7 @@ wchar_t *TT_InnerCompile(
 						EOLPtr = CurrentPtr + LineLength;
 						CurrentPtr = TT_ReadInstructionBooleans (CurrentPtr+StringLength, EOLPtr, InstructionIndex, &InstructionCode, SelectionLength, tt_error);
 
-						if (TT_IsPushBW(InstructionCode) && CompilationStatus->WeAreInPushOnMode && *tt_error == tt_NoError)
+						if (TT_Is_PushBW_or_NPushBW(InstructionCode) && CompilationStatus->WeAreInPushOnMode && *tt_error == tt_NoError)
 						{
 							*tt_error = tt_PUSHBWInPushON;
 							*SelectionLength = LineLength;
@@ -3015,7 +3073,7 @@ wchar_t *TT_InnerCompile(
 							*BinaryOffset = (short)(ptrdiff_t)(iPtr - insStore);
 						}
 
-						if (TT_IsPushBW(InstructionCode))
+						if (TT_Is_PushBW_or_NPushBW(InstructionCode))
 						{
 							if (iPtr + 1 + 2 * argc > InnerBinaryOutMaxPtr)
 							{
@@ -3034,6 +3092,12 @@ wchar_t *TT_InnerCompile(
 								*tt_error = tt_TooManyArguments;
 								return CurrentPtr;
 							}
+						}
+
+						if (TT_Is_PushBW_or_NPushBW(InstructionCode))
+						{
+							//numberofArgs = (short)(ptrdiff_t)(aPtr - argStore); 		/* number of arguments */
+							*StackNeed = *StackNeed + argc;
 						}
 
 						TT_StoreArgumentsAndInstruction((unsigned char)InstructionCode,  &aPtr, &iPtr, argc, args, argc2, args2, tt_error);
@@ -3102,7 +3166,7 @@ wchar_t *TT_Compile(
 	/* line number where the first error occur */
 		short * ErrorLineNb,
 	/* return : approximate stack need, higher function number */
-		short * StackNeed, short * MaxFunctionDefs, 
+	short* StackNeed, short* MaxFunctionDefs, short* ExplicitStackNeed,
 
 	/* for the DovMan partial compilation feature that flash points referenced by the current command */
 		tt_flashingPoints * flashingPoints,
@@ -3113,11 +3177,13 @@ wchar_t *TT_Compile(
 		
 wchar_t *TT_Compile(wchar_t *StartPtr, wchar_t * EndPtr, wchar_t * SelStartPtr, unsigned char * BinaryOut, int32_t MaxBinaryLength, 
 		int32_t * BinaryLength, short * BinaryOffset, int32_t * SelectionLength, short * ErrorLineNb, 
-		short * StackNeed, short * MaxFunctionDefs,
+		short* StackNeed, short* MaxFunctionDefs, short* ExplicitStackNeed,
 		/* for the DovMan partial compilation feature that flash points referenced by the current command */
 		tt_flashingPoints * flashingPoints,
 		ASMType asmType, short * tt_error)
 {
+	assert(ExplicitStackNeed != nullptr);
+
 	tt_CompilationStatus CompilationStatus; 
 	wchar_t * Result;
 	char * BinaryOutEndPtr;
@@ -3138,6 +3204,7 @@ wchar_t *TT_Compile(wchar_t *StartPtr, wchar_t * EndPtr, wchar_t * SelStartPtr, 
 	CompilationStatus.LastCommandWasAnIDEF 	= false;
 	CompilationStatus.LastCommandWasAnJUMP 	= false;
 	CompilationStatus.LastCommandWasAnEND 	= false;
+	CompilationStatus.ExplicitMaxStack = 0; 
 
 	flashingPoints->NumberOfFlashingPoint = 0;
 	
@@ -3158,6 +3225,11 @@ wchar_t *TT_Compile(wchar_t *StartPtr, wchar_t * EndPtr, wchar_t * SelStartPtr, 
 	if (CompilationStatus.WeAreInsideAnIDEF)
 	{
 		*tt_error = tt_IDEFwithoutENDF;
+	}
+
+	if (*tt_error == tt_NoError)
+	{
+		*ExplicitStackNeed = CompilationStatus.ExplicitMaxStack;
 	}
 	
 	return Result;
@@ -3401,6 +3473,9 @@ void TT_GetErrorString (short ErrorNb, wchar_t * ErrorString, size_t errorString
 			break;
 		case tt_WildCardInPush:
 			swprintf(ErrorString, errorStringLen, L"Invalid use * in a PUSH instruction");
+			break;
+		case tt_ExpectingAValue:
+			swprintf(ErrorString, errorStringLen, L"Expecting a value");
 			break;
 
 		case tt_NotImplemented:
@@ -4003,7 +4078,7 @@ bool TTAssemble(ASMType asmType, TextBuffer* src, TrueTypeFont* font, TrueTypeGl
 	int32_t maxBinLen, unsigned char* bin, int32_t* actBinLen, bool variationCompositeGuard, int32_t* errPos, int32_t* errLen, wchar_t errMsg[], size_t errMsgLen) {
 
 	wchar_t* startPtr, * endPtr, * SelStartPtr, * tempPtr;
-	short BinaryOffset, CompileError = co_NoError, StackNeed, MaxFunctionDefs, ErrorLineNb, componentSize, numCompositeContours, numCompositePoints, maxContourNumber, maxPointNumber;
+	short BinaryOffset, CompileError = co_NoError, StackNeed, MaxFunctionDefs, ExplicitStackNeed, ErrorLineNb, componentSize, numCompositeContours, numCompositePoints, maxContourNumber, maxPointNumber;
 	int32_t srcLen, highestCvtNum;
 	sfnt_maxProfileTable profile;
 	short componentData[MAXCOMPONENTSIZE];
@@ -4085,12 +4160,13 @@ bool TTAssemble(ASMType asmType, TextBuffer* src, TrueTypeFont* font, TrueTypeGl
 
 		StackNeed = 0;
 		MaxFunctionDefs = 0;
+		ExplicitStackNeed = 0;
 
 		tempPtr = TT_Compile(tempPtr, endPtr, SelStartPtr, bin, maxBinLen, actBinLen,
-			&BinaryOffset, errLen, &ErrorLineNb, &StackNeed, &MaxFunctionDefs, &MyflashingPoints, asmType, &CompileError);
+				     &BinaryOffset, errLen, &ErrorLineNb, &StackNeed, &MaxFunctionDefs, &ExplicitStackNeed, &MyflashingPoints, asmType, &CompileError);
 
 		if (CompileError == tt_NoError) {
-			font->UpdateAssemblerProfile(asmType, MaxFunctionDefs + 1, StackNeed, (short)(*actBinLen));
+			font->UpdateAssemblerProfile(asmType, MaxFunctionDefs + 1, StackNeed, ExplicitStackNeed, (short)(*actBinLen));
 		}
 		else {
 			*errPos = (int32_t)(tempPtr - startPtr);

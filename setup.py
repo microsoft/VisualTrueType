@@ -5,6 +5,7 @@ import sys
 import platform
 from setuptools import Extension, setup
 from Cython.Build import cythonize
+#from _version import __version__ as vttpy_version
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -30,14 +31,15 @@ extension = Extension(
     'vttcompilepy.vttcompilepy',
     define_macros=define_macros,
     include_dirs=[".","src"],
-    sources=['vttcompilepy/vttcompilepy.pyx','src/application.cpp','src/CvtManager.cpp','src/File.cpp','src/List.cpp', 'src/MathUtils.cpp', 'src/Memory.cpp','src/Platform.cpp','src/TextBuffer.cpp', 'src/TMTParser.cpp', 'src/TTAssembler.cpp', 'src/TTEngine.cpp', 'src/TTFont.cpp', 'src/TTGenerator.cpp', 'src/Variation.cpp', 'src/VariationInstance.cpp', 'src/VariationModels.cpp' ],
+    sources=['vttcompilepy/vttcompilepy.pyx','src/application.cpp','src/CvtManager.cpp','src/File.cpp','src/List.cpp', 'src/MathUtils.cpp', 'src/Memory.cpp','src/Platform.cpp','src/TextBuffer.cpp', 'src/TMTParser.cpp', 'src/TTAssembler.cpp', 'src/TTEngine.cpp', 'src/TTFont.cpp', 'src/TTGenerator.cpp', 'src/Variation.cpp', 'src/VariationInstance.cpp', 'src/VariationModels.cpp', 'src/ttiua.cpp' ],
     language='c++',
     extra_compile_args=extra_compile_args,
 )
 
 setup(
     name="vttcompilepy", 
-    version= '0.0.1.5',
+    #version= vttpy_version,
+    version= '0.0.1.6',
     description="Python extension for Visual TrueType font compile. ",
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -52,6 +54,9 @@ setup(
     package_dir={"": "."},
     packages=["vttcompilepy"],
     zip_safe=False,
+    install_requires=[
+        "fonttools>=4.33.0",
+    ],
     python_requires=">=3.7",
     ext_modules = cythonize(
         extension,

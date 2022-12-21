@@ -79,15 +79,27 @@ bool Application::OpenFont(std::string fileName, wchar_t errMsg[], size_t errMsg
 	return true;
 }
 
-bool Application::SaveFont(StripCommand strip, wchar_t errMsg[], size_t errMsgLen)
+bool Application::OpenMemFont(void* font, uint32_t fontLen, wchar_t errMsg[], size_t errMsgLen)
 {
-	return this->SaveFont(this->fileName, strip, errMsg, errMsgLen);
+	this->charCode = this->glyphIndex = INVALID_GLYPH_INDEX;
+
+	if (!this->font->Read(font, fontLen, this->glyph.get(), &this->platformID, &this->encodingID, errMsg, errMsgLen))
+		return false;
+
+	return true; 
 }
 
 bool Application::SaveFont(std::string fileN, StripCommand strip, wchar_t errMsg[], size_t errMsgLen)
 {
 	auto file = std::make_unique<File>();
 	errMsg[0] = 0;
+
+	if (fileN.empty())
+	{
+		fileN = this->fileName; 
+		if (fileN.empty())
+			return false;
+	}
 
 	if (!this->BuildFont(strip, errMsg, errMsgLen))
 		return false;
@@ -102,6 +114,65 @@ bool Application::SaveFont(std::string fileN, StripCommand strip, wchar_t errMsg
 	file->Close(true);
 
 	return true;
+}
+
+bool Application::SaveMemFont(void* font, uint32_t fontLen, StripCommand strip, wchar_t errMsg[], size_t errMsgLen)
+{
+	errMsg[0] = 0;
+
+	if (!this->BuildFont(strip, errMsg, errMsgLen))
+		return false;
+
+	return this->font->Write(font, fontLen, errMsg, errMsgLen); 	
+}
+
+bool Application::GetMemFont(void* font, uint32_t fontLen, wchar_t errMsg[], size_t errMsgLen)
+{
+	errMsg[0] = 0;
+
+	return this->font->Write(font, fontLen, errMsg, errMsgLen);
+}
+
+uint32_t Application::GetFontSize()
+{
+	return this->font->Size();
+}
+
+bool Application::ImportSourceFromBinary(wchar_t errMsg[], size_t errMsgLen)
+{
+	bool done = true;
+	int32_t savedGlyph = this->glyphIndex;
+	errMsg[0] = 0;
+
+	long numGlyphs = this->font->NumberOfGlyphs();
+
+	done = this->font->InitIncrBuildSfnt(false, errMsg, errMsgLen);
+	this->font->InheritProfiles();
+
+	done = done && this->font->GetPrepFromBin(this->prep.get(), errMsg, errMsgLen);
+	done = done && this->font->GetFpgmFromBin(this->fpgm.get(), errMsg, errMsgLen);
+	
+	for (int32_t glyphID = 0; glyphID < numGlyphs && done; glyphID++)
+	{
+		this->glyphIndex = glyphID;
+
+		done = done && this->font->GetGlyph(glyphID, this->glyph.get(), errMsg, errMsgLen);
+
+		done = done && this->font->GetGlyf(glyphID, this->glyf.get(), errMsg, errMsgLen);
+		done = done && this->font->GetTalk(glyphID, this->talk.get(), errMsg, errMsgLen);
+
+		done = done && this->font->GetGlyfFromBin(glyphID, this->talk.get(), this->glyf.get(), this->glyph.get(), errMsg, errMsgLen);
+
+		if (done)
+			done = this->font->AddGlyphToNewSfnt(this->font->CharGroupOf(glyphID), glyphID, this->glyph.get(), this->font->GlyfBinSize(), this->font->GlyfBin(), this->glyf.get(), this->talk.get(), errMsg, errMsgLen);
+		
+	}
+
+	done = this->font->TermIncrBuildSfnt(!done, this->prep.get(), this->cpgm.get(), this->fpgm.get(), errMsg, errMsgLen);
+	
+	this->GotoGlyph(savedGlyph, true);
+	
+	return done;
 }
 
 bool Application::GotoFont(wchar_t errMsg[], size_t errMsgLen) {
@@ -406,7 +477,7 @@ bool Application::CompileAll(bool quiet, bool legacy, bool variationCompositeGua
 			done = this->font->UpdateBinData(asmFPGM, binSize, binData);
 		else {
 			done = this->font->UpdateBinData(asmFPGM, 0, NULL);
-			swprintf(tempErrMsg, sizeof(tempErrMsg)/sizeof(tempErrMsg), L"Font Pgm, line %li: " WIDE_STR_FORMAT, this->fpgm->LineNumOf(errPos), compErrMsg);
+			swprintf(tempErrMsg, sizeof(tempErrMsg)/sizeof(wchar_t), L"Font Pgm, line %li: " WIDE_STR_FORMAT, this->fpgm->LineNumOf(errPos), compErrMsg);
 			errBuf->AppendLine(tempErrMsg);
 		}
 	}

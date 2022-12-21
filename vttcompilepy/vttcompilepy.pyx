@@ -3,6 +3,12 @@
 from enum import IntEnum
 from .cvttcompilepy cimport *
 from pathlib import Path
+from io import BytesIO
+import pathlib
+import fontTools
+from fontTools import ttLib 
+from cpython cimport array
+import array
 
 DEF ERR_BUF_SIZE = 1024
 
@@ -18,25 +24,59 @@ class StripLevel(IntEnum):
 
 cdef class Compiler:
      cdef Application* app_ # Hold C++ instance
+          
+     def __cinit__(self, font):         
+         self.app_ = new Application()    
+         self.app_.Create()
+         cdef wchar_t werr[ERR_BUF_SIZE]
+         cdef char err[ERR_BUF_SIZE]  
+         cdef array.array a = array.array('B')
+         if(type(font)) == str:
+             font = Path(font)
+         # path input case
+         if isinstance(font, pathlib.PurePath):
+             src = bytes(font)             
+             result = self.app_.OpenFont(src, werr, ERR_BUF_SIZE)
+             if result != True:             
+                 raise FileNotFoundError(self.app_.wCharToChar(err, werr))
+             result = self.app_.GotoFont(werr, ERR_BUF_SIZE)
+             if result != True:
+                 raise FileNotFoundError(self.app_.wCharToChar(err, werr))   
+         # fontTools TTFont input case
+         elif isinstance(font,fontTools.ttLib.ttFont.TTFont):
+             font_image = BytesIO()
+             font.save(font_image)
+             font_size = font_image.getbuffer().nbytes
+             # memoryview of font_image
+             rawbytes = font_image.getbuffer()
+             # array.array of memoryview
+             a.frombytes(rawbytes)             
+             result = self.app_.OpenMemFont(a.data.as_voidptr,font_size,werr,ERR_BUF_SIZE)
+             if result != True:             
+                 raise FileNotFoundError(self.app_.wCharToChar(err,werr))
+             result = self.app_.GotoFont(werr, ERR_BUF_SIZE)
+             if result != True:
+                 raise FileNotFoundError(self.app_.wCharToChar(err,werr))    
+         else:
+              raise ValueError("Parameter not valid")   
 
-     #def __cinit__(self):
-     #   self.app_ = new Application()
+     @classmethod 
+     def from_file(cls, file):          
+         return cls(file)
 
-     def __cinit__(self, path: Path):
-         self.app_ = new Application()
-         self.app_.Create()    
-         cdef string src = bytes(path)
+     @classmethod 
+     def from_ttfont(cls, font): 
+         return cls(font)
+
+     def __dealloc__(self):         
+         del self.app_
+
+     def import_source_from_binary(self) -> None:
          cdef wchar_t werr[ERR_BUF_SIZE]
          cdef char err[ERR_BUF_SIZE]
-         result = self.app_.OpenFont(src, werr, ERR_BUF_SIZE)
-         if result != True:             
-             raise FileNotFoundError(self.app_.wCharToChar(err, werr))
-         result = self.app_.GotoFont(werr, ERR_BUF_SIZE)
-         if result != True:
-             raise FileNotFoundError(self.app_.wCharToChar(err, werr))     
-
-     def __dealloc__(self):
-         del self.app_
+         result = self.app_.ImportSourceFromBinary(werr, ERR_BUF_SIZE)
+         if(result != True):
+             raise ImportError(self.app_.wCharToChar(err, werr))
 
      def compile_all(self, legacy: bint = False, variationCompositeGuard: bint = True) -> None:
          cdef wchar_t werr[ERR_BUF_SIZE]
@@ -52,23 +92,46 @@ cdef class Compiler:
          if(result != True):
              raise CompileError(self.app_.wCharToChar(err, werr))
 
-     def save_font(self, path: Path = None, level: StripLevel = None) -> None:
+     def get_ttfont(self, level: StripLevel = None):
+         cdef char err[ERR_BUF_SIZE]
+         cdef wchar_t werr[ERR_BUF_SIZE]
+         cdef array.array a = array.array('B')
+
+         if(level is None):
+            level = StripLevel.STRIP_NOTHING
+
+         # build step separately so we can get size of final image for resize of array
+         result = self.app_.BuildFont( level, werr, ERR_BUF_SIZE)
+         if(result != True):
+             raise FileNotFoundError(self.app_.wCharToChar(err, werr))
+
+         size = self.app_.GetFontSize()
+         array.resize(a, size)         
+
+         result = self.app_.GetMemFont(a.data.as_voidptr, size, werr, ERR_BUF_SIZE)
+         if(result != True):
+             raise FileNotFoundError(self.app_.wCharToChar(err, werr))
+
+         b = BytesIO(a.tobytes())           
+
+         return ttLib.TTFont(b)
+
+     def save_font(self, file = None, level: StripLevel = None) -> None:
          cdef char err[ERR_BUF_SIZE]
          cdef wchar_t werr[ERR_BUF_SIZE]
          cdef string dest
 
          if(level is None):
-            level = StripLevel.STRIP_NOTHING
+            level = StripLevel.STRIP_NOTHING         
 
-         if(path is None):
-            result = self.app_.SaveFont(level, werr, ERR_BUF_SIZE)
-            if(result != True):
-                raise FileNotFoundError(self.app_.wCharToChar(err, werr))
-         else:
-            dest = bytes(path)
-            result = self.app_.SaveFont(dest, level, werr, ERR_BUF_SIZE)
-            if(result != True):
-                raise FileNotFoundError(self.app_.wCharToChar(err, werr))
+         if(file is not None):
+            if(type(file)) == str:
+                file = Path(file)
+            dest = bytes(file)
+
+         result = self.app_.SaveFont(dest, level, werr, ERR_BUF_SIZE)
+         if(result != True):
+            raise FileNotFoundError(self.app_.wCharToChar(err, werr))
 
 
          

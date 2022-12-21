@@ -156,6 +156,7 @@
     <ClCompile Include="..\src\TTEngine.cpp" />
     <ClCompile Include="..\src\TTFont.cpp" />
     <ClCompile Include="..\src\TTGenerator.cpp" />
+    <ClCompile Include="..\src\ttiua.cpp" />
     <ClCompile Include="..\src\Variation.cpp" />
     <ClCompile Include="..\src\VariationInstance.cpp" />
     <ClCompile Include="..\src\VariationModels.cpp" />
@@ -179,6 +180,7 @@
     <ClInclude Include="..\src\TTEngine.h" />
     <ClInclude Include="..\src\TTFont.h" />
     <ClInclude Include="..\src\TTGenerator.h" />
+    <ClInclude Include="..\src\ttiua.h" />
     <ClInclude Include="..\src\Variation.h" />
     <ClInclude Include="..\src\VariationInstance.h" />
     <ClInclude Include="..\src\VariationModels.h" />
