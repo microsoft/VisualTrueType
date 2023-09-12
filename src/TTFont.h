@@ -207,7 +207,7 @@ typedef struct {
 
 #define MAXCVT maxCvtNum
 
-#define MAXBINSIZE			(0x10000L - 4) // don't push the limit
+#define MAXBINSIZE			(0x1000000L - 4) // don't push the limit
 
 #define MAXCOMPONENTSIZE 256
 #define MAXNUMCOMPONENTS (MAXCOMPONENTSIZE/3) // flags, glyphIndex, pair of bytes for offset = minimal size used by each component

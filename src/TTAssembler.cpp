@@ -27,7 +27,7 @@
 #define SHORTMIN -32768
 #define USHORTMAX 65535
 
-#define MAXINSTRUCTIONCOUNT 16000
+#define MAXINSTRUCTIONCOUNT 0x1000000
 #define MAXARGUMENTS (0x8000L - 4L) // don't push the limit
 #define ARGTYPEBUFFER_SIZE 300
 
@@ -46,8 +46,6 @@
 
 /* for the DovMan partial compilation feature that flash points referenced by the current command */
 #define tt_MAXFLASHINGPOINTS 4
-
-#define tt_MAXINSTRUCTIONS	8000  /* size needed for the chicago Japanese fonts */
 
 typedef struct {
 	unsigned short flashingPoints[tt_MAXFLASHINGPOINTS];
@@ -151,7 +149,8 @@ typedef struct {
 #define tt_End_Switch			5
 #define tt_GHTBlockBegin_Switch	6
 #define tt_GHTBlockEnd_Switch	7
-#define tt_MaxStack_Switch 8
+#define tt_MaxStack_Switch		8
+#define tt_DB_Switch			9
 
 #define co_NoError				0
 
@@ -266,7 +265,8 @@ tt_CompilerSwitchType tt_CompilerSwitch[] = {
 	{ L"GHTBLOCK",	L"Beginning of a new Sampo block", 	tt_GHTBlockBegin_Switch },
 	{ L"GHTB",		L"Beginning of a new Sampo block", 	tt_GHTBlockBegin_Switch },
 	{ L"GHTE",		L"End of a new Sampo block", 		tt_GHTBlockEnd_Switch },
-	{L"MAXSTACK", L"Max Stack", tt_MaxStack_Switch }
+	{ L"MAXSTACK",	L"Max Stack",						tt_MaxStack_Switch },
+	{ L"DB",		L"Embed Binary",					tt_DB_Switch},
 };
 
 #define asm_SLOOP 0x17
@@ -521,14 +521,14 @@ const asm_BooleanTranslationType asm_booleanTranslation1[] = {
 /**** label related code *****/
 /**** moved and adapted from label.c */
 
-#define  MAXJRPAIR   200			/* max. number of labels "#L100" or JR[]
+#define MAXJRPAIR       0x4000		/* max. number of labels "#L100" or JR[]
 								     * lines in one block (#BEGIN-#END 
 								     */
 #define MAXLABELLENGTH	22
 
 typedef struct {
 	wchar_t   label[MAXLABELLENGTH];			/* label  ["#L100"] */
-	short     iPos;					/* instruction position from #BEGIN */
+	long      iPos;					/* instruction position from #BEGIN */
 	short 	  *aPtr;				/* start ptr of argument storage */
 
     short     cArg;			
@@ -587,7 +587,7 @@ typedef struct {
 typedef struct {
 	wchar_t      label[MAXLABELLENGTH];			/* Label  ["#L100"] */
 	wchar_t      BWLabel[MAXLABELLENGTH];				/* BW word  ["B1"} */
-	short        iPos;					/* instruction position from #BEGIN */
+	long         iPos;					/* instruction position from #BEGIN */
 	wchar_t      *linePtr;  /* pointer in the source to be able to display the location of an error */
 }tt_JrBWwordType;
 
@@ -827,13 +827,66 @@ wchar_t *TT_ParsePUSHandSave(tt_PStype *ps,wchar_t *CurrentPtr,wchar_t * EOLPtr,
 }
 
 
+wchar_t* TT_ParseHexSequence(wchar_t* p, wchar_t* endP, unsigned char** iPtr, unsigned char* iPtrMax, int32_t* SelectionLength, short* error);
+wchar_t* TT_ParseHexSequence(wchar_t* p, wchar_t* endP, unsigned char** iPtr, unsigned char* iPtrMax, int32_t* SelectionLength, short* error)
+{
+	bool parity = true;
+	uint8_t tempByte = 0x00;
+	short i = 1;
+
+	while (p < endP)
+	{
+		/* skip white space */
+		while (*p == L' ' && p < endP)
+			p++;
+
+		while (((*p >= L'0' && *p <= L'9') || (*p >= L'A' && *p <= L'F') || (*p >= L'a' && *p <= L'f')) && p < endP)
+		{
+
+			if (*p >= L'0' && *p <= L'9')
+			{
+				tempByte = (tempByte << 4) | static_cast<uint8_t>((int32_t)*p - (int32_t)L'0');
+			}
+			else if (*p >= L'A' && *p <= L'F')
+			{
+				tempByte = (tempByte << 4) | static_cast<uint8_t>((int32_t)*p - (int32_t)L'A' + 10);
+			}
+			else if (*p >= L'a' && *p <= L'f')
+			{
+				tempByte = (tempByte << 4) | static_cast<uint8_t>((int32_t)*p - (int32_t)L'a' + 10);
+			}
+			parity = !parity;
+			if (parity)
+			{
+				if (*iPtr + 1 > iPtrMax)
+				{
+					*error = tt_ProgramTooBig;
+					return p;
+				}
+				else {
+					**iPtr = tempByte;
+					*iPtr += 1;
+				}
+			}
+			p++;
+			i++;
+		}
+	}
+	if (i == 0 || !parity)
+		*error = tt_UnableToParseArgument;
+
+	return p;
+}
+
+
+
 /* 
  * given label = "#L100"
  * return the index in the Label->lab[index]
  * return -1 on error
  */
-static short TT_findLabelPos(tt_LabelType *Label,wchar_t *label, short * tt_error );
-static short TT_findLabelPos(tt_LabelType *Label,wchar_t *label, short * tt_error )
+static long TT_findLabelPos(tt_LabelType *Label,wchar_t *label, short * tt_error );
+static long TT_findLabelPos(tt_LabelType *Label,wchar_t *label, short * tt_error )
 {
 	short i;
 	
@@ -854,13 +907,14 @@ static short TT_findLabelPos(tt_LabelType *Label,wchar_t *label, short * tt_erro
 void TT_JRpushON_ReplaceLabel(tt_JRtype  *JR,tt_LabelType *Label,short *argStore, short * tt_error);
 void TT_JRpushON_ReplaceLabel(tt_JRtype  *JR,tt_LabelType *Label,short *argStore, short * tt_error)
 {
-	short i, JRiPos,  labeliPos, delta, index;
+	short i, index, delta;
+	long labeliPos, JRiPos;
 	
 	for ( i = 0; i < JR->num; i++) {
 			 labeliPos = TT_findLabelPos( Label, JR->jr[i]->label, tt_error  );
 			 JRiPos = JR->jr[i]->iPos;
 
-			 delta = labeliPos - JRiPos;
+			 delta = static_cast<short>(labeliPos - JRiPos);
 			 /* if ( delta < 0  )  delta --; */
 
 			 index = JR->jr[i]->cArg;
@@ -881,7 +935,8 @@ void TT_JRpushON_ReplaceLabel(tt_JRtype  *JR,tt_LabelType *Label,short *argStore
 void TT_JRpushOFF_ReplaceLabel(tt_JrBWtype  *JrBW,tt_PStype    *PS,tt_LabelType *Label, short * tt_error);
 void TT_JRpushOFF_ReplaceLabel(tt_JrBWtype  *JrBW,tt_PStype    *PS,tt_LabelType *Label, short * tt_error)
 {
-	short i,  labeliPos, delta, index;
+	short i,  delta, index;
+	long labeliPos;
 	
 	for ( i = 0; i < PS->num; i++) {
 		/* for each #PUSH Bn or Wn, look fot the corresponding JR */
@@ -890,7 +945,7 @@ void TT_JRpushOFF_ReplaceLabel(tt_JrBWtype  *JrBW,tt_PStype    *PS,tt_LabelType 
 		}
 			
 		labeliPos = TT_findLabelPos( Label, JrBW->bw[index]->label, tt_error  );
-		delta = labeliPos - JrBW->bw[i]->iPos;
+		delta = static_cast<short>(labeliPos - JrBW->bw[i]->iPos);
 		
 		if ( (*PS->ps[i]).IsAByte && (delta > 255 ))
 		{
@@ -987,8 +1042,8 @@ wchar_t * TT_FindLabelError(tt_PStype    *PS, tt_JrBWtype  *JrBW, tt_JRtype  *JR
  */
 
 				
-void TT_SaveLabel(short numberofArgs,short numberofInstructions,int32_t stringLenth,wchar_t *p,tt_LabelType *Label, short * tt_error);
-void TT_SaveLabel(short numberofArgs,short numberofInstructions,int32_t stringLenth,wchar_t *p,tt_LabelType *Label, short * tt_error)
+void TT_SaveLabel(short numberofArgs, long numberofInstructions,int32_t stringLenth,wchar_t *p,tt_LabelType *Label, short * tt_error);
+void TT_SaveLabel(short numberofArgs, long numberofInstructions,int32_t stringLenth,wchar_t *p,tt_LabelType *Label, short * tt_error)
 {
 	short i, k;
 	
@@ -1026,9 +1081,9 @@ void TT_SaveLabel(short numberofArgs,short numberofInstructions,int32_t stringLe
 
 //void TT_SavePSLabel(short numberofArgs,short numberofInstructions,short stringLenth,char *p,tt_LabelType *Label, short * tt_error);
 
-wchar_t * TT_SaveJR(short numberofArgs,short numberofInstructions,wchar_t * CurrentPtr, wchar_t *LabelPtr,int32_t stringLenth, 
+wchar_t * TT_SaveJR(short numberofArgs,long numberofInstructions,wchar_t * CurrentPtr, wchar_t *LabelPtr,int32_t stringLenth, 
 			wchar_t *BWLabelPtr,short BWstringLenth,tt_JRtype *JRList,tt_JrBWtype  *JrBW, short *aPtr,int32_t * SelectionLength, short * tt_error);
-wchar_t * TT_SaveJR(short numberofArgs,short numberofInstructions,wchar_t * CurrentPtr, wchar_t *LabelPtr,int32_t stringLenth, 
+wchar_t * TT_SaveJR(short numberofArgs,long numberofInstructions,wchar_t * CurrentPtr, wchar_t *LabelPtr,int32_t stringLenth, 
 			wchar_t *BWLabelPtr,short BWstringLenth,tt_JRtype *JRList,tt_JrBWtype  *JrBW, short *aPtr,int32_t * SelectionLength, short * tt_error)
 {
 	short i, k;
@@ -1642,7 +1697,7 @@ wchar_t * TT_ReadInstructionParameters (wchar_t * CurrentPtr, wchar_t * EOLPtr, 
 				asm_PushAndPopDescriptionType asm_ppDescription[], short pushOn, wchar_t * ArgTypeBuffer, short  *argc,short *args,short  *argc2,wchar_t *args2,
 				wchar_t ** LabelHandle, short * LabelLength, wchar_t ** BWLabelHandle, short * BWLabelLength, int32_t * SelectionLength, short * MaxFunctionDefs, 
 				/* offset in the instruction stream to the instruction corresponding to the cursor position, used for trace mode */
-				short * BinaryOffset, 
+				long * BinaryOffset, 
 				/* for the DovMan partial compilation feature that flash points referenced by the current command */
 				tt_flashingPoints * flashingPoints,
 				short * tt_error);
@@ -1650,7 +1705,7 @@ wchar_t * TT_ReadInstructionParameters (wchar_t * CurrentPtr, wchar_t * EOLPtr, 
 				asm_PushAndPopDescriptionType asm_ppDescription[], short pushOn, wchar_t * ArgTypeBuffer, short  *argc,short *args,short  *argc2,wchar_t *args2,
 				wchar_t ** LabelHandle, short * LabelLength, wchar_t ** BWLabelHandle, short * BWLabelLength, int32_t * SelectionLength, short * MaxFunctionDefs, 
 				/* offset in the instruction stream to the instruction corresponding to the cursor position, used for trace mode */
-				short * BinaryOffset, 
+				long * BinaryOffset, 
 				/* for the DovMan partial compilation feature that flash points referenced by the current command */
 				tt_flashingPoints * flashingPoints,
 				short * tt_error)
@@ -2221,18 +2276,18 @@ short TT_OptimizingPushArguments( unsigned char * BinaryOut,unsigned char * Bina
 }
 
 
-short TT_WriteOutBlock( unsigned char *BinaryOut,unsigned char *BinaryOutEndPtr, short * BinaryOffset, short AddOffset, short argStore[], 
-		unsigned char insStore[], short numberofArgs, short numberofInstructions, short * tt_error);
-short TT_WriteOutBlock( unsigned char *BinaryOut,unsigned char *BinaryOutEndPtr, short * BinaryOffset, short AddOffset, short argStore[], 
-		unsigned char insStore[], short numberofArgs, short numberofInstructions, short * tt_error)
+long TT_WriteOutBlock(unsigned char* BinaryOut, unsigned char* BinaryOutEndPtr, long* BinaryOffset, short AddOffset, short argStore[], 
+		unsigned char insStore[], short numberofArgs, long numberofInstructions, short* tt_error);
+long TT_WriteOutBlock(unsigned char* BinaryOut, unsigned char* BinaryOutEndPtr, long* BinaryOffset, short AddOffset, short argStore[], 
+		unsigned char insStore[], short numberofArgs, long numberofInstructions, short* tt_error)
 {
-	short i, j, k;
-	short count;
+	long i, k;
+	long count;
 	
 	/* Reverse arguments since we are pushing them */
 	k = numberofArgs >> 1;
 	for ( i = 0; i < k; i++ ) {
-		j = argStore[i];
+		short j = argStore[i];
 		argStore[i] = argStore[numberofArgs-1-i];
 		argStore[numberofArgs-1-i] = j;
 	}
@@ -2441,7 +2496,7 @@ wchar_t *TT_InnerCompile(
 	/* pointer to the output buffer, it's maximal length and return the Binary length */
 		unsigned char * BinaryOut, char * BinaryOutEndPtr, int32_t * BinaryLength, 
 	/* offset in the instruction stream to the instruction corresponding to the cursor position, used for trace mode */
-		short * BinaryOffset, 
+		long * BinaryOffset, 
 	/* length of the text to be selected in case of error */
 		int32_t * SelectionLength, 
 	/* line number where the first error occur */
@@ -2463,7 +2518,7 @@ wchar_t *TT_InnerCompile(
 	/* pointer to the output buffer, it's maximal length and return the Binary length */
 		unsigned char * BinaryOut, char * BinaryOutEndPtr, int32_t * BinaryLength, 
 	/* offset in the instruction stream to the instruction corresponding to the cursor position, used for trace mode */
-		short * BinaryOffset, 
+		long * BinaryOffset, 
 	/* length of the text to be selected in case of error */
 		int32_t * SelectionLength, 
 	/* line number where the first error occur */
@@ -2482,7 +2537,8 @@ wchar_t *TT_InnerCompile(
 	short	LineNb, LastLineCompiled;
 	int32_t	LineLength, SLoopLineLength;
 	wchar_t 	*CurrentPtr, *SLoopPtr;
-	short numberofArgs, numberofInstructions;
+	short numberofArgs;
+	long numberofInstructions;
 	short				*argStore, *aPtr;
 	unsigned char	*insStore, *iPtr;
 	short	NeedTwoPass = false; /* used to be MyCode */
@@ -2891,6 +2947,43 @@ wchar_t *TT_InnerCompile(
 							CompilationStatus->ExplicitMaxStack = maxStack;
 						}
 						break;						
+					case tt_DB_Switch:
+						if (CompilationStatus->WeAreInsideGHBlock)
+						{
+							CurrentPtr = CurrentPtr + LineLength;
+						}
+						else
+						{
+							wchar_t* EOLPtr;
+							EOLPtr = CurrentPtr + LineLength;
+							short maxStack = 0;
+
+							CurrentPtr = CurrentPtr + StringLength + 1;
+
+							/* skip spaces */
+							while (*CurrentPtr == L' ' && CurrentPtr <= EOLPtr)
+								CurrentPtr++;
+
+							if (CurrentPtr >= EOLPtr)
+								*tt_error = tt_ExpectingAValue;
+
+							/* look for the comma */
+							if (*CurrentPtr != L',')
+							{
+								break; /* it could be a comment */
+							}
+							CurrentPtr = CurrentPtr + 1;
+
+							/* skip extra spaces */
+							while (*CurrentPtr == L' ' && CurrentPtr <= EOLPtr)
+								CurrentPtr++;
+
+							if (CurrentPtr >= EOLPtr)
+								*tt_error = tt_ExpectingAValue;
+
+							CurrentPtr = TT_ParseHexSequence(CurrentPtr, EOLPtr, &iPtr, InnerBinaryOutMaxPtr, SelectionLength, tt_error);
+						}
+						break;
 					}
 				}
 			}
@@ -3125,7 +3218,7 @@ wchar_t *TT_InnerCompile(
 	} else {
 		/* write the new code */
 		numberofArgs = (short)(ptrdiff_t)(aPtr - argStore); 		/* number of arguments */
-		numberofInstructions = (short)(ptrdiff_t)(iPtr - insStore); /* number of instructions */
+		numberofInstructions = (long)(ptrdiff_t)(iPtr - insStore); /* number of instructions */
 		
 		if (NeedTwoPass)
 		{
@@ -3160,7 +3253,7 @@ wchar_t *TT_Compile(
 	/* pointer to the output buffer, it's maximal length and return the length of the resulting binary */
 		unsigned char * BinaryOut, short MaxBinaryLength, int32_t * BinaryLength, 
 	/* offset in the instruction stream to the instruction corresponding to the cursor position, used for trace mode */
-		short * BinaryOffset, 
+		long * BinaryOffset, 
 	/* length of the text to be selected in case of error */
 		int32_t * SelectionLength,
 	/* line number where the first error occur */
@@ -3176,7 +3269,7 @@ wchar_t *TT_Compile(
 		short * tt_error);
 		
 wchar_t *TT_Compile(wchar_t *StartPtr, wchar_t * EndPtr, wchar_t * SelStartPtr, unsigned char * BinaryOut, int32_t MaxBinaryLength, 
-		int32_t * BinaryLength, short * BinaryOffset, int32_t * SelectionLength, short * ErrorLineNb, 
+		int32_t * BinaryLength, long * BinaryOffset, int32_t * SelectionLength, short * ErrorLineNb, 
 		short* StackNeed, short* MaxFunctionDefs, short* ExplicitStackNeed,
 		/* for the DovMan partial compilation feature that flash points referenced by the current command */
 		tt_flashingPoints * flashingPoints,
@@ -4078,7 +4171,8 @@ bool TTAssemble(ASMType asmType, TextBuffer* src, TrueTypeFont* font, TrueTypeGl
 	int32_t maxBinLen, unsigned char* bin, int32_t* actBinLen, bool variationCompositeGuard, int32_t* errPos, int32_t* errLen, wchar_t errMsg[], size_t errMsgLen) {
 
 	wchar_t* startPtr, * endPtr, * SelStartPtr, * tempPtr;
-	short BinaryOffset, CompileError = co_NoError, StackNeed, MaxFunctionDefs, ExplicitStackNeed, ErrorLineNb, componentSize, numCompositeContours, numCompositePoints, maxContourNumber, maxPointNumber;
+	long BinaryOffset;
+	short CompileError = co_NoError, StackNeed, MaxFunctionDefs, ExplicitStackNeed, ErrorLineNb, componentSize, numCompositeContours, numCompositePoints, maxContourNumber, maxPointNumber;
 	int32_t srcLen, highestCvtNum;
 	sfnt_maxProfileTable profile;
 	short componentData[MAXCOMPONENTSIZE];
