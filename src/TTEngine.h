@@ -20,7 +20,7 @@
 
 #define maxPixelValue 8L*one6 /* corresponding to a magnitude 8 and deltaShift 1/2^0 */
 
-#define maxAsmSize 0x2000L
+#define maxAsmSize 0x10000L
 
 #define invalidKnotNum (-1)
 
