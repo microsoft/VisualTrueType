@@ -350,3 +350,6 @@ MigrationBackup/
 .ionide/
 
 xcuserdata
+
+# Gennerated by python setup.py
+vttcompilepy/vttcompilepy.cpp
