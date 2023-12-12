@@ -122,9 +122,20 @@ void TextBuffer::SetText(int32_t textLen, const char text[])
 	}
 	else
 	{
-		std::string str(reinterpret_cast<const char*>(text), textLen);
-		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-		std::wstring wstr = converter.from_bytes(str);
+		std::wstring wstr; 
+        std::string str(reinterpret_cast<const char*>(text), textLen);
+		try
+		{			
+			std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+			wstr = converter.from_bytes(str);
+		}
+        
+        catch (const std::range_error)
+        {	
+            // Some really old VTT source data has sequences that failed above conversion so we do a nieve conversion. 
+            wstr.resize(str.length(), L' '); 
+			std::copy(str.begin(), str.end(), wstr.begin());
+		}
 
 		this->SetText(wstr.length(), wstr.c_str()); 
 	}
