@@ -123,18 +123,18 @@ void TextBuffer::SetText(int32_t textLen, const char text[])
 	else
 	{
 		std::wstring wstr; 
-        std::string str(reinterpret_cast<const char*>(text), textLen);
+                std::string str(reinterpret_cast<const char*>(text), textLen);
 		try
 		{			
 			std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 			wstr = converter.from_bytes(str);
-		}
-        
-        catch (const std::range_error)
-        {	
-            // Some really old VTT source data has sequences that failed above conversion so we do a nieve conversion. 
-            wstr.resize(str.length(), L' '); 
-			std::copy(str.begin(), str.end(), wstr.begin());
+		}        
+                catch (const std::range_error)
+                {	
+                      // Some really old VTT source data has sequences that fail above conversion so we do a naive conversion as backup. 
+		      // Note that VTT desktop version of this code uses Windows MultiByteToWideChar() which seems more error resilient. 
+                      wstr.resize(str.length(), L' '); 
+		      std::copy(str.begin(), str.end(), wstr.begin());
 		}
 
 		this->SetText(wstr.length(), wstr.c_str()); 
