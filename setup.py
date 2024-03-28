@@ -59,7 +59,7 @@ extension = Extension(
 setup(
     name="vttcompilepy",
     # version= vttpy_version,
-    version="0.0.1.8",
+    version="0.0.1.9",
     description="Python extension for Visual TrueType font compile. ",
     long_description=long_description,
     long_description_content_type="text/markdown",
