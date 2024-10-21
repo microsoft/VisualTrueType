@@ -46,7 +46,17 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: vttcompilepy-${{ matrix.os }}
-          path: ./wheelhouse/*.whl      
+          path: ./wheelhouse/*.whl
+          
+      - name: Build Source Distribution 
+        run: python setup.py sdist
+          
+      - name: Upload Source Distribution
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-dist
+          path: ./dist/*.zip
+          overwrite: true
           
   deploy:
   

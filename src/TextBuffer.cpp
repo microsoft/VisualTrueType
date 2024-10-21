@@ -14,6 +14,7 @@
 #include <climits>
 #include <codecvt>
 #include <locale>
+#include <cstdint> // int32_t etc.
 
 #include "TextBuffer.h"
 
