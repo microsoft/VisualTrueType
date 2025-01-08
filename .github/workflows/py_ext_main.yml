@@ -97,12 +97,13 @@ jobs:
       - name: Move wheels and source dist to dist/ directory
         run: |
           mkdir -p dist/
-          mv wheelhouse/*.whl dist/
           mv dist/source-dist/*.tar.gz dist/
+          for wheel_dir in wheelhouse/vttcompilepy*/; do
+            mv "${wheel_dir}"/*.whl dist/
+          done
         
       - name: Publish distribution 📦 to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
 
-      
         
 
