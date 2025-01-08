@@ -10,7 +10,6 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:  
-
   build:
     # The type of runner that the job will run on
     runs-on: ${{ matrix.os }}
@@ -49,63 +48,62 @@ jobs:
           path: ./wheelhouse/*.whl
           
       - name: Build Source Distribution 
-        run: python setup.py sdist
+        run: python setup.py sdist --formats=gztar
           
       - name: Upload Source Distribution
         uses: actions/upload-artifact@v4
         with:
           name: source-dist
-          path: ./dist/*.zip
+          path: ./dist/*.tar.gz
           overwrite: true
           
   deploy:
-  
     needs: [build]
     # only run if the commit is tagged...
     if: startsWith(github.ref, 'refs/tags/v')
     # ... and all build jobs completed successfully
     runs-on: ubuntu-latest
+    # Added permission for OIDC authentication
+    permissions:
+      id-token: write
+    # Define environment variables
+    env:
+      PYPI_UPLOAD_URL: https://pypi.org/project/vttcompilepy/
     steps:    
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.x"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
         
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install --upgrade setuptools cython wheel twine
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade setuptools cython wheel twine
 
-    - name: Build Source Distribution 
-      run: python setup.py sdist
-          
-    - name: Upload Source Distribution
-      uses: actions/upload-artifact@v4
-      with:
+      - name: Download artifacts from build jobs
+        uses: actions/download-artifact@v4
+        with:
           name: source-dist
-          path: ./dist/*.zip
+          path: ./dist/
         
-    - name: Download artifacts from build jobs
-      uses: actions/download-artifact@v4
-      with:
-        path: wheelhouse/
+      - name: Download wheels from build jobs
+        uses: actions/download-artifact@v4
+        with:
+          name: vttcompilepy-ubuntu-latest
+          path: ./dist/
         
-    - name: Move wheels and source dist to dist/ directory
-      run: |
-        ls wheelhouse/*
-        mkdir -p dist/
-        mv wheelhouse/source-dist/*.zip dist/
-        for wheel_dir in wheelhouse/vttcompilepy*/; do
-          mv "${wheel_dir}"/*.whl dist/
-        done       
-    
+      - name: Move wheels and source dist to dist/ directory
+        run: |
+          mkdir -p dist/
+          mv dist/source-dist/*.tar.gz dist/
+          for wheel_dir in wheelhouse/vttcompilepy*/; do
+            mv "${wheel_dir}"/*.whl dist/
+          done
         
-    - uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        user: __token__
-        password: ${{ secrets.pypi_password }}
-      
+      - name: Publish distribution 📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
         
 
