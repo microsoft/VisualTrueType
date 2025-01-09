@@ -82,25 +82,28 @@ jobs:
           python -m pip install --upgrade pip
           pip install --upgrade setuptools cython wheel twine
 
+      - name: Build Source Distribution 
+        run: python setup.py sdist --formats=gztar
+              
+      - name: Upload Source Distribution
+        uses: actions/upload-artifact@v4
+        with:
+              name: source-dist
+              path: ./dist/*.tar.gz
+            
       - name: Download artifacts from build jobs
         uses: actions/download-artifact@v4
         with:
-          name: source-dist
-          path: ./dist/
-        
-      - name: Download wheels from build jobs
-        uses: actions/download-artifact@v4
-        with:
-          name: vttcompilepy-ubuntu-latest
-          path: ./dist/
-        
+            path: wheelhouse/
+            
       - name: Move wheels and source dist to dist/ directory
         run: |
-          mkdir -p dist/
-          mv dist/source-dist/*.tar.gz dist/
-          for wheel_dir in wheelhouse/vttcompilepy*/; do
-            mv "${wheel_dir}"/*.whl dist/
-          done
+            ls wheelhouse/*
+            mkdir -p dist/
+            mv wheelhouse/source-dist/*.tar.gz dist/
+            for wheel_dir in wheelhouse/vttcompilepy*/; do
+              mv "${wheel_dir}"/*.whl dist/
+            done       
         
       - name: Publish distribution 📦 to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
