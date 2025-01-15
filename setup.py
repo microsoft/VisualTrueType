@@ -25,7 +25,15 @@ extra_compile_args = []
 if platform.system() != "Windows":
     extra_compile_args.append("-std=c++14")
 
-if platform.system() == "Windows":
+# Check if the operating system is Windows and the Python version is less than 3.13.
+# If both conditions are met, append the "-sdl" flag to the extra_compile_args list
+# to enable additional security checks during compilation.
+#
+# The reason we have to exclude Python 3.13 is Py_UNICODE is deprecated warning and Py_UNICODE
+# is used by Cython array.array that is used in this project.
+# The Cython issue is tracked here:
+# https://github.com/cython/cython/issues/6607
+if platform.system() == "Windows" and sys.version_info < (3, 13):
     extra_compile_args.append("-sdl")
 
 extension = Extension(
