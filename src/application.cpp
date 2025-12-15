@@ -382,7 +382,15 @@ bool Application::CompileGlyphRange(unsigned short g1, unsigned short g2, bool q
 
 		if (done)
 		{
-			done = this->BuildFont(stripNothing, compErrMsg, sizeof(compErrMsg)/sizeof(wchar_t));
+			// If we did not compile and are just here to strip data then perform lazy initialization.
+			if (this->glyphIndex == INVALID_GLYPH_INDEX)
+			{
+				this->glyphIndex = 0;
+				this->charCode = this->font->CharCodeOf(this->glyphIndex);
+			}			
+
+			done = this->font->BuildNewSfnt(stripNothing, anyGroup, this->glyphIndex, this->glyph.get(), this->glyf.get(),
+				this->prep.get(), this->cpgm.get(), this->talk.get(), this->fpgm.get(), compErrMsg, sizeof(compErrMsg) / sizeof(wchar_t));			
 		}
 	}
 	if (!quiet && (glyphIndex % 100 != 0)) wprintf_s(L"\n");
