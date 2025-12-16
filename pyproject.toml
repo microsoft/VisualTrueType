@@ -14,3 +14,7 @@ test-command = "pytest {project}/tests"
 
 [tool.cibuildwheel.macos]
 archs = ["x86_64", "universal2", "arm64"]
+
+[tool.cibuildwheel.windows]
+archs = ["x86", "AMD64", "ARM64"]
+test-skip = ["*-win_arm64"]
