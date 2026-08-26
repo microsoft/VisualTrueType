@@ -18,3 +18,12 @@ archs = ["x86_64", "universal2", "arm64"]
 [tool.cibuildwheel.windows]
 archs = ["x86", "AMD64", "ARM64"]
 test-skip = ["*-win_arm64"]
+
+# The ARM64 wheels are cross compiled on an x86-64 runner, where only the x86-64
+# copy of the MSVC C++ runtime is discoverable. delvewheel therefore fails with
+# "Unable to find library: msvcp140.dll" while repairing the ARM64 wheel. The
+# MSVC runtime is a redistributable system component, so exclude it from
+# bundling instead of trying to vendor it.
+[[tool.cibuildwheel.overrides]]
+select = "*-win_arm64"
+repair-wheel-command = "delvewheel repair --exclude msvcp140*.dll -w {dest_dir} -v {wheel}"
