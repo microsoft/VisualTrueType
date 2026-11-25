@@ -548,6 +548,23 @@ bool TrueTypeFont::IsMakeTupleName(const std::wstring &name) const
 	return false; 
 } // TrueTypeFont::IsMakeTupleName
 
+static bool ValidateSfntDirectory(const unsigned char *sfnt, uint32_t sfntSize) {
+	if (sfntSize < OFFSETTABLESIZE) return false;
+
+	const sfnt_OffsetTable *directory = (const sfnt_OffsetTable *)sfnt;
+	uint32_t numTables = SWAPW(directory->numOffsets);
+	if (numTables > (sfntSize - OFFSETTABLESIZE)/sizeof(sfnt_DirectoryEntry)) return false;
+
+	uint32_t directorySize = OFFSETTABLESIZE + numTables*sizeof(sfnt_DirectoryEntry);
+	for (uint32_t i = 0; i < numTables; i++) {
+		uint32_t offset = SWAPL(directory->table[i].offset);
+		uint32_t length = SWAPL(directory->table[i].length);
+		if (length != 0 && (offset < directorySize || offset > sfntSize || length > sfntSize - offset))
+			return false;
+	}
+	return true;
+}
+
 bool TrueTypeFont::Read(void* font, uint32_t fontLen, TrueTypeGlyph* glyph, short* platformID, short* encodingID, wchar_t errMsg[], size_t errMsgLen)
 {
 	this->sfntSize = fontLen;
@@ -583,6 +600,11 @@ bool TrueTypeFont::Read(File *file, TrueTypeGlyph *glyph, short *platformID, sho
 
 bool TrueTypeFont::Read(TrueTypeGlyph* glyph, short* platformID, short* encodingID, wchar_t errMsg[], size_t errMsgLen){
 	int32_t glyphIndex = 0; 
+
+	if (!ValidateSfntDirectory(this->sfntHandle, this->sfntSize)) {
+		swprintf(errMsg, errMsgLen, L"Read: invalid table directory or table extent");
+		return false;
+	}
 
 	if (!this->UnpackHeadHheaMaxpHmtx(errMsg, errMsgLen))
 		return false;
@@ -2220,7 +2242,15 @@ bool TrueTypeFont::UnpackHeadHheaMaxpHmtx(wchar_t errMsg[], size_t errMsgLen) {
 	sfnt_FontHeader *phead, head;
 	sfnt_HorizontalHeader *phhea, hhea;
 	unsigned short aw = 0,lsb,*hmtx; // actually hhea->numberOf_LongHorMetrics of sfnt_HorizontalMetrics [aw,lsb] pairs the monospaced part where we have only lsb numbers 
-	int32_t glitLen,numEntries,numGlyphs,i,k;
+	int32_t glitLen,numEntries,numGlyphs,minEntries,locaEntries,i,k;
+
+	// On-disk sizes, independent of compiler structure padding.
+	if (this->GetTableLength(tag_FontHeader) < 54 ||
+		this->GetTableLength(tag_HoriHeader) < 36 ||
+		this->GetTableLength(tag_MaxProfile) < 32) {
+		swprintf(errMsg, errMsgLen, L"Unpacking font headers: missing or truncated head, hhea or maxp table");
+		return false;
+	}
 
 	unsigned char* pmaxp = this->GetTablePointer(tag_MaxProfile);
 	if (pmaxp == nullptr)
@@ -2280,17 +2310,19 @@ bool TrueTypeFont::UnpackHeadHheaMaxpHmtx(wchar_t errMsg[], size_t errMsgLen) {
 //	it may be, though, that for very old fonts, created with TypeMan, we may run into trouble with the amateur version limitation with this code:
 //	these fonts may have a (historical) 2048 number for maxGlyphs simply because the glits were allocated for that size, even though the font's
 //	maxp has less than 256. 
-	numGlyphs = this->NumberOfGlyphs();
-	this->maxGlyphs = glitLen == 0 ? this->NumberOfGlyphs() : glitLen/sizeof(sfnt_FileDataEntry) - GLIT_PAD; // for the GLIT_PAD cf comment in UnpackGlitsLoca below
-
-	this->AssertMaxGlyphs(this->maxGlyphs + GLIT_PAD);
-
-	if (this->maxGlyphs + GLIT_PAD > this->maxGlitEntries) {  
-		swprintf(errMsg, errMsgLen, L"This font has too many glyphs, please\r" BULLET L" increase the amount of virtual memory in your system settings");  
+	locaEntries = this->GetTableLength(tag_IndexToLoc)/(this->shortIndexToLocTable ? sizeof(short) : sizeof(int32_t));
+	if (locaEntries <= 0) { // table absent entirely; a present-but-minimal (1-entry, 0-glyph) loca is not "missing" and is left to the glyph-count check below
+		swprintf(errMsg, errMsgLen, L"Unpacking loca: missing glyph locations");
 		return false;
 	}
+	numGlyphs = this->NumberOfGlyphs();
+	this->maxGlyphs = glitLen == 0 ? this->NumberOfGlyphs() : glitLen/sizeof(sfnt_FileDataEntry) - GLIT_PAD; // for the GLIT_PAD cf comment in UnpackGlitsLoca below
 	
 	phhea = (sfnt_HorizontalHeader*)this->GetTablePointer(tag_HoriHeader);
+	if (phhea == nullptr) {
+		swprintf(errMsg, errMsgLen, L"Unpacking hhea: error fetching table");
+		return false;
+	}
 	hhea.version = SWAPL(phhea->version);
 	hhea.yAscender= SWAPW(phhea->yAscender);
 	hhea.yDescender= SWAPW(phhea->yDescender);
@@ -2309,8 +2341,36 @@ bool TrueTypeFont::UnpackHeadHheaMaxpHmtx(wchar_t errMsg[], size_t errMsgLen) {
 	this->metricProfile.minRightSideBearing = hhea.minRightSideBearing;
 	this->metricProfile.xMaxExtent			= hhea.xMaxExtent;
 	
-	hmtx = (unsigned short *)this->GetTablePointer(tag_HorizontalMetrics);
-	k = 0; numEntries = hhea.numberOf_LongHorMetrics;
+	numEntries = hhea.numberOf_LongHorMetrics;
+	if (numGlyphs <= 0 || numEntries <= 0) {
+		swprintf(errMsg, errMsgLen, L"Unpacking hmtx: invalid horizontal metric count");
+		return false;
+	}
+	int32_t hmtxOffset = this->GetTableOffset(tag_HorizontalMetrics);
+	int32_t hmtxLength = this->GetTableLength(tag_HorizontalMetrics);
+	int32_t requiredLength = 4*numEntries + 2*Max(0,numGlyphs - numEntries);
+	if (hmtxOffset <= 0 || hmtxLength < requiredLength ||
+		(uint32_t)hmtxOffset > this->sfntSize ||
+		(uint32_t)hmtxLength > this->sfntSize - (uint32_t)hmtxOffset) {
+		swprintf(errMsg, errMsgLen, L"Unpacking hmtx: invalid horizontal metrics table length");
+		return false;
+	}
+
+	// Intermediate fonts may have excess metrics or loca entries. Reserve for
+	// every unpacked entry rather than requiring these counts to agree.
+	minEntries = Max(this->maxGlyphs,numGlyphs) + GLIT_PAD;
+	minEntries = Max(minEntries,numEntries);
+	minEntries = Max(minEntries,locaEntries);
+	int32_t glit2Entries = this->GetTableLength(PRIVATE_GLIT2)/sizeof(sfnt_FileDataEntry);
+	minEntries = Max(minEntries,glit2Entries);
+	this->AssertMaxGlyphs(minEntries);
+	if (minEntries > this->maxGlitEntries) {
+		swprintf(errMsg, errMsgLen, L"This font has too many glyphs, please\r" BULLET L" increase the amount of virtual memory in your system settings");
+		return false;
+	}
+
+	hmtx = (unsigned short *)(this->sfntHandle + hmtxOffset);
+	k = 0;
 	for (i = 0; i < numEntries; i++) {  
 		aw = hmtx[k++];
 		this->horMetric[i].advanceWidth = SWAPW(aw);
@@ -2717,25 +2777,23 @@ uint32_t PackGlit(sfnt_FileDataEntry *fileGlit, int32_t glitEntries, sfnt_MemDat
 	return glitEntries*sizeof(sfnt_FileDataEntry);
 } // PackGlit
 
-bool BuildOffsetTables(unsigned char *sfnt, uint32_t maxSfntSize, sfnt_OffsetTable *offsetTable, sfnt_OffsetTable *tmpOffsetTable, int32_t numVariableTables, TableAvailability avail[], StripCommand strip, int32_t *headerSize) {
+bool BuildOffsetTables(unsigned char *sfnt, uint32_t sfntSize, sfnt_OffsetTable *offsetTable, sfnt_OffsetTable *tmpOffsetTable, int32_t numVariableTables, TableAvailability avail[], StripCommand strip, int32_t *headerSize) {
 	int32_t i,j,j2,maxPowerOf2,headIdx,glyfIdx,locaIdx,hheaIdx,hmtxIdx,tag;
 	sfnt_DirectoryEntry entry = {(sfnt_TableTag)0x3F3F3F3F /* '????' */, 0, 0, 0}; // tag, checksum, offset, length
 		
-//	first, do some sanity check on the offset table, to be done upon reading a font?
-//	another inherited hack: a flat MYOFFSETTABLESIZE bytes are allocated for the internal copy of the sfnt directory
-//	so first assert that this is enough to hold all directory entries (see sfnt.h for type definitions)
-//	to do so, very first thing is to get the numOffsets
+	// Recheck source extents before either rebuild path sizes or copies retained tables.
+	if (!ValidateSfntDirectory(sfnt, sfntSize)) return false;
+	const uint32_t maxDirectoryEntries = (MYOFFSETTABLESIZE - OFFSETTABLESIZE)/sizeof(sfnt_DirectoryEntry);
+	memset(offsetTable, 0, MYOFFSETTABLESIZE);
 	memcpy((char*)offsetTable,(char*)sfnt,OFFSETTABLESIZE);
 	offsetTable->numOffsets = SWAPW(offsetTable->numOffsets);
-	assert(sizeof(sfnt_OffsetTable) + (offsetTable->numOffsets - 1)*sizeof(sfnt_DirectoryEntry) <= MYOFFSETTABLESIZE);
-//	now get the rest
-	memcpy((char*)&offsetTable->table[0],(char*)&sfnt[OFFSETTABLESIZE],MYOFFSETTABLESIZE-OFFSETTABLESIZE);
+	if (offsetTable->numOffsets > maxDirectoryEntries) return false;
+	memcpy((char*)&offsetTable->table[0],(char*)&sfnt[OFFSETTABLESIZE],offsetTable->numOffsets*sizeof(sfnt_DirectoryEntry));
 
 	for (i = 0; i < offsetTable->numOffsets; i++) {
 		if (offsetTable->table[i].length != 0) {
 			offsetTable->table[i].offset = SWAPL(offsetTable->table[i].offset);
 			offsetTable->table[i].length = SWAPL(offsetTable->table[i].length);
-			if (offsetTable->table[i].offset > maxSfntSize) return false;
 		} else {
 			offsetTable->table[i].offset = 0;
 		}
@@ -2750,6 +2808,7 @@ bool BuildOffsetTables(unsigned char *sfnt, uint32_t maxSfntSize, sfnt_OffsetTab
 		for (j = 0; j < tmpOffsetTable->numOffsets && tmpOffsetTable->table[j].tag != avail[i].Tag(); j++)
 			;
 		if (avail[i].Required() && j == tmpOffsetTable->numOffsets) { // required but not present
+			if ((uint32_t)j2 >= maxDirectoryEntries) return false;
 			entry.tag = avail[i].Tag(); 
 			tmpOffsetTable->table[j2++] = entry; // add
 		}
@@ -2867,7 +2926,7 @@ bool TrueTypeFont::BuildNewSfnt(StripCommand strip, CharGroup group, int32_t gly
 	sfnt = this->sfntHandle; // alias it
 	
 	if (!BuildOffsetTables(sfnt,this->sfntSize,this->offsetTable,this->tmpOffsetTable,variableTables,avail,strip,&headerSize)) {
-		swprintf(errMsg, errMsgLen, L"BuildNewSfnt: offset is too large"); // claudebe, problem with a new font received from Sampo
+		swprintf(errMsg, errMsgLen, L"BuildNewSfnt: invalid table directory, table extent or directory capacity");
 		goto term;
 	}
 
@@ -3479,7 +3538,7 @@ bool TrueTypeFont::IncrBuildNewSfnt( wchar_t errMsg[], size_t errMsgLen) {
 	sfnt = this->sfntHandle; // alias it
 	
 	if (!BuildOffsetTables(sfnt,this->sfntSize,this->offsetTable,this->tmpOffsetTable,variableTablesForIncrBuild,avail,strip,&headerSize)) {
-		swprintf(errMsg, errMsgLen, L"IncrBuildNewSfnt: offset is too large"); // claudebe, problem with a new font received from Sampo
+		swprintf(errMsg, errMsgLen, L"IncrBuildNewSfnt: invalid table directory, table extent or directory capacity");
 		goto term;
 	}
 
